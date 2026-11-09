@@ -1,0 +1,3403 @@
+{
+ "cases": [
+  {
+   "codex_expected": null,
+   "error": null,
+   "id": "base",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "62e18748c148d837d269766eefb7e6831c1b677dc09eea587f8df7c3049e6291",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [
+       "SYN:SERIES"
+      ],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [
+       "SYN:SERIES"
+      ],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 1,
+     "company_rows": 2,
+     "linked_companies": 2,
+     "unique_series": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "3c2065b30bb8d4aa79cc8f386b46c3e0f9b51cb3606531a87232dc383b2215c1",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [],
+      "query_status": "AVAILABLE",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       },
+       {
+        "industry_id": "software",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {
+     "SYN:SERIES": {
+      "archive_version_id": "SYN:ARCHIVE",
+      "availability_basis": null,
+      "available_at": "2017-01-05T13:00:00Z",
+      "cache_query_at": "2017-01-06T21:00:00Z",
+      "first_acquired_at": "2017-01-05T13:00:00Z",
+      "frequency": "M",
+      "historical_pit_eligible": false,
+      "historical_pit_reason": "RELEASE_NOT_PROVEN",
+      "last_successful_update_at": "2017-01-05T13:00:00Z",
+      "observation_id": null,
+      "observation_period": "2016-12",
+      "official_release_at": null,
+      "official_release_status": null,
+      "query_reasons": [],
+      "query_usable": true,
+      "reason": null,
+      "seasonal_adjustment": "SA",
+      "selected_version_acquired_at": null,
+      "source_id": "SYN:SERIES",
+      "source_version_id": null,
+      "stale": false,
+      "state": null,
+      "unit": "hours",
+      "update_status": null,
+      "value": 0
+     }
+    },
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "aggregate_value": null,
+    "linked_companies": 2,
+    "unique_series": 1,
+    "value": 0
+   },
+   "error": null,
+   "id": "multiple",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "62e18748c148d837d269766eefb7e6831c1b677dc09eea587f8df7c3049e6291",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [
+       "SYN:SERIES"
+      ],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [
+       "SYN:SERIES"
+      ],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 1,
+     "company_rows": 2,
+     "linked_companies": 2,
+     "unique_series": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "3c2065b30bb8d4aa79cc8f386b46c3e0f9b51cb3606531a87232dc383b2215c1",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [],
+      "query_status": "AVAILABLE",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       },
+       {
+        "industry_id": "software",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {
+     "SYN:SERIES": {
+      "archive_version_id": "SYN:ARCHIVE",
+      "availability_basis": null,
+      "available_at": "2017-01-05T13:00:00Z",
+      "cache_query_at": "2017-01-06T21:00:00Z",
+      "first_acquired_at": "2017-01-05T13:00:00Z",
+      "frequency": "M",
+      "historical_pit_eligible": false,
+      "historical_pit_reason": "RELEASE_NOT_PROVEN",
+      "last_successful_update_at": "2017-01-05T13:00:00Z",
+      "observation_id": null,
+      "observation_period": "2016-12",
+      "official_release_at": null,
+      "official_release_status": null,
+      "query_reasons": [],
+      "query_usable": true,
+      "reason": null,
+      "seasonal_adjustment": "SA",
+      "selected_version_acquired_at": null,
+      "source_id": "SYN:SERIES",
+      "source_version_id": null,
+      "stale": false,
+      "state": null,
+      "unit": "hours",
+      "update_status": null,
+      "value": 0
+     }
+    },
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "linked_companies": 1,
+    "relation": "PARTIAL"
+   },
+   "error": null,
+   "id": "partial",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "731561df34e632d39bb9519673b596dfe93616500accb25fdb3bb34a21c8e52b",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [
+       "SYN:SERIES"
+      ],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 1,
+     "company_rows": 2,
+     "linked_companies": 1,
+     "unique_series": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "d263f31a0e5188e40bf0a10569afb65640d545526bfc53890e2660b1118b6e7f",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [],
+      "query_status": "AVAILABLE",
+      "relation": "PARTIAL",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {
+     "SYN:SERIES": {
+      "archive_version_id": "SYN:ARCHIVE",
+      "availability_basis": null,
+      "available_at": "2017-01-05T13:00:00Z",
+      "cache_query_at": "2017-01-06T21:00:00Z",
+      "first_acquired_at": "2017-01-05T13:00:00Z",
+      "frequency": "M",
+      "historical_pit_eligible": false,
+      "historical_pit_reason": "RELEASE_NOT_PROVEN",
+      "last_successful_update_at": "2017-01-05T13:00:00Z",
+      "observation_id": null,
+      "observation_period": "2016-12",
+      "official_release_at": null,
+      "official_release_status": null,
+      "query_reasons": [],
+      "query_usable": true,
+      "reason": null,
+      "seasonal_adjustment": "SA",
+      "selected_version_acquired_at": null,
+      "source_id": "SYN:SERIES",
+      "source_version_id": null,
+      "stale": false,
+      "state": null,
+      "unit": "hours",
+      "update_status": null,
+      "value": 0
+     }
+    },
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "linked_companies": 0,
+    "reason": "EVIDENCE_NOT_AVAILABLE"
+   },
+   "error": null,
+   "id": "evidence_future",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "9651163c51bfcb971d6dc978d1f1bc810b18298f4d6e4eca142bbb4876b41545",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 0,
+     "company_rows": 2,
+     "linked_companies": 0,
+     "unique_series": 0
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [
+     {
+      "mapping_id": "SYN:MAP",
+      "reasons": [
+       "EVIDENCE_NOT_AVAILABLE"
+      ],
+      "revision_id": "1"
+     }
+    ],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-07T00:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "3712ab37513bb1a2b0cd3e712c17c13837693c757f0a649b74542e4d14f05626",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [
+       "EVIDENCE_NOT_AVAILABLE"
+      ],
+      "query_status": "UNKNOWN",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       },
+       {
+        "industry_id": "software",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {},
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "linked_companies": 0,
+    "reason": "EVIDENCE_TIME_UNKNOWN"
+   },
+   "error": null,
+   "id": "date_precision",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "e554507b5e0cec5d1b07080ad5d7b3bc2efae503c92158fe1c8a96b5dbf7adf7",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 0,
+     "company_rows": 2,
+     "linked_companies": 0,
+     "unique_series": 0
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [
+     {
+      "mapping_id": "SYN:MAP",
+      "reasons": [
+       "EVIDENCE_TIME_UNKNOWN"
+      ],
+      "revision_id": "1"
+     }
+    ],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-06",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "771960637703eea441c7fa9869b2d98168d10c6ddbf73078fdb063428eb62eaa",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [
+       "EVIDENCE_TIME_UNKNOWN"
+      ],
+      "query_status": "UNKNOWN",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       },
+       {
+        "industry_id": "software",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {},
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "error": "SOURCE_SERIES_DEFINITION_MISMATCH"
+   },
+   "error": "SOURCE_SERIES_DEFINITION_MISMATCH",
+   "id": "wrong_source_version",
+   "output": null
+  },
+  {
+   "codex_expected": {
+    "linked_companies": 2,
+    "query_usable_companies": 0,
+    "value": null
+   },
+   "error": null,
+   "id": "future_value",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "9b2febca2ba004da257421a1d12f3dc2bdb365ee7b077f19041905ba75648c6e",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": [
+       {
+        "reasons": [
+         "OBSERVATION_NOT_AVAILABLE"
+        ],
+        "series_id": "SYN:SERIES"
+       }
+      ]
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [],
+      "mapping_refs": [
+       {
+        "mapping_id": "SYN:MAP",
+        "revision_id": "1"
+       }
+      ],
+      "mapping_status": "LINKED",
+      "query_usable_series_ids": [],
+      "related_series_ids": [
+       "SYN:SERIES"
+      ],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": [
+       {
+        "reasons": [
+         "OBSERVATION_NOT_AVAILABLE"
+        ],
+        "series_id": "SYN:SERIES"
+       }
+      ]
+     }
+    ],
+    "counts": {
+     "active_mappings": 1,
+     "company_rows": 2,
+     "linked_companies": 2,
+     "unique_series": 1
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "de27a765aa4b791f150cdcd9caf7b904be04d6e3d9ad68a4384e56b3718ca10d",
+     "mappings": "3c2065b30bb8d4aa79cc8f386b46c3e0f9b51cb3606531a87232dc383b2215c1",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [],
+      "query_status": "AVAILABLE",
+      "relation": "MULTIPLE",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "CONFIRMED",
+      "supersedes": null,
+      "targets": [
+       {
+        "industry_id": "semiconductors",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       },
+       {
+        "industry_id": "software",
+        "scope_relation": "OVERLAP",
+        "sector_id": "INFORMATION_TECHNOLOGY"
+       }
+      ],
+      "unknown_reasons": [],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {
+     "SYN:SERIES": {
+      "archive_version_id": "SYN:ARCHIVE",
+      "availability_basis": null,
+      "available_at": "2017-01-07T00:00:00Z",
+      "cache_query_at": "2017-01-06T21:00:00Z",
+      "first_acquired_at": "2017-01-05T13:00:00Z",
+      "frequency": "M",
+      "historical_pit_eligible": false,
+      "historical_pit_reason": "RELEASE_NOT_PROVEN",
+      "last_successful_update_at": "2017-01-05T13:00:00Z",
+      "observation_id": null,
+      "observation_period": "2016-12",
+      "official_release_at": null,
+      "official_release_status": null,
+      "query_reasons": [
+       "OBSERVATION_NOT_AVAILABLE"
+      ],
+      "query_usable": true,
+      "reason": null,
+      "seasonal_adjustment": "SA",
+      "selected_version_acquired_at": null,
+      "source_id": "SYN:SERIES",
+      "source_version_id": null,
+      "stale": false,
+      "state": null,
+      "unit": "hours",
+      "update_status": null,
+      "value": null
+     }
+    },
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  },
+  {
+   "codex_expected": {
+    "current_cache_unchanged": true,
+    "linked_companies": 0
+   },
+   "error": null,
+   "id": "unknown",
+   "output": {
+    "aggregate_value": null,
+    "allocation_weights": null,
+    "cache_asof": "2017-01-06T19:00:00Z",
+    "cache_key": "7e208bafaf7cb5240b01576a74c8d3065b981071c8dab36138d114dd3204c977",
+    "classification_context": {
+     "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "dictionary_version": "common-industry-dictionary/1",
+     "mapping_version": "common-classification-map/1",
+     "valuation_date": "2017-01-06"
+    },
+    "companies": [
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:0",
+      "company_id": "SYNTHETIC:COMPANY:0",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "semiconductors",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:0",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     },
+     {
+      "classification_record_id": "SYNTHETIC:RECORD:1",
+      "company_id": "SYNTHETIC:COMPANY:1",
+      "industry": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "software",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "issuer_id": "SYNTHETIC:ISSUER:1",
+      "mapping_reasons": [
+       "EXPLICIT_MACRO_SOURCE_LINK_MISSING"
+      ],
+      "mapping_refs": [],
+      "mapping_status": "UNKNOWN",
+      "query_usable_series_ids": [],
+      "related_series_ids": [],
+      "sector": {
+       "evidence_refs": [
+        "SYNTHETIC:SOURCE"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "reasons": [],
+       "status": "CONFIRMED"
+      },
+      "series_gaps": []
+     }
+    ],
+    "counts": {
+     "active_mappings": 0,
+     "company_rows": 2,
+     "linked_companies": 0,
+     "unique_series": 0
+    },
+    "data_kind": "SYNTHETIC",
+    "diagnostics": [
+     {
+      "mapping_id": "SYN:MAP",
+      "reasons": [
+       "OFFICIAL_DEFINITION_NOT_HELD"
+      ],
+      "revision_id": "1"
+     }
+    ],
+    "evidence": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_id": "SYN:DEFINITION",
+      "locator": "table 1",
+      "published_at": "2017-01-04",
+      "ref": "https://example.invalid/source-definition",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_definition": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "VERIFIED"
+     }
+    ],
+    "historical_pit_certified": false,
+    "input_hashes": {
+     "cache": "1ad209dfb46e49612cd2790504ff30adafbbdaa43af4ee652c6c8969dd171c28",
+     "mappings": "18b6c2aa85fa3034072c8b5a1bbfb9d759f15c9ffe67a2b1658db1685f7284be",
+     "view": "17c86460bcea52086c658d4725345d0570f02902904d2ee002add170c5ff3c43"
+    },
+    "knowledge_as_of": "2017-01-06T23:00:00Z",
+    "macro_query_at": "2017-01-06T21:00:00Z",
+    "mappings": [
+     {
+      "acquired_at": "2017-01-05T13:00:00Z",
+      "allocation_weights": null,
+      "available_at": "2017-01-05T12:00:00Z",
+      "evidence_refs": [
+       "SYN:DEFINITION"
+      ],
+      "excludes": [
+       "Other source activities"
+      ],
+      "includes": [
+       "Published source scope"
+      ],
+      "mapping_id": "SYN:MAP",
+      "query_reasons": [
+       "OFFICIAL_DEFINITION_NOT_HELD"
+      ],
+      "query_status": "UNKNOWN",
+      "relation": "UNKNOWN",
+      "reviewed_at": "2017-01-06T20:00:00Z",
+      "revision_id": "1",
+      "series_ids": [
+       "SYN:SERIES"
+      ],
+      "source": {
+       "code": "S01",
+       "name": "Synthetic source industry",
+       "system": "SYN_STAT",
+       "version": "2017"
+      },
+      "status": "UNKNOWN",
+      "supersedes": null,
+      "targets": [],
+      "unknown_reasons": [
+       "OFFICIAL_DEFINITION_NOT_HELD"
+      ],
+      "valid_from": "2017-01-01",
+      "valid_to": "2018-01-01"
+     }
+    ],
+    "observations": {},
+    "official_results_changed": false,
+    "probabilities": null,
+    "schema_version": "company-industry-macro-query/1",
+    "sector_returns": null,
+    "taxonomy": {
+     "basis": "BOOK_BASED_SYSTEM_CLASSIFICATION_NOT_GICS_SIC_OR_ETF",
+     "boundary_policy": {
+      "approved_date": "2026-11-08",
+      "automatic_company_assignment": false,
+      "book_direct_claim": false,
+      "source": "owner:2026-11-08:common-classification-boundaries",
+      "version": "common-sector-boundaries/2026-11-08.1"
+     },
+     "classification_effect": "NONE_DISPLAY_DEFINITION_ONLY",
+     "industries": [
+      {
+       "id": "beverages",
+       "name": "음료",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "beverages",
+       "source_parent": "food_tobacco",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "computers",
+       "name": "컴퓨터",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "computers",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "food_retail",
+       "name": "식품 소매",
+       "parent_sector": "CONSUMER_STAPLES",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "food_retail",
+       "source_parent": "wholesale_retail",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "health_services",
+       "name": "의료 서비스",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "health_services",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "medical_devices",
+       "name": "의료기기",
+       "parent_sector": "HEALTH_CARE",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "medical_devices",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "semiconductors",
+       "name": "반도체",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "semiconductors",
+       "source_parent": "manufacturing_industrial_tech",
+       "status": "RESEARCH_CORRESPONDENCE"
+      },
+      {
+       "id": "software",
+       "name": "소프트웨어",
+       "parent_sector": "INFORMATION_TECHNOLOGY",
+       "source_dictionary": "sic_industry_groups/v0",
+       "source_id": "software",
+       "source_parent": "services_software_health",
+       "status": "RESEARCH_CORRESPONDENCE"
+      }
+     ],
+     "name": "투자시스템 공통 10섹터",
+     "record_dictionary_versions": [
+      "common-industry-dictionary/1",
+      "common-industry-dictionary/2"
+     ],
+     "schema_version": "common-classification-definition/1",
+     "sectors": [
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "선택적 소비 관련 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "필수소비",
+        "주 사업 미확인 플랫폼·복합사업"
+       ],
+       "id": "CONSUMER_DISCRETIONARY",
+       "includes": [
+        "선택적 소비재·서비스",
+        "근거가 확인된 미디어·오락"
+       ],
+       "name": "경기소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "반복적인 생활 필수 소비 제품·서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "선택적 소비 사업",
+        "통계기관 식품 코드 전체의 자동 대응"
+       ],
+       "id": "CONSUMER_STAPLES",
+       "includes": [
+        "식품·음료",
+        "필수 생활용품·식품 소매"
+       ],
+       "name": "필수소비재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "에너지 자원의 생산·정제·관련 서비스 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "전력·가스 공급 유틸리티의 자동 포함"
+       ],
+       "id": "ENERGY",
+       "includes": [
+        "석유·가스 생산·정제",
+        "사업 근거가 있는 에너지 서비스"
+       ],
+       "name": "에너지",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "금융 서비스와 승인된 REIT 상위 배치",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "모든 부동산 기업의 REIT 간주",
+        "관리의료의 금융 자동 배치"
+       ],
+       "id": "FINANCIALS",
+       "includes": [
+        "은행·보험·금융 서비스",
+        "REIT: 별도 회계모형"
+       ],
+       "name": "금융",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "의료 제품·서비스와 확인된 건강보험·관리의료",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "복합기업의 근거 없는 일괄 배치",
+        "회계모형 GENERAL 자동 부여"
+       ],
+       "id": "HEALTH_CARE",
+       "includes": [
+        "의약·의료기기·의료서비스",
+        "주 사업 확인된 건강보험·관리의료"
+       ],
+       "name": "헬스케어",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "기업·산업 활동용 자본재와 산업 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "제조업 통계 전체의 자동 대응",
+        "에너지·소재·IT 제조의 무차별 포함"
+       ],
+       "id": "INDUSTRIALS",
+       "includes": [
+        "자본재·산업 서비스",
+        "근거 확인된 운송·건설 관련 사업"
+       ],
+       "name": "산업재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "정보 처리 기술 제품·소프트웨어·관련 서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "광고·플랫폼이라는 명칭만의 자동 포함",
+        "통신망 서비스"
+       ],
+       "id": "INFORMATION_TECHNOLOGY",
+       "includes": [
+        "컴퓨터·반도체·소프트웨어",
+        "근거 확인된 정보기술 서비스"
+       ],
+       "name": "정보기술",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "원재료·기초 소재 공급의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "상품 용도와 주 사업이 미확인인 복합 제조업"
+       ],
+       "id": "MATERIALS",
+       "includes": [
+        "화학·금속·종이 등 근거 확인 소재 사업"
+       ],
+       "name": "소재",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "실제 통신망과 유무선 통신서비스의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "미디어·오락의 자동 포함",
+        "현대 Communication Services·XLC 범위 복사"
+       ],
+       "id": "TELECOMMUNICATIONS",
+       "includes": [
+        "통신망·유선·무선 통신서비스"
+       ],
+       "name": "통신서비스",
+       "version": "investment-system-common-10-sector/1"
+      },
+      {
+       "automatic_company_assignment": false,
+       "book_direct_claim": false,
+       "definition": "전력·가스·수도 등 공급 유틸리티의 주 사업",
+       "evidence_refs": [
+        "owner:2026-11-08:common-taxonomy-and-coverage",
+        "owner:2026-11-08:common-classification-boundaries"
+       ],
+       "excludes": [
+        "에너지 자원 생산·정제의 자동 포함"
+       ],
+       "id": "UTILITIES",
+       "includes": [
+        "전력·가스·수도 공급 유틸리티"
+       ],
+       "name": "유틸리티",
+       "version": "investment-system-common-10-sector/1"
+      }
+     ],
+     "separate_dimensions": [
+      "common_sector",
+      "common_industry",
+      "source_sic",
+      "accounting_model",
+      "tags",
+      "etf_benchmark"
+     ],
+     "version": "investment-system-common-10-sector/1"
+    }
+   }
+  }
+ ],
+ "data_kind": "SYNTHETIC",
+ "producer": "research/common_classification/macro_evidence.py (Codex #525 731e4682)",
+ "schema_version": "industry-macro-main-fixture/1"
+}

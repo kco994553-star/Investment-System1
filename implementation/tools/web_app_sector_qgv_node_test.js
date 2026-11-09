@@ -106,11 +106,11 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.deepEqual(eng.calls.filter((c) => c.op === 'preview').map((c) => c.input_id).slice(-1), ['NORMAL']);
     });
 
-    await ok('gate: 관문 통과 / 가치(V) 제외 / 판정 불가 are the engine\'s; 판정 불가 has no final score and no rank', async () => {
+    await ok('gate: 관문 통과 / V 총점 반영 제외 / 판정 불가 are the engine\'s; 판정 불가 has no final score and no rank', async () => {
       const rows = {};
       for (const k of ['NORMAL', 'GATE_EXCLUDED', 'GATE_UNKNOWN']) { const r = await ask('preview', { config: ctx.default_config, before_config: ctx.default_config, input_id: k }, ctx); assert.equal(r.chk.ok, true); rows[k] = r.res.after.result_rows[0]; }
       assert.equal(S.text(S.GATE_TEXT, rows.NORMAL.gate_status), '관문 통과');
-      assert.equal(S.text(S.GATE_TEXT, rows.GATE_EXCLUDED.gate_status), '관문: 가치(V) 제외 · 남은 축 비례 재배분'); assert.equal(rows.GATE_EXCLUDED.post_gate_axis_weights.V, 0);
+      assert.equal(S.text(S.GATE_TEXT, rows.GATE_EXCLUDED.gate_status), '관문: V 총점 반영 제외 · 남은 축 비례 재배분 · 기업 탈락·자료 미수집 아님'); assert.equal(rows.GATE_EXCLUDED.post_gate_axis_weights.V, 0);
       assert.equal(rows.GATE_UNKNOWN.total, null); assert.equal(rows.GATE_UNKNOWN.rank, null);
       assert.equal(S.text(S.STATUS_TEXT, rows.GATE_UNKNOWN.status), '관문 판정 불가 · 최종 점수·순위 없음');
     });

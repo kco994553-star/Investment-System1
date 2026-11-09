@@ -164,7 +164,9 @@ def calculate_factor(variant,inputs,ctx):
         result['raw_components_available']=bool(parts) and all(isinstance(x,dict) and x.get('value') is not None for x in parts)
         return result
     if f['calculator_status']!='IMPLEMENTED': return fail('CALCULATOR_PENDING')
-    if ctx.get('accounting_template') not in f['scope']: return fail('NOT_APPLICABLE')
+    raw_only=(ctx.get('accounting_template') is None and
+              ctx.get('raw_only_accounting_unconfirmed') is True and f['axis'] in ('Q','G'))
+    if ctx.get('accounting_template') not in f['scope'] and not raw_only: return fail('NOT_APPLICABLE')
     if any(not isinstance(x,dict) or x.get('value') is None for x in parts): return fail('MISSING_INPUT')
     try:
         cutoff=timestamp(ctx['as_of']);valuation=day(ctx['valuation_date'])

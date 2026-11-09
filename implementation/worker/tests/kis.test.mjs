@@ -225,7 +225,8 @@ test('technical, macro and news routes: own path and schema only; macro and news
 // The held common classification bundle (owner 2026-11-08): one route, five parts, each its own file and Codex schema.
 test('classification: ?part= reads classification/<part>.json byte for byte; each part only accepts its own schema', async () => {
   const PARTS = { view: 'common-classification-view/1', technical: 'common-classification-technical/1', macro: 'common-classification-macro/1',
-    qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1', expanded_summary: 'held-expanded-classification-summary/1' };
+    qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1', expanded_summary: 'held-expanded-classification-summary/1',
+    industry_macro: 'company-industry-macro-query/1' };
   for (const [part, schema] of Object.entries(PARTS)) {
     // the writer's spacing, kept as received
     const text = '{"schema_version": "' + schema + '", "rows": []}', s = setup({ github: () => new Response(text, { status: 200 }) });
@@ -255,6 +256,44 @@ test('classification: the part is checked before any read; no owner proof is ref
   const u = setup({ env: { PRIVATE_REPO_READ_TOKEN: undefined } }), t = await u.run('/kis/classification?part=view');
   assert.equal(t.status, 503); assert.equal(githubCalls(u).length, 0);
   assert.match(await body(t), /TOKEN_UNSET/);
+});
+
+// The held issuer delivery (owner 2026-11-09, Codex #524): manifest / index / coverage and one detail shard, under classification/expanded/.
+test('classification expanded: manifest, index, coverage and one shard read their own file; a shard must name itself', async () => {
+  const FILES = { expanded_manifest: ['manifest.json', 'held-issuer-sharded/1'], expanded_index: ['expanded-index.json', 'held-issuer-search/1'],
+    expanded_coverage: ['coverage.json', 'retained-default-coverage/1'], input_repair: ['input-repair-comparison.json', 'sector-qgv-input-repair-comparison/1'] };
+  for (const [part, [file, schema]] of Object.entries(FILES)) {
+    const text = '{"schema_version":"' + schema + '","rows":[]}', s = setup({ github: () => new Response(text, { status: 200 }) });
+    const r = await s.run('/kis/classification?part=' + part);
+    assert.equal(r.status, 200, part); assert.equal(await body(r), text); noStore(r);
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/expanded/' + file + '?ref=data');
+    const w = await setup({ github: () => new Response('{"schema_version":"held-issuer-shard/1"}', { status: 200 }) }).run('/kis/classification?part=' + part);
+    assert.equal(w.status, 502, part + ' with a shard file');
+  }
+  const shard = '{"schema_version":"held-issuer-shard/1","shard_key":"5a","issuers":[]}';
+  const s = setup({ github: () => new Response(shard, { status: 200 }) }), r = await s.run('/kis/classification?part=expanded_detail&shard=5a');
+  assert.equal(r.status, 200); assert.equal(await body(r), shard); noStore(r);
+  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/expanded/expanded-detail/5a.json?ref=data');
+  // another shard's file under this name is refused, never served
+  const other = await setup({ github: () => new Response(shard, { status: 200 }) }).run('/kis/classification?part=expanded_detail&shard=5b');
+  assert.equal(other.status, 502);
+  // too large → refused (the 2 MiB limit is unchanged)
+  const big = await setup({ github: () => new Response(shard, { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=expanded_detail&shard=5a');
+  assert.equal(big.status, 502); assert.match(await body(big), /TOO_LARGE/);
+  assert.equal((await setup({ github: () => new Response('{}', { status: 404 }) }).run('/kis/classification?part=expanded_detail&shard=00')).status, 404);
+});
+
+test('classification expanded: only ?part=expanded_detail&shard=<2 lowercase hex>; nothing else reaches a read', async () => {
+  for (const route of ['/kis/classification?part=expanded_detail', '/kis/classification?part=expanded_detail&shard=5', '/kis/classification?part=expanded_detail&shard=5A',
+    '/kis/classification?part=expanded_detail&shard=5ab', '/kis/classification?part=expanded_detail&shard=..', '/kis/classification?part=expanded_detail&shard=5a&x=1',
+    '/kis/classification?shard=5a&part=expanded_detail', '/kis/classification?part=expanded_index&shard=5a', '/kis/classification?part=view&shard=5a',
+    '/kis/classification?part=expanded_detail&shard=5a#x', '/kis/classification?part=expanded_detail&shard=%35a', '/kis/classification?part=expanded_detail/5a',
+    '/kis/classification?part=expanded']) {
+    const s = setup(), r = await s.run(route);
+    assert.ok([400, 404].includes(r.status), route + ' ' + r.status); assert.equal(githubCalls(s).length, 0, route);
+  }
+  const s = setup({ authStatus: 400 }), r = await s.run('/kis/classification?part=expanded_detail&shard=5a');
+  assert.equal(r.status, 403); assert.equal(githubCalls(s).length, 0);
 });
 
 test('preflight: GET with the authorization header only, no read and no Google call', async () => {

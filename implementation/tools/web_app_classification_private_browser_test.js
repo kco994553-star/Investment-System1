@@ -54,6 +54,20 @@ const BUNDLE = (() => { const b = JSON.parse(JSON.stringify(X.uBundle())), r = b
   b.expanded_summary.calculation_counts = X.syntheticCounts(b.view, b.expanded_summary, { opQ: 7, opG: 17, heldGate: 27, catGate: 47 });
   return b; })();
 const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
+// The held issuer delivery (Codex #524 shape, synthetic) tied to this bundle's expanded summary as served (its bytes and held scope).
+const SUMMARY_TEXT = JSON.stringify(BUNDLE.expanded_summary);
+// The first issuer names one Universe504 company of the public list (its code row links the company page) and one unknown id.
+const LINKED_CODE = BUNDLE.view.rows[0].company_id;
+// Codex #527 comparison outputs (Codex's comparison() on Codex's synthetic input). The synthetic coverage's operating scope is set to
+// name the peer_shift result (its input hash and row count) and to carry all three gate decisions: a synthetic pairing for the screen.
+const REPAIR = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/input_repair_comparison/outputs.json'), 'utf8'));
+const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.id === id).output));
+const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
+  coverageEdit: (c) => { const o = c.scopes.operating, x = repairCase('peer_shift');
+    o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
+    o.context = { ...(o.context || {}), valuation_date: x.valuation_date, population: { ...((o.context || {}).population || {}), denominator: x.denominator },
+      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: x.after_input_hash } }; } });
+const EXF = { expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' };
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
 
@@ -79,8 +93,11 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         if (early) { w.refused = (w.refused || 0) + 1; await route.fulfill({ status: 429, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ error: { code: 'RATE_LIMITED' } }) }); return; }
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
-        const part = url.searchParams.get('part'), a = (w.answers[part] || (() => ({ status: 200, body: BUNDLE[part] })))();
-        await route.fulfill({ status: a.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: JSON.stringify(a.body) }); return;
+        const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part;
+        const file = EXF[part] || (part === 'expanded_detail' ? 'expanded-detail/' + shard + '.json' : null);
+        const a = (w.answers[key] || (() => file ? (DELIVERY.files[file] === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: DELIVERY.files[file] })
+          : { status: 200, body: BUNDLE[part], text: part === 'expanded_summary' ? SUMMARY_TEXT : undefined }))();
+        await route.fulfill({ status: a.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: a.text !== undefined ? a.text : JSON.stringify(a.body) }); return;
       }
       w.unexpected.push(req.method() + ' ' + url.origin + url.pathname); await route.abort();
     });
@@ -161,16 +178,17 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await count(page, '[data-cc-population=EXPANDED_SAMPLE]'), 1);
       const ex = await text(page, '[data-cc-population=EXPANDED_SAMPLE]');
       assert.match(ex, /^확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음/);
-      assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 섹터 77/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
+      assert.match(ex, /관측 카탈로그 전체 · 발행사 777 · 티커 관측 977 · 분류 단계: 섹터 77.* · 계산 단계: Q .*\(분류 수는 계산 완료 수가 아님\)/); assert.match(ex, /보유 재무 하위표본 · 발행사 177/);
       assert.match(ex, /전체시장 분모·커버리지 미산출 · 새 증권 ID 0/); assert.match(ex, /발행사 행 ID는 증권 ID가 아님/);
       assert.match(ex, /38일 전 · 평가일 상장 명부 아님/);
       const rowsN = BUNDLE.view.rows.length;
       assert.equal(await page.locator('[data-cc-calc=operating]').getAttribute('data-cc-calc-state'), 'OK');
-      assert.match(await text(page, '[data-cc-calc=operating]'), new RegExp('Q 산출 7/' + rowsN + ' · G 산출 17/' + rowsN + ' · 평가일 ' + BUNDLE.view.valuation_date + ' · 원결과 집계\\(재계산 없음\\)'), phase + ': the 504 Q / G counts from the delivered summary');
+      assert.match(await text(page, '[data-cc-calc=operating]'), new RegExp('Q 산출 7/' + rowsN + ' · G 산출 17/' + rowsN + ' · V 산출 \\S+ · 세 축 동시 \\S+ · 최종 총점 \\S+ · 평가일 ' + BUNDLE.view.valuation_date + ' · 원결과 집계\\(재계산 없음\\).* 위 분류 확인 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 \\+ 최종 총점 기준'), phase + ': the 504 Q / G counts from the delivered summary');
       assert.match(await text(page, '[data-cc-expanded-gate=catalog]'), /^공식 Q 관문 입력 연결 47\/777 · 관측 카탈로그 범위 · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값\(확장 표본 Q 아님\)$/);
       assert.match(await text(page, '[data-cc-expanded-gate=held_financial_subsample]'), /^공식 Q 관문 입력 연결 27\/177 · 보유 재무 하위표본 범위 · 관문 통과·새 섹터 Q 산출 아님/);
       assert.equal(await count(page, '[data-cc-population=OPERATING_504] [data-cc-expanded-gate]'), 0, phase + ': the gate input lines stay in the expanded block');
-      assert.match(ex, /확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨/);
+      assert.equal(await count(page, '[data-cc-population=EXPANDED_SAMPLE] [data-held-browse] [data-held-open]'), 1, phase + ': the held issuer search waits for a click');
+      assert.equal(await count(page, '[data-cc-expanded-rows]'), 0);
       // 7.1.2 화면 문맥 (queue item 8): the counts line links the prompt screen, which shows this bundle's date, population and
       // missing counts as a private display only — no field gets a value and the copied text never carries them.
       {
@@ -197,6 +215,138 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.equal(await text(page, '[data-cc-count=rows]'), '기업 행 ' + BUNDLE.view.rows.length + '개(원래 분모 그대로)', phase + ': the 504 count never takes the expanded issuers');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the panel open (long producer codes wrap)');
       ok(tag + ' one click reads six parts 5 s apart; panel words, date, hash, counts; 운영504 and the expanded sample apart; the company block repaints (PRIVATE)');
+
+      // 확장 발행사 찾기 (owner 2026-11-09, Codex #524): index first (three reads 5 s apart), then one shard per chosen issuer.
+      phase = tag + ' held browse';
+      {
+        const held = BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, N = held.population.denominator;
+        const logAt = w.log.length;
+        if (tag === '390') {
+          // A delivery that names another summary is refused whole; the button stays for another try.
+          const m = JSON.parse(DELIVERY.files['manifest.json']); m.identity.summary.sha256 = 'f'.repeat(64);
+          // re-sealed (identity_hash recomputed), so the refusal is the anchor itself, not a damaged manifest
+          m.identity_hash = require('node:crypto').createHash('sha256').update(require('../src/investment_system/product/web_app/expanded-issuers.js').canonical(m.identity)).digest('hex');
+          w.answers.expanded_manifest = () => ({ status: 200, text: JSON.stringify(m) });
+          await page.locator('[data-held-open]').click();
+          await page.locator('[data-held-state=ERROR]').waitFor({ timeout: 40000 });
+          assert.match(await text(page, '[data-held-state]'), /확장 발행사 묶음을 쓰지 않음 · .*SUMMARY_MISMATCH/);
+          assert.equal(await count(page, '[data-held-query]'), 0, phase + ': no search over a refused delivery');
+          delete w.answers.expanded_manifest; await page.waitForTimeout(5200);
+        }
+        const reads0 = w.log.length;
+        await page.locator('[data-held-open]').click();
+        await page.locator('[data-held-state=READY]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(reads0).map((x) => x.path), ['/kis/classification?part=expanded_manifest', '/kis/classification?part=expanded_index', '/kis/classification?part=expanded_coverage']);
+        assert.match(await text(page, '[data-held-state]'), new RegExp('^확장 발행사 ' + N + '개 · 평가일 ' + held.valuation_date + ' · 합성 자료 · 시험용 · 목록표·색인·커버리지 검증됨$'));
+        assert.match(await text(page, '[data-held-meta]'), new RegExp('발행사 ' + N + '개 · 운영504와 합치지 않음'));
+        // Two issuers in one shard (the second needs no read), one in another shard.
+        const byShard = {}; for (const id of DELIVERY.ids) (byShard[DELIVERY.shardOf(id)] = byShard[DELIVERY.shardOf(id)] || []).push(id);
+        const pair = Object.values(byShard).find((v) => v.length >= 2), [a1, a2] = pair, other = DELIVERY.ids.find((id) => ![a1, DELIVERY.ids[0]].map(DELIVERY.shardOf).includes(DELIVERY.shardOf(id)));
+        const pick = async (id) => { await page.locator('[data-held-query]').fill(id); await page.locator('[data-held-result="' + id + '"] button').click(); };
+        const r1 = w.log.length; await pick(a1);
+        await page.locator('[data-held-detail="' + a1 + '"]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(r1).map((x) => x.path), ['/kis/classification?part=expanded_detail&shard=' + DELIVERY.shardOf(a1)], phase + ': one shard read, never the whole delivery');
+        const d1 = await text(page, '[data-held-detail="' + a1 + '"]');
+        const even = DELIVERY.ids.indexOf(a1) % 2 === 0;
+        assert.match(d1, even ? /Q 0 · G 50 · V 미산출/ : /Q 미산출 · G 20 · V 미산출/, phase + ': 0 is a value, null is 미산출');
+        assert.match(d1, /카탈로그 관측 티커 · 상장 증명·증권 ID 아님/); assert.match(d1, /총점 없음 · 0으로 채우지 않음/);
+        assert.match(d1, /순위 없음 · 비교집단 = 보관 카탈로그 점수 모집단\(전체시장 아님\)/); assert.match(d1, /관문 통과·새 Q 점수 아님/);
+        assert.match(d1, /가격·기술 연결 안 됨/);
+        assert.equal(await page.locator('[data-held-detail="' + a1 + '"] [data-held-evidence]').count(), 1);
+        await page.waitForTimeout(5200);
+        // 검색 → 기업 상세: the first issuer's code rows (a Universe504 code links its page; an unknown id stays text).
+        const first = DELIVERY.ids[0];
+        await page.locator('[data-held-query]').fill(first); await page.locator('[data-held-result="' + first + '"] button').click();
+        await page.locator('[data-held-detail="' + first + '"]').waitFor({ timeout: 20000 });
+        const links = await page.locator('[data-held-detail="' + first + '"] [data-held-company]').evaluateAll((n) => n.map((x) => [x.dataset.heldCompany, x.getAttribute('href')]));
+        assert.deepEqual(links.map((x) => x[0]), [LINKED_CODE], phase + ': only the listed code links');
+        assert.equal(links[0][1], '#/company/' + encodeURIComponent(LINKED_CODE));
+        assert.match(await text(page, '[data-held-detail="' + first + '"] [data-held-code-rows]'), /ROW:NOT-IN-LIST/);
+        await page.waitForTimeout(5200);
+        const r2 = w.log.length; await pick(a2);
+        await page.locator('[data-held-detail="' + a2 + '"]').waitFor({ timeout: 20000 });
+        assert.equal(w.log.length, r2, phase + ': a shard already read and checked is not read again');
+        // A changed shard is that issuer's 연결 오류; the index and the search stay.
+        const bad = DELIVERY.files['expanded-detail/' + DELIVERY.shardOf(other) + '.json'].replace('SYNTHETIC', 'SYNTHETIc');
+        w.answers['expanded_detail/' + DELIVERY.shardOf(other)] = () => ({ status: 200, text: bad });
+        await pick(other);
+        await page.locator('[data-held-detail-error]').waitFor({ timeout: 20000 });
+        assert.equal(await page.locator('[data-held-detail-error]').getAttribute('data-held-detail-error'), 'DELIVERY_HASH_MISMATCH');
+        assert.equal(await count(page, '[data-held-result="' + other + '"]'), 1, phase + ': the search stays');
+        delete w.answers['expanded_detail/' + DELIVERY.shardOf(other)];
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with a detail open');
+        // Coverage by stage (owner 2026-11-09): pipeline order, two units for 운영504, gate decisions apart, VALUE_EXCLUDED is not a loss.
+        await page.locator('[data-held-coverage] > summary').click();
+        const opStages = await page.locator('[data-held-scope=operating] [data-held-stages="issuers:axes"] [data-held-stage]').evaluateAll((n) => n.map((x) => x.dataset.heldStage));
+        assert.deepEqual(opStages, ['sector', 'accounting', 'required_components_present', 'any_raw', 'all_default_raw', 'any_factor_scores', 'all_default_factor_scores', 'Q', 'G', 'V', 'joint'], phase + ': stages in order up to 세 축 동시');
+        assert.deepEqual(await page.locator('[data-held-scope=operating] [data-held-stages="issuers:total"] [data-held-stage]').evaluateAll((n) => n.map((x) => x.dataset.heldStage)), ['pre_gate_total', 'total', 'all_axes_and_total']);
+        assert.equal(await count(page, '[data-held-scope=operating] [data-held-stages="code_rows:axes"]'), 1, phase + ': code rows are their own unit');
+        assert.deepEqual(await page.locator('[data-held-gate=operating] [data-held-gate-decision]').evaluateAll((n) => n.map((x) => x.dataset.heldGateDecision)), ['PASS', 'UNKNOWN', 'VALUE_EXCLUDED']);
+        assert.match(await text(page, '[data-held-gate=operating] [data-held-gate-decision=VALUE_EXCLUDED]'), /^V 총점 반영 제외\(VALUE_EXCLUDED\) · 기업 탈락·자료 미수집 아님 1\/2$/);
+        assert.match(await text(page, '[data-held-gate=operating] [data-held-gate-decision=UNKNOWN]'), /^관문 판정 불가\(UNKNOWN\) · 최종 총점·순위 없음 0\/2$/, phase + ': 0 stays 0');
+        assert.ok(!/^관문/m.test((await page.locator('[data-held-causes=operating] li').allTextContents()).join('\n')), phase + ': the merged gate cause is not a loss cause');
+        assert.match(await text(page, '[data-held-target=operating]'), /^95% 목표\(원래 모집단\) · 기준 Q·G·V 세 축 동시 \+ 최종 총점 · 운영504 고유 발행사/);
+        assert.match(await text(page, '[data-held-coverage]'), /분류 확인 수나 원지표 수는 QGV 계산 완료율이 아님/);
+        // 입력 연결 수정 전후 비교 (Codex #527): keyboard; a comparison for another result is refused and the bundle stays; then the
+        // comparison for this result; nothing stored.
+        const store0 = await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]);
+        w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_minimum') });
+        const q0 = w.log.length; await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-repair-state=ERROR]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(q0).map((x) => x.path), ['/kis/classification?part=input_repair']);
+        assert.match(await text(page, '[data-repair-state]'), /지금 받은 결과와 다른 결과의 비교입니다 · COMPARISON_RESULT_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-held-query]'), 1, phase + ': the bundle and search stay');
+        assert.equal(await count(page, '[data-repair-axis]'), 0);
+        await page.waitForTimeout(5200);
+        w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_shift') });
+        await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-repair-state=READY]').waitFor({ timeout: 20000 });
+        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 운영504 코드 행$/);
+        assert.match(await text(page, '[data-repair-not]'), /요소·비중 변경 아님 · 분류 변경 아님 · 설정 변경 아님/);
+        assert.equal(await text(page, '[data-repair-axis=Q]'), 'Q · 전 21 → 후 24 · 새로 산출 +3 · 산출 사라짐 0 · 기존 값 바뀜 20 / 24');
+        assert.match(await text(page, '[data-repair-shift]'), /기업 실적 개선·전략 성과 아님$/);
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with coverage and comparison open');
+        delete w.answers.input_repair;
+        await page.waitForTimeout(5200);
+        await page.waitForTimeout(5200);
+        assert.ok(w.log.length > logAt);
+      }
+      ok(tag + ' held browse: index (3 reads) checked against the summary; search → one shard per issuer; a cached shard is not read again; a changed shard is that detail only');
+
+      // 공통 산업 → 매크로 근거 (owner 2026-11-09, Codex #525): one click, one read; refused when made from another classification.
+      phase = tag + ' industry macro';
+      {
+        const IM = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/industry_macro_main/outputs.json'), 'utf8'));
+        const base = IM.cases.find((c) => c.id === 'base').output;
+        if (tag === '1440') {
+          w.answers.industry_macro = () => ({ status: 200, body: base });
+          await page.locator('[data-im-open]').click();
+          await page.locator('[data-im-state=ERROR]').waitFor({ timeout: 20000 });
+          assert.match(await text(page, '[data-im-state]'), /다른 분류로 만든 조회입니다 · CLASSIFICATION_CONTEXT_MISMATCH/);
+          await page.waitForTimeout(5200);
+        }
+        const sel = await page.evaluate(() => { const x = window.IS2.selection.get(); return x && x.id; });
+        const q = JSON.parse(JSON.stringify(base));
+        q.classification_context = { valuation_date: BUNDLE.view.valuation_date, classification_hash: BUNDLE.view.classification_hash,
+          dictionary_version: BUNDLE.view.dictionary_version, mapping_version: BUNDLE.view.mapping_version };
+        q.companies[0].company_id = sel;
+        w.answers.industry_macro = () => ({ status: 200, body: q });
+        const r0 = w.log.length;
+        await page.locator('[data-im-open]').click();
+        await page.locator('[data-im-state=READY]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(r0).map((x) => x.path), ['/kis/classification?part=industry_macro']);
+        assert.match(await text(page, '[data-im-state]'), /^기업 행 2 · 산업 연결 2 · 활성 대응 1 · 계열 1 · 합성 자료 · 시험용$/);
+        assert.match(await text(page, '[data-im-not]'), /산업 연결·국면 판정 아님/);
+        assert.match(await text(page, '[data-im-keeps]'), /기존 매크로 현재 조회는 그대로/);
+        assert.equal(await page.locator('[data-im-company]').getAttribute('data-im-status'), 'LINKED');
+        assert.match(await text(page, '[data-im-series]'), /SYN:SERIES · 0 hours/, phase + ': 0 stays 0');
+        assert.match(await text(page, '[data-im-mappings]'), /복수 산업 대응\(비중 없음 · 나누거나 합치지 않음\)/);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow');
+        delete w.answers.industry_macro;
+        await page.waitForTimeout(5200);
+      }
+      ok(tag + ' industry macro: one read; another classification refused; summary, the selected company\'s link, series 0 kept, not a regime');
 
       phase = tag + ' same bundle';
       const before = w.log.length;

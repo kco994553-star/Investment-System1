@@ -1,0 +1,70 @@
+# 일반 연구 선정·비중의 Lab 인수 입력
+
+#473의 `validation.vertical_slice`와 #485 판독기 계약을 재사용한다. 선정·비중·공식 산식은 유지하고 API 설명 필드를 추가했다.
+선정 계산 기준 f14262a6a9f1583e81c53f642c4384141f2bb1af, 최신 직접 대조 소비자는 #522 cbd1da52e4c6d5da9c6fed080412daeaf5df456b다.
+초기 합성 인계 이후 Main의 누락 필드 요청을 실제 API 부가 계약으로 연결했다. 아래 마지막 절의 22개 검사는 이 변경의 영향을 검증한 것이다.
+
+`implementation/tests/fixtures/research_selection_handoff_v1_synthetic.json`의 cases[].expected는
+기존 `researchScope.validateSelection` 입력이다. 정상·빈 결과·동점·상위% 경계 위/아래·종목 부족·부분결측 7사례.
+각 경우 기존 rank_cross_section→select_provisional→to_portfolio를 실행하고 저장 설정을 다시 적용한 selected가 같은지 대사했다.
+원래 population/분모/랭킹, 선택 사유, 입력·저장 설정 SHA, 실행한 엔진 소스 SHA를 sidecar로 제공한다.
+이 SHA는 fixture provenance이며 기존 엔진 cache_key라고 부르지 않는다. outcomes/성과는 만들지 않았다.
+
+기존 규칙:
+- 적격: Q와 G 존재. V 결손 허용. 정책 지정 시 수치 유한성 검사.
+- 기본 미지정은 legacy 순서·전부. 명시 정책은 Q/G/V 내림차순, 동점 company_id 오름차순.
+- all 전부, top_n min(적격,N), top_percent floor(적격×Decimal(str(percent))/100).
+- 빈 선정은 portfolio/weights null, 실제 0종목. 부족종목은 임의 보충하지 않는다.
+- 일반 연구는 균등 비중·기본 cash0, 별도 종목 상한 없음. TARGET/N10/N15/N20·책 고정 규칙과 별도다.
+- 입력 키 company_id는 기존 발행사/기업 집합이어야 한다. 서로 다른 증권 코드가 같은 발행사인지 이 엔진이 발견하지 않는다.
+  확인된 동일 발행사의 복수 회사 ID는 현행 엔진대로 각각 유지하며 selection_details에 중복 관계를 명시한다.
+  이는 발행사 통합·대표 증권·추가 상한 정책의 검증 완료를 뜻하지 않는다.
+
+## 새 소비자 차이 — Main 수정
+
+3개 적격, top_percent=33.3333334: 생산자는 1개, 판독기는 `SELECTED_COUNT_MISMATCH`로 거부한다.
+`Math.round(value*1e6)`가 저장 설정의 소수 정밀도를 바꾸기 때문이다. 바로 아래 33.3333333은 양쪽0개다.
+7사례 중6수락·1거부. Node 판독 직접 실행이며 브라우저 통합 확인이 아니다.
+수정 위치: #485 `product/web_app/research-scope.js` validateSelection의 expect 계산.
+Main은 숫자를 임의 반올림하지 말고, 생산자가 지원하는 Decimal(str(percent))의 floor 의미와 맞춰야 한다.
+이 수정 때문에 Codex 선정 규칙이나 저장 설정을 축소하지 않는다. 동일 fixture로 소비자 수정본만 재검증한다.
+최신 #522 cbd1da52에는 판독기가 포함됐으며 같은 경계 오류가 직접 Node 대조에서 재현된다. 실제 브라우저 통합은 Main 확인 범위다.
+
+재현: fixture.cases[].expected를 require('research-scope.js').validateSelection에 전달한다.
+기존 시험 진입점: `implementation/tests/test_vertical_slice.py`, `test_vertical_slice_from_store.py`.
+생산자 선정 산식의 결함은 확인되지 않았다. 부가 계약 연결과 관련 검사 외의 공식 포트폴리오·전략 성과는 실행하지 않았다.
+
+## Main 6721478474 회신 반영 — 실제 API 부가 계약
+
+`run_vertical_slice` / `run_vertical_slice_from_store` / walk-forward의 각 step에
+`selection_details: research-selection-details/1`을 제공한다. 기존 5개 판독 필드와 선정·비중은 그대로다.
+새 helper는 순위/선정/비중을 계산하지 않고 이미 나온 결과를 설명한다.
+
+- original_population: 실제 요청한 기업 ID·분모와 원래 universe/가용시각/source_vintage.
+- rows: Q_MISSING, G_MISSING, OUTSIDE_SELECTION_LIMIT; 원래 순위·선정 여부·발행사 ID(선언된 CIK).
+- portfolio: 기존 weights/cash_weight/weight_sum, 0종목은 NOT_FORMED/cash null. 전액 현금으로 새 포트폴리오를 만들지 않는다.
+- issuers: 미연결 ID·동일 발행사 그룹. 기존 규칙에는 발행사 통합/상한이 없어 별도 회사 ID를 유지하고 그 상태를 명시한다.
+  이 결과는 증권 신원·대표 증권 확인이 아니다. 추가 발행사 상한/집계 규칙이 필요할 때만 별도 결정한다.
+- reproduction: 설정·원래 선택 입력·결과 hash 및 실제 엔진/비중/부가 계약 소스 SHA256.
+  원래 Q/G 축 입력에서의 선정/비중 재현이며 QGV·PIT·성과 재현이 아니다.
+  QGV 계산 버전이 원결과에 없으면 null/NOT_SUPPLIED_BY_SOURCE_RESULT. 최신 입력은 새 계산이다.
+
+새 API 계약3건과 변경 영향을 받는 기존 vertical/store 경로 합계22통과.
+같은 보관 universe ID/가용시각·설정·입력은 같은 식별자를 재현하고, 입력 변경은 input/result hash만 바꾼다.
+새 실자료 포트폴리오 계산·전략 성과는0. Main #522 cbd1da52의 판독에서도 소수% 경계1차이는 그대로 재현된다.
+Main은 기존 validateSelection의 허용 정밀도를 맞추고, sample.selection.selection_details를 선택 부가 필드로 판독하면 된다.
+
+## 2026-11-09 CI 의존성 경계 수정
+
+70672bc0dae4024663aba9b47135b0597d2bab4a / run42482339546의 Full Python unit suite에서
+`test_research_pit_filings.py::test_no_operating_module_imports_the_research_package`가 실패했다.
+기대 offenders=[] / 실제 ['validation/vertical_slice.py']; 같은 SHA의 해당 시험을 로컬에서 재현했다.
+원인은 새 설명 도우미를 research 패키지에 둔 뒤 validation 진입점에서 가져온 의존성 방향이다.
+
+도우미를 복제하지 않고 `validation/selection_details.py`로 이동해 같은 계층에서 재사용한다.
+기존 경계 시험·가드·워크플로는 수정하지 않는다. 선정·비중·부가 계약의 의미와 /1 스키마는 불변이다.
+실패 시험과 영향받는 selection_details/vertical/store 시험 23건 통과.
+합성7사례는 기존 선정 결과를 유지한 채 설명 도우미만 다시 적용했다.
+입력/저장설정 hash와 수치는 그대로이며, 실행 소스 위치/바이트가 바뀌어 engine_source_sha256와 result_hash만 갱신했다.
+70672bc0의 이전 fixture는 Git 이력에 보존한다. 구 결과를 새 소스로 실행한 결과라고 재표기하지 않는다.
+새 실자료 계산·채택·브라우저 소비자 수정은 없다. Main은 새 도우미 경로를 포함한 커밋을 인수해야 한다.

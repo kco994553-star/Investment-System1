@@ -22,6 +22,7 @@ const LEDGER = 'forward-validation-ledger.json';
 const UNPUBLISHED = ['sec-public-inputs.json', 'sec-qgv2.json', 'dart-financials.json', 'qgv-official.json', 'qgv-official-status.json', LEDGER];
 const COV = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/operational_qgv_coverage_v1_synthetic.json'), 'utf8'));
 const SHOTS = process.env.SCOPE_SHOTS || null;
+const HANDOFF = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/research_selection_handoff_v1_synthetic.json'), 'utf8'));
 const ids = (k) => Array.from({ length: k }, (_, i) => 'SYNTHETIC:C' + String(i).padStart(3, '0'));
 const sel = (policy, e, s) => ({ selection_policy: policy, n_eligible: e, n_selected: s, selected: ids(s), weights: s ? Object.fromEntries(ids(s).map((i) => [i, 1 / s])) : null,
   outcomes: { 'SYNTHETIC:C000': { realised: 0.123456 } }, equal_weight_realized: 0.045678 });
@@ -99,6 +100,24 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       if (phone) assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'no horizontal overflow at 390 (fold open)');
       await shot('matched-top-pct');
       ok(tag + ' coverage (engine matched) preset counts; top %; factors fold' + (phone ? '; no overflow' : ''));
+
+      // Codex #473 70672bc0 handoff cases: the 33.3333334 % boundary is accepted with the producer's count (1 of 3), the case just
+      // below gives 0; selection_details lines replace the "not in the contract" line; no overflow at 390.
+      phase = tag + ' #473 handoff';
+      const HC = (id) => JSON.parse(JSON.stringify(HANDOFF.cases.find((c) => c.id === id).expected));
+      await put({ state: 'OK', data_kind: 'SYNTHETIC', coverage: null, selection: HC('percent_boundary') });
+      await page.locator(B + ' [data-block="scope-selection"] [data-scope-details]').waitFor();
+      assert.equal(await page.locator(B + ' [data-scope-refused]').count(), 0, 'the boundary case is not refused');
+      assert.equal(await text(B + ' [data-block="scope-selection"] [data-scope-count]'), '조건 충족 3개 중 1개 선정');
+      assert.match(await text(B + ' [data-scope-detail=excluded]'), /선정 한도 밖 2/);
+      assert.match(await text(B + ' [data-scope-detail=replay]'), /QGV 계산·시점\(PIT\)·성과 재현 아님/);
+      assert.equal(await page.locator(B + ' [data-scope-absent]').count(), 0);
+      if (phone) assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'no horizontal overflow at 390 (details)');
+      await put({ state: 'OK', data_kind: 'SYNTHETIC', coverage: null, selection: HC('below_boundary') });
+      await page.locator(B + ' [data-scope-detail=cash]').waitFor();
+      assert.equal(await text(B + ' [data-block="scope-selection"] [data-scope-count]'), '조건 충족 3개 중 0개 선정');
+      assert.match(await text(B + ' [data-scope-detail=cash]'), /포트폴리오 미형성 · 현금 비중 없음/);
+      ok(tag + ' #473 handoff: 33.3333334 % → 1 of 3, 33.3333333 % → 0; selection_details lines');
 
       phase = tag + ' all + refused';
       await put({ state: 'OK', data_kind: 'SYNTHETIC', coverage: { ...COV.engine_matched, schema_version: 'operational-qgv-coverage/2' }, selection: sel(null, 137, 137) });

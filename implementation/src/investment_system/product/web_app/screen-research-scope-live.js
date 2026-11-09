@@ -7,7 +7,8 @@
      each preset total and the published default total as separate rows (never one label); not computed stays 미산출 with its
      reason, never 0. The 15 factors sit in <details>.
    - Selection card: the mode (조건 충족 전부 · 상위 N · 상위 %), eligible → selected, equal weight, and the fixed line that the
-     official model keeps its N15 tiers and TARGET rules. Outcomes and returns of the same result are never read.
+     official model keeps its N15 tiers and TARGET rules. With Codex #473's selection_details: original population, exclusion
+     reasons, cash, issuer links and replay ids (in place of the 'not in the contract' line). Outcomes and returns of the same result are never read.
    - A file that breaks its contract is refused whole (code and path shown); nothing is repaired. No storage, no request. */
 (function(){
 'use strict';
@@ -42,7 +43,10 @@ function selectionCard(r){const S=RS();
  return h('div',{class:'sk card',dataset:{block:'scope-selection',scopeMode:v.mode}},sub('일반 연구 선정 방식','9.1','조건 충족 전부 · 상위 N · 상위 %'),
   h('dl',{class:'card-body'},[['선정 방식',v.label,{scopeLabel:''}],['선정 수',v.count,{scopeCount:''}],['선정 규칙',v.rule,{scopeRule:''}],['비중',v.weight,{scopeWeight:''}]]
    .map(([k,x,d])=>[h('dt',null,h('b',null,k)),h('dd',{dataset:d},x)])),
-  v.shortfall?note(v.shortfall,{scopeShortfall:''}):null,note(v.scope,{scopeScope:''}),note(v.absent,{scopeAbsent:''}),
+  v.shortfall?note(v.shortfall,{scopeShortfall:''}):null,note(v.scope,{scopeScope:''}),v.absent?note(v.absent,{scopeAbsent:''}):null,
+  // #473 selection_details (optional sidecar, checked against this result): shown as written, never used to change the result.
+  v.details?h('ul',{class:'news-lines',dataset:{scopeDetails:''}},[['population',v.details.population],['excluded',v.details.excluded],['cash',v.details.cash],
+   ['issuers',v.details.issuers],['replay',v.details.replay]].map(([k,t])=>h('li',{dataset:{scopeDetail:k}},t))):null,
   note(v.general),note(v.official,{scopeOfficial:''}));}
 
 function block({signal}){

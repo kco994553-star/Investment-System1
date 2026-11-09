@@ -1,0 +1,6463 @@
+{
+ "cases": [
+  {
+   "id": "peer_minimum",
+   "note": "관측 4개가 빠져 비교 표본이 최소 아래 → 연결 뒤 같은 설정으로 Q·총점 산출",
+   "output": {
+    "after_input_hash": "d235a401a76b75f274cf2d26009288e2467e0243119edfcd35c95ee5de7819f4",
+    "axes": {
+     "G": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "Q": {
+      "after": 20,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 20,
+      "lost": 0
+     },
+     "V": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "joint": {
+      "after": 20,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 20,
+      "lost": 0
+     },
+     "total": {
+      "after": 20,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 20,
+      "lost": 0
+     }
+    },
+    "before_input_hash": "582deff317a73b2d6660330e66e3000ddcb9fd60304a58f3f691685bda8bc888",
+    "denominator": 20,
+    "factors": {
+     "accruals_assets_ttm:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:all": {
+      "after": 20,
+      "before": 16,
+      "changed_common": 0,
+      "gained": 4,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:selected": {
+      "after": 20,
+      "before": 16,
+      "changed_common": 0,
+      "gained": 4,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:all": {
+      "after": 20,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 20,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:selected": {
+      "after": 20,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 20,
+      "lost": 0
+     },
+     "peg_forecast:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "groups": [
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "accruals_assets_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "cfo_mcap"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "debt_assets"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "ep_ttm_diluted"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "operating_margin_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "revenue_cagr_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "roa_improvement_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "sales_ev"
+     }
+    ],
+    "performance": "NOT_MEASURED",
+    "rows": [
+     {
+      "after_axes": {
+       "G": 0.0,
+       "Q": 60.0,
+       "V": 0.0
+      },
+      "after_total": 18.0,
+      "before_axes": {
+       "G": 0.0,
+       "Q": null,
+       "V": 0.0
+      },
+      "before_total": null,
+      "company_id": "company-000",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 1.0,
+         "score": 0.0,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-0"
+     },
+     {
+      "after_axes": {
+       "G": 5.2631578947368425,
+       "Q": 58.94736842105263,
+       "V": 17.894736842105264
+      },
+      "after_total": 27.052631578947366,
+      "before_axes": {
+       "G": 5.2631578947368425,
+       "Q": null,
+       "V": 17.894736842105264
+      },
+      "before_total": null,
+      "company_id": "company-001",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 2.0,
+         "score": 5.2631578947368425,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-1"
+     },
+     {
+      "after_axes": {
+       "G": 10.526315789473685,
+       "Q": 57.89473684210526,
+       "V": 35.78947368421053
+      },
+      "after_total": 36.10526315789474,
+      "before_axes": {
+       "G": 10.526315789473685,
+       "Q": null,
+       "V": 35.78947368421053
+      },
+      "before_total": null,
+      "company_id": "company-002",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": 10.526315789473685,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-2"
+     },
+     {
+      "after_axes": {
+       "G": 15.789473684210526,
+       "Q": 56.8421052631579,
+       "V": 11.578947368421051
+      },
+      "after_total": 26.210526315789476,
+      "before_axes": {
+       "G": 15.789473684210526,
+       "Q": null,
+       "V": 11.578947368421051
+      },
+      "before_total": null,
+      "company_id": "company-003",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": 15.789473684210526,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-3"
+     },
+     {
+      "after_axes": {
+       "G": 21.05263157894737,
+       "Q": 55.78947368421053,
+       "V": 29.473684210526322
+      },
+      "after_total": 35.26315789473685,
+      "before_axes": {
+       "G": 21.05263157894737,
+       "Q": null,
+       "V": 29.473684210526322
+      },
+      "before_total": null,
+      "company_id": "company-004",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": 21.05263157894737,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-4"
+     },
+     {
+      "after_axes": {
+       "G": 26.315789473684205,
+       "Q": 54.736842105263165,
+       "V": 47.368421052631575
+      },
+      "after_total": 44.315789473684205,
+      "before_axes": {
+       "G": 26.315789473684205,
+       "Q": null,
+       "V": 47.368421052631575
+      },
+      "before_total": null,
+      "company_id": "company-005",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": 26.31578947368421,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-5"
+     },
+     {
+      "after_axes": {
+       "G": 31.57894736842105,
+       "Q": 53.684210526315795,
+       "V": 23.157894736842103
+      },
+      "after_total": 34.421052631578945,
+      "before_axes": {
+       "G": 31.57894736842105,
+       "Q": null,
+       "V": 23.157894736842103
+      },
+      "before_total": null,
+      "company_id": "company-006",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": 31.57894736842105,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-6"
+     },
+     {
+      "after_axes": {
+       "G": 36.8421052631579,
+       "Q": 52.63157894736842,
+       "V": 41.05263157894737
+      },
+      "after_total": 43.473684210526315,
+      "before_axes": {
+       "G": 36.8421052631579,
+       "Q": null,
+       "V": 41.05263157894737
+      },
+      "before_total": null,
+      "company_id": "company-007",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": 36.8421052631579,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-7"
+     },
+     {
+      "after_axes": {
+       "G": 42.10526315789474,
+       "Q": 51.578947368421055,
+       "V": 58.947368421052644
+      },
+      "after_total": 52.52631578947369,
+      "before_axes": {
+       "G": 42.10526315789474,
+       "Q": null,
+       "V": 58.947368421052644
+      },
+      "before_total": null,
+      "company_id": "company-008",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": 42.10526315789474,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-8"
+     },
+     {
+      "after_axes": {
+       "G": 47.36842105263159,
+       "Q": 50.526315789473685,
+       "V": 34.736842105263165
+      },
+      "after_total": 42.631578947368425,
+      "before_axes": {
+       "G": 47.36842105263159,
+       "Q": null,
+       "V": 34.736842105263165
+      },
+      "before_total": null,
+      "company_id": "company-009",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": 47.36842105263158,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-9"
+     },
+     {
+      "after_axes": {
+       "G": 52.63157894736841,
+       "Q": 49.473684210526315,
+       "V": 52.63157894736841
+      },
+      "after_total": 51.68421052631578,
+      "before_axes": {
+       "G": 52.63157894736841,
+       "Q": null,
+       "V": 52.63157894736841
+      },
+      "before_total": null,
+      "company_id": "company-010",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": 52.63157894736842,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-10"
+     },
+     {
+      "after_axes": {
+       "G": 57.89473684210526,
+       "Q": 48.421052631578945,
+       "V": 70.52631578947368
+      },
+      "after_total": 60.73684210526316,
+      "before_axes": {
+       "G": 57.89473684210526,
+       "Q": null,
+       "V": 70.52631578947368
+      },
+      "before_total": null,
+      "company_id": "company-011",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": 57.89473684210526,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-11"
+     },
+     {
+      "after_axes": {
+       "G": 63.1578947368421,
+       "Q": 47.36842105263158,
+       "V": 46.315789473684205
+      },
+      "after_total": 50.84210526315789,
+      "before_axes": {
+       "G": 63.1578947368421,
+       "Q": null,
+       "V": 46.315789473684205
+      },
+      "before_total": null,
+      "company_id": "company-012",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": 63.1578947368421,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-12"
+     },
+     {
+      "after_axes": {
+       "G": 68.42105263157895,
+       "Q": 46.31578947368421,
+       "V": 64.21052631578948
+      },
+      "after_total": 59.89473684210527,
+      "before_axes": {
+       "G": 68.42105263157895,
+       "Q": null,
+       "V": 64.21052631578948
+      },
+      "before_total": null,
+      "company_id": "company-013",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": 68.42105263157895,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-13"
+     },
+     {
+      "after_axes": {
+       "G": 73.6842105263158,
+       "Q": 45.26315789473684,
+       "V": 82.10526315789474
+      },
+      "after_total": 68.94736842105264,
+      "before_axes": {
+       "G": 73.6842105263158,
+       "Q": null,
+       "V": 82.10526315789474
+      },
+      "before_total": null,
+      "company_id": "company-014",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": 73.6842105263158,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-14"
+     },
+     {
+      "after_axes": {
+       "G": 78.94736842105263,
+       "Q": 44.21052631578948,
+       "V": 57.89473684210526
+      },
+      "after_total": 59.05263157894737,
+      "before_axes": {
+       "G": 78.94736842105263,
+       "Q": null,
+       "V": 57.89473684210526
+      },
+      "before_total": null,
+      "company_id": "company-015",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": 78.94736842105263,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-15"
+     },
+     {
+      "after_axes": {
+       "G": 84.21052631578948,
+       "Q": 43.15789473684211,
+       "V": 75.78947368421052
+      },
+      "after_total": 68.10526315789474,
+      "before_axes": {
+       "G": 84.21052631578948,
+       "Q": null,
+       "V": 75.78947368421052
+      },
+      "before_total": null,
+      "company_id": "company-016",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": 84.21052631578948,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-16"
+     },
+     {
+      "after_axes": {
+       "G": 89.47368421052632,
+       "Q": 42.10526315789473,
+       "V": 93.68421052631578
+      },
+      "after_total": 77.1578947368421,
+      "before_axes": {
+       "G": 89.47368421052632,
+       "Q": null,
+       "V": 93.68421052631578
+      },
+      "before_total": null,
+      "company_id": "company-017",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 18.0,
+         "score": 89.47368421052632,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 18.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-17"
+     },
+     {
+      "after_axes": {
+       "G": 94.73684210526318,
+       "Q": 41.05263157894736,
+       "V": 69.47368421052633
+      },
+      "after_total": 67.26315789473685,
+      "before_axes": {
+       "G": 94.73684210526318,
+       "Q": null,
+       "V": 69.47368421052633
+      },
+      "before_total": null,
+      "company_id": "company-018",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 19.0,
+         "score": 94.73684210526316,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 19.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-18"
+     },
+     {
+      "after_axes": {
+       "G": 100.0,
+       "Q": 40.0,
+       "V": 87.36842105263158
+      },
+      "after_total": 76.31578947368422,
+      "before_axes": {
+       "G": 100.0,
+       "Q": null,
+       "V": 87.36842105263158
+      },
+      "before_total": null,
+      "company_id": "company-019",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 20.0,
+         "score": 100.0,
+         "score_status": "VALID",
+         "valid_n": 20,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 20.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 16,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-19"
+     }
+    ],
+    "schema_version": "sector-qgv-input-repair-comparison/1",
+    "treatment": "INPUT_CONNECTION_REPAIR",
+    "valuation_date": "2026-11-02",
+    "whole_market_denominator": null
+   }
+  },
+  {
+   "id": "peer_shift",
+   "note": "비교 표본이 최소 이상인 채 관측 3개 추가 → 기존 상대점수 변화(실적 개선 아님)",
+   "output": {
+    "after_input_hash": "553c39a033a4c17324b1da8edf92e9b6ac5a1651a9f2a97bda24fc13eaacfd6c",
+    "axes": {
+     "G": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "Q": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 20,
+      "gained": 3,
+      "lost": 0
+     },
+     "V": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "joint": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 0,
+      "gained": 3,
+      "lost": 0
+     },
+     "total": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 20,
+      "gained": 3,
+      "lost": 0
+     }
+    },
+    "before_input_hash": "6ef6c2bced41a3445b020ff34adf9ee21509620ee22ce64d3b22d3cb07f95492",
+    "denominator": 24,
+    "factors": {
+     "accruals_assets_ttm:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:all": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 0,
+      "gained": 3,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:selected": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 0,
+      "gained": 3,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:all": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 20,
+      "gained": 3,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:selected": {
+      "after": 24,
+      "before": 21,
+      "changed_common": 20,
+      "gained": 3,
+      "lost": 0
+     },
+     "peg_forecast:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:all": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:selected": {
+      "after": 24,
+      "before": 24,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "groups": [
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "accruals_assets_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "cfo_mcap"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "debt_assets"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "ep_ttm_diluted"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "operating_margin_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "revenue_cagr_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "roa_improvement_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 24,
+      "minimum": 20,
+      "raw_valid": 24,
+      "scoring_representatives": 24,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       24
+      ],
+      "variant_id": "sales_ev"
+     }
+    ],
+    "performance": "NOT_MEASURED",
+    "rows": [
+     {
+      "after_axes": {
+       "G": 2.1739130434782608,
+       "Q": 59.565217391304344,
+       "V": 2.1739130434782608
+      },
+      "after_total": 19.391304347826082,
+      "before_axes": {
+       "G": 2.1739130434782608,
+       "Q": null,
+       "V": 2.1739130434782608
+      },
+      "before_total": null,
+      "company_id": "company-000",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 1.0,
+         "score": 2.1739130434782608,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-0"
+     },
+     {
+      "after_axes": {
+       "G": 10.869565217391305,
+       "Q": 57.826086956521735,
+       "V": 23.043478260869563
+      },
+      "after_total": 30.43478260869565,
+      "before_axes": {
+       "G": 10.869565217391305,
+       "Q": null,
+       "V": 23.043478260869563
+      },
+      "before_total": null,
+      "company_id": "company-001",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 2.0,
+         "score": 10.869565217391305,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-1"
+     },
+     {
+      "after_axes": {
+       "G": 19.565217391304344,
+       "Q": 56.086956521739125,
+       "V": 42.17391304347826
+      },
+      "after_total": 40.69565217391304,
+      "before_axes": {
+       "G": 19.565217391304344,
+       "Q": null,
+       "V": 42.17391304347826
+      },
+      "before_total": null,
+      "company_id": "company-002",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": 19.565217391304348,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-2"
+     },
+     {
+      "after_axes": {
+       "G": 28.26086956521739,
+       "Q": 54.34782608695653,
+       "V": 21.304347826086953
+      },
+      "after_total": 32.95652173913044,
+      "before_axes": {
+       "G": 28.26086956521739,
+       "Q": 50.04347826086957,
+       "V": 21.304347826086953
+      },
+      "before_total": 31.665217391304346,
+      "company_id": "company-003",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": 28.26086956521739,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": 17.5,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-3"
+     },
+     {
+      "after_axes": {
+       "G": 34.78260869565217,
+       "Q": 53.04347826086956,
+       "V": 40.0
+      },
+      "after_total": 42.60869565217391,
+      "before_axes": {
+       "G": 34.78260869565217,
+       "Q": 49.130434782608695,
+       "V": 40.0
+      },
+      "before_total": 41.43478260869565,
+      "company_id": "company-004",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": 34.78260869565217,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": 25.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-4"
+     },
+     {
+      "after_axes": {
+       "G": 39.13043478260869,
+       "Q": 52.17391304347826,
+       "V": 56.52173913043478
+      },
+      "after_total": 50.8695652173913,
+      "before_axes": {
+       "G": 39.13043478260869,
+       "Q": 48.52173913043478,
+       "V": 56.52173913043478
+      },
+      "before_total": 49.77391304347826,
+      "company_id": "company-005",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": 39.130434782608695,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": 30.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-5"
+     },
+     {
+      "after_axes": {
+       "G": 43.47826086956522,
+       "Q": 51.30434782608695,
+       "V": 33.04347826086956
+      },
+      "after_total": 41.130434782608695,
+      "before_axes": {
+       "G": 43.47826086956522,
+       "Q": 47.91304347826087,
+       "V": 33.04347826086956
+      },
+      "before_total": 40.11304347826086,
+      "company_id": "company-006",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": 43.47826086956522,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": 35.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-6"
+     },
+     {
+      "after_axes": {
+       "G": 47.82608695652175,
+       "Q": 50.43478260869565,
+       "V": 49.56521739130435
+      },
+      "after_total": 49.391304347826086,
+      "before_axes": {
+       "G": 47.82608695652175,
+       "Q": 47.30434782608695,
+       "V": 49.56521739130435
+      },
+      "before_total": 48.45217391304348,
+      "company_id": "company-007",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": 47.82608695652174,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": 40.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-7"
+     },
+     {
+      "after_axes": {
+       "G": 52.17391304347825,
+       "Q": 49.56521739130435,
+       "V": 66.08695652173913
+      },
+      "after_total": 57.65217391304347,
+      "before_axes": {
+       "G": 52.17391304347825,
+       "Q": 46.69565217391305,
+       "V": 66.08695652173913
+      },
+      "before_total": 56.791304347826085,
+      "company_id": "company-008",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": 52.17391304347826,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": 45.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-8"
+     },
+     {
+      "after_axes": {
+       "G": 56.52173913043478,
+       "Q": 48.69565217391304,
+       "V": 42.60869565217391
+      },
+      "after_total": 47.91304347826086,
+      "before_axes": {
+       "G": 56.52173913043478,
+       "Q": 46.086956521739125,
+       "V": 42.60869565217391
+      },
+      "before_total": 47.13043478260869,
+      "company_id": "company-009",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": 56.52173913043478,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": 50.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-9"
+     },
+     {
+      "after_axes": {
+       "G": 60.8695652173913,
+       "Q": 47.826086956521735,
+       "V": 59.130434782608695
+      },
+      "after_total": 56.17391304347826,
+      "before_axes": {
+       "G": 60.8695652173913,
+       "Q": 45.47826086956522,
+       "V": 59.130434782608695
+      },
+      "before_total": 55.469565217391306,
+      "company_id": "company-010",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": 60.869565217391305,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": 55.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-10"
+     },
+     {
+      "after_axes": {
+       "G": 65.21739130434783,
+       "Q": 46.95652173913043,
+       "V": 75.65217391304347
+      },
+      "after_total": 64.43478260869566,
+      "before_axes": {
+       "G": 65.21739130434783,
+       "Q": 44.8695652173913,
+       "V": 75.65217391304347
+      },
+      "before_total": 63.80869565217391,
+      "company_id": "company-011",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": 65.21739130434783,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": 60.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-11"
+     },
+     {
+      "after_axes": {
+       "G": 69.56521739130434,
+       "Q": 46.08695652173913,
+       "V": 52.17391304347825
+      },
+      "after_total": 54.69565217391304,
+      "before_axes": {
+       "G": 69.56521739130434,
+       "Q": 44.26086956521739,
+       "V": 52.17391304347825
+      },
+      "before_total": 54.14782608695652,
+      "company_id": "company-012",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": 69.56521739130434,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": 65.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-12"
+     },
+     {
+      "after_axes": {
+       "G": 73.91304347826087,
+       "Q": 45.21739130434782,
+       "V": 68.69565217391305
+      },
+      "after_total": 62.95652173913044,
+      "before_axes": {
+       "G": 73.91304347826087,
+       "Q": 43.65217391304347,
+       "V": 68.69565217391305
+      },
+      "before_total": 62.48695652173913,
+      "company_id": "company-013",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": 73.91304347826087,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": 70.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-13"
+     },
+     {
+      "after_axes": {
+       "G": 78.26086956521738,
+       "Q": 44.347826086956516,
+       "V": 85.21739130434783
+      },
+      "after_total": 71.21739130434783,
+      "before_axes": {
+       "G": 78.26086956521738,
+       "Q": 43.04347826086956,
+       "V": 85.21739130434783
+      },
+      "before_total": 70.82608695652173,
+      "company_id": "company-014",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": 78.26086956521739,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": 75.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-14"
+     },
+     {
+      "after_axes": {
+       "G": 82.6086956521739,
+       "Q": 43.47826086956522,
+       "V": 61.739130434782595
+      },
+      "after_total": 61.47826086956521,
+      "before_axes": {
+       "G": 82.6086956521739,
+       "Q": 42.434782608695656,
+       "V": 61.739130434782595
+      },
+      "before_total": 61.16521739130434,
+      "company_id": "company-015",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": 82.6086956521739,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": 80.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-15"
+     },
+     {
+      "after_axes": {
+       "G": 86.95652173913044,
+       "Q": 42.60869565217391,
+       "V": 78.26086956521739
+      },
+      "after_total": 69.73913043478261,
+      "before_axes": {
+       "G": 86.95652173913044,
+       "Q": 41.826086956521735,
+       "V": 78.26086956521739
+      },
+      "before_total": 69.50434782608696,
+      "company_id": "company-016",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": 86.95652173913044,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": 85.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-16"
+     },
+     {
+      "after_axes": {
+       "G": 91.30434782608695,
+       "Q": 41.73913043478261,
+       "V": 94.78260869565219
+      },
+      "after_total": 78.0,
+      "before_axes": {
+       "G": 91.30434782608695,
+       "Q": 41.21739130434783,
+       "V": 94.78260869565219
+      },
+      "before_total": 77.84347826086957,
+      "company_id": "company-017",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 18.0,
+         "score": 91.30434782608695,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 18.0,
+         "score": 90.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-17"
+     },
+     {
+      "after_axes": {
+       "G": 95.6521739130435,
+       "Q": 40.869565217391305,
+       "V": 71.30434782608697
+      },
+      "after_total": 68.2608695652174,
+      "before_axes": {
+       "G": 95.6521739130435,
+       "Q": 40.60869565217391,
+       "V": 71.30434782608697
+      },
+      "before_total": 68.18260869565219,
+      "company_id": "company-018",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 19.0,
+         "score": 95.65217391304348,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 19.0,
+         "score": 95.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-18"
+     },
+     {
+      "after_axes": {
+       "G": 100.0,
+       "Q": 40.0,
+       "V": 87.82608695652173
+      },
+      "after_total": 76.52173913043478,
+      "before_axes": {
+       "G": 100.0,
+       "Q": 40.0,
+       "V": 87.82608695652173
+      },
+      "before_total": 76.52173913043478,
+      "company_id": "company-019",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 20.0,
+         "score": 100.0,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 20.0,
+         "score": 100.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-19"
+     },
+     {
+      "after_axes": {
+       "G": 2.1739130434782608,
+       "Q": 59.565217391304344,
+       "V": 2.1739130434782608
+      },
+      "after_total": 19.391304347826082,
+      "before_axes": {
+       "G": 2.1739130434782608,
+       "Q": 58.69565217391304,
+       "V": 2.1739130434782608
+      },
+      "before_total": 19.130434782608692,
+      "company_id": "company-x00",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 1.0,
+         "score": 2.1739130434782608,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 1.0,
+         "score": 0.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-x0"
+     },
+     {
+      "after_axes": {
+       "G": 10.869565217391305,
+       "Q": 57.826086956521735,
+       "V": 23.043478260869563
+      },
+      "after_total": 30.43478260869565,
+      "before_axes": {
+       "G": 10.869565217391305,
+       "Q": 55.47826086956521,
+       "V": 23.043478260869563
+      },
+      "before_total": 29.730434782608693,
+      "company_id": "company-x01",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 2.0,
+         "score": 10.869565217391305,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 2.0,
+         "score": 5.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-x1"
+     },
+     {
+      "after_axes": {
+       "G": 19.565217391304344,
+       "Q": 56.086956521739125,
+       "V": 42.17391304347826
+      },
+      "after_total": 40.69565217391304,
+      "before_axes": {
+       "G": 19.565217391304344,
+       "Q": 52.26086956521739,
+       "V": 42.17391304347826
+      },
+      "before_total": 39.54782608695652,
+      "company_id": "company-x02",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": 19.565217391304348,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": 10.0,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-x2"
+     },
+     {
+      "after_axes": {
+       "G": 28.26086956521739,
+       "Q": 54.34782608695653,
+       "V": 21.304347826086953
+      },
+      "after_total": 32.95652173913044,
+      "before_axes": {
+       "G": 28.26086956521739,
+       "Q": 50.04347826086957,
+       "V": 21.304347826086953
+      },
+      "before_total": 31.665217391304346,
+      "company_id": "company-x03",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": 28.26086956521739,
+         "score_status": "VALID",
+         "valid_n": 24,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": 17.5,
+         "score_status": "VALID",
+         "valid_n": 21,
+         "verified_external_available": false
+        },
+        "variant_id": "operating_margin_ttm"
+       }
+      ],
+      "issuer_id": "issuer-x3"
+     }
+    ],
+    "schema_version": "sector-qgv-input-repair-comparison/1",
+    "treatment": "INPUT_CONNECTION_REPAIR",
+    "valuation_date": "2026-11-02",
+    "whole_market_denominator": null
+   }
+  },
+  {
+   "id": "small_group",
+   "note": "3행 섹터 그룹(최소 20 미만) · 구조적 표본 부족은 입력 연결로 풀리지 않음",
+   "output": {
+    "after_input_hash": "7c633d07ae7898c1a2fadcd3cad401ada4223773945a51bbab2f98137ffd9b44",
+    "axes": {
+     "G": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "Q": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "V": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "joint": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "total": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "before_input_hash": "4ae9f3ab8608d49f69d77d6f91f892eaec61eac83cb798c6c96891313b70a6ea",
+    "denominator": 20,
+    "factors": {
+     "accruals_assets_ttm:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:all": {
+      "after": 20,
+      "before": 18,
+      "changed_common": 0,
+      "gained": 2,
+      "lost": 0
+     },
+     "debt_assets:raw:selected": {
+      "after": 20,
+      "before": 18,
+      "changed_common": 0,
+      "gained": 2,
+      "lost": 0
+     },
+     "debt_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:raw:selected": {
+      "after": 3,
+      "before": 3,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:selected": {
+      "after": 17,
+      "before": 17,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:selected": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "groups": [
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "accruals_assets_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "cfo_mcap"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "debt_assets"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "ebitda_ev"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "ep_ttm_diluted"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "operating_margin_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "revenue_cagr_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 3,
+      "minimum": 20,
+      "raw_valid": 3,
+      "scoring_representatives": 3,
+      "sector_id": "ENERGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       3
+      ],
+      "variant_id": "roa_improvement_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "accruals_assets_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "cfo_mcap"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "debt_assets"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "ep_ttm_diluted"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "operating_margin_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "revenue_cagr_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "roa_improvement_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 17,
+      "minimum": 20,
+      "raw_valid": 17,
+      "scoring_representatives": 17,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": true,
+      "valid_n": [
+       17
+      ],
+      "variant_id": "sales_ev"
+     }
+    ],
+    "performance": "NOT_MEASURED",
+    "rows": [
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-000",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 1.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-0"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-001",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 2.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": false,
+         "raw_status": "MISSING_INPUT",
+         "raw_value": null,
+         "score": null,
+         "score_status": "MISSING_INPUT",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-1"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-002",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 3.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-2"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-003",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 4.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-3"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-004",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 5.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-4"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-005",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 6.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-5"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-006",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 7.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-6"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-007",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 8.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-7"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-008",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 9.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-8"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-009",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 10.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-9"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-010",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 11.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-10"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-011",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 12.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-11"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-012",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 13.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-12"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-013",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 14.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-13"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-014",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 15.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-14"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-015",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 16.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-15"
+     },
+     {
+      "after_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "after_total": null,
+      "before_axes": {
+       "G": null,
+       "Q": null,
+       "V": null
+      },
+      "before_total": null,
+      "company_id": "company-016",
+      "factors": [
+       {
+        "after": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 17,
+         "verified_external_available": false
+        },
+        "before": {
+         "raw_components_available": true,
+         "raw_status": "VALID",
+         "raw_value": 17.0,
+         "score": null,
+         "score_status": "PEER_SAMPLE_SMALL",
+         "valid_n": 15,
+         "verified_external_available": false
+        },
+        "variant_id": "debt_assets"
+       }
+      ],
+      "issuer_id": "issuer-16"
+     }
+    ],
+    "schema_version": "sector-qgv-input-repair-comparison/1",
+    "treatment": "INPUT_CONNECTION_REPAIR",
+    "valuation_date": "2026-11-02",
+    "whole_market_denominator": null
+   }
+  },
+  {
+   "id": "no_change",
+   "note": "입력 변화 없음",
+   "output": {
+    "after_input_hash": "d235a401a76b75f274cf2d26009288e2467e0243119edfcd35c95ee5de7819f4",
+    "axes": {
+     "G": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "Q": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "V": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "joint": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "total": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "before_input_hash": "d235a401a76b75f274cf2d26009288e2467e0243119edfcd35c95ee5de7819f4",
+    "denominator": 20,
+    "factors": {
+     "accruals_assets_ttm:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "accruals_assets_ttm:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "affo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_improvement_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_mcap:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "cfo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_bps_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "common_equity_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "consensus_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "debt_assets:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "depreciation_capex:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "dividend_yield_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebit_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ebitda_ev:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy1:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_fy_diluted:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ntm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ep_ttm_diluted:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "eps_diluted_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcf_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "fcff_ev:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ffo_per_share_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "gross_profit_assets_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "interest_coverage_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "nareit_ffo_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_debt_assets:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_income_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "net_share_reduction:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "ni_da_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "noa_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_income_cagr_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "operating_margin_ttm:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_forecast:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "peg_historical:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "profit_stability_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_3y:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_cagr_5y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_1y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "revenue_growth_consistency_3y:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_improvement_3y:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roa_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roe_common_ttm:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "roic_explicit:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:raw:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:all": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_ev:score:selected": {
+      "after": 20,
+      "before": 20,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "sales_mcap:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "shareholder_yield:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_bps_growth:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:raw:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     },
+     "tangible_common_bp:score:all": {
+      "after": 0,
+      "before": 0,
+      "changed_common": 0,
+      "gained": 0,
+      "lost": 0
+     }
+    },
+    "groups": [
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "accruals_assets_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "cfo_mcap"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "debt_assets"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "ep_ttm_diluted"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "operating_margin_ttm"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "revenue_cagr_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "roa_improvement_3y"
+     },
+     {
+      "accounting_template": "GENERAL",
+      "members": 20,
+      "minimum": 20,
+      "raw_valid": 20,
+      "scoring_representatives": 20,
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "structural_shortfall": false,
+      "valid_n": [
+       20
+      ],
+      "variant_id": "sales_ev"
+     }
+    ],
+    "performance": "NOT_MEASURED",
+    "rows": [],
+    "schema_version": "sector-qgv-input-repair-comparison/1",
+    "treatment": "INPUT_CONNECTION_REPAIR",
+    "valuation_date": "2026-11-02",
+    "whole_market_denominator": null
+   }
+  },
+  {
+   "error": "REPAIR_CONFIG_CHANGED",
+   "id": "config_changed",
+   "note": "설정이 바뀌면 생산자가 비교를 거부"
+  }
+ ],
+ "data_kind": "SYNTHETIC",
+ "producer": {
+  "functions": [
+   "sector_qgv.preview_qgv(default_config())",
+   "sector_qgv_held_repair.comparison"
+  ],
+  "input": "implementation/docs/research/sector_qgv/synthetic-input.json",
+  "pr": 527
+ },
+ "schema_version": "main-input-repair-comparison-fixture/1"
+}

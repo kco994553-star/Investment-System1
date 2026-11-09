@@ -130,6 +130,8 @@ function ccPaint(body,b){const C=I.classification,v=b.view,x=ccSummary(C,b);
    h('li',{dataset:{ccCount:'peer'}},'섹터·회계모형 둘 다 확인 ',String(x.peer),'개 · 나머지는 QGV 비교집단 완결 아님')),
   h('p',{class:'reason',dataset:{ccPrivateStates:Object.entries(x.states).map(([k,c])=>k+':'+c).join(',')}},'기록 상태 · ',Object.entries(x.states).map(([k,c])=>k+' '+c).join(' · ')),
   operatingCounts(b.counts),
+  // 공통 산업 → 매크로 근거 (Codex #525): its own click and read; the old block when the file did not load.
+  I.industryMacroLive&&I.industryMacro?I.industryMacroLive.block({view:v}):null,
   h('p',{class:'reason'},'공식 QGV 순위·TARGET·공개 파일은 바뀌지 않음 · 분류를 화면에서 다시 추론하지 않음'),
   expandedBlock(b.expanded,b.counts)]);}
 // Counts of the retained sector QGV results (Codex #523 calculation_counts, checked by IS2.classification against the view and the
@@ -140,8 +142,10 @@ function operatingCounts(k){
  if(k.state!=='OK')return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:k.state}},'섹터 QGV 원결과의 Q·G 산출 수 · ',
   k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 묶음에 없음 · 0으로 채우지 않음');
  const o=k.value.scopes.operating;
- return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G)}},
-  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행 ',
+ return h('p',{class:'reason',dataset:{ccCalc:'operating',ccCalcState:'OK',ccCalcQ:countText(o.counts.Q),ccCalcG:countText(o.counts.G),ccCalcV:countText(o.counts.V),ccCalcJoint:countText(o.counts.joint),ccCalcTotal:countText(o.counts.total)}},
+  '섹터 QGV 원결과 · Q 산출 ',countText(o.counts.Q),' · G 산출 ',countText(o.counts.G),' · V 산출 ',countText(o.counts.V),' · 세 축 동시 ',countText(o.counts.joint),
+  ' · 최종 총점 ',countText(o.counts.total),' · 평가일 ',o.valuation_date,' · 원결과 집계(재계산 없음) · 분모 ',o.population.id,' 코드 행 ',String(o.population.denominator),
+  '(고유 발행사 ',String(o.population.unique_issuers),') · 위 분류 확인 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 + 최종 총점 기준 ',
   h('a',{class:'lk',href:I.href('prompts','-','search'),dataset:{ccPromptContext:''}},'→ 프롬프트에서 이 문맥 보기'));}
 // 7.1.2 화면 문맥 for the prompt screen (owner 2026-11-08 queue item 8): the operating counts' evaluation date, population and
 // missing counts of the bundle in RAM now, asked when the prompt card paints (a dropped bundle gives none). Display only there:
@@ -162,8 +166,8 @@ if(I.promptContext&&typeof I.promptContext.provide==='function')
 // the 504 counts, never a company page, a QGV row or a technical security id (ISSUER:<CIK> is an analysis row id).
 function expandedBlock(e,k){
  if(!e)return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:'NONE'}},h('h4',null,'확장 발행사 표본 · 별도 모집단'),h('p',{class:'reason'},'받지 않음 · 운영504 화면은 그대로'));
- const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
-  ' · 하위 산업 ',String(e[g].industry),' · Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total));
+ const row=(g,label,k)=>h('li',{dataset:{ccExpandedCount:k}},label,' · 발행사 ',String(e[g].issuers),' · 티커 관측 ',String(e[g].ticker_observations),' · 분류 단계: 섹터 ',String(e[g].sector),' · 회계모형 ',String(e[g].accounting),
+  ' · 하위 산업 ',String(e[g].industry),' · 계산 단계: Q ',String(e[g].Q),' · G ',String(e[g].G),' · V ',String(e[g].V),' · 총점 ',String(e[g].total),' (분류 수는 계산 완료 수가 아님)');
  return h('div',{class:'sk card',dataset:{ccPopulation:'EXPANDED_SAMPLE',ccExpanded:e.valuation_date}},
   h('h4',null,'확장 발행사 표본 · 별도 모집단 · 운영504와 합치지 않음'),
   h('p',{class:'reason'},'관측 카탈로그 발행사 · 투자 적격 모집단 아님(',e.population_kind,') · 평가일 ',e.valuation_date,' · 카탈로그 관측 ',e.catalog_observed_at.slice(0,10),'(',String(e.catalog_age_days),'일 전 · 평가일 상장 명부 아님)'),
@@ -172,7 +176,8 @@ function expandedBlock(e,k){
   // denominator). Without checked counts only the catalog figure of the old summary is shown and the held figure is "없음". It is the
   // existing Universe504 official Q replay: not a gate pass, not a sector Q result, not an expanded-sample Q.
   ...gateLines(e,k),
-  h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
+  // Issuer rows (Codex #524): read on the owner's click, one detail shard at a time; without the browse file, the old line stays.
+  I.expandedBrowse&&I.expandedIssuers?I.expandedBrowse.block(heldAnchor):h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
   h('p',{class:'reason',dataset:{ccExpandedMarket:'NONE'}},'전체시장 분모·커버리지 미산출 · 새 증권 ID ',String(e.new_security_ids),' · 순위 범위 ',e.rank_scope,' · 발행사 행 ID는 증권 ID가 아님 · 기술 결합·기업 화면에 쓰지 않음'));}
 const GATE_WORDS=' · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값(확장 표본 Q 아님)';
 function gateLines(e,k){
@@ -183,9 +188,15 @@ function gateLines(e,k){
  out.push(h('p',{class:'reason',dataset:{ccExpandedGate:'held_financial_subsample',ccExpandedGateValue:'NONE'}},'보유 재무 하위표본 범위의 공식 Q 관문 입력 연결 · ',
   k&&k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 요약에 없음'));
  return out;}
-function renderClassification(body,res){const C=I.classification,payload={};
- res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_KEY[CC_PARTS[i]]||CC_PARTS[i]]=raw;});
- const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);ccPaint(body,r.value);}
+// The expanded summary arrives with its own bytes (kis-private raw part): their SHA-256 anchors the held issuer delivery (Codex #524)
+// to this bundle. RAM only; dropped with the bundle (watchClassification).
+let heldAnchor=null;
+function renderClassification(body,res){const C=I.classification,payload={};let sumBytes=null;
+ res.forEach((raw,i)=>{if(raw===null||raw===undefined)return;const part=CC_PARTS[i];let v=raw;
+  if(raw.bytes instanceof Uint8Array&&raw.body){v=raw.body;if(part==='expanded_summary')sumBytes=raw.bytes;}payload[CC_KEY[part]||part]=v;});
+ const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);
+ heldAnchor=Object.freeze({bytes:sumBytes,held:r.value.counts&&r.value.counts.state==='OK'?r.value.counts.value.scopes.held_financial_subsample:null});
+ ccPaint(body,r.value);}
 const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]],
  classification:()=>CC_PARTS.map(p=>['classification',p,p==='view'?undefined:'OPTIONAL'])});
 const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv,macro:renderShared,news:renderShared,classification:renderClassification});
@@ -195,6 +206,7 @@ const EMPTY_WORD=Object.freeze({macro:'비공개 보관 관측 자료가 아직 
 // screen is open (expiry, a 403, 연결 끊기 on any panel).
 let ccWatch=false;
 function watchClassification(){if(ccWatch)return;ccWatch=true;
+ try{if(I.classification&&typeof I.classification.subscribe==='function')I.classification.subscribe(()=>{heldAnchor=null;});}catch(_){}
  try{I.prices.kisSubscribe(()=>{let on=false;try{on=I.prices.kisState().connected;}catch(_){on=false;}if(!on&&I.classification)I.classification.disconnectPrivate();});}catch(_){ccWatch=false;}}
 function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
  if(kind==='classification')watchClassification();

@@ -47,7 +47,9 @@ const TEXT=Object.freeze({
  OFFICIAL:'공식 모델은 기존 N15 구간·TARGET 규칙 그대로 · 이 선정 방식을 따르지 않음',
  GENERAL:'일반 연구(임시) 선정 · 조건 = Q·G 계산됨 · 같은 비중',
  SELECTION_SCOPE:'선정 모집단 = 엔진이 받은 조건 충족 기업 전부 · 화면 필터는 선정 모집단을 바꾸지 않음 · 모의 구성이며 실제 보유·공식 모델 결과와 섞지 않음',
- ABSENT:'제외 사유(기업별)·중복 발행사·현금 처리는 이 엔진 계약에 없음 · 화면에서 만들지 않음'});
+ ABSENT:'제외 사유(기업별)·중복 발행사·현금 처리는 이 엔진 계약에 없음 · 화면에서 만들지 않음',
+ REPLAY:'원래 Q·G 축 입력에서의 선정·비중 재현 · QGV 계산·시점(PIT)·성과 재현 아님 · 최신 입력은 새 계산',
+ ISSUER:'같은 발행사의 여러 회사 ID는 현행 엔진대로 각각 유지 · 발행사 통합·상한 없음 · 증권 신원 확인 아님'});
 
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const isObj=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
@@ -146,6 +148,48 @@ function coverageView(c){const n=c.denominator.count,t=c.times||{};
 
 /* The general research selection fields of a vertical_slice result → {ok:true, value} | {ok:false, code, path}. Other result keys
    (outcomes, realised returns, …) are not read. */
+// floor(n × p / 100) on p's shortest decimal string (JS String(p) = Python str(p) for a float), in BigInt: no binary rounding,
+// no fixed number of decimals. p is already checked finite and in (0, 100].
+function floorPercent(n,p){
+ const m=/^(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/i.exec(String(p));if(!m)refuse('POLICY_INVALID','$.selection_policy.value');
+ const frac=m[2]===undefined?'':m[2],exp=m[3]===undefined?0:Number(m[3]),k=frac.length-exp,M=BigInt(m[1]+frac);
+ const num=BigInt(n)*(k<0?M*10n**BigInt(-k):M),den=100n*(k>0?10n**BigInt(k):1n);
+ return Number(num/den);}
+// research-selection-details/1 (Codex #473 70672bc0, PORTFOLIO_LAB_HANDOFF_20261108.md): an optional sidecar that explains the result
+// it sits beside; checked against that result (policy, eligible and selected sets, weights), never used to change it.
+const DETAIL_KEYS=Object.freeze(['schema_version','as_of','original_population','rule_id','selection_policy','rows','tie_rule','percent_rule','portfolio','issuers','reproduction','performance_verified']);
+const ROW_KEYS=Object.freeze(['company_id','issuer_id','eligible','selected','original_rank','exclusion_reasons']);
+const EXCLUDE=Object.freeze(['Q_MISSING','G_MISSING','OUTSIDE_SELECTION_LIMIT']);
+const HEX64=/^[0-9a-f]{64}$/;
+function checkDetails(d,{mode,value,p,e,s,res},at){
+ keys(d,DETAIL_KEYS,at);
+ if(d.schema_version!=='research-selection-details/1')refuse('SCHEMA',at+'.schema_version');
+ if(d.performance_verified!==false)refuse('DETAILS_INVALID',at+'.performance_verified');
+ const dp=d.selection_policy;
+ if(p===null?dp!==null:!(isObj(dp)&&dp.mode===mode&&dp.value===value))refuse('DETAILS_POLICY_MISMATCH',at+'.selection_policy');
+ if(mode==='top_percent'&&d.percent_rule!=='FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100')refuse('DETAILS_RULE_UNKNOWN',at+'.percent_rule');
+ const pop=d.original_population;if(!isObj(pop)||!Array.isArray(pop.members))refuse('TYPE',at+'.original_population');
+ const den=int(pop.denominator,at+'.original_population.denominator');
+ if(pop.members.length!==den||new Set(pop.members).size!==den)refuse('DETAILS_POPULATION_MISMATCH',at+'.original_population.members');
+ if(!Array.isArray(d.rows)||d.rows.length!==den)refuse('DETAILS_ROWS_MISMATCH',at+'.rows');
+ const seen=new Set(),sel=[],why={Q_MISSING:0,G_MISSING:0,OUTSIDE_SELECTION_LIMIT:0};let elig=0;
+ d.rows.forEach((r,i)=>{const ra=at+'.rows['+i+']';keys(r,ROW_KEYS,ra);
+  if(typeof r.company_id!=='string'||!r.company_id||seen.has(r.company_id)||!pop.members.includes(r.company_id))refuse('DETAILS_ROWS_MISMATCH',ra+'.company_id');seen.add(r.company_id);
+  if(typeof r.eligible!=='boolean'||typeof r.selected!=='boolean'||!Array.isArray(r.exclusion_reasons)||r.exclusion_reasons.some(x=>!EXCLUDE.includes(x)))refuse('DETAILS_INVALID',ra);
+  if(r.selected&&(!r.eligible||r.exclusion_reasons.length))refuse('DETAILS_INVALID',ra+'.selected');
+  if(!r.selected&&!r.exclusion_reasons.length)refuse('DETAILS_INVALID',ra+'.exclusion_reasons');
+  if(!r.eligible&&!r.exclusion_reasons.some(x=>x!=='OUTSIDE_SELECTION_LIMIT'))refuse('DETAILS_INVALID',ra+'.exclusion_reasons');
+  if(r.eligible)elig++;if(r.selected)sel.push(r.company_id);for(const x of r.exclusion_reasons)why[x]++;});
+ if(elig!==e)refuse('DETAILS_ELIGIBLE_MISMATCH',at+'.rows');
+ if(sel.length!==s||sel.some(id=>!res.selected.includes(id)))refuse('DETAILS_SELECTED_MISMATCH',at+'.rows');
+ const pf=d.portfolio;if(!isObj(pf))refuse('TYPE',at+'.portfolio');
+ if(s===0){if(pf.state!=='NOT_FORMED'||pf.weights!==null||pf.cash_weight!==null)refuse('DETAILS_PORTFOLIO_MISMATCH',at+'.portfolio');}
+ else{if(pf.state!=='FORMED'||!isObj(pf.weights)||typeof pf.cash_weight!=='number'||!Number.isFinite(pf.cash_weight)||pf.cash_weight<0)refuse('DETAILS_PORTFOLIO_MISMATCH',at+'.portfolio');
+  const ids=Object.keys(pf.weights);if(ids.length!==s||ids.some(id=>pf.weights[id]!==res.weights[id]))refuse('DETAILS_PORTFOLIO_MISMATCH',at+'.portfolio.weights');}
+ const is=d.issuers;if(!isObj(is)||!Array.isArray(is.unknown_company_ids)||!isObj(is.duplicate_groups)||is.security_identity_verified!==false)refuse('DETAILS_INVALID',at+'.issuers');
+ const rp=d.reproduction;if(!isObj(rp)||!['setting_hash','input_hash','result_hash'].every(k=>typeof rp[k]==='string'&&HEX64.test(rp[k])))refuse('DETAILS_INVALID',at+'.reproduction');
+ return freeze({denominator:den,why:freeze(why),state:pf.state,cash:s?pf.cash_weight:null,unknownIssuers:is.unknown_company_ids.length,
+  duplicates:Object.keys(is.duplicate_groups).length,hashes:freeze({setting:rp.setting_hash,input:rp.input_hash,result:rp.result_hash}),scope:rp.scope||null});}
 function validateSelection(res){
  try{
   if(!isObj(res))refuse('TYPE','$');const at='$';for(const k of['selection_policy','n_eligible','n_selected','selected','weights'])if(!own(res,k))refuse('KEY_MISSING',at+'.'+k);
@@ -156,8 +200,9 @@ function validateSelection(res){
    if(mode==='top_n'&&!(Number.isInteger(value)&&value>0))refuse('POLICY_INVALID',at+'.selection_policy.value');
    if(mode==='top_percent'&&!(typeof value==='number'&&Number.isFinite(value)&&value>0&&value<=100))refuse('POLICY_INVALID',at+'.selection_policy.value');}
   const e=int(res.n_eligible,at+'.n_eligible'),s=int(res.n_selected,at+'.n_selected');
-  // Codex's count rule (select_provisional): all; min(n, N); floor(n × p / 100), computed in integer hundredths of a percent.
-  const expect=mode==='top_n'?Math.min(e,value):mode==='top_percent'?Math.floor(e*Math.round(value*1e6)/1e8):e;
+  // Codex's count rule (select_provisional): all; min(n, N); floor(n × Decimal(str(p)) / 100) — exact on the number's own decimal
+  // digits (floorPercent), never rounded to a fixed precision (33.3333334 % of 3 is 1, 33.3333333 % of 3 is 0).
+  const expect=mode==='top_n'?Math.min(e,value):mode==='top_percent'?floorPercent(e,value):e;
   if(s!==expect)refuse('SELECTED_COUNT_MISMATCH',at+'.n_selected');
   if(!Array.isArray(res.selected)||res.selected.length!==s||new Set(res.selected).size!==s||res.selected.some(x=>typeof x!=='string'||!x))refuse('SELECTED_INVALID',at+'.selected');
   const w=res.weights;
@@ -165,7 +210,8 @@ function validateSelection(res){
   else{if(!isObj(w))refuse('WEIGHTS_INVALID',at+'.weights');const ids=Object.keys(w);
    if(ids.length!==s||ids.some(id=>!res.selected.includes(id)))refuse('WEIGHTS_INVALID',at+'.weights');
    for(const id of ids){const x=w[id];if(typeof x!=='number'||!Number.isFinite(x)||Math.abs(x-1/s)>1e-9)refuse('WEIGHTS_NOT_EQUAL',at+'.weights.'+id);}}
-  return{ok:true,value:freeze({mode,value,legacy:p===null,n_eligible:e,n_selected:s,weight:s?1/s:null})};
+  const details=own(res,'selection_details')?checkDetails(res.selection_details,{mode,value,p,e,s,res},at+'.selection_details'):null;
+  return{ok:true,value:freeze({mode,value,legacy:p===null,n_eligible:e,n_selected:s,weight:s?1/s:null,details})};
  }catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};return{ok:false,code:'INVALID',path:'$'};}}
 const pct=x=>(Math.round(x*10000)/100).toString().replace(/\.0+$/,'')+'%';
 function modeText(v){if(v.mode==='top_n')return'상위 '+v.value+'개';if(v.mode==='top_percent')return'상위 '+v.value+'% (소수점 아래 버림)';return v.legacy?'조건 충족 전부 (선정 방식 지정 없음)':'조건 충족 전부';}
@@ -176,10 +222,18 @@ function ruleText(v){
  if(v.mode==='top_n')return order+' · 앞에서 '+v.value+'개';
  return order+' · 조건 충족 '+v.n_eligible+'개 × '+v.value+'% → 내림 '+v.n_selected+'개';}
 function shortText(v){return v.mode==='top_n'&&v.value>v.n_eligible?'요청 '+v.value+'개 · 조건 충족 '+v.n_eligible+'개뿐 · '+v.n_selected+'개만 선정(종목 부족 · 채우지 않음)':null;}
-function selectionView(v){return Object.freeze({mode:v.mode,label:modeText(v),
+const short=h=>h.slice(0,12)+'…';
+function detailView(v){const d=v.details;if(!d)return null;const w=d.why;
+ return Object.freeze({
+  population:'원래 모집단 '+d.denominator+'개 · 조건 충족 '+v.n_eligible+'개 · 선정 '+v.n_selected+'개',
+  excluded:'제외 사유 · Q 없음 '+w.Q_MISSING+' · G 없음 '+w.G_MISSING+' · 선정 한도 밖 '+w.OUTSIDE_SELECTION_LIMIT+' (한 기업에 둘 이상일 수 있음)',
+  cash:d.state==='NOT_FORMED'?'선정 0개 · 포트폴리오 미형성 · 현금 비중 없음(전액 현금으로 만들지 않음)':'현금 비중 '+pct(d.cash),
+  issuers:'발행사 미연결 '+d.unknownIssuers+'개 · 같은 발행사 묶음 '+d.duplicates+'개 · '+TEXT.ISSUER,
+  replay:'설정 '+short(d.hashes.setting)+' · 입력 '+short(d.hashes.input)+' · 결과 '+short(d.hashes.result)+' · '+TEXT.REPLAY});}
+function selectionView(v){return Object.freeze({mode:v.mode,label:modeText(v),details:detailView(v),
  count:'조건 충족 '+v.n_eligible+'개 중 '+v.n_selected+'개 선정',weight:v.n_selected?'같은 비중 · 각 '+pct(v.weight):'선정 0개 · 비중 없음',general:TEXT.GENERAL,official:TEXT.OFFICIAL,
- rule:ruleText(v),shortfall:shortText(v),scope:TEXT.SELECTION_SCOPE,absent:TEXT.ABSENT});}
+ rule:ruleText(v),shortfall:shortText(v),scope:TEXT.SELECTION_SCOPE,absent:v.details?null:TEXT.ABSENT});}
 
 function source(){return Promise.resolve(Object.freeze({state:'NONE',code:'RESEARCH_SCOPE_NOT_CONNECTED',coverage:null,selection:null,text:TEXT.NONE}));}
-return Object.freeze({COVERAGE_SCHEMA,UNIVERSE_N,FACTORS,AXES,PRESETS,MODES,TEXT,validateCoverage,coverageView,basisText,validateSelection,selectionView,reasonText,source});
+return Object.freeze({COVERAGE_SCHEMA,UNIVERSE_N,FACTORS,AXES,PRESETS,MODES,TEXT,validateCoverage,coverageView,basisText,validateSelection,selectionView,floorPercent,reasonText,source});
 });

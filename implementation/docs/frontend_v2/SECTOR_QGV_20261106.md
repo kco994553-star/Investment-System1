@@ -111,7 +111,7 @@
 | 엔진 `gate_status` | 화면 |
 | --- | --- |
 | PASS | 관문 통과 |
-| VALUE_EXCLUDED | 관문: 가치(V) 제외 · 남은 축 비례 재배분 · 적용 Q x% · G y% (엔진 `post_gate_axis_weights`) |
+| VALUE_EXCLUDED | 관문: V 총점 반영 제외 · 남은 축 비례 재배분 · 기업 탈락·자료 미수집 아님 · 적용 Q x% · G y% (엔진 `post_gate_axis_weights`) |
 | UNKNOWN | 관문 판정 불가 · 최종 점수·순위 없음 |
 
 - **저장 위치:**
