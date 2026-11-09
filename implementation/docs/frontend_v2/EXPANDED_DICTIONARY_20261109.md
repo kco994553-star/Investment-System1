@@ -9,11 +9,12 @@
 | --- | --- | --- |
 | #524 보유 발행사 전달 | `fb80b67bcf9695b21fe1ec9dc7a6bd32af930fc5` | `held-issuer-sharded/1` 계약·합성 2발행사·`verify_shards` |
 | #525 공통 사전·매크로 근거 | `731e46827bd548db53bf39464e64ff8e5acbc2f6` | `current_taxonomy()`, `query_industry_evidence`, 합성 7사례 |
-| #473 선정 부가 계약 | `70672bc0dae4024663aba9b47135b0597d2bab4a` | `research-selection-details/1`, 합성 7사례(공개 fixture 한 파일만) |
+| #473 선정 부가 계약 | `02e3d44e9082e3d9a7b1df6e0e68cdb0634e4d95` (처음 `70672bc0`) | `research-selection-details/1`, 합성 7사례(fixture SHA-256 `141ae6d6…`) |
 
 #524·#525는 충돌 없이 합쳤고 Codex 파일은 바꾸지 않았다.
-- #473은 처음에 합쳤다가 되돌렸다(되돌림 커밋, force push 없음). #473의 `validation/vertical_slice.py`가 research 패키지를 import해서, 저장소 경계 시험 `test_no_operating_module_imports_the_research_package`가 실패하기 때문이다. 이는 #473 자체의 CI 실패이며 Codex 소유 코드라 고치지 않았다.
-- 오너 지시대로 이 실패를 #524·#525 연결과 분리했다. 이 가지에는 소비자 시험 입력인 공개 합성 fixture `research_selection_handoff_v1_synthetic.json` 한 파일만 바이트 그대로 둔다(SHA-256 `e296b5cb…`, Codex 인계 값과 같음).
+- #473 `70672bc0`은 `validation/vertical_slice.py`가 research 패키지를 import해 저장소 경계 시험이 실패했다. 그래서 한때 되돌렸다(`0319db19`, force push 없음).
+- Codex가 도우미를 `validation/selection_details.py`로 옮긴 `02e3d44e`(CI 성공)를 낸 뒤 다시 넣고 합쳤다(`fc35c700`, 병합 `f1c14c14`). #473 파일은 `02e3d44e`와 바이트가 같다.
+- 새 fixture는 엔진 소스 경로·결과 해시만 바뀌었고, 선정·순위·비중·입력·설정과 계약 필드는 그대로다.
 
 ## 2. 대기열 4번 — 확장 발행사 찾기 (#524)
 
