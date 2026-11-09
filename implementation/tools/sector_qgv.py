@@ -35,6 +35,10 @@ def run(job,output,synthetic=False):
         mappings=json.loads(checked_bytes(job['mapping'])) if job.get('mapping') else {}
         snapshot,audit=build_held_snapshot(sec,job['archives'],snapshot_hash=spec['sha256'],mapping_rows=mappings)
     elif mode=='normalized':snapshot=json.loads(checked_bytes(job['snapshot']))
+    elif mode=='held-input-repair':
+        from investment_system.research.sector_qgv_held_repair import repair
+        original=json.loads(checked_bytes(job['snapshot']))
+        snapshot,audit=repair(original,json.loads(checked_bytes(job['repair_plan'])))
     elif mode=='held-sec-classification':
         from investment_system.research.sector_qgv_classification import connect_held_classification
         spec=job['sec_snapshot'];sec=json.loads(checked_bytes(spec))
@@ -111,6 +115,12 @@ def run(job,output,synthetic=False):
         'catalog.json':list_factors(config,'INFORMATION_TECHNOLOGY','GENERAL'),
         'comparisons.json':comparisons,'connection-audit.json':audit,
         'official-baseline-reference.json':baseline}
+    if mode=='held-input-repair':
+        from investment_system.research.sector_qgv_partial import assert_retained_preview
+        from investment_system.research.sector_qgv_held_repair import comparison
+        retained=json.loads(checked_bytes(job['before_preview']))
+        assert_retained_preview(retained,original,config)
+        artifacts['input-repair-comparison.json']=comparison(retained,preview)
     if main_response:artifacts['main-response.json']=main_response
     if axis_comparison:artifacts['axis-comparison.json']=axis_comparison
     output.mkdir(parents=True,mode=0o700)
