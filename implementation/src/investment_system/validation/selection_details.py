@@ -36,7 +36,7 @@ def describe_selection(*, quality, members, ranked, selected, policy, as_of, uni
         'parent_universe_members':list(universe.ids()),'is_subset_of_parent':set(original)!=set(universe.ids())}
     source_hashes={}
     base=Path(__file__).resolve().parents[1]
-    for name in ('validation/vertical_slice.py','contracts/portfolio_input.py','research/selection_details.py'):
+    for name in ('validation/vertical_slice.py','contracts/portfolio_input.py','validation/selection_details.py'):
         try:source_hashes[name]=hashlib.sha256((base/name).read_bytes()).hexdigest()
         except OSError:source_hashes[name]=None
     input_hash=_hash({'quality':quality,'quality_input_order':list(quality),'population':population,'issuer_ids':identities})

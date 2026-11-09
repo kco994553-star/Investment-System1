@@ -53,3 +53,18 @@ Main은 숫자를 임의 반올림하지 말고, 생산자가 지원하는 Decim
 같은 보관 universe ID/가용시각·설정·입력은 같은 식별자를 재현하고, 입력 변경은 input/result hash만 바꾼다.
 새 실자료 포트폴리오 계산·전략 성과는0. Main #522 cbd1da52의 판독에서도 소수% 경계1차이는 그대로 재현된다.
 Main은 기존 validateSelection의 허용 정밀도를 맞추고, sample.selection.selection_details를 선택 부가 필드로 판독하면 된다.
+
+## 2026-11-09 CI 의존성 경계 수정
+
+70672bc0dae4024663aba9b47135b0597d2bab4a / run42482339546의 Full Python unit suite에서
+`test_research_pit_filings.py::test_no_operating_module_imports_the_research_package`가 실패했다.
+기대 offenders=[] / 실제 ['validation/vertical_slice.py']; 같은 SHA의 해당 시험을 로컬에서 재현했다.
+원인은 새 설명 도우미를 research 패키지에 둔 뒤 validation 진입점에서 가져온 의존성 방향이다.
+
+도우미를 복제하지 않고 `validation/selection_details.py`로 이동해 같은 계층에서 재사용한다.
+기존 경계 시험·가드·워크플로는 수정하지 않는다. 선정·비중·부가 계약의 의미와 /1 스키마는 불변이다.
+실패 시험과 영향받는 selection_details/vertical/store 시험 23건 통과.
+합성7사례는 기존 선정 결과를 유지한 채 설명 도우미만 다시 적용했다.
+입력/저장설정 hash와 수치는 그대로이며, 실행 소스 위치/바이트가 바뀌어 engine_source_sha256와 result_hash만 갱신했다.
+70672bc0의 이전 fixture는 Git 이력에 보존한다. 구 결과를 새 소스로 실행한 결과라고 재표기하지 않는다.
+새 실자료 계산·채택·브라우저 소비자 수정은 없다. Main은 새 도우미 경로를 포함한 커밋을 인수해야 한다.

@@ -24,7 +24,7 @@ from ..universe.engine import UniverseEngine
 from .file_store import FileTrackRecordStore
 from .historical import attach_name_outcomes, run_as_of
 from .records import ScopedTrackStore
-from ..research.selection_details import describe_selection
+from .selection_details import describe_selection
 
 # Development canaries. 17-name regression stays separate.
 CANARY_IDS = ("nvda", "msft", "amzn", "avgo", "amd", "qcom", "lrcx", "intc")
