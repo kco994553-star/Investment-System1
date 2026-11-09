@@ -75,11 +75,15 @@ function block(anchor){
    err=>{const c=codeOf(err);slot.replaceChildren(h('p',{class:'err',dataset:{heldDetailError:c}},'이 발행사 상세 · ',c==='KIS_SERIES_NOT_FOUND'?'상세 조각 없음':say(c),' · 색인과 다른 발행사는 그대로'));})
    .finally(()=>{st.busy=false;});}
 
+ // A code row that is a Universe504 company of the public list opens that company page (검색 → 기업 상세); any other id stays text.
+ function codeRows(rows){const W=E().W;if(!rows.length)return'없음 · '+W.CODE_ROWS;
+  const known=c=>{try{return!!(I.companies&&typeof I.companies.get==='function'&&I.companies.get(c));}catch(_){return false;}};
+  return h('span',null,...rows.flatMap((c,i)=>[i?', ':null,known(c)?h('a',{class:'lk',href:I.href('company',c),dataset:{heldCompany:c}},c,' → 기업 상세'):c]),' · ',W.CODE_ROWS);}
  function card(v){const W=E().W;
   return h('div',{class:'sk card cc-wrap',dataset:{heldDetail:v.id}},h('h4',null,v.id,' · ',v.row),
    dl([['관측 티커',(v.tickers.join(', ')||'없음')+' · '+W.TICKER,{heldTickers:String(v.tickers.length)}],
     ['관측 이름',v.names.join(', ')||'없음'],
-    ['운영504 코드 행',(v.codeRows.join(', ')||'없음')+' · '+W.CODE_ROWS,{heldCodeRows:String(v.codeRows.length)}],
+    ['운영504 코드 행',codeRows(v.codeRows),{heldCodeRows:String(v.codeRows.length)}],
     ['섹터',v.sector,{heldClass:'sector'}],['하위 산업',v.industry,{heldClass:'industry'}],['회계모형',v.accounting,{heldClass:'accounting'}],
     ['원천 SIC',v.sic],['분류 적용',v.applicability],
     ['축',v.axes,{heldAxes:''}],['계산',v.status,{heldStatus:''}],['순위',v.rank,{heldRank:''}],['비교집단',v.peer],

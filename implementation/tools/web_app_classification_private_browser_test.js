@@ -56,7 +56,9 @@ const BUNDLE = (() => { const b = JSON.parse(JSON.stringify(X.uBundle())), r = b
 const RECORD_IDS = BUNDLE.view.rows.map((r) => r.record_id).filter(Boolean);
 // The held issuer delivery (Codex #524 shape, synthetic) tied to this bundle's expanded summary as served (its bytes and held scope).
 const SUMMARY_TEXT = JSON.stringify(BUNDLE.expanded_summary);
-const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample);
+// The first issuer names one Universe504 company of the public list (its code row links the company page) and one unknown id.
+const LINKED_CODE = BUNDLE.view.rows[0].company_id;
+const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'] });
 const EXF = { expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' };
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -231,7 +233,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.match(await text(page, '[data-held-meta]'), new RegExp('발행사 ' + N + '개 · 운영504와 합치지 않음'));
         // Two issuers in one shard (the second needs no read), one in another shard.
         const byShard = {}; for (const id of DELIVERY.ids) (byShard[DELIVERY.shardOf(id)] = byShard[DELIVERY.shardOf(id)] || []).push(id);
-        const pair = Object.values(byShard).find((v) => v.length >= 2), [a1, a2] = pair, other = DELIVERY.ids.find((id) => DELIVERY.shardOf(id) !== DELIVERY.shardOf(a1));
+        const pair = Object.values(byShard).find((v) => v.length >= 2), [a1, a2] = pair, other = DELIVERY.ids.find((id) => ![a1, DELIVERY.ids[0]].map(DELIVERY.shardOf).includes(DELIVERY.shardOf(id)));
         const pick = async (id) => { await page.locator('[data-held-query]').fill(id); await page.locator('[data-held-result="' + id + '"] button').click(); };
         const r1 = w.log.length; await pick(a1);
         await page.locator('[data-held-detail="' + a1 + '"]').waitFor({ timeout: 20000 });
@@ -243,6 +245,15 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.match(d1, /순위 없음 · 비교집단 = 보관 카탈로그 점수 모집단\(전체시장 아님\)/); assert.match(d1, /관문 통과·새 Q 점수 아님/);
         assert.match(d1, /가격·기술 연결 안 됨/);
         assert.equal(await page.locator('[data-held-detail="' + a1 + '"] [data-held-evidence]').count(), 1);
+        await page.waitForTimeout(5200);
+        // 검색 → 기업 상세: the first issuer's code rows (a Universe504 code links its page; an unknown id stays text).
+        const first = DELIVERY.ids[0];
+        await page.locator('[data-held-query]').fill(first); await page.locator('[data-held-result="' + first + '"] button').click();
+        await page.locator('[data-held-detail="' + first + '"]').waitFor({ timeout: 20000 });
+        const links = await page.locator('[data-held-detail="' + first + '"] [data-held-company]').evaluateAll((n) => n.map((x) => [x.dataset.heldCompany, x.getAttribute('href')]));
+        assert.deepEqual(links.map((x) => x[0]), [LINKED_CODE], phase + ': only the listed code links');
+        assert.equal(links[0][1], '#/company/' + encodeURIComponent(LINKED_CODE));
+        assert.match(await text(page, '[data-held-detail="' + first + '"] [data-held-code-rows]'), /ROW:NOT-IN-LIST/);
         await page.waitForTimeout(5200);
         const r2 = w.log.length; await pick(a2);
         await page.locator('[data-held-detail="' + a2 + '"]').waitFor({ timeout: 20000 });

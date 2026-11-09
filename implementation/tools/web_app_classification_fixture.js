@@ -87,7 +87,7 @@ function syntheticCounts(view, summary, { opQ, opG, heldGate, catGate }) {
 // served to the page (its SHA-256) and its held_financial_subsample scope. Built from Codex's two synthetic issuers (A: Q 0, two
 // observed tickers, gate input connected; B: unclassified), repeated to the scope's issuer denominator with made-up ids, sharded by
 // sha256(issuer_id)[:2], with identity / context hashes and descriptors as Codex's producer writes them. Test data only.
-function heldDelivery(summaryText, held) {
+function heldDelivery(summaryText, held, { firstCodes = null } = {}) {
   const E = require('../src/investment_system/product/web_app/expanded-issuers.js');
   const D = path.join(ROOT, 'implementation/tests/fixtures/held_issuer_shards');
   const read = (n) => JSON.parse(fs.readFileSync(path.join(D, n), 'utf8'));
@@ -106,7 +106,7 @@ function heldDelivery(summaryText, held) {
     const tickers = kind === 'A' ? ['SYN_H' + i, 'SYN_H' + i + '.B'] : ['SYN_H' + i];
     t.issuer_id = id; t.analysis_row_id = 'ISSUER:' + id; t.context = identity.context; t.context_hash = ch;
     t.catalog_observations = tickers.map((x) => ({ ...t.catalog_observations[0], analysis_row_id: t.analysis_row_id, issuer_id: id, observed_ticker: x }));
-    t.operating_code_rows = kind === 'A' ? ['ROW:' + id] : [];
+    t.operating_code_rows = i === 0 && firstCodes ? firstCodes : kind === 'A' ? ['ROW:' + id] : [];
     t.classification = { ...t.classification, company_id: t.analysis_row_id, issuer_id: id, record_id: 'REC:' + t.analysis_row_id };
     t.official_q_gate_input = { ...t.official_q_gate_input, company_id: t.analysis_row_id, issuer_id: id };
     const key = sha(id).slice(0, 2);

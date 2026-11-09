@@ -106,8 +106,8 @@ group-join-fixtures.json `8c8ca6dc…1658`, consumer-probe.cjs `f74694a1…1054`
 - ID는 그대로 쓴다(`book-sector-map/1`, 예: `TELECOMMUNICATIONS`). 표시 이름 때문에 ID를 새로 만들지 않는다.
 
 **한 사전:** ID·한국어명·정의·포함/제외 범위·버전·근거를 Codex 공통 분류 사전 한 곳에서 관리한다. Main은 그 사전을 읽고, 화면별 분류표를 만들지 않는다.
-- 지금 사전(`dictionary.json` `sectors`)에는 ID → 이름만 있고, `TELECOMMUNICATIONS`의 이름은 "통신"이다.
-- 2.2.7 화면(`sector-qgv.js` `SECTOR_TEXT`)에는 같은 이름이 따로 들어 있다. 정리할 대상이다.
+- (2026-11-09 해소) Codex #525 `current_taxonomy()`가 이름("통신서비스")·정의·포함/제외·근거를 담은 현행 정의 `investment-system-common-10-sector/1`을 냈다. 화면은 이 한 사전을 `web_app/common-taxonomy.js`로 그대로 담아 읽는다(Draft #526, [EXPANDED_DICTIONARY_20261109](EXPANDED_DICTIONARY_20261109.md)). `sector-qgv.js`의 별도 이름표는 없앴다. 기록의 사전(`/1`·`/2`)·해시는 그대로다.
+- 이전 상태(기록): 사전 `dictionary.json` `sectors`에는 ID → 이름만 있었고 `TELECOMMUNICATIONS`는 "통신"이었다. 2.2.7 화면에는 같은 이름이 따로 들어 있었다.
 - 순서:
   1. Codex가 사전에 이름("통신서비스")·정의·포함/제외·근거를 넣고 판을 올린다.
   2. Main은 두 화면이 사전 이름만 읽게 바꾸고 `SECTOR_TEXT`를 없앤다.
@@ -154,8 +154,8 @@ group-join-fixtures.json `8c8ca6dc…1658`, consumer-probe.cjs `f74694a1…1054`
 
 | 목록 | 무엇 | 지금 쓰는 곳 | 공통 분류에서의 자리 |
 | --- | --- | --- | --- |
-| 투자시스템 공통 10섹터 (구 명칭 "책 10섹터", `book-sector-map/1`, Codex #505 `sector_qgv_registry.SECTORS`) | 경기소비재·필수소비재·에너지·금융·헬스케어·산업재·정보기술·소재·통신·유틸리티 | 섹터 QGV 1.2 (#510) | **상위 분류** |
-| 하위 산업 | 공통 10섹터 아래 산업. 아직 정의 없음 | — | 섹터 아래 둘째 단계. Codex 정의 대기 |
+| 투자시스템 공통 10섹터 (구 명칭 "책 10섹터", `book-sector-map/1`, Codex #505 `sector_qgv_registry.SECTORS`) | 경기소비재·필수소비재·에너지·금융·헬스케어·산업재·정보기술·소재·통신서비스·유틸리티(현행 정의 #525; 사전 `/1`·`/2` 기록상 이름은 "통신") | 섹터 QGV 1.2 (#510) | **상위 분류** |
+| 하위 산업 | 공통 10섹터 아래 산업. Codex #525 `current_taxonomy().industries`(사전 `/2`의 산업, 부모 섹터·원천 대응 포함) | 기업 상세·2.1.3 필터·산업 매크로 근거(Draft #526) | 섹터 아래 둘째 단계 |
 | SIC (SEC 제출 SIC 4자리) | 원천 분류 | 거의 모든 화면 | **원천 분류**. 따로 보이고 섹터의 하위 코드로 쓰지 않음 |
 | SIC 10업종군 (`sic_industry_groups/v0`, 하위 7) | SIC 범위 묶음 | QGV 1.1 필터, 의외의 기업 "섹터", 매크로 4.3, 기업 검색 | 기존 4.3 원문의 "SIC 산업"과 과거 결과용. 공통 섹터가 아님 |
 | GICS 11섹터 | 현행 상업 분류 | 코드 없음(`gics_used: false`) | 쓰지 않음. 같은 목록으로 취급하지 않음 |
