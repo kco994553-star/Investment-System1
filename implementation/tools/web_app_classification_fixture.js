@@ -83,4 +83,47 @@ function syntheticCounts(view, summary, { opQ, opG, heldGate, catGate }) {
       held_financial_subsample: scope(heldPop, catScore, counts(h.issuers, h.Q, h.G, h.V, h.joint, h.total), gate(heldGate, h.issuers), exCls),
       catalog: scope(catPop, catScore, counts(c.issuers, c.Q, c.G, c.V, c.joint, c.total), gate(catGate, c.issuers), exCls) } };
 }
-module.exports = { syntheticCounts, GROUP_MANIFEST_SHA256, groupManifest, groupFixtures, applyCase, uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };
+// A synthetic held issuer delivery (Codex #524 held-issuer-sharded/1) tied to a test bundle's own expanded summary: the summary text
+// served to the page (its SHA-256) and its held_financial_subsample scope. Built from Codex's two synthetic issuers (A: Q 0, two
+// observed tickers, gate input connected; B: unclassified), repeated to the scope's issuer denominator with made-up ids, sharded by
+// sha256(issuer_id)[:2], with identity / context hashes and descriptors as Codex's producer writes them. Test data only.
+function heldDelivery(summaryText, held) {
+  const E = require('../src/investment_system/product/web_app/expanded-issuers.js');
+  const D = path.join(ROOT, 'implementation/tests/fixtures/held_issuer_shards');
+  const read = (n) => JSON.parse(fs.readFileSync(path.join(D, n), 'utf8'));
+  const sha = (t) => crypto.createHash('sha256').update(t).digest('hex');
+  const enc = (v) => E.canonical(v) + '\n';
+  const m0 = read('manifest.json'), ix0 = read('expanded-index.json'), cov0 = read('coverage.json');
+  const tpl = { A: read('expanded-detail/55.json').issuers[0], B: read('expanded-detail/df.json').issuers[0] };
+  const identity = JSON.parse(JSON.stringify(m0.identity));
+  identity.summary = { ref: 'synthetic://bundle-expanded-summary.json', sha256: sha(summaryText) };
+  identity.valuation_date = held.valuation_date;
+  for (const k of ['valuation_date', 'input_as_of', 'population', 'scoring_population', 'versions', 'classification', 'result_identity']) identity.context[k] = held[k];
+  const ih = sha(E.canonical(identity)), ch = sha(E.canonical(identity.context));
+  const n = held.population.denominator, shards = new Map(), rows = [];
+  for (let i = 0; i < n; i++) {
+    const kind = i % 2 ? 'B' : 'A', id = 'SYN-H' + String(i).padStart(4, '0'), t = JSON.parse(JSON.stringify(tpl[kind]));
+    const tickers = kind === 'A' ? ['SYN_H' + i, 'SYN_H' + i + '.B'] : ['SYN_H' + i];
+    t.issuer_id = id; t.analysis_row_id = 'ISSUER:' + id; t.context = identity.context; t.context_hash = ch;
+    t.catalog_observations = tickers.map((x) => ({ ...t.catalog_observations[0], analysis_row_id: t.analysis_row_id, issuer_id: id, observed_ticker: x }));
+    t.operating_code_rows = kind === 'A' ? ['ROW:' + id] : [];
+    t.classification = { ...t.classification, company_id: t.analysis_row_id, issuer_id: id, record_id: 'REC:' + t.analysis_row_id };
+    t.official_q_gate_input = { ...t.official_q_gate_input, company_id: t.analysis_row_id, issuer_id: id };
+    const key = sha(id).slice(0, 2);
+    if (!shards.has(key)) shards.set(key, []);
+    shards.get(key).push(t);
+    rows.push({ id, key, t });
+  }
+  const files = {};
+  for (const [key, list] of [...shards].sort()) files['expanded-detail/' + key + '.json'] = enc({ schema_version: 'held-issuer-shard/1', data_kind: 'SYNTHETIC', identity, identity_hash: ih, shard_key: key, issuers: list.sort((a, b) => (a.issuer_id < b.issuer_id ? -1 : 1)) });
+  const desc = (p) => ({ bytes: Buffer.byteLength(files[p]), path: p, sha256: sha(files[p]) });
+  const index = rows.map(({ id, key, t }) => ({ ...JSON.parse(JSON.stringify(ix0.rows[t.classification.sector.status === 'CONFIRMED' ? 0 : 1])), issuer_id: id, analysis_row_id: t.analysis_row_id,
+    observed_tickers: [...new Set(t.catalog_observations.map((o) => o.observed_ticker))].sort(), operating_code_rows: t.operating_code_rows, shard_key: key, detail: desc('expanded-detail/' + key + '.json') }));
+  files['expanded-index.json'] = enc({ schema_version: 'held-issuer-search/1', data_kind: 'SYNTHETIC', identity, identity_hash: ih, rows: index });
+  files['coverage.json'] = enc({ ...cov0, identity, identity_hash: ih });
+  const manifest = { ...m0, identity, identity_hash: ih, issuer_count: n, shards: [...shards.keys()].sort(), files: Object.keys(files).sort().map(desc) };
+  files['manifest.json'] = enc(manifest);
+  return { files, ids: rows.map((r) => r.id), shardOf: (id) => sha(id).slice(0, 2) };
+}
+
+module.exports = { heldDelivery, syntheticCounts, GROUP_MANIFEST_SHA256, groupManifest, groupFixtures, applyCase, uTech, JOIN_CASES_PATH, JOIN_CASES_SHA256, joinCases, universe, uBundle, uTechnical, uRecord, MAIN_PATH, MAIN_SHA256, HANDOFF_DIR, HANDOFF_SHA256, sha, main, mainSha, handoffSha, codexFixtures, bundle, technicalCase, recordCase };

@@ -152,7 +152,7 @@ function coverageView(c){const n=c.denominator.count,t=c.times||{};
 // no fixed number of decimals. p is already checked finite and in (0, 100].
 function floorPercent(n,p){
  const m=/^(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/i.exec(String(p));if(!m)refuse('POLICY_INVALID','$.selection_policy.value');
- const frac=m[2]||'',k=frac.length-Number(m[3]||0),M=BigInt(m[1]+frac);
+ const frac=m[2]===undefined?'':m[2],exp=m[3]===undefined?0:Number(m[3]),k=frac.length-exp,M=BigInt(m[1]+frac);
  const num=BigInt(n)*(k<0?M*10n**BigInt(-k):M),den=100n*(k>0?10n**BigInt(k):1n);
  return Number(num/den);}
 // research-selection-details/1 (Codex #473 70672bc0, PORTFOLIO_LAB_HANDOFF_20261108.md): an optional sidecar that explains the result

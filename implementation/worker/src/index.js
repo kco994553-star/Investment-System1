@@ -270,6 +270,8 @@ function krxNumber(value) {
 // Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
 // GET /kis/classification?part=<view|technical|macro|qgv_links|dictionary|expanded_summary> (owner 2026-11-08): the held common classification
 // bundle (Codex #516 outputs, staged byte for byte at classification/<part>.json), same owner check, same read token, same rules.
+// …?part=<expanded_manifest|expanded_index|expanded_coverage> and ?part=expanded_detail&shard=<2 hex> (owner 2026-11-09): the held
+// issuer delivery (Codex #524) at classification/expanded/; the same 2 MiB limit, nothing widened.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -284,19 +286,39 @@ const KIS_FILES = Object.freeze({
   '/kis/qgv': [() => 'qgv/latest.json', (o) => o.schema === 'kis-qgv/1'],
   '/kis/macro': [() => 'macro/current.json', (o) => o.schema_version === 'macro-current-query/1'],
   '/kis/news': [() => 'news/current.json', (o) => o.kind === 'NEWS_SIGNALS' && o.schema_version === 2],
-  '/kis/classification': [(part) => 'classification/' + part + '.json', (o, part) => o.schema_version === CLASSIFICATION_PARTS[part]],
+  '/kis/classification': [classificationPath, classificationSchema],
 });
 // The classification parts and the schema each file must carry (Codex common-classification/1 output names).
 const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1', technical: 'common-classification-technical/1',
   macro: 'common-classification-macro/1', qgv_links: 'common-classification-qgv-links/1', dictionary: 'common-classification-dictionary/1',
   // The expanded held issuer sample's summary (Codex #520): a separate population, its counts only.
-  expanded_summary: 'held-expanded-classification-summary/1' });
-// /kis/classification?part=<part> only (no other parameter, no alternate encoding).
+  expanded_summary: 'held-expanded-classification-summary/1',
+  // The held issuer delivery (Codex #524 held-issuer-sharded/1, owner 2026-11-09): its manifest, search index and coverage, and one
+  // detail shard at a time (?part=expanded_detail&shard=<2 hex>), staged byte for byte under classification/expanded/.
+  expanded_manifest: 'held-issuer-sharded/1', expanded_index: 'held-issuer-search/1', expanded_coverage: 'retained-default-coverage/1',
+  expanded_detail: 'held-issuer-shard/1' });
+const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' });
+// /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
+// lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
+// 'expanded_detail/<shard>'.
 export function kisClassificationPart(url) {
-  if (url.hash || !/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
+  if (url.hash) throw new Failure('REQUEST_INVALID', 400);
+  const shard = /^\?part=expanded_detail&shard=([0-9a-f]{2})$/.exec(url.search);
+  if (shard) return 'expanded_detail/' + shard[1];
+  if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
-  if (!Object.hasOwn(CLASSIFICATION_PARTS, part)) throw new Failure('REQUEST_INVALID', 400);
+  if (!Object.hasOwn(CLASSIFICATION_PARTS, part) || part === 'expanded_detail') throw new Failure('REQUEST_INVALID', 400);
   return part;
+}
+function classificationPath(part) {
+  if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
+  if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
+  return 'classification/' + part + '.json';
+}
+// The file must carry its part's schema; a detail shard must also name the shard asked for.
+function classificationSchema(o, part) {
+  if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
+  return o.schema_version === CLASSIFICATION_PARTS[part];
 }
 // Routes that take no query string at all.
 const KIS_PLAIN = new Set(['/kis/status', '/kis/qgv', '/kis/macro', '/kis/news']);

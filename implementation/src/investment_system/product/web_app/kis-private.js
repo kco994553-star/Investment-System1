@@ -29,6 +29,12 @@ const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/ki
 // classification bundle, Codex #516 outputs byte for byte); the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
 const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
+// The held issuer delivery (Codex #524, owner 2026-11-09): manifest, index, coverage and one detail shard ('expanded_detail/<2 hex>').
+// These answer {bytes, body}: the reader checks each file's own bytes against the manifest (SHA-256 and size), not a re-encoding.
+const EXPANDED_PARTS=Object.freeze(['expanded_manifest','expanded_index','expanded_coverage']);
+const EXPANDED_DETAIL=/^expanded_detail\/([0-9a-f]{2})$/;
+// The expanded summary also comes with its bytes: their SHA-256 is what the held issuer delivery names.
+const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x));
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;
@@ -254,18 +260,21 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
  function disconnect(){drop();}
  async function get(route,symbol,signal){
   if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route),byPart=route==='classification';
-  if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol))throw Error('REQUEST_INVALID');
+  if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol)&&!expandedPart(symbol))throw Error('REQUEST_INVALID');const raw=byPart&&expandedPart(symbol);
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
-  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:byPart?'?part='+symbol:'');
+  const shard=byPart?EXPANDED_DETAIL.exec(symbol):null;
+  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:shard?'?part=expanded_detail&shard='+shard[1]:byPart?'?part='+symbol:'');
   let res;try{res=await send(url,{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal});}
   catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw Error('UPSTREAM_UNAVAILABLE');}
   if(mine!==epoch)throw Error('CANCELED');
-  let body=null;try{body=await res.json();}catch(_){body=null;}
+  let body=null,bytes=null;
+  if(raw&&res.ok){try{bytes=new Uint8Array(await res.arrayBuffer());body=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch(_){body=null;}}
+  else{try{body=await res.json();}catch(_){body=null;}}
   if(mine!==epoch)throw Error('CANCELED');
   if(res.status===401||res.status===403){const code=body&&body.error&&typeof body.error.code==='string'?body.error.code:'AUTH_FORBIDDEN';if(code==='AUTH_FORBIDDEN'||code==='ORIGIN_FORBIDDEN')drop();throw Error(code==='ORIGIN_FORBIDDEN'?'AUTH_FORBIDDEN':code);}
   if(!res.ok){const code=body&&body.error&&typeof body.error.code==='string'&&/^[A-Z][A-Z0-9_]{1,63}$/.test(body.error.code)?body.error.code:'UPSTREAM_UNAVAILABLE';throw Error(code);}
-  if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
+  if(!isObj(body))throw Error('KIS_SERIES_INVALID');return raw?Object.freeze({bytes,body}):body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,CLASSIFICATION_PARTS,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,CLASSIFICATION_PARTS,EXPANDED_PARTS,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

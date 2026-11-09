@@ -198,7 +198,7 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     const clock = { now: 1_000_000 }, sent = [], tokenRequests = [];
     const google = { accounts: { oauth2: { initTokenClient: (cfg) => { tokenRequests.push(cfg); return { requestAccessToken: () => cfg.callback({ access_token: 'synthetic-token', expires_in: String(expires), scope }) }; } } } };
     const queue = [...answers];
-    const send = async (url, init) => { sent.push({ url, init }); const a = queue.shift() || { status: 200, body: {} }; return { status: a.status, ok: a.status >= 200 && a.status < 300, json: async () => a.body }; };
+    const send = async (url, init) => { sent.push({ url, init }); const a = queue.shift() || { status: 200, body: {} }; return { status: a.status, ok: a.status >= 200 && a.status < 300, json: async () => a.body, arrayBuffer: async () => new TextEncoder().encode(JSON.stringify(a.body)).buffer }; };
     const c = KP.createClient({ win: { google }, clientId: 'synthetic-client', origin: ORIGIN, send, now: () => clock.now });
     return { c, clock, sent, tokenRequests };
   }
@@ -227,11 +227,25 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     // classification (owner 2026-11-08): ?part= one of the five parts only, the same request rules; a bad part never leaves the page.
     const c = harness({ answers: KP.CLASSIFICATION_PARTS.map(() => ({ status: 200, body: { schema_version: 'synthetic' } })) });
     await c.c.connect();
-    for (const part of KP.CLASSIFICATION_PARTS) await c.c.get('classification', part);
+    const got = [];
+    for (const part of KP.CLASSIFICATION_PARTS) got.push(await c.c.get('classification', part));
+    // The expanded summary also answers its own bytes (their SHA-256 anchors the held issuer delivery); the others answer the body.
+    assert.ok(got[5].bytes instanceof Uint8Array && got[5].body.schema_version === 'synthetic');
+    for (const g of got.slice(0, 5)) assert.equal(g.schema_version, 'synthetic');
     assert.deepEqual(c.sent.map((x) => x.url), KP.CLASSIFICATION_PARTS.map((p) => ORIGIN + KP.ROUTE.classification + '?part=' + p));
     for (const x of c.sent) { assert.deepEqual(x.init.headers, { Authorization: 'Bearer synthetic-token' }); assert.equal(x.init.redirect, 'error'); assert.equal(x.init.cache, 'no-store'); }
     for (const bad of [null, '', 'store', 'View', '../view', 'view&x=1']) await assert.rejects(c.c.get('classification', bad), /REQUEST_INVALID/, String(bad));
     assert.equal(c.sent.length, KP.CLASSIFICATION_PARTS.length);
+    // The held issuer delivery (Codex #524): manifest / index / coverage and one shard by its 2-hex key; bytes come with the body.
+    const e = harness({ answers: [0, 1, 2, 3].map(() => ({ status: 200, body: { schema_version: 'synthetic' } })) });
+    await e.c.connect();
+    const parts = ['expanded_manifest', 'expanded_index', 'expanded_coverage', 'expanded_detail/5a'], back = [];
+    for (const part of parts) back.push(await e.c.get('classification', part));
+    assert.deepEqual(e.sent.map((x) => x.url), ['expanded_manifest', 'expanded_index', 'expanded_coverage'].map((p) => ORIGIN + KP.ROUTE.classification + '?part=' + p)
+      .concat([ORIGIN + KP.ROUTE.classification + '?part=expanded_detail&shard=5a']));
+    for (const r of back) assert.ok(r.bytes instanceof Uint8Array && Object.isFrozen(r) && r.body.schema_version === 'synthetic');
+    for (const bad of ['expanded_detail', 'expanded_detail/5A', 'expanded_detail/5', 'expanded_detail/5ab', 'expanded_detail/../x', 'expanded']) await assert.rejects(e.c.get('classification', bad), /REQUEST_INVALID/, bad);
+    assert.equal(e.sent.length, 4);
   });
   await ok('client: a wider scope is refused; a server 403 drops the token; expiry drops it; disconnect drops it', async () => {
     let h = harness({ scope: 'openid email https://www.googleapis.com/auth/drive.file' });

@@ -172,7 +172,8 @@ function expandedBlock(e,k){
   // denominator). Without checked counts only the catalog figure of the old summary is shown and the held figure is "없음". It is the
   // existing Universe504 official Q replay: not a gate pass, not a sector Q result, not an expanded-sample Q.
   ...gateLines(e,k),
-  h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
+  // Issuer rows (Codex #524): read on the owner's click, one detail shard at a time; without the browse file, the old line stays.
+  I.expandedBrowse&&I.expandedIssuers?I.expandedBrowse.block(heldAnchor):h('p',{class:'reason',dataset:{ccExpandedRows:'NOT_BUILT'}},'확장 발행사 행 단위 화면은 아직 없음 · 요약만 연결됨'),
   h('p',{class:'reason',dataset:{ccExpandedMarket:'NONE'}},'전체시장 분모·커버리지 미산출 · 새 증권 ID ',String(e.new_security_ids),' · 순위 범위 ',e.rank_scope,' · 발행사 행 ID는 증권 ID가 아님 · 기술 결합·기업 화면에 쓰지 않음'));}
 const GATE_WORDS=' · 관문 통과·새 섹터 Q 산출 아님 · 기존 Universe504 공식 Q 재생값(확장 표본 Q 아님)';
 function gateLines(e,k){
@@ -183,9 +184,15 @@ function gateLines(e,k){
  out.push(h('p',{class:'reason',dataset:{ccExpandedGate:'held_financial_subsample',ccExpandedGateValue:'NONE'}},'보유 재무 하위표본 범위의 공식 Q 관문 입력 연결 · ',
   k&&k.state==='ERROR'?'연결 오류('+k.code+') · 쓰지 않음':'이 요약에 없음'));
  return out;}
-function renderClassification(body,res){const C=I.classification,payload={};
- res.forEach((raw,i)=>{if(raw!==null&&raw!==undefined)payload[CC_KEY[CC_PARTS[i]]||CC_PARTS[i]]=raw;});
- const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);ccPaint(body,r.value);}
+// The expanded summary arrives with its own bytes (kis-private raw part): their SHA-256 anchors the held issuer delivery (Codex #524)
+// to this bundle. RAM only; dropped with the bundle (watchClassification).
+let heldAnchor=null;
+function renderClassification(body,res){const C=I.classification,payload={};let sumBytes=null;
+ res.forEach((raw,i)=>{if(raw===null||raw===undefined)return;const part=CC_PARTS[i];let v=raw;
+  if(raw.bytes instanceof Uint8Array&&raw.body){v=raw.body;if(part==='expanded_summary')sumBytes=raw.bytes;}payload[CC_KEY[part]||part]=v;});
+ const r=C.connectPrivate(payload);if(!r.ok)throw Error(r.code);
+ heldAnchor=Object.freeze({bytes:sumBytes,held:r.value.counts&&r.value.counts.state==='OK'?r.value.counts.value.scopes.held_financial_subsample:null});
+ ccPaint(body,r.value);}
 const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]],macro:()=>[['macro',null]],news:()=>[['news',null]],
  classification:()=>CC_PARTS.map(p=>['classification',p,p==='view'?undefined:'OPTIONAL'])});
 const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv,macro:renderShared,news:renderShared,classification:renderClassification});
@@ -195,6 +202,7 @@ const EMPTY_WORD=Object.freeze({macro:'비공개 보관 관측 자료가 아직 
 // screen is open (expiry, a 403, 연결 끊기 on any panel).
 let ccWatch=false;
 function watchClassification(){if(ccWatch)return;ccWatch=true;
+ try{if(I.classification&&typeof I.classification.subscribe==='function')I.classification.subscribe(()=>{heldAnchor=null;});}catch(_){}
  try{I.prices.kisSubscribe(()=>{let on=false;try{on=I.prices.kisState().connected;}catch(_){on=false;}if(!on&&I.classification)I.classification.disconnectPrivate();});}catch(_){ccWatch=false;}}
 function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
  if(kind==='classification')watchClassification();
