@@ -1,6 +1,6 @@
 /* 공통 산업 → 매크로 근거 (owner 2026-11-09 queue item 5; Codex #525 company-industry-macro-query/1) inside the common classification
    private panel of 0. 기업 검색 (private-expand-live.js ccPaint asks IS2.industryMacroLive.block({view}) once the bundle is painted).
-   - One click, one private read (/kis/classification?part=industry_macro) → IS2.industryMacro.validate against the bundle's view
+   - One click, one private read (the classification route, part industry_macro) → IS2.industryMacro.validate against the bundle's view
      (same date, hash, dictionary, mapping) and the one taxonomy IS2.taxonomy shows → the summary (rows, links, active mappings, series,
      unknown mappings and their reasons) and, for the company chosen on this screen (IS2.selection), its common industry, mapping,
      series observation and evidence.

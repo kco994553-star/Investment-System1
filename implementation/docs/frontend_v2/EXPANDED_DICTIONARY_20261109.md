@@ -9,9 +9,11 @@
 | --- | --- | --- |
 | #524 보유 발행사 전달 | `fb80b67bcf9695b21fe1ec9dc7a6bd32af930fc5` | `held-issuer-sharded/1` 계약·합성 2발행사·`verify_shards` |
 | #525 공통 사전·매크로 근거 | `731e46827bd548db53bf39464e64ff8e5acbc2f6` | `current_taxonomy()`, `query_industry_evidence`, 합성 7사례 |
-| #473 선정 부가 계약 | `70672bc0dae4024663aba9b47135b0597d2bab4a` | `research-selection-details/1`, 합성 7사례 |
+| #473 선정 부가 계약 | `70672bc0dae4024663aba9b47135b0597d2bab4a` | `research-selection-details/1`, 합성 7사례(공개 fixture 한 파일만) |
 
-세 가지 모두 충돌 없이 합쳤고 Codex 파일은 바꾸지 않았다.
+#524·#525는 충돌 없이 합쳤고 Codex 파일은 바꾸지 않았다.
+- #473은 처음에 합쳤다가 되돌렸다(되돌림 커밋, force push 없음). #473의 `validation/vertical_slice.py`가 research 패키지를 import해서, 저장소 경계 시험 `test_no_operating_module_imports_the_research_package`가 실패하기 때문이다. 이는 #473 자체의 CI 실패이며 Codex 소유 코드라 고치지 않았다.
+- 오너 지시대로 이 실패를 #524·#525 연결과 분리했다. 이 가지에는 소비자 시험 입력인 공개 합성 fixture `research_selection_handoff_v1_synthetic.json` 한 파일만 바이트 그대로 둔다(SHA-256 `e296b5cb…`, Codex 인계 값과 같음).
 
 ## 2. 대기열 4번 — 확장 발행사 찾기 (#524)
 

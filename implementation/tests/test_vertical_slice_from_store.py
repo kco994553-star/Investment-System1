@@ -11,7 +11,7 @@ from pathlib import Path
 from investment_system.contracts.universe import UniverseMember
 from investment_system.ingestion.raw_store import RawDatasetStore
 from investment_system.universe.engine import UniverseEngine
-from investment_system.validation.vertical_slice import SelectionPolicy, run_vertical_slice_from_store, run_walk_forward_from_store
+from investment_system.validation.vertical_slice import run_vertical_slice_from_store, run_walk_forward_from_store
 
 ROOT = Path(__file__).resolve().parents[1]
 UTC = timezone.utc
@@ -78,14 +78,6 @@ def test_stubbed_ingest_then_vertical_slice_then_walk_forward(tmp_path, monkeypa
 
     wf = run_walk_forward_from_store(store, [t0, t1], lambda d: UniverseEngine().snapshot(d, roster=roster, source_vintage="2026-09-23"), chart_range="5y", store_path=Path(tmp_path) / "w.json")
     assert wf["fit_to_outcomes"] is False and len(wf["steps"]) == 1
-    limited = run_vertical_slice_from_store(store, t0, t1, uni, selection_policy=SelectionPolicy("top_n", 1))
-    assert limited["n_eligible"] == 3 and limited["n_selected"] == 1
-    assert list(limited["weights"].values()) == [1.0]
-    walk_limited = run_walk_forward_from_store(store, [t0, t1], lambda _: uni,
-                                               selection_policy=SelectionPolicy("top_percent", 34))
-    assert walk_limited["steps"][0]["selected"] == limited["selected"]
-    assert walk_limited["steps"][0]["weights"] == limited["weights"]
-    assert walk_limited["steps"][0]["selection_policy"] == {"mode": "top_percent", "value": 34}
 
 
 def test_walk_forward_preserves_dated_cik_and_ticker_when_company_id_is_reused(tmp_path):

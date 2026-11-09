@@ -1,7 +1,7 @@
 /* Held issuer browsing reader (IS2.expandedIssuers; owner 2026-11-09 queue item 4, Codex #524 fb80b67b held-issuer-sharded/1,
    HELD_ISSUER_DELIVERY_20261108.md). The delivery is Codex's projection of retained results (no calculation here, DC-42): a manifest,
    one search index, a coverage file and detail shards expanded-detail/<sha256(issuer_id)[:2]>.json, read through the owner-checked
-   private Worker (/kis/classification?part=expanded_manifest|expanded_index|expanded_coverage, ?part=expanded_detail&shard=<2 hex>).
+   private Worker (its classification route: parts expanded_manifest, expanded_index, expanded_coverage and one expanded_detail shard).
    - Trust: the manifest is accepted only when its identity names the summary already delivered in the checked classification bundle
      (SHA-256 of that summary's own bytes) and its context equals that summary's held_financial_subsample scope (valuation date,
      population, scoring population, versions, classification, result identity). A file's own hashes alone prove nothing.
