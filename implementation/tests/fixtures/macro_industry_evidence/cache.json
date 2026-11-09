@@ -1,0 +1,25 @@
+{
+  "cache_asof": "2017-01-06T19:00:00Z",
+  "query_at": "2017-01-06T21:00:00Z",
+  "schema_version": "macro-current-query/1",
+  "series": {
+    "SYN:SERIES": {
+      "archive_version_id": "SYN:ARCHIVE",
+      "available_at": "2017-01-05T13:00:00Z",
+      "first_acquired_at": "2017-01-05T13:00:00Z",
+      "frequency": "M",
+      "historical_pit_eligible": false,
+      "historical_pit_reason": "RELEASE_NOT_PROVEN",
+      "last_successful_update_at": "2017-01-05T13:00:00Z",
+      "observation_period": "2016-12",
+      "official_release_at": null,
+      "query_usable": true,
+      "seasonal_adjustment": "SA",
+      "source_id": "SYN:SERIES",
+      "source_version_id": null,
+      "stale": false,
+      "unit": "hours",
+      "value": 0
+    }
+  }
+}

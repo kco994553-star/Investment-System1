@@ -1,0 +1,36 @@
+{
+  "schema_version": "macro-industry-fixtures/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "view.json",
+      "bytes": 2104,
+      "sha256": "6d48d6bff11a8b457cb8ad285c14f6a775cf2b445ea2788244a83741b27a279c"
+    },
+    {
+      "path": "mappings.json",
+      "bytes": 2116,
+      "sha256": "092452405f3784f2f9054fcaa96e004bb8fa14428f14caeba1c005bd6a80a1a8"
+    },
+    {
+      "path": "cache.json",
+      "bytes": 752,
+      "sha256": "edc7f9646dd00dde0993ca97cbebe3dca18223c816a216f9cd160f9ed66cb03a"
+    },
+    {
+      "path": "expected.json",
+      "bytes": 15797,
+      "sha256": "0fcf232e2e390a0b9b6066c08596a7420898acd99041871ac5b7e34d628a800e"
+    },
+    {
+      "path": "taxonomy.json",
+      "bytes": 9584,
+      "sha256": "0804c7c54ebc34064129de45a08fafcb782286a22869aa99cfbd2cf889cf712d"
+    },
+    {
+      "path": "cases.json",
+      "bytes": 2126,
+      "sha256": "fdf6131e91be1d70f3fce9b4b62a33c35e16b4a0b61cfb5ab78fdde003e6a575"
+    }
+  ]
+}
