@@ -1,0 +1,68 @@
+{
+  "schema_version": "qgv-dual-fixture-cases/1",
+  "data_kind": "SYNTHETIC",
+  "base": "reference.json",
+  "evaluation": "evaluation.json",
+  "cases": [
+    {
+      "id": "BOTH_VALID",
+      "mutation": null,
+      "expected": "All3 targets Q/G/V/total for U1/U2/S1; independent rank scopes; smallest core value has valid score0."
+    },
+    {
+      "id": "COMMON_ONLY",
+      "mutation": "First10 reference rows and all evaluation rows ENERGY; remaining10 IT",
+      "expected": "U1 valid N20; S1 Q/G/total null, PEER_SAMPLE_SMALL N10."
+    },
+    {
+      "id": "QG_ONLY",
+      "mutation": "Remove ep_ttm_diluted and common_bp from all matching evaluation/reference rows",
+      "expected": "U1 Q/G valid; V/total/rank null; original denominator3."
+    },
+    {
+      "id": "CORE_MISSING",
+      "mutation": "Remove common_bp from matching first target/reference row",
+      "expected": "U1 V null strict; raw common_bp null; no alternate V."
+    },
+    {
+      "id": "ADDITIONAL_MISSING",
+      "mutation": "Remove accruals_assets_ttm from all matching rows",
+      "expected": "U1 core total/ranks unchanged; additional raw/score null."
+    },
+    {
+      "id": "SMALL",
+      "mutation": "Remove last reference row and member",
+      "expected": "N19; raw stays valid, score null; no neutral fill."
+    },
+    {
+      "id": "UNCLASSIFIED",
+      "mutation": "Set first matching target/reference mapping null",
+      "expected": "Target retained; MAPPING_UNRESOLVED; total/rank null."
+    },
+    {
+      "id": "GATE_UNKNOWN",
+      "mutation": "Set first matching gate null",
+      "expected": "Axes/pre_gate may be0 valid; total null; no new-Q gate substitution."
+    },
+    {
+      "id": "DATE_ERROR",
+      "mutation": "Change only reference valuation_date",
+      "expected_error": "DUAL_CONTEXT_MISMATCH"
+    },
+    {
+      "id": "VERSION_ERROR",
+      "mutation": "Change only reference mapping_version",
+      "expected_error": "DUAL_CONTEXT_MISMATCH"
+    },
+    {
+      "id": "HASH_ERROR",
+      "mutation": "CLI reference descriptor SHA256=64 zeros",
+      "expected_error": "INPUT_VALIDATION_FAILED"
+    },
+    {
+      "id": "ACTUAL_ZERO",
+      "mutation": "Matching first target/reference roa value0",
+      "expected": "VALID_ZERO; score can0; different from null."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "candidates.json",
+      "bytes": 104550,
+      "sha256": "7330f83c5304ef2f5edaf135062fe898f1e9a88269a06555294cae8fdb3cb5cf"
+    },
+    {
+      "path": "cases.json",
+      "bytes": 2296,
+      "sha256": "4a742e46d2ea6d1a244d2a4ef002575cd66aa232f257296c313f45f54539d8af"
+    },
+    {
+      "path": "detail-000.json",
+      "bytes": 228327,
+      "sha256": "c902377bfd6d19ba1044d58c4d55adb7652adc9a777b0b500d8ffbad212fc643"
+    },
+    {
+      "path": "evaluation.json",
+      "bytes": 28673,
+      "sha256": "333f438f6e95022ef52a62193ff700f0146d178f53280f148d33cc2e0c4e99ff"
+    },
+    {
+      "path": "index.json",
+      "bytes": 4214,
+      "sha256": "aebe321d7f2422e33cd03f470cf5fc3078783633e322705a168e20808185b76b"
+    },
+    {
+      "path": "reference.json",
+      "bytes": 189594,
+      "sha256": "b015573512f536ca8914de606d3745b8a931e222081871208e73fdd914117673"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 15060,
+      "sha256": "60a278f6e985c2b7ee54ec1cac128d05f087a897d71cee1615a7f4ee3030ae69"
+    }
+  ]
+}

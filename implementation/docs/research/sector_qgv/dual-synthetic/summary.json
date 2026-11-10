@@ -1,0 +1,423 @@
+{
+  "schema_version": "qgv-dual-delivery/1",
+  "visibility": "PRIVATE_RESEARCH",
+  "boards": {
+    "U1": {
+      "model_id": "unified-roa-core/0.1.0",
+      "model_version": "0.1.0",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.1.0",
+      "normalization_version": "common-midrank-strict20/1",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "33dbca97b51aab25bb8be5e471c5d68ca5a16d2c51d0a1ba9ec9cd282dbb92c8"
+      },
+      "bindings": {
+        "model_hash": "06bb6c9d3e7e4adfd23345abaf558b3d2dcf9d0b875171cc60d76e0f32461fcb",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "1491a3635ed6a7de807a8290dc65c0123be0bf498950ed67b8ecd42d3e5c48d3",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "cache_key": "7e0198f6e9ee143cfb1b29986300cc14f4b10c0b29369b1e15833818c01cff0f",
+      "result_hash": "b9e9812a4f6b3f989e36437e350fb0873145c552a0a4d1878a6cd0fb47c2bd69",
+      "coverage": {
+        "denominator": {
+          "code_rows": 3,
+          "issuers": 3,
+          "security_ids_present": 3
+        },
+        "target95": {
+          "code_rows": 3,
+          "issuers": 3
+        },
+        "stages": {
+          "core_inputs": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_raw": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_scores": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "Q": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "G": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "V": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "joint": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "total": {
+            "code_rows": 3,
+            "issuers": 3
+          }
+        },
+        "causes_overlap": true,
+        "causes": {},
+        "incomplete_unique": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "current_sample_barrier": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "gap95": {
+          "joint": {
+            "code_rows": 0,
+            "issuers": 0
+          },
+          "total": {
+            "code_rows": 0,
+            "issuers": 0
+          }
+        },
+        "whole_market_denominator": null,
+        "whole_market_coverage": null
+      },
+      "performance_state": "NOT_MEASURED",
+      "operating_adoption": "NOT_ADOPTED",
+      "deployment_state": "NOT_STARTED",
+      "configuration_hash": "06bb6c9d3e7e4adfd23345abaf558b3d2dcf9d0b875171cc60d76e0f32461fcb"
+    },
+    "U2": {
+      "model_id": "unified-sales-core/0.1.0",
+      "model_version": "0.1.0",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.1.0",
+      "normalization_version": "common-midrank-strict20/1",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "33dbca97b51aab25bb8be5e471c5d68ca5a16d2c51d0a1ba9ec9cd282dbb92c8"
+      },
+      "bindings": {
+        "model_hash": "499fbfbe8a5155407bf0a13d3baa1c32c76e350646489195d325c0edd3e9cdbc",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "1491a3635ed6a7de807a8290dc65c0123be0bf498950ed67b8ecd42d3e5c48d3",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "cache_key": "88d8c585425802e3af19a9096bf94ec7b2d327e3c4778e3c596d05610e4ed5b0",
+      "result_hash": "c2d00c82c6eeccdd4858a4eccd42b7de83bce74ed74f47dde0b4dc2f955dea3e",
+      "coverage": {
+        "denominator": {
+          "code_rows": 3,
+          "issuers": 3,
+          "security_ids_present": 3
+        },
+        "target95": {
+          "code_rows": 3,
+          "issuers": 3
+        },
+        "stages": {
+          "core_inputs": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_raw": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_scores": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "Q": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "G": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "V": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "joint": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "total": {
+            "code_rows": 3,
+            "issuers": 3
+          }
+        },
+        "causes_overlap": true,
+        "causes": {},
+        "incomplete_unique": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "current_sample_barrier": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "gap95": {
+          "joint": {
+            "code_rows": 0,
+            "issuers": 0
+          },
+          "total": {
+            "code_rows": 0,
+            "issuers": 0
+          }
+        },
+        "whole_market_denominator": null,
+        "whole_market_coverage": null
+      },
+      "performance_state": "NOT_MEASURED",
+      "operating_adoption": "NOT_ADOPTED",
+      "deployment_state": "NOT_STARTED",
+      "configuration_hash": "499fbfbe8a5155407bf0a13d3baa1c32c76e350646489195d325c0edd3e9cdbc"
+    },
+    "S1": {
+      "model_id": "sector-reduced-core/0.1.0",
+      "model_version": "0.1.0",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.1.0",
+      "normalization_version": "sector-midrank-strict20/1",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "d54cceb1236f5a636be9306ca9f8cde1589a0de89a5f4855dc8a434c99a525f6"
+      },
+      "bindings": {
+        "model_hash": "4832b0761423e28b7fcb991a915821ae6e1efed8b4f0464578a5be12495dafd7",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "1491a3635ed6a7de807a8290dc65c0123be0bf498950ed67b8ecd42d3e5c48d3",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "cache_key": "071920f02d536f2821891f802f30c5bd6291f3c6766f13a3de5368d1cd7041ec",
+      "result_hash": "5d29fe4a0e8375a79bd7677ea53fcaf0931b877cbc409b32225d0d38b79b5f86",
+      "coverage": {
+        "denominator": {
+          "code_rows": 3,
+          "issuers": 3,
+          "security_ids_present": 3
+        },
+        "target95": {
+          "code_rows": 3,
+          "issuers": 3
+        },
+        "stages": {
+          "core_inputs": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_raw": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "core_scores": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "Q": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "G": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "V": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "joint": {
+            "code_rows": 3,
+            "issuers": 3
+          },
+          "total": {
+            "code_rows": 3,
+            "issuers": 3
+          }
+        },
+        "causes_overlap": true,
+        "causes": {},
+        "incomplete_unique": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "current_sample_barrier": {
+          "code_rows": 0,
+          "issuers": 0
+        },
+        "gap95": {
+          "joint": {
+            "code_rows": 0,
+            "issuers": 0
+          },
+          "total": {
+            "code_rows": 0,
+            "issuers": 0
+          }
+        },
+        "whole_market_denominator": null,
+        "whole_market_coverage": null
+      },
+      "performance_state": "NOT_MEASURED",
+      "operating_adoption": "NOT_ADOPTED",
+      "deployment_state": "NOT_STARTED",
+      "configuration_hash": "4832b0761423e28b7fcb991a915821ae6e1efed8b4f0464578a5be12495dafd7"
+    }
+  }
+}

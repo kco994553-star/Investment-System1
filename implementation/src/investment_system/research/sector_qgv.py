@@ -135,7 +135,7 @@ def effective_weights(p):
     for axis,roles in p['axes'].items():
         for r in roles.values():
             for variant,w in r['factors'].items():
-                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/1e12
+                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
     return out
 
 
@@ -304,8 +304,8 @@ def aggregate(p,scores,gate,valuation_date):
     axes={};missing={}
     for axis in ('Q','G','V'):axes[axis],missing[axis]=_axis_score(p,scores,axis)
     active=[a for a,w in p['axis_weights'].items() if w]
-    pre=None if any(axes[a] is None for a in active) else sum(axes[a]*p['axis_weights'][a]/10000 for a in active)
-    gate_status='UNKNOWN';post={a:w/10000 for a,w in p['axis_weights'].items()};total=None
+    pre=None if any(axes[a] is None for a in active) else sum(axes[a]*p['axis_weights'][a]/sum(p['axis_weights'].values()) for a in active)
+    gate_status='UNKNOWN';post={a:w/sum(p['axis_weights'].values()) for a,w in p['axis_weights'].items()};total=None
     if isinstance(gate,dict) and gate.get('calc_version')=='qgv2-calc/2026-10-23.1' and gate.get('as_of')==valuation_date and gate.get('provenance') and finite(gate.get('q_industry_percentile')) and 0<=gate['q_industry_percentile']<=100:
         gate_status='VALUE_EXCLUDED' if gate['q_industry_percentile']<=GATE_PERCENTILE else 'PASS'
         if gate_status=='VALUE_EXCLUDED':
@@ -349,6 +349,11 @@ def rank_result_rows(rows):
 
 
 def preview_qgv(config,snapshot,request_id):
+    return _preview_core(config,snapshot,request_id)
+
+
+def _preview_core(config,snapshot,request_id,*,execution=None):
+    """Shared kernel; dual research caller validates its explicit execution policy."""
     validate_config(config);s=snapshot
     if s.get('schema_version')!='sector-qgv-input/1' or s.get('mapping_version')!=MAPPING:raise ValueError('INPUT_VERSION_MISMATCH')
     if day(s['valuation_date'])>timestamp(s['as_of']).astimezone(timezone.utc).date():raise ValueError('VALUATION_AFTER_AS_OF')
@@ -364,18 +369,19 @@ def preview_qgv(config,snapshot,request_id):
     peers,issuer_rows=scoring_representatives(records)
     for key,row in records.items():
         mapped=_mapped(row,s)
-        if mapped:presets[key]=preset(config,row['sector_id'],row['accounting_template'])
+        if mapped:presets[key]=copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else preset(config,row['sector_id'],row['accounting_template'])
         # Availability covers registered variants, even when mapping prevents scoring.
         matrix[key]={v:_validated_observation(row,v,s) for v in CATALOG}
         if not mapped:continue
-        group=(row['sector_id'],row['accounting_template'])
+        group=() if execution and execution['kind']=='COMMON' else (row['sector_id'],row['accounting_template'])
         for v,(value,status,_,_) in matrix[key].items():
             if value is not None and key in peers:pools[group+(v,)].append(value)
     out=[]
     for key,row in records.items():
         p=presets.get(key);fs={}
         for v,(value,status,raw,external) in matrix[key].items():
-            pool=pools.get((row.get('sector_id'),row.get('accounting_template'),v),[])
+            group=() if execution and execution['kind']=='COMMON' else (row.get('sector_id'),row.get('accounting_template'))
+            pool=pools.get(group+(v,),[])
             reason=status
             score=None
             if value is not None:
