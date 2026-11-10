@@ -113,25 +113,25 @@ Native implementation; user explicitly authorized these research starting values
 and continuous execution. No repeated design/role approval. Existing isolated
 worktree, ordinary research branch; no frontend/workflow/guard edits.
 
-- [ ] Red tests: common-label invariance vs sector pools, strict core/additional,
+- [x] Red tests: common-label invariance vs sector pools, strict core/additional,
   19/20, issuer duplication, invalid mapping/date/hash, gate independence,
   exact thirds, scoped ranking, 0/negative/null, save/replay, CLI and delivery.
-- [ ] Extend existing preview core with explicit research execution policy; same
+- [x] Extend existing preview core with explicit research execution policy; same
   calculator/percentile/aggregate/ranking, old entry default byte-compatible.
-- [ ] Add research dual config/validation, exact-source admission, projections,
+- [x] Add research dual config/validation, exact-source admission, projections,
   per-row scope, dual comparisons and stage coverage/overlapping missing causes.
-- [ ] Existing CLI dual-study path, pinned inputs/config, saved replay, bounded
+- [x] Existing CLI dual-study path, pinned inputs/config, saved replay, bounded
   views and manifest. Main synthetic first handoff/Draft before real execution.
-- [ ] Reuse retained baselines, run3 frozen candidates for operating504 and held1057,
+- [x] Reuse retained baselines, run3 frozen candidates for operating504 and held1057,
   independently reconcile source preservation, scopes, new/lost/common, n/N.
-- [ ] Review changed code; private preserve/readback; Main precise SHA/contract;
+- [x] Review changed code; private preserve/readback; Main precise SHA/contract;
   CI and actual reader/browser/adoption states separately.
 
 Review focus: common scopes must truly pool; evaluation overlap cannot replace
 raw data; core default unknowns stay in denominator; scopes cannot hide missing
 issuer/classification records; exact replay cannot silently use latest input.
 
-Implementation/real comparison: IN_PROGRESS. Integration/deployment/live: NOT_STARTED.
+Implementation/real comparison: TESTED. Integration/deployment/live: NOT_STARTED.
 
 ### Review rulings before real execution
 
@@ -160,3 +160,95 @@ related checks are retained (shared core unchanged by this metadata-only fix).
 First-run arithmetic is preserved; accepted outputs are regenerated for the new
 code binding and checked for identical raw values/scores/axes/ranks. No gain is
 counted twice.
+
+## Retained-real comparison (2026-11-04)
+
+No new raw factor was calculated or source collected. All input observations are
+retained. Financial cutoff2026-11-04T02:29:35.166580Z; classification knowledge
+2026-11-08T08:05:49.349866+00:00, explicitly retrospective, not historical system PIT.
+
+| Evaluation | Candidate/baseline | Q | G | V / joint / total |
+|---|---|---:|---:|---:|
+| operating504 rows /501 issuers | #527 retained default |232|343|0|
+| same | #528 retained nine-group reference |242|359|0|
+| same | S1 sector reduced |250|397|0|
+| same | U1 common ROA/change |390|408|0|
+| same | U2 common ROA/sales |390|373|0|
+| held1057 issuers | #527 retained default (source8004 pools) |494|693|0|
+| same | S1 sector reduced |515|793|0|
+| same | U1 common ROA/change |804|810|0|
+| same | U2 common ROA/sales |804|724|0|
+
+Counts in this table equal unique issuers, but original evaluation code-row and
+issuer denominators remain separate. S1 versus retained: operating Q+8/G+38,
+unique gaining46, lost0, common-score changes Q242/G352. Held Q+21/G+100,
+unique121, lost0, common-score changes Q494/G688. Do not sum shared issuers across
+operating and held populations. U2 versus U1 G: operating gained10/lost45/common
+changed363; held gained26/lost112/common changed698. U1 versus S1 is a whole-model
+change: operating Q gained145/lost5; held gained299/lost10. No total valid/rank or
+performance comparison is available, so the common-total-only comparison is an
+explicit empty set alongside the full original population comparison.
+
+Candidate source input586 rows (original504 plus82 admitted previously) for
+operating; actual active reference union504 issuers across all valid factors.
+Held uses original8004 catalog as candidate source; actual active factor union844.
+Neither candidate-source count is an eligible full-market denominator. Each factor
+has its own valid N/member hash. Q/G correlations and sector composition are
+private diagnostics, not additional optimization or performance claims.
+
+Full core joint input/raw/score coverage is0 for each candidate due to V inputs.
+That does **not** mean all raw Q/G observations are absent: selected-factor raw
+and score counts are reported individually. Common candidate selection denominator
+is every original evaluation member, including unresolved classifications.
+95% requires476/501 issuers (or479/504 code rows), and1005/1057 held issuers.
+Current joint/total0 in both scopes; those are the respective shortfalls.
+The whole-market denominator and coverage remain null.
+
+Conditional limits have been recomputed, not copied from old436/501. With existing
+confirmed classification/representative/reference membership fixed, optimistic
+input-completion ceilings for U1/U2/S1 are399/355/410 of501 and821/712/825 of1057.
+If unresolved classifications/representatives are additionally assumed solvable,
+known structural-only upper bounds are478/434/489 and1034/925/1038 respectively.
+These are **different assumptions**, not forecasts or promised recoveries. U2's
+known common-formula incompatibility already prevents95% within either current
+scope; more price data alone cannot fix that. U1 retains23 equity-REIT Q
+incompatibilities; S1 retains small accounting-specific groups and common-equity
+input shortages. No winning model/default is selected on coverage alone.
+
+### Verification and delivery
+
+Initial independent reconciliation: source raw preservation51,687 observations,
+40,796 factor scores independently checked against reference ordering; 4,683
+company-model detail projections matched. After the common-core denominator fix,
+accepted six runs retain exactly the same numerical outputs (238,833 factor
+records and32,781 row numerical fields checked), reusing the independent arithmetic
+proof rather than repeating it. All original rows and official-gate outcomes match.
+
+Bounded authenticated output: operating24 files, held48 files (excluding manifests),
+maximum1,754,749 bytes. Index→detail matches every original target; raw financial
+values are omitted from reader detail, preserved in full private results. Manifest
+SHA256 identifies actual bytes; result_hash is the Python canonical result identity,
+not a browser reserialization instruction. Source/config/classification/input and
+reference identities accompany each board. Core_raw/core_scores mean **all core
+factors jointly valid**, not any-factor availability. Cause counts overlap.
+
+State: implementation TESTED; retained-real candidate comparison TESTED;
+Main INTEGRATED/DEPLOYED/LIVE_VERIFIED NOT_STARTED. No API compatibility or
+out-of-sample strategy performance test in this work. #528 final CI7success/2skipped
+was queried, not rerun. #529 current CI is reported separately in its PR/handoff.
+
+### Independent blocked queues / next data
+
+No new financial/V input was delivered. Existing verified TTM diluted EPS and
+same11/04 common-class BPS/price/action basis are required for U1/U2; selecting B/P
+for general companies creates a broader capital-input requirement, not evidence
+that it is already available. S1 retains EPS, CFO/all-common-class market cap,
+and equity-REIT Nareit FFO requirements by variant. Missing capital/ADR/action
+components are not zero;11/02 finance prices cannot fill11/04. WRB approved filing
+execution/receipt remains Main's independent queue. Existing source-specific
+minimum acquisition proposals remain pending; this work adds no download request.
+
+Keep all three research candidates, flag U2's known applicability limit, and do
+not promote any to a default until missing V and economic comparability have
+been evaluated. A future stability variant/expanded ROA accounting scope needs
+an explicit definition/comparison; existing variants were not broadened here.
