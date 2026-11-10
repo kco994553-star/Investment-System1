@@ -2,11 +2,12 @@
 from collections import Counter, defaultdict
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
 
 from .sector_qgv import (CATALOG, MIN_SAMPLE, digest, config_hash, preview_qgv,
     validate_config, _input_identity, _mapped, _validated_observation,
-    scoring_representatives, rank_result_rows)
+    scoring_representatives, rank_result_rows, timestamp)
 from .sector_qgv_registry import ENGINE, MODEL, NORMALIZATION
 from .sector_qgv_partial import assert_retained_preview
 
@@ -31,6 +32,8 @@ def _identity(snapshot):
         members_hash=digest(sorted(snapshot['members'])),valuation_date=snapshot['valuation_date'],
         as_of=snapshot['as_of'],code_rows=len(rows),issuers=len({r['issuer_id'] for r in rows.values() if r.get('issuer_id')}),
         input_hash=_input_identity(snapshot),snapshot_id=snapshot['snapshot_id'],
+        classification_records_hash=digest([{k:r.get(k) for k in ('company_id','classification_record_id')}
+            for r in rows.values()]),
         classification_context=deepcopy(snapshot.get('classification_context')))
 
 
@@ -50,8 +53,24 @@ def _classification_ok(row,snapshot):
             m.get('common_classification_hash')!=ctx['classification_hash'] or
             m.get('common_record_id')!=row['classification_record_id'] or
             m.get('common_dictionary_version')!=ctx.get('dictionary_version') or
-            m.get('common_mapping_version')!=ctx.get('mapping_version')):return False
+            m.get('common_mapping_version')!=ctx.get('mapping_version') or
+            m.get('knowledge_as_of')!=ctx.get('knowledge_as_of')):return False
     return True
+
+
+def _validate_common_contexts(evaluation,source):
+    required=any('classification_hash' in s.get('classification_context',{}) or
+        str(s.get('classification_context',{}).get('dictionary_version','')).startswith('common-') or
+        any(r.get('mapping',{}).get('common_classification_hash') or r.get('classification_record_id') for r in s['rows'])
+        for s in (evaluation,source))
+    if not required:return
+    for s in (evaluation,source):
+        ctx=s.get('classification_context',{})
+        if any(not isinstance(ctx.get(k),str) or not ctx[k] for k in
+            ('classification_hash','dictionary_version','mapping_version','knowledge_as_of')):
+            raise ValueError('REFERENCE_CLASSIFICATION_CONTEXT_MISSING')
+        try:timestamp(ctx['knowledge_as_of'])
+        except (TypeError,ValueError):raise ValueError('REFERENCE_CLASSIFICATION_CONTEXT_TIME') from None
 
 
 def run_reference_study(config,evaluation,baseline,source,source_preview,plan,*,request_id):
@@ -62,6 +81,7 @@ def run_reference_study(config,evaluation,baseline,source,source_preview,plan,*,
         for k in ('study_id','version','reference_id','reference_version'))):raise ValueError('REFERENCE_PLAN_INVALID')
     if any(evaluation.get(k)!=source.get(k) for k in ('valuation_date','as_of','mapping_version')):
         raise ValueError('REFERENCE_CONTEXT_MISMATCH')
+    _validate_common_contexts(evaluation,source)
     for k in ('dictionary_version','mapping_version','knowledge_as_of'):
         if evaluation.get('classification_context',{}).get(k)!=source.get('classification_context',{}).get(k):
             raise ValueError('REFERENCE_CLASSIFICATION_CONTEXT_MISMATCH')
@@ -197,7 +217,24 @@ def save_reference_settings(config,plan,result):
         raise ValueError('REFERENCE_SAVE_CONTEXT_MISMATCH')
     return dict(schema_version='sector-qgv-reference-saved/1',config=deepcopy(config),plan=deepcopy(plan),
         bindings=deepcopy(result['bindings']),evaluation_population=deepcopy(result['evaluation_population']),
-        reference_population=deepcopy(result['reference_population']),cache_key=result['cache_key'],result_rows_hash=digest(result['result_rows']))
+        reference_population=deepcopy(result['reference_population']),cache_key=result['cache_key'],
+        result_rows_hash=digest(result['result_rows']),result_payload_hash=_payload_hash(result))
+
+
+def _payload_hash(result):
+    return digest({k:result[k] for k in ('result_rows','comparison','groups','admission')})
+
+
+def reference_view(result):
+    """Small authenticated reader projection. Full admission evidence stays private."""
+    view={k:deepcopy(result[k]) for k in ('study','request_id','cache_key','result_id','evaluation_population',
+        'reference_population','bindings','comparison','groups','performance','whole_market_denominator',
+        'operating_adoption','rank_scope')}
+    view.update(schema_version='sector-qgv-reference-view/1',visibility='PRIVATE_RESEARCH',
+        source_result_hash=digest({k:v for k,v in result.items() if k!='reference_snapshot'}))
+    if len(json.dumps(view,ensure_ascii=False,indent=2,allow_nan=False).encode())+1>2_000_000:
+        raise ValueError('REFERENCE_VIEW_SIZE_LIMIT')
+    return view
 
 
 def replay_reference_study(saved,evaluation,baseline,source,source_preview,*,request_id):
@@ -206,6 +243,7 @@ def replay_reference_study(saved,evaluation,baseline,source,source_preview,*,req
     if binding!=saved['bindings']:raise ValueError('REFERENCE_REPLAY_INPUT_MISMATCH')
     result=run_reference_study(saved['config'],evaluation,baseline,source,source_preview,saved['plan'],request_id=request_id)
     if (result['cache_key']!=saved['cache_key'] or digest(result['result_rows'])!=saved['result_rows_hash'] or
+        _payload_hash(result)!=saved.get('result_payload_hash') or
         result['evaluation_population']!=saved['evaluation_population'] or result['reference_population']!=saved['reference_population']):
         raise ValueError('REFERENCE_REPLAY_RESULT_MISMATCH')
     return result

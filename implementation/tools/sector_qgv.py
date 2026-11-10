@@ -25,7 +25,7 @@ def run(job,output,synthetic=False):
     if output.exists():raise ValueError('OUTPUT_ALREADY_EXISTS')
     mode=job.get('mode','normalized')
     if mode=='reference-study':
-        from investment_system.research.sector_qgv_reference import run_reference_study,save_reference_settings,replay_reference_study
+        from investment_system.research.sector_qgv_reference import run_reference_study,save_reference_settings,replay_reference_study,reference_view
         if any(k in job for k in ('main_request','saved_config','retained_preview','comparisons','axis_comparison')):
             raise ValueError('REFERENCE_JOB_CONFLICT')
         ev,base,source,source_preview=[json.loads(checked_bytes(job[k])) for k in
@@ -40,9 +40,10 @@ def run(job,output,synthetic=False):
             result=run_reference_study(config,ev,base,source,source_preview,plan,request_id=job['request_id'])
         saved=save_reference_settings(config,plan,result)
         reference_snapshot=result.pop('reference_snapshot')
-        artifacts={'reference-result.json':result,'reference-settings.json':saved,'reference-snapshot.json':reference_snapshot}
+        artifacts={'reference-result.json':result,'reference-settings.json':saved,'reference-snapshot.json':reference_snapshot,
+                   'reference-view.json':reference_view(result)}
         output.mkdir(parents=True,mode=0o700)
-        manifest={'schema_version':'sector-qgv-reference-run/1','input_job':job,'files':[]}
+        manifest={'schema_version':'sector-qgv-reference-run/1','data_kind':job.get('data_kind','PRIVATE'),'input_job':job,'files':[]}
         for name,data in artifacts.items():
             body=(json.dumps(data,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
             p=output/name;p.write_bytes(body);p.chmod(0o600)

@@ -143,10 +143,54 @@ def test_classification_hash_mismatch_cannot_admit_a_reference():
         s['classification_context']['classification_hash']='synthetic-hash'
         for r in s['rows']:
             r['classification_record_id']='record:'+r['company_id']
-            r['mapping'].update(common_classification_hash='synthetic-hash',common_record_id=r['classification_record_id'],
+            r['mapping'].update(common_classification_hash='synthetic-hash',common_record_id=r['classification_record_id'],knowledge_as_of=s['classification_context']['knowledge_as_of'],
                 common_dictionary_version='synthetic/1',common_mapping_version='synthetic/1')
     a[3]['rows'][-1]['mapping']['common_classification_hash']='wrong'
     a[2]=preview_qgv(a[0],a[1],'base');a[4]=preview_qgv(a[0],a[3],'source')
     r=run(a)
     assert r['result_rows'][0]['factors']['operating_margin_ttm']['valid_n']==19
     assert r['admission']['reason_counts']['MAPPING_UNRESOLVED']==1
+
+
+def common_inputs():
+    a=list(inputs())
+    for s in (a[1],a[3]):
+        s['classification_context']['classification_hash']='a'*64
+        for r in s['rows']:
+            r['classification_record_id']='record:'+r['company_id']
+            r['mapping'].update(common_classification_hash='a'*64,common_record_id=r['classification_record_id'],
+                common_dictionary_version='synthetic/1',common_mapping_version='synthetic/1',
+                knowledge_as_of=s['classification_context']['knowledge_as_of'])
+    a[2]=preview_qgv(a[0],a[1],'base');a[4]=preview_qgv(a[0],a[3],'source')
+    return a
+
+
+def test_review_missing_source_classification_hash_fails_closed():
+    a=common_inputs();a[3]['classification_context'].pop('classification_hash')
+    with pytest.raises(ValueError,match='CLASSIFICATION_CONTEXT'):run(a)
+
+
+def test_review_other_classification_knowledge_time_not_admitted():
+    a=common_inputs();a[3]['rows'][-1]['mapping']['knowledge_as_of']='2099-01-01T00:00:00Z'
+    a[4]=preview_qgv(a[0],a[3],'source');r=run(a)
+    assert r['result_rows'][0]['factors']['operating_margin_ttm']['valid_n']==19
+    assert r['admission']['reason_counts']['MAPPING_UNRESOLVED']==1
+
+
+def test_review_excluded_reference_record_id_is_part_of_replay_identity():
+    from investment_system.research.sector_qgv_reference import save_reference_settings,replay_reference_study
+    a=common_inputs()
+    for o in a[3]['rows'][-1]['observations'].values():o['provenance']=[]
+    a[4]=preview_qgv(a[0],a[3],'source');r=run(a);saved=save_reference_settings(a[0],a[5],r)
+    a[3]['rows'][-1]['classification_record_id']='changed-record'
+    with pytest.raises(ValueError,match='REPLAY_INPUT'):replay_reference_study(saved,*a[1:5],request_id='changed')
+
+
+def test_small_main_view_keeps_dual_identity_and_original_counts():
+    from investment_system.research.sector_qgv_reference import reference_view
+    r=run(inputs());v=reference_view(r)
+    assert v['evaluation_population']==r['evaluation_population']
+    assert v['reference_population']==r['reference_population']
+    assert v['comparison']==r['comparison']
+    assert 'admission' not in v and 'reference_snapshot' not in v
+    assert len(json.dumps(v).encode())<2_000_000
