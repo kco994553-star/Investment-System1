@@ -1,0 +1,4859 @@
+{
+  "schema_version": "sector-qgv-input/1",
+  "snapshot_id": "synthetic-snapshot/1",
+  "universe_id": "SYN-REFERENCE-SOURCE",
+  "universe_version": "1",
+  "mapping_version": "book-sector-map/1",
+  "input_version": "synthetic-input/1",
+  "as_of": "2026-11-02T23:59:59Z",
+  "valuation_date": "2026-11-02",
+  "members": [
+    "company-000",
+    "company-001",
+    "company-002",
+    "company-003",
+    "company-004",
+    "company-005",
+    "company-006",
+    "company-007",
+    "company-008",
+    "company-009",
+    "company-010",
+    "company-011",
+    "company-012",
+    "company-013",
+    "company-014",
+    "company-015",
+    "company-016",
+    "company-017",
+    "company-018",
+    "company-019"
+  ],
+  "rows": [
+    {
+      "company_id": "company-000",
+      "issuer_id": "issuer-0",
+      "security_id": "security-0",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-0",
+          "security_id": "security-0",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-001",
+      "issuer_id": "issuer-1",
+      "security_id": "security-1",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-1",
+          "security_id": "security-1",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-002",
+      "issuer_id": "issuer-2",
+      "security_id": "security-2",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-2",
+          "security_id": "security-2",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-003",
+      "issuer_id": "issuer-3",
+      "security_id": "security-3",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-3",
+          "security_id": "security-3",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-004",
+      "issuer_id": "issuer-4",
+      "security_id": "security-4",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-4",
+          "security_id": "security-4",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-005",
+      "issuer_id": "issuer-5",
+      "security_id": "security-5",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-5",
+          "security_id": "security-5",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-006",
+      "issuer_id": "issuer-6",
+      "security_id": "security-6",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-6",
+          "security_id": "security-6",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-007",
+      "issuer_id": "issuer-7",
+      "security_id": "security-7",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-7",
+          "security_id": "security-7",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-008",
+      "issuer_id": "issuer-8",
+      "security_id": "security-8",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-8",
+          "security_id": "security-8",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-009",
+      "issuer_id": "issuer-9",
+      "security_id": "security-9",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-9",
+          "security_id": "security-9",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-010",
+      "issuer_id": "issuer-10",
+      "security_id": "security-10",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 10.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 11.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-10",
+          "security_id": "security-10",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-011",
+      "issuer_id": "issuer-11",
+      "security_id": "security-11",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 9.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-11",
+          "security_id": "security-11",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-012",
+      "issuer_id": "issuer-12",
+      "security_id": "security-12",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 8.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-12",
+          "security_id": "security-12",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-013",
+      "issuer_id": "issuer-13",
+      "security_id": "security-13",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 12.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-13",
+          "security_id": "security-13",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-014",
+      "issuer_id": "issuer-14",
+      "security_id": "security-14",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 15.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-14",
+          "security_id": "security-14",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-015",
+      "issuer_id": "issuer-15",
+      "security_id": "security-15",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 6.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 5.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 16.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-15",
+          "security_id": "security-15",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-016",
+      "issuer_id": "issuer-16",
+      "security_id": "security-16",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 13.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 4.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 17.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-16",
+          "security_id": "security-16",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-017",
+      "issuer_id": "issuer-17",
+      "security_id": "security-17",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 3.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 18.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-17",
+          "security_id": "security-17",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-018",
+      "issuer_id": "issuer-18",
+      "security_id": "security-18",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 7.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 2.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 19.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-18",
+          "security_id": "security-18",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    },
+    {
+      "company_id": "company-019",
+      "issuer_id": "issuer-19",
+      "security_id": "security-19",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "mapping": {
+        "version": "book-sector-map/1",
+        "valid_from": "2026-01-01",
+        "valid_to": null,
+        "evidence_refs": [
+          "synthetic:map"
+        ]
+      },
+      "observations": {
+        "operating_margin_ttm": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "operating_margin_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "accruals_assets_ttm": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "accruals_assets_ttm",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "debt_assets": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "debt_assets",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "LATEST_QUARTER",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "revenue_cagr_3y": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "revenue_cagr_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "roa_improvement_3y": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "roa_improvement_3y",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "FY_3Y",
+            "end": "2026-09-30"
+          },
+          "price_asof": null,
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ep_ttm_diluted": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "ep_ttm_diluted",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "cfo_mcap": {
+          "value": 14.0,
+          "status": "VALID",
+          "variant_id": "cfo_mcap",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "ebitda_ev": {
+          "value": 1.0,
+          "status": "VALID",
+          "variant_id": "ebitda_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        },
+        "sales_ev": {
+          "value": 20.0,
+          "status": "VALID",
+          "variant_id": "sales_ev",
+          "formula_version": "1",
+          "unit": "decimal",
+          "fiscal_period": {
+            "kind": "TTM",
+            "end": "2026-09-30"
+          },
+          "price_asof": "2026-11-02",
+          "issuer_id": "issuer-19",
+          "security_id": "security-19",
+          "source_available_at": "2026-10-25T12:00:00Z",
+          "retrieved_at": "2026-10-26T12:00:00Z",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "corporate_action_basis": "verified-fixture",
+          "provenance": [
+            "synthetic:fixture"
+          ],
+          "validation_basis": "VERIFIED_DEFINITION",
+          "raw_components_available": true
+        }
+      },
+      "gate": {
+        "q_industry_percentile": 50,
+        "calc_version": "qgv2-calc/2026-10-23.1",
+        "as_of": "2026-11-02",
+        "provenance": [
+          "synthetic:official-gate"
+        ]
+      }
+    }
+  ],
+  "classification_context": {
+    "dictionary_version": "synthetic/1",
+    "mapping_version": "synthetic/1",
+    "knowledge_as_of": "2026-11-02T23:59:59Z"
+  }
+}
