@@ -194,3 +194,10 @@ def test_small_main_view_keeps_dual_identity_and_original_counts():
     assert v['comparison']==r['comparison']
     assert 'admission' not in v and 'reference_snapshot' not in v
     assert len(json.dumps(v).encode())<2_000_000
+
+
+def test_null_mapping_excludes_only_reference_without_aborting_other_inputs():
+    a=list(inputs());a[3]['rows'][-1]['mapping']=None
+    a[4]=preview_qgv(a[0],a[3],'source');r=run(a)
+    assert r['result_rows'][0]['factors']['operating_margin_ttm']['valid_n']==19
+    assert r['admission']['reason_counts']['MAPPING_UNRESOLVED']==1

@@ -61,7 +61,7 @@ def _classification_ok(row,snapshot):
 def _validate_common_contexts(evaluation,source):
     required=any('classification_hash' in s.get('classification_context',{}) or
         str(s.get('classification_context',{}).get('dictionary_version','')).startswith('common-') or
-        any(r.get('mapping',{}).get('common_classification_hash') or r.get('classification_record_id') for r in s['rows'])
+        any((r.get('mapping') or {}).get('common_classification_hash') or r.get('classification_record_id') for r in s['rows'])
         for s in (evaluation,source))
     if not required:return
     for s in (evaluation,source):
