@@ -60,13 +60,19 @@ const SUMMARY_TEXT = JSON.stringify(BUNDLE.expanded_summary);
 const LINKED_CODE = BUNDLE.view.rows[0].company_id;
 // Codex #527 comparison outputs (Codex's comparison() on Codex's synthetic input). The synthetic coverage's operating scope is set to
 // name the peer_shift result (its input hash and row count) and to carry all three gate decisions: a synthetic pairing for the screen.
+// Codex #528's synthetic reference view (pinned in reference-synthetic/manifest.json).
+const REFVIEW = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/docs/research/sector_qgv/reference-synthetic/view.json'), 'utf8'));
 const REPAIR = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/input_repair_comparison/outputs.json'), 'utf8'));
 const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.id === id).output));
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
-  coverageEdit: (c) => { const o = c.scopes.operating, x = repairCase('peer_shift');
+  coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
-    o.context = { ...(o.context || {}), valuation_date: x.valuation_date, population: { ...((o.context || {}).population || {}), denominator: x.denominator },
-      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: x.after_input_hash } }; } });
+    // the repair comparison names the catalog scope's result; the reference study names the operating scope's result
+    k.context = { ...(k.context || {}), valuation_date: x.valuation_date, population: { ...((k.context || {}).population || {}), denominator: x.denominator },
+      result_identity: { ...((k.context || {}).result_identity || {}), input_hash: x.after_input_hash } };
+    o.context = { ...(o.context || {}), valuation_date: rv.valuation_date,
+      population: { ...((o.context || {}).population || {}), id: rv.id, version: rv.version, members_hash: rv.members_hash, denominator: rv.code_rows },
+      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: rv.input_hash, config_hash: REFVIEW.bindings.config_hash } }; } });
 const EXF = { expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' };
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -301,13 +307,36 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_shift') });
         await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-repair-state=READY]').waitFor({ timeout: 20000 });
-        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 운영504 코드 행$/);
+        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 관측 카탈로그$/);
         assert.match(await text(page, '[data-repair-not]'), /요소·비중 변경 아님 · 분류 변경 아님 · 설정 변경 아님/);
         assert.equal(await text(page, '[data-repair-axis=Q]'), 'Q · 전 21 → 후 24 · 새로 산출 +3 · 산출 사라짐 0 · 기존 값 바뀜 20 / 24');
         assert.match(await text(page, '[data-repair-shift]'), /기업 실적 개선·전략 성과 아님$/);
         assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with coverage and comparison open');
         delete w.answers.input_repair;
+        await page.waitForTimeout(5200);
+        // 참조집단 확대 연구 (Codex #528): another evaluation result is refused (the bundle stays); the operating result's study reads,
+        // two populations apart; nothing stored.
+        const badRef = JSON.parse(JSON.stringify(REFVIEW)); badRef.evaluation_population.input_hash = 'e'.repeat(64); badRef.bindings.evaluation.input_hash = 'e'.repeat(64);
+        w.answers.reference_view = () => ({ status: 200, body: badRef });
+        const v0 = w.log.length; await page.locator('[data-reference-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-reference-state=ERROR]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(v0).map((x) => x.path), ['/kis/classification?part=reference_view']);
+        assert.match(await text(page, '[data-reference-state]'), /지금 받은 결과와 다른 평가 집단의 연구입니다 · REFERENCE_RESULT_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-repair-axis]'), 5, phase + ': the repair block stays');
+        await page.waitForTimeout(5200);
+        w.answers.reference_view = () => ({ status: 200, body: REFVIEW });
+        await page.locator('[data-reference-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-reference-state=READY]').waitFor({ timeout: 20000 });
+        assert.match(await text(page, '[data-reference-state]'), /^참조집단 확대 연구 \(PRIVATE_RESEARCH · 운영 채택 안 됨\) · SYN-REF-01 v1 · 평가일 2026-11-02$/);
+        assert.match(await text(page, '[data-reference-population=evaluation]'), /^평가 모집단 SYN-EVAL · 코드 행 3 · 고유 발행사 3/);
+        assert.match(await text(page, '[data-reference-population=reference]'), /^참조집단 SYN-REF v1 · 발행사 20 \(외부 추가 17\)/);
+        assert.equal(await text(page, '[data-reference-axis=Q]'), 'Q · 코드 행 전 0 → 후 3 (새로 +3 · 사라짐 0 · 기존 값 바뀜 0) · 고유 발행사 0 → 3 (새로 +3)');
+        assert.match(await text(page, '[data-reference-new-any]'), /새로 생긴 고유 발행사 3 \/ 3$/);
+        assert.match(await text(page, '[data-reference-not]'), /참조 전용 기업은 순위·분모에 들어가지 않음/);
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the study open');
+        delete w.answers.reference_view;
         await page.waitForTimeout(5200);
         await page.waitForTimeout(5200);
         assert.ok(w.log.length > logAt);

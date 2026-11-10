@@ -257,10 +257,16 @@ function leaderboard(route,refs){
  function block1(v){
   const pg=v.pg,E=populationOf(v.cls);
   const scope=group('보기 범위',h('span',{class:'chip on',dataset:{scope:'UNIVERSE'}},'Universe504 전체 · 고정 504코드'));
+  // 모형 (owner 2026-11-10 「통합 QGV·섹터 QGV」 queue §2, IS2.qgvModels): only a READY model can be chosen; today that is the official
+  // one this table reads. The research models show their state and reason, never a table of other numbers under their name.
+  const M=I.qgvModels,models=M?h('div',{dataset:{lbModels:''}},group('QGV 모형',...M.MODELS.map(m=>chip(m.label+(m.state==='READY'?'':' · '+M.STATE[m.state]),m.id===M.resolve('OFFICIAL'),
+    {disabled:!M.selectable(m.id),'aria-disabled':String(!M.selectable(m.id)),dataset:{lbModel:m.id,lbModelState:m.state}}))),
+   h('details',{class:'why',dataset:{lbModelWhy:''}},h('summary',null,'모형 구분 ▸'),h('ul',{class:'news-lines'},...M.MODELS.map(m=>h('li',{dataset:{lbModelLine:m.id}},M.line(m),' · ',m.note)),
+    ...M.RULES.map(r=>h('li',{class:'reason'},r))))):null;
   const count=h('p',{class:'count',dataset:{lbCount:''}},'평가: Universe504 중 점수 행 ',E===null?naBox(text('SEC_QGV2_NOT_AVAILABLE'),'SEC_QGV2_NOT_AVAILABLE'):h('b',null,String(E)));
   // A READY page with a reason (V2_SCORES_NOT_AVAILABLE …): the reason above the table, the rows still draw.
   const why=pg.reason?h('p',{class:'reason',dataset:{na:pg.reason,pageReason:''}},say(pg.reason,'QGV 점수를 모두 계산하지 못했습니다')):null;
-  return[scope,count,why,h('div',{class:'lb-grid'},table(v))];}
+  return[scope,models,count,why,h('div',{class:'lb-grid'},table(v))];}
  const LIST_NAME=id=>id==='QG_REFERENCE'?(QS()?QS().QG_REFERENCE_LABEL[0]:'QG 참고 목록'):(LISTS.find(l=>l[0]===id)||LISTS[0])[1];
  function rankHead(v){if(!v.pv)return Q.rankLabel(v.pg);const S=QS(),o=v.pv.out;return Q.rankLabel(o)+' · '+(o.v_weight_zero?S.PERSONAL_V0_LABEL[0]:S.PERSONAL_LABEL[0]);}
  function table(v){

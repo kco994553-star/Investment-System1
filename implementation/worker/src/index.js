@@ -273,6 +273,7 @@ function krxNumber(value) {
 // …?part=<expanded_manifest|expanded_index|expanded_coverage> and ?part=expanded_detail&shard=<2 hex> (owner 2026-11-09): the held
 // issuer delivery (Codex #524) at classification/expanded/; the same 2 MiB limit, nothing widened.
 // …?part=input_repair (owner 2026-11-09): Codex #527's input connection repair comparison, classification/expanded/input-repair-comparison.json.
+// …?part=reference_view (owner 2026-11-10): Codex #528's reference population research view, classification/expanded/reference-view.json.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -302,9 +303,12 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   industry_macro: 'company-industry-macro-query/1',
   // The input connection repair before/after comparison (Codex #527 sector-qgv-input-repair-comparison/1, owner 2026-11-09), one
   // file next to the held issuer delivery it compares; the same 2 MiB limit.
-  input_repair: 'sector-qgv-input-repair-comparison/1' });
+  input_repair: 'sector-qgv-input-repair-comparison/1',
+  // The evaluation / reference population research view (Codex #528 sector-qgv-reference-view/1, owner 2026-11-10), one file next
+  // to the held issuer delivery whose operating result it evaluated; the same 2 MiB limit.
+  reference_view: 'sector-qgv-reference-view/1' });
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
-  input_repair: 'input-repair-comparison.json' });
+  input_repair: 'input-repair-comparison.json', reference_view: 'reference-view.json' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
 // 'expanded_detail/<shard>'.

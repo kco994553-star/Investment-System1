@@ -261,7 +261,8 @@ test('classification: the part is checked before any read; no owner proof is ref
 // The held issuer delivery (owner 2026-11-09, Codex #524): manifest / index / coverage and one detail shard, under classification/expanded/.
 test('classification expanded: manifest, index, coverage and one shard read their own file; a shard must name itself', async () => {
   const FILES = { expanded_manifest: ['manifest.json', 'held-issuer-sharded/1'], expanded_index: ['expanded-index.json', 'held-issuer-search/1'],
-    expanded_coverage: ['coverage.json', 'retained-default-coverage/1'], input_repair: ['input-repair-comparison.json', 'sector-qgv-input-repair-comparison/1'] };
+    expanded_coverage: ['coverage.json', 'retained-default-coverage/1'], input_repair: ['input-repair-comparison.json', 'sector-qgv-input-repair-comparison/1'],
+    reference_view: ['reference-view.json', 'sector-qgv-reference-view/1'] };
   for (const [part, [file, schema]] of Object.entries(FILES)) {
     const text = '{"schema_version":"' + schema + '","rows":[]}', s = setup({ github: () => new Response(text, { status: 200 }) });
     const r = await s.run('/kis/classification?part=' + part);

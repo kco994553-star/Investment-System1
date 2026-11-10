@@ -59,6 +59,7 @@ function block(anchor){
     ['생산자',b.identity.producer_sha.slice(0,12)+'… · 요약 '+b.identity.summary.sha256.slice(0,12)+'…']],{heldMeta:''}),
    coverageBlock(b.coverage),
    I.inputRepair?repairBlock():null,
+   I.referenceView?referenceBlock():null,
    h('label',{for:'held-q',class:'meta'},'확장 발행사 찾기'),q,count,results,detail);}
 
  // Coverage by stage (IS2.expandedIssuers.coverageView): one list per unit in pipeline order, then the gate decisions, the total
@@ -85,11 +86,40 @@ function block(anchor){
       f.raw.length?[' · 원지표 없음: ',f.raw.join(', ')]:null,f.score.length?[' · 점수 없음: ',f.score.join(', ')]:null)))):null)),
    h('p',{class:'reason',dataset:{heldMarket:''}},E().marketText(cov)));}
 
+ // 참조집단 확대 연구 (Codex #528, IS2.referenceView): its own click and one read, accepted only when its evaluation population is
+ // the operating result of this checked bundle (population id / version / members hash / denominator, day, input and config hash).
+ // A refusal or failed read is this block's error; the bundle, coverage, details and the repair block stay. Counts only.
+ function referenceBlock(){const RV=I.referenceView;
+  const rs=h('p',{class:'reason',role:'status',dataset:{referenceState:'IDLE'}},'비교 유형: 참조집단 확대 · 평가 대상은 그대로, 요소 점수의 참조집단만 넓힌 연구 · 공식 결과 아님');
+  const slot=h('div',{dataset:{referenceArea:''}});
+  const btn=h('button',{type:'button',class:'btn',dataset:{referenceOpen:''}},'참조집단 확대 연구 불러오기');
+  const set=(c,t)=>{rs.dataset.referenceState=c;rs.textContent=t;};let busy=false;
+  btn.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;btn.disabled=true;set('LOADING','불러오는 중 · 연구 결과 1개');
+   let p;try{p=I.prices.kisRead(e,[['classification','reference_view']]);}catch(err){p=Promise.reject(err);}
+   Promise.resolve(p).then(([x])=>{const r=RV.validate(x,RV.anchorOf(st.bundle));
+    if(!r.ok){set('ERROR','연구 결과를 쓰지 않음 · '+(r.code==='REFERENCE_RESULT_MISMATCH'?'지금 받은 결과와 다른 평가 집단의 연구입니다':r.code==='REFERENCE_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='REFERENCE_CONFIG_MISMATCH'?'설정이 다릅니다':'형식 오류')
+     +' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');btn.disabled=false;return;}
+    btn.hidden=true;paintReference(RV.view(r.value.view,r.value.scope,{sectorName:id=>I.taxonomy?I.taxonomy.sectorName(id):id}));},
+   err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?'전달 위치에 참조집단 연구 결과가 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');btn.disabled=false;})
+   .finally(()=>{busy=false;});});
+  function paintReference(v){set('READY',v.head);
+   slot.replaceChildren(h('p',{class:'hand',dataset:{referenceNot:''}},v.not),h('p',{class:'reason'},v.limits),
+    h('p',{class:'reason',dataset:{referencePopulation:'evaluation'}},v.evaluation),
+    h('p',{class:'reason',dataset:{referencePopulation:'reference'}},v.reference),
+    h('p',{class:'meta'},v.units),
+    h('ul',{class:'news-lines',dataset:{referenceAxes:''}},v.axes.map(a=>h('li',{dataset:{referenceAxis:a.key}},a.text))),
+    h('p',{class:'reason',dataset:{referenceNewAny:''}},v.newAny),
+    h('details',{class:'why',dataset:{referenceGroups:String(v.groups.length)}},h('summary',null,'처리한 참조 그룹 ',String(v.groups.length),' · ',v.nFixed,' ▸'),
+     list(v.groups.map(g=>g.text),{},'없음')),
+    h('details',{class:'why',dataset:{referenceFactors:String(v.factors.length)}},h('summary',null,'바뀐 요소 ',String(v.factors.length),' ▸'),list(v.factors,{},'없음')),
+    h('details',{class:'why',dataset:{referenceRows:String(v.rows.length)}},h('summary',null,'값이 바뀐 평가 행 ',String(v.rows.length),' ▸'),list(v.rows.map(r=>r.text),{},'없음')));}
+  return h('div',{class:'sk card',dataset:{referenceBlock:''}},h('h4',null,'참조집단 확대 연구 (연구 · 운영 채택 안 됨)'),btn,rs,slot);}
+
  // 입력 연결 수정 전후 비교 (Codex #527, IS2.inputRepair): its own click and one read, accepted only for the result of this checked
  // bundle (a coverage scope with the same date, input hash and denominator). A refusal or a failed read is this block's error; the
  // bundle, coverage and details stay. Counts and the producer's rows as written; nothing recalculated.
  function repairBlock(){const R=I.inputRepair;
-  const rs=h('p',{class:'reason',role:'status',dataset:{repairState:'IDLE'}},'입력 연결 수정(INPUT_CONNECTION_REPAIR) 결과가 오면 전후를 비교합니다 · 요소·비중·분류 변경과 구분');
+  const rs=h('p',{class:'reason',role:'status',dataset:{repairState:'IDLE'}},'비교 유형: 원값 보완(입력 연결 수정, INPUT_CONNECTION_REPAIR) · 요소·비중·분류 변경, 참조집단 확대와 구분');
   const slot=h('div',{dataset:{repairArea:''}});
   const btn=h('button',{type:'button',class:'btn',dataset:{repairOpen:''}},'입력 연결 수정 전후 비교 불러오기');
   const set=(c,t)=>{rs.dataset.repairState=c;rs.textContent=t;};let busy=false;

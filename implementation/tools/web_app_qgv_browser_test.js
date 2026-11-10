@@ -294,6 +294,15 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.ok(lists.outside.length >= 1 && lists.outside.every((id) => !lists.drawnIds.includes(id)), 'the layer\'s outside catalog rows are never drawn');
         assert.ok(lists.drawnIds.every((id) => lists.uni.includes(id)), 'every drawn row is a Universe504 row');
         assert.match(lists.count, /^평가: Universe504 중 점수 행 \d+$/, 'the count names Universe504 only');
+        // 모형 (owner 2026-11-10 「통합 QGV·섹터 QGV」 §2): the official model is the one the table reads; the research models are shown
+        // with their state and cannot be chosen (no table of other numbers under their name); the table did not change.
+        const models = await page.evaluate(() => [...document.querySelectorAll('[data-lb-models] button[data-lb-model]')].map((b) => [b.dataset.lbModel, b.getAttribute('aria-pressed'), b.disabled, b.dataset.lbModelState]));
+        assert.deepEqual(models, [['OFFICIAL', 'true', false, 'READY'], ['INTEGRATED', 'false', true, 'NOT_CONNECTED'], ['SECTOR', 'false', true, 'RESULT_NOT_DELIVERED']]);
+        await page.locator('[data-lb-model=INTEGRATED]').click({ force: true });
+        assert.deepEqual(await page.evaluate(() => window.__qt.drawn().map((d) => d.id)), lists.drawnIds, 'a disabled research model changes nothing');
+        await page.locator('[data-lb-model-why] > summary').click();
+        assert.match(await page.locator('[data-lb-model-line=INTEGRATED]').innerText(), /^통합 QGV · 연구 기본값 · 계산 연결 전 · /);
+        assert.match(await page.locator('[data-lb-model-why]').innerText(), /섹터 점수를 이어 붙여 통합 순위를 만들지 않음/);
         // 종합 순위 without a central V publication: the empty state with its reason; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /QGV 순위 없음\s+공식 V 없음: 중앙 V 게시본이 아직 없습니다/);

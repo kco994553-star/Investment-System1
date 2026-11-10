@@ -30,8 +30,8 @@ const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/ki
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
 const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
 // Read on its own click, never in the bundle's six-part read: the common industry → macro evidence query (Codex #525) and the input
-// connection repair comparison (Codex #527).
-const OTHER_PARTS=Object.freeze(['industry_macro','input_repair']);
+// connection repair comparison (Codex #527) and the reference population research view (Codex #528).
+const OTHER_PARTS=Object.freeze(['industry_macro','input_repair','reference_view']);
 // The held issuer delivery (Codex #524, owner 2026-11-09): manifest, index, coverage and one detail shard ('expanded_detail/<2 hex>').
 // These answer {bytes, body}: the reader checks each file's own bytes against the manifest (SHA-256 and size), not a re-encoding.
 const EXPANDED_PARTS=Object.freeze(['expanded_manifest','expanded_index','expanded_coverage']);

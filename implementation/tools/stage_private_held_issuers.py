@@ -23,6 +23,11 @@ input connection repair comparison next to the delivery (classification/expanded
 input_repair), byte for byte, after: its own SHA-256 = the pin; schema sector-qgv-input-repair-comparison/1 and treatment
 INPUT_CONNECTION_REPAIR; at most 2 MiB; it compares to this delivery's result — one coverage scope with the same evaluation date, the
 same input hash (after_input_hash = that scope's result identity) and the same denominator.
+Optionally (owner 2026-11-10, Codex #528): --reference-view <reference-view.json> --reference-view-sha256 <pin> stages the evaluation /
+reference population research view (classification/expanded/reference-view.json, the Worker's part reference_view), byte for byte,
+after: its own SHA-256 = the pin; schema sector-qgv-reference-view/1, PRIVATE_RESEARCH, NOT_ADOPTED; at most 2 MiB; its evaluation
+population is this delivery's result — one coverage scope with the same population id / version / members hash / denominator,
+evaluation day, input hash and config hash.
 classification/expanded/ is replaced whole or not at all; on any failure the existing copy stays. A later restage of
 classification/ (stage_private_classification.py) replaces the directory whole, so a delivery of another summary never stays beside it.
 Output: one line per file group with counts, sizes and hashes (no content).
@@ -42,6 +47,7 @@ from investment_system.research.held_issuer_shards import verify_shards  # noqa:
 
 MAX_BYTES = 2 * 1024 * 1024
 REPAIR_NAME = 'input-repair-comparison.json'
+REFERENCE_NAME = 'reference-view.json'
 CONTEXT_KEYS = ('valuation_date', 'population', 'scoring_population', 'versions', 'classification', 'result_identity')
 
 
@@ -126,16 +132,53 @@ def check_repair(path: Path, pin: str, files: dict) -> bytes:
     return data
 
 
-def stage(delivery: Path, pin: str, data_dir: Path, repair: Path | None = None, repair_pin: str | None = None) -> tuple:
+def check_reference(path: Path, pin: str, files: dict) -> bytes:
+    if len(pin) != 64 or any(c not in '0123456789abcdef' for c in pin):
+        raise StageError('REFERENCE_PIN_INVALID')
+    if path.is_symlink() or not path.is_file():
+        raise StageError('REFERENCE_MISSING')
+    data = path.read_bytes()
+    if len(data) > MAX_BYTES:
+        raise StageError('REFERENCE_TOO_LARGE')
+    if hashlib.sha256(data).hexdigest() != pin:
+        raise StageError('REFERENCE_PIN_MISMATCH')
+    try:
+        doc = json.loads(data)
+    except ValueError:
+        raise StageError('REFERENCE_NOT_JSON') from None
+    if (not isinstance(doc, dict) or doc.get('schema_version') != 'sector-qgv-reference-view/1' or doc.get('visibility') != 'PRIVATE_RESEARCH'
+            or doc.get('operating_adoption') != 'NOT_ADOPTED'):
+        raise StageError('REFERENCE_SCHEMA')
+    ev, binding = doc.get('evaluation_population') or {}, doc.get('bindings') or {}
+    scopes = json.loads(files['coverage.json']).get('scopes', {})
+    hit = [k for k, s in scopes.items() if isinstance(s, dict) and isinstance(s.get('context'), dict)
+           and s['context'].get('population', {}).get('id') == ev.get('id')
+           and s['context'].get('population', {}).get('version') == ev.get('version')
+           and s['context'].get('population', {}).get('members_hash') == ev.get('members_hash')
+           and s['context'].get('population', {}).get('denominator') == ev.get('code_rows')
+           and s['context'].get('valuation_date') == ev.get('valuation_date')
+           and s['context'].get('result_identity', {}).get('input_hash') == ev.get('input_hash')
+           and s['context'].get('result_identity', {}).get('config_hash') == binding.get('config_hash')]
+    if not hit:
+        raise StageError('REFERENCE_RESULT_MISMATCH')
+    return data
+
+
+def stage(delivery: Path, pin: str, data_dir: Path, repair: Path | None = None, repair_pin: str | None = None,
+          reference: Path | None = None, reference_pin: str | None = None) -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
     if not (data_dir / 'classification').is_dir():
         raise StageError('CLASSIFICATION_NOT_STAGED')
     if (repair is None) != (repair_pin is None):
         raise StageError('REPAIR_PIN_REQUIRED')
+    if (reference is None) != (reference_pin is None):
+        raise StageError('REFERENCE_PIN_REQUIRED')
     files, manifest = check(delivery, pin, data_dir)
     if repair is not None:
         files = {**files, REPAIR_NAME: check_repair(repair, repair_pin, files)}
+    if reference is not None:
+        files = {**files, REFERENCE_NAME: check_reference(reference, reference_pin, files)}
     target = data_dir / 'classification' / 'expanded'
     fresh, old = target.with_name('expanded.staging'), target.with_name('expanded.previous')
     for leftover in (fresh, old):
@@ -169,9 +212,12 @@ def main(argv=None) -> int:
     parser.add_argument('--data-dir', required=True, type=Path)
     parser.add_argument('--input-repair', type=Path)
     parser.add_argument('--input-repair-sha256')
+    parser.add_argument('--reference-view', type=Path)
+    parser.add_argument('--reference-view-sha256')
     args = parser.parse_args(argv)
     try:
-        files, manifest = stage(args.delivery, args.manifest_sha256, args.data_dir, args.input_repair, args.input_repair_sha256)
+        files, manifest = stage(args.delivery, args.manifest_sha256, args.data_dir, args.input_repair, args.input_repair_sha256,
+                                args.reference_view, args.reference_view_sha256)
     except StageError as error:
         print('STAGE_PRIVATE_HELD_ISSUERS refused=' + str(error))
         return 1
@@ -180,7 +226,8 @@ def main(argv=None) -> int:
           + ' issuers=' + str(manifest['issuer_count']) + ' shards=' + str(len(details))
           + ' files=' + str(len(files)) + ' bytes=' + str(sum(len(v) for v in files.values()))
           + ' max_file_bytes=' + str(max(len(v) for v in files.values())) + ' kind=' + manifest['data_kind']
-          + (' input_repair sha256=' + hashlib.sha256(files[REPAIR_NAME]).hexdigest() if REPAIR_NAME in files else ''))
+          + (' input_repair sha256=' + hashlib.sha256(files[REPAIR_NAME]).hexdigest() if REPAIR_NAME in files else '')
+          + (' reference_view sha256=' + hashlib.sha256(files[REFERENCE_NAME]).hexdigest() if REFERENCE_NAME in files else ''))
     return 0
 
 
