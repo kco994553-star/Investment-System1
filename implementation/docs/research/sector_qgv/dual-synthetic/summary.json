@@ -77,12 +77,12 @@
           "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
           "classification_context": null
         },
-        "code_hash": "78ddc4fede387ee5f284272e21417fc3e3f56d7a236d079f8f21c51d2769f90c",
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
         "engine_version": "sector-qgv-engine/0.1.0",
         "adapter_version": "dual-qgv-research/0.1.0"
       },
-      "cache_key": "e7e75a14c892823949103b330e4878139522e77dfac6abb836c777ca7d94aeb2",
-      "result_hash": "bbc032dfd298162421883df566029fbdc740085e52842b1c012f799b8f186b77",
+      "cache_key": "aafeea2c8d5476f87144e4368fbe28817fd8f6bdfde248e85473c82b1240667e",
+      "result_hash": "2009e03ddc054ce270b9486ff769a9cef4a32a09005cf563156040f5deeadae4",
       "coverage": {
         "denominator": {
           "code_rows": 3,
@@ -231,12 +231,12 @@
           "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
           "classification_context": null
         },
-        "code_hash": "78ddc4fede387ee5f284272e21417fc3e3f56d7a236d079f8f21c51d2769f90c",
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
         "engine_version": "sector-qgv-engine/0.1.0",
         "adapter_version": "dual-qgv-research/0.1.0"
       },
-      "cache_key": "b725645559f4230176612c9a87cac743222fcfe86bc61d3497292a1f151eb607",
-      "result_hash": "ddc0a51876d979271589fbf3241e7d420ef42d0becdaca3c18eb7669543bb822",
+      "cache_key": "fffd9a273be5f8470ab63f34055af98cf8a42a85ce78a1c757258dc12274ff29",
+      "result_hash": "f8c01b869389c21ace41eec924ef064d3899e70dc56ca5549c6181de19c78816",
       "coverage": {
         "denominator": {
           "code_rows": 3,
@@ -385,12 +385,12 @@
           "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
           "classification_context": null
         },
-        "code_hash": "78ddc4fede387ee5f284272e21417fc3e3f56d7a236d079f8f21c51d2769f90c",
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
         "engine_version": "sector-qgv-engine/0.1.0",
         "adapter_version": "dual-qgv-research/0.1.0"
       },
-      "cache_key": "bbccbaa2e922a19f202c5f46ad0f26782dd01c62de1a8ac34f0258afd1dd1a21",
-      "result_hash": "f0c987a67559b011b984b85894511ae4dc07dac159179e924d4b687277e981c5",
+      "cache_key": "a83051cdf52930703dea9af54bbefab70436c2c77cea38ae1653e315f37b3a87",
+      "result_hash": "e4d86762b61d66111848e3e620e83c0b49bd338465c6763afc517ec546635124",
       "coverage": {
         "denominator": {
           "code_rows": 3,

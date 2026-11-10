@@ -221,3 +221,11 @@ def test_replay_binds_actual_percentile_and_gate_source(monkeypatch):
         return b+b'\n# changed scoring implementation version\n' if p.name=='qgv_v2.py' else b
     monkeypatch.setattr(Path,'read_bytes',changed_code)
     with pytest.raises(ValueError,match='REPLAY_INPUT'):replay_board(saved,ev,ref,'changed-code')
+
+def test_common_core_selection_keeps_unclassified_targets_in_factor_denominator():
+    ev,ref=inputs()
+    for s in (ev,ref):s['rows'][0]['mapping']=None
+    r=run(ev,ref)
+    assert r['rows'][0]['selected_variants']==['roa_ttm','roa_improvement_3y','ep_ttm_diluted','common_bp']
+    assert r['coverage']['selected_factors']['ep_ttm_diluted']['selected']['code_rows']==3
+    assert r['rows'][0]['total'] is None

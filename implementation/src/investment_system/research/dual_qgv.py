@@ -188,7 +188,7 @@ def run_board(config,evaluation,reference,*,request_id):
                 if f['raw_value'] is not None:pool[(_scope(r,config['kind']),v)].append(r['company_id'])
         if r['company_id'] not in ev:continue
         r=deepcopy(r);r['ranking_scope']=_scope(r,config['kind']);r['rank']=None;r['rank_n']=0
-        r['selected_variants']=r.get('selected_variants',[]);r['scoring_representative']=r['company_id'] in peers
+        r['selected_variants']=([v for v,w in effective_weights(config['uniform_preset']).items() if w>0] if config['kind']=='COMMON' else r.get('selected_variants',[]));r['scoring_representative']=r['company_id'] in peers
         for v,f in r['factors'].items():f['kind']='CORE' if v in r['selected_variants'] else 'ADDITIONAL'
         rows.append(r)
     groups=[]

@@ -150,3 +150,13 @@ fixes before the first real candidate execution, not result-selected tuning.
 Current adapter29 tests plus98 affected regression tests:127 passed. Full CI
 is separate. Existing branch/official snapshots remain reproducible; no baseline
 real calculation was rerun.
+
+A final denominator counterexample showed unclassified common-model targets had
+an empty selected-factor list inherited from the sector adapter. The common core
+is now selected for **all** evaluation rows; unresolved classification still
+blocks scores, but cannot shrink the selected-factor diagnostic denominator.
+The new counterexample failed then passed; adapter suite30 passed. Earlier127
+related checks are retained (shared core unchanged by this metadata-only fix).
+First-run arithmetic is preserved; accepted outputs are regenerated for the new
+code binding and checked for identical raw values/scores/axes/ranks. No gain is
+counted twice.
