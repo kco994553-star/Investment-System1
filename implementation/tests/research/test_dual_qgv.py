@@ -176,3 +176,48 @@ def test_cli_pins_inputs_saved_replay_and_hash_rejection(tmp_path):
     assert json.loads((out/'dual-result.json').read_text())['result_hash']==json.loads((replay/'dual-result.json').read_text())['result_hash']
     job['reference_snapshot']['sha256']='0'*64
     with pytest.raises(ValueError):cli.run(job,tmp_path/'bad',True)
+
+def classified():
+    ev,ref=inputs()
+    for s in (ev,ref):
+        s['classification_context']={'dictionary_version':'common-industry-dictionary/2','mapping_version':'common-classification-map/2','knowledge_as_of':s['as_of'],'classification_hash':'a'*64}
+        for r in s['rows']:
+            r['classification_record_id']='record:'+r['company_id']
+            r['mapping'].update(common_classification_hash='a'*64,common_record_id=r['classification_record_id'],common_dictionary_version='common-industry-dictionary/2',common_mapping_version='common-classification-map/2',knowledge_as_of=s['as_of'])
+    return ev,ref
+
+def test_evaluation_hash_cannot_be_hidden_by_valid_reference_context():
+    ev,ref=classified();ev['classification_context']['classification_hash']='b'*64
+    with pytest.raises(ValueError,match='EVALUATION_CLASSIFICATION'):run(ev,ref)
+
+@pytest.mark.parametrize('value',['not-a-timestamp','2026-11-02T12:00:00','2099-01-01T00:00:00Z'])
+def test_classification_knowledge_time_valid_and_within_research_cutoff(value):
+    ev,ref=classified()
+    for s in (ev,ref):
+        s['classification_context']['knowledge_as_of']=value
+        for r in s['rows']:r['mapping']['knowledge_as_of']=value
+    with pytest.raises(ValueError,match='CLASSIFICATION_TIME'):run(ev,ref)
+
+def test_retrospective_classification_explicit_not_historical_pit():
+    ev,ref=classified()
+    for s in (ev,ref):
+        s['classification_context']['knowledge_as_of']='2026-11-08T00:00:00Z'
+        for r in s['rows']:r['mapping']['knowledge_as_of']='2026-11-08T00:00:00Z'
+    r=run(ev,ref);assert r['classification_mode']=='RETROSPECTIVE_RECONSTRUCTION'
+
+def test_common_preset_does_not_claim_general_scope_and_reference_identity_is_eligible():
+    from investment_system.research.dual_qgv import candidate_configs
+    c=candidate_configs()['U1'];assert c['uniform_preset']['accounting_template'] is None
+    ev,ref=inputs();ref['rows'][-1]['mapping']=None
+    r=run(ev,ref);assert r['reference_population']['issuers']==19
+    assert r['reference_population']['candidate_population']['issuers']==20
+
+def test_replay_binds_actual_percentile_and_gate_source(monkeypatch):
+    from investment_system.research.dual_qgv import candidate_configs,save_board,replay_board
+    ev,ref=inputs();result=run(ev,ref);saved=save_board(candidate_configs()['U1'],result)
+    read=Path.read_bytes
+    def changed_code(p):
+        b=read(p)
+        return b+b'\n# changed scoring implementation version\n' if p.name=='qgv_v2.py' else b
+    monkeypatch.setattr(Path,'read_bytes',changed_code)
+    with pytest.raises(ValueError,match='REPLAY_INPUT'):replay_board(saved,ev,ref,'changed-code')

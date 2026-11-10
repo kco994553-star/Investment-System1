@@ -7,7 +7,7 @@ import math
 from pathlib import Path
 from .sector_qgv import (CATALOG,SECTORS,TEMPLATES,FINANCIAL,MODEL,ENGINE,NORMALIZATION,
     default_config,preset,_roles,_validate_preset,validate_config,effective_weights,
-    _preview_core,_mapped,digest,scoring_representatives,rank_result_rows)
+    _preview_core,_mapped,digest,scoring_representatives,rank_result_rows,timestamp)
 from .sector_qgv_reference import _records,_identity,_classification_ok,_compare_rows
 
 VERSION='dual-qgv-research/0.1.0'
@@ -17,13 +17,14 @@ SCHEMA='qgv-dual-board/1'
 def candidate_configs():
     base=dict(schema_version='qgv-dual-config/1',version='0.1.0',minimum=20,
         missing_policy='strict/1',gate_policy='official-q-percentile-required/1',
-        execution_version=VERSION,study_id='DUAL-QGV-20261110-01',additional_policy='CATALOG_ZERO_CORE_WEIGHT')
+        research_knowledge_cutoff='2026-11-10T12:03:13Z',execution_version=VERSION,study_id='DUAL-QGV-20261110-01',additional_policy='CATALOG_ZERO_CORE_WEIGHT')
     common=preset(default_config(),'INFORMATION_TECHNOLOGY','GENERAL')
+    common.update(sector_id=None,accounting_template=None,preset_id='unified-roa-core/0.1.0',scope='COMMON')
     common['axis_weights']={'Q':1,'G':1,'V':1}
     common['axes']={'Q':_roles([('roa_ttm',100)]),'G':_roles([('roa_improvement_3y',100)]),
                    'V':_roles([('ep_ttm_diluted',50),('common_bp',50)])}
     u1=dict(base,model_id='unified-roa-core/0.1.0',kind='COMMON',uniform_preset=common)
-    u2=deepcopy(u1);u2['model_id']='unified-sales-core/0.1.0'
+    u2=deepcopy(u1);u2['model_id']='unified-sales-core/0.1.0';u2['uniform_preset']['preset_id']=u2['model_id']
     u2['uniform_preset']['axes']['G']=_roles([('revenue_cagr_3y',100)])
     sector=default_config()
     for s in SECTORS:
@@ -51,6 +52,8 @@ def validate_model(config):
         'execution_version':VERSION,'additional_policy':'CATALOG_ZERO_CORE_WEIGHT'}
     if any(config.get(k)!=v for k,v in required.items()) or not config.get('model_id') or not config.get('study_id'):
         raise ValueError('DUAL_CONFIG_INVALID')
+    try:timestamp(config['research_knowledge_cutoff'])
+    except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('DUAL_RESEARCH_CUTOFF_INVALID') from None
     if config.get('kind')=='COMMON':
         if 'sector_config' in config:raise ValueError('DUAL_CONFIG_CONFLICT')
         p=deepcopy(config['uniform_preset']);w=p['axis_weights']
@@ -62,9 +65,13 @@ def validate_model(config):
     else:raise ValueError('DUAL_KIND_INVALID')
 
 
+def _code_files():
+    return [Path(__file__).with_name(n) for n in
+        ('dual_qgv.py','sector_qgv.py','sector_qgv_registry.py','sector_qgv_reference.py')] + [Path(__file__).parent.parent/'qgv/qgv_v2.py']
+
+
 def _code_hash():
-    return digest({n:hashlib.sha256(Path(__file__).with_name(n).read_bytes()).hexdigest()
-        for n in ('dual_qgv.py','sector_qgv.py','sector_qgv_registry.py','sector_qgv_reference.py')})
+    return digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in _code_files()})
 
 
 def _binding(config,evaluation,reference):
@@ -83,7 +90,7 @@ def _classification_valid(row,snapshot):
     return _classification_ok(row,snapshot)
 
 
-def _validate_contexts(evaluation,reference):
+def _validate_contexts(evaluation,reference,cutoff):
     contexts=[]
     for snapshot in (evaluation,reference):
         ctx=snapshot.get('classification_context') or {}
@@ -94,6 +101,11 @@ def _validate_contexts(evaluation,reference):
                 ('classification_hash','dictionary_version','mapping_version','knowledge_as_of')) for c in cs):
                 raise ValueError('DUAL_CLASSIFICATION_CONTEXT_MISSING')
         contexts.extend(cs)
+    for c in contexts:
+        if c.get('knowledge_as_of'):
+            try:
+                if timestamp(c['knowledge_as_of'])>timestamp(cutoff):raise ValueError('FUTURE_KNOWLEDGE')
+            except (ValueError,TypeError,AttributeError):raise ValueError('DUAL_CLASSIFICATION_TIME_INVALID') from None
     for key in ('dictionary_version','mapping_version','knowledge_as_of'):
         if len({c.get(key) for c in contexts})>1:raise ValueError('DUAL_CLASSIFICATION_CONTEXT_MISMATCH')
 
@@ -158,9 +170,11 @@ def run_board(config,evaluation,reference,*,request_id):
     validate_model(config)
     if any(evaluation.get(k)!=reference.get(k) for k in ('schema_version','mapping_version','valuation_date','as_of')):
         raise ValueError('DUAL_CONTEXT_MISMATCH')
-    _validate_contexts(evaluation,reference)
+    _validate_contexts(evaluation,reference,config['research_knowledge_cutoff'])
     ev,refs=_records(evaluation),_records(reference)
     if any(k not in refs or refs[k]!=v for k,v in ev.items()):raise ValueError('DUAL_TARGET_INPUT_MISMATCH')
+    if any(_mapped(r,evaluation) and not _classification_valid(r,evaluation) for r in ev.values()):
+        raise ValueError('DUAL_EVALUATION_CLASSIFICATION_INVALID')
     # One retained context; invalid classification is not promoted, raw observations survive.
     clean=deepcopy(reference)
     for r in clean['rows']:
@@ -187,12 +201,19 @@ def run_board(config,evaluation,reference,*,request_id):
         n=len(rank_result_rows(group))
         for r in group:r['rank_n']=n
     _rank_factors(rows)
-    identity=_identity(reference);identity['factor_members_hash']=digest(groups)
+    active=sorted({k for members in pool.values() for k in members})
+    candidate_identity=_identity(reference)
+    identity=dict(candidate_identity,id=candidate_identity['id']+':'+config['kind']+'_FACTOR_REFERENCES',
+        members_hash=digest(active),code_rows=len(active),issuers=len({refs[k]['issuer_id'] for k in active}),
+        factor_members_hash=digest(groups),candidate_population=candidate_identity,
+        scope='FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY')
     binding=_binding(config,evaluation,reference);key=digest(binding)
     result=dict(schema_version=SCHEMA,model_id=config['model_id'],model_version=config['version'],configuration=deepcopy(config),
         engine_version=ENGINE,adapter_version=VERSION,normalization_version='common-midrank-strict20/1' if config['kind']=='COMMON' else NORMALIZATION,
         evaluation_population=_identity(evaluation),reference_population=identity,groups=groups,
         bindings=binding,cache_key=key,request_id=request_id,rows=rows,coverage=_coverage(rows,evaluation),
+        classification_mode='RETROSPECTIVE_RECONSTRUCTION' if any(timestamp(c['knowledge_as_of'])>timestamp(evaluation['as_of']) for c in
+            (reference.get('classification_context',{}).get('source_contexts') or [reference.get('classification_context',{})]) if c.get('knowledge_as_of')) else 'AS_OF_CLASSIFICATION_NOT_SYSTEM_PIT_PROOF',
         performance_state='NOT_MEASURED',operating_adoption='NOT_ADOPTED',deployment_state='NOT_STARTED',visibility='PRIVATE_RESEARCH')
     result['result_hash']=digest({k:v for k,v in result.items() if k!='request_id'})
     return result
@@ -247,7 +268,7 @@ def delivery_artifacts(boards,*,max_bytes=1_800_000):
         raise ValueError('DUAL_DELIVERY_CONTEXT_MISMATCH')
     meta={k:{f:deepcopy(b[f]) for f in ('model_id','model_version','configuration','engine_version','adapter_version',
         'normalization_version','evaluation_population','reference_population','bindings','cache_key','result_hash',
-        'coverage','performance_state','operating_adoption','deployment_state')} for k,b in boards.items()}
+        'coverage','classification_mode','performance_state','operating_adoption','deployment_state')} for k,b in boards.items()}
     # The sector config is a registered shared preset; hash plus model id in a small summary.
     for m in meta.values():
         m['configuration_hash']=digest(m.pop('configuration'))

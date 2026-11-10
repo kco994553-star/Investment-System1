@@ -5,18 +5,19 @@
     "minimum": 20,
     "missing_policy": "strict/1",
     "gate_policy": "official-q-percentile-required/1",
+    "research_knowledge_cutoff": "2026-11-10T12:03:13Z",
     "execution_version": "dual-qgv-research/0.1.0",
     "study_id": "DUAL-QGV-20261110-01",
     "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",
     "model_id": "unified-roa-core/0.1.0",
     "kind": "COMMON",
     "uniform_preset": {
-      "preset_id": "sector-qgv-default/0.1.0",
+      "preset_id": "unified-roa-core/0.1.0",
       "version": "0.1.0",
       "state": "draft",
       "validation_state": "initial",
-      "sector_id": "INFORMATION_TECHNOLOGY",
-      "accounting_template": "GENERAL",
+      "sector_id": null,
+      "accounting_template": null,
       "sector_mapping_version": "book-sector-map/1",
       "axis_weights": {
         "Q": 1,
@@ -54,7 +55,8 @@
             }
           }
         }
-      }
+      },
+      "scope": "COMMON"
     }
   },
   "U2": {
@@ -63,18 +65,19 @@
     "minimum": 20,
     "missing_policy": "strict/1",
     "gate_policy": "official-q-percentile-required/1",
+    "research_knowledge_cutoff": "2026-11-10T12:03:13Z",
     "execution_version": "dual-qgv-research/0.1.0",
     "study_id": "DUAL-QGV-20261110-01",
     "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",
     "model_id": "unified-sales-core/0.1.0",
     "kind": "COMMON",
     "uniform_preset": {
-      "preset_id": "sector-qgv-default/0.1.0",
+      "preset_id": "unified-sales-core/0.1.0",
       "version": "0.1.0",
       "state": "draft",
       "validation_state": "initial",
-      "sector_id": "INFORMATION_TECHNOLOGY",
-      "accounting_template": "GENERAL",
+      "sector_id": null,
+      "accounting_template": null,
       "sector_mapping_version": "book-sector-map/1",
       "axis_weights": {
         "Q": 1,
@@ -112,7 +115,8 @@
             }
           }
         }
-      }
+      },
+      "scope": "COMMON"
     }
   },
   "S1": {
@@ -121,6 +125,7 @@
     "minimum": 20,
     "missing_policy": "strict/1",
     "gate_policy": "official-q-percentile-required/1",
+    "research_knowledge_cutoff": "2026-11-10T12:03:13Z",
     "execution_version": "dual-qgv-research/0.1.0",
     "study_id": "DUAL-QGV-20261110-01",
     "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",

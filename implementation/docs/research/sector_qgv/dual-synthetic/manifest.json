@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "candidates.json",
-      "bytes": 104550,
-      "sha256": "7330f83c5304ef2f5edaf135062fe898f1e9a88269a06555294cae8fdb3cb5cf"
+      "bytes": 104719,
+      "sha256": "5c3044a648b847df82614b570eb02d6db32c6b22c720577cfdc32caf25d55dfd"
     },
     {
       "path": "cases.json",
@@ -33,8 +33,8 @@
     },
     {
       "path": "summary.json",
-      "bytes": 15060,
-      "sha256": "60a278f6e985c2b7ee54ec1cac128d05f087a897d71cee1615a7f4ee3030ae69"
+      "bytes": 17484,
+      "sha256": "c1de648afde3c81ce40d1ab279ff69b4193f7b350cf1de37fc72d78aaa38758a"
     }
   ]
 }

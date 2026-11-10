@@ -132,3 +132,21 @@ raw data; core default unknowns stay in denominator; scopes cannot hide missing
 issuer/classification records; exact replay cannot silently use latest input.
 
 Implementation/real comparison: IN_PROGRESS. Integration/deployment/live: NOT_STARTED.
+
+### Review rulings before real execution
+
+Fresh review found evaluation-own classification context missing and shared
+qgv_v2.py omitted from exact-code replay. Both have failing-then-passing regression
+cases. Knowledge timestamps now parse timezone-aware and cannot exceed the
+preregistration cutoff2026-11-10T12:03:13Z. They may exceed the financial cutoff
+only as explicitly labeled RETROSPECTIVE_RECONSTRUCTION; the retained11/08
+classification is not rewritten into11/04 system possession. The reviewer’s
+suggested financial-cutoff comparison would reject this authorized retrospective
+study, so the separate research cutoff is used instead. Active reference members
+and source candidate population now have separate identities/counts. Common
+preset metadata has no misleading IT/GENERAL label. These are validation/metadata
+fixes before the first real candidate execution, not result-selected tuning.
+
+Current adapter29 tests plus98 affected regression tests:127 passed. Full CI
+is separate. Existing branch/official snapshots remain reproducible; no baseline
+real calculation was rerun.
