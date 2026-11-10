@@ -24,7 +24,7 @@
     "group_members_hash": "c4317500e3b28e7fd50e6ba5f35e3cd799eb46a7352fceefc78b45ba034feb85",
     "valuation_date": "2026-11-02",
     "as_of": "2026-11-02T23:59:59Z",
-    "input_hash": "c8a556f7fc4cc8afc7d8a1077383d48c87eace86f812310858db9536d338417f",
+    "input_hash": "cda8294b86ebd61bc2a2064dafb5679adb0521763999057f6d536ca12f341ee8",
     "code_rows": 20,
     "issuers": 20,
     "candidate_code_rows": 20,
@@ -65,7 +65,7 @@
       ]
     }
   },
-  "cache_key": "cec1297eb4bfe02ff5bc1e657e5e3ef44cca9584dd0649979608847f8b821d6d",
+  "cache_key": "a679f2d3b787e82cc3aaf6b54a814cb494ad88d028986bfca35e70e55542498e",
   "result_rows": [
     {
       "company_id": "company-000",

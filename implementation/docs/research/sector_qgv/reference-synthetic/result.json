@@ -37,8 +37,8 @@
     ]
   },
   "request_id": "reference-synthetic-01",
-  "cache_key": "cec1297eb4bfe02ff5bc1e657e5e3ef44cca9584dd0649979608847f8b821d6d",
-  "result_id": "fea7409f8880191954fe72420e7387dacd38641cf9e259b3861fd1d3c2c2d907",
+  "cache_key": "a679f2d3b787e82cc3aaf6b54a814cb494ad88d028986bfca35e70e55542498e",
+  "result_id": "78c2b00c2e7fc080d4a14bf71bff9758b2f59d4f51a03d6673443b1a12adf828",
   "evaluation_population": {
     "id": "SYN-EVAL",
     "version": "1",
@@ -63,7 +63,7 @@
     "group_members_hash": "c4317500e3b28e7fd50e6ba5f35e3cd799eb46a7352fceefc78b45ba034feb85",
     "valuation_date": "2026-11-02",
     "as_of": "2026-11-02T23:59:59Z",
-    "input_hash": "c8a556f7fc4cc8afc7d8a1077383d48c87eace86f812310858db9536d338417f",
+    "input_hash": "cda8294b86ebd61bc2a2064dafb5679adb0521763999057f6d536ca12f341ee8",
     "code_rows": 20,
     "issuers": 20,
     "candidate_code_rows": 20,
@@ -147,7 +147,7 @@
     "model_version": "sector-qgv-default/0.1.0",
     "normalization_version": "sector-midrank-strict20/1",
     "reference_adapter_version": "sector-qgv-reference-adapter/0.1.0",
-    "reference_code_hash": "35b3165d8bc5a5c0cd11b12c0b7f874f4e63f81bc1bd2e221e81c7f3a5c90b8f"
+    "reference_code_hash": "2517c70d5f72457be8b532e9cdb0df6d0d289f70b66d6c980478b0a5ece09277"
   },
   "result_rows": [
     {

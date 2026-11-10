@@ -145,7 +145,9 @@ gate limitations remain; original65 issuers still have an incomplete default
 QGV route. Goal coverage QGV+total remains0/501; whole-market denominator null.
 
 21 new synthetic tests plus affected common-engine/partial/saved-setting
-regressions:89 passed. Original normalizer endpoints are0..100; an initial test
+regressions:89 passed at the reviewed fix. A final nullable-mapping exclusion
+case brings the changed adapter suite to22 passing tests; unchanged common-engine
+regressions were not repeated. Original normalizer endpoints are0..100; an initial test
 expectation2.5 for a unique minimum was corrected to the existing formula's0,
 without changing the formula. Independent review found two Important boundaries:
 missing classification hash/other knowledge time could bypass admission; an
@@ -157,8 +159,8 @@ were not re-downloaded or re-parsed.
 Real reconciliation: original504 rows/501 issuers preserved; 149 new scores checked
 independently from reference ordering; all82 additions pinned to held sources;
 non-target factors and original gates/settings unchanged. Main view397,008 bytes,
-within2MB. The preliminary run before review fixes was retained separately and
-superseded by the final run; its identical gains are not counted twice.
+within2MB. Preliminary runs before boundary fixes were retained separately and
+superseded by the accepted run; identical gains are counted only once.
 
 Financial/V queue: this study admits issuer Q/G observations only. It adds no
 TTM diluted EPS, class/action evidence, eligible11/04 price or EV inputs. Previously
