@@ -326,6 +326,28 @@ def _input_identity(s):
     return digest(dict(rows=rows,members=sorted(s['members']),**{k:s[k] for k in ('snapshot_id','input_version','universe_id','universe_version','mapping_version','as_of','valuation_date')}))
 
 
+def scoring_representatives(records):
+    """One evidenced scoring row per issuer; this is not a security master."""
+    issuer_rows=defaultdict(list)
+    for key,row in records.items():
+        if row.get('issuer_id'):issuer_rows[row['issuer_id']].append(key)
+    peers=set()
+    for keys in issuer_rows.values():
+        if len(keys)==1:peers.add(keys[0])
+        else:
+            reps=[key for key in keys if records[key].get('scoring_representative') is True and records[key].get('representative_evidence')]
+            if len(reps)==1:peers.add(reps[0])
+    return peers,issuer_rows
+
+
+def rank_result_rows(rows):
+    """Existing unrounded total ordering, applied to the evaluation set only."""
+    for row in rows:row['rank']=None
+    valid=sorted((r for r in rows if r['total'] is not None),key=lambda r:(-r['total'],r['company_id']))
+    for n,r in enumerate(valid,1):r['rank']=n
+    return valid
+
+
 def preview_qgv(config,snapshot,request_id):
     validate_config(config);s=snapshot
     if s.get('schema_version')!='sector-qgv-input/1' or s.get('mapping_version')!=MAPPING:raise ValueError('INPUT_VERSION_MISMATCH')
@@ -338,15 +360,8 @@ def preview_qgv(config,snapshot,request_id):
         if key not in s['members']:raise ValueError('ROW_OUTSIDE_UNIVERSE')
         rows[key]=row
     records={key:rows.get(key,{'company_id':key}) for key in sorted(s['members'])}
-    matrix={};presets={};pools=defaultdict(list);issuer_rows=defaultdict(list)
-    for key,row in records.items():
-        if row.get('issuer_id'):issuer_rows[row['issuer_id']].append(key)
-    peers=set()
-    for keys in issuer_rows.values():
-        if len(keys)==1:peers.add(keys[0])
-        else:
-            reps=[key for key in keys if records[key].get('scoring_representative') is True and records[key].get('representative_evidence')]
-            if len(reps)==1:peers.add(reps[0])
+    matrix={};presets={};pools=defaultdict(list)
+    peers,issuer_rows=scoring_representatives(records)
     for key,row in records.items():
         mapped=_mapped(row,s)
         if mapped:presets[key]=preset(config,row['sector_id'],row['accounting_template'])
@@ -383,8 +398,7 @@ def preview_qgv(config,snapshot,request_id):
             if result['pre_gate_total'] is not None and sum(result['post_gate_axis_weights'].values())==0:result['status']='NO_WEIGHT_AFTER_GATE'
         else:result.update(axes=dict.fromkeys(('Q','G','V')),total=None,pre_gate_total=None,gate_status='UNKNOWN')
         out.append(result)
-    valid=sorted((r for r in out if r['total'] is not None),key=lambda r:(-r['total'],r['company_id']))
-    for n,r in enumerate(valid,1):r['rank']=n
+    valid=rank_result_rows(out)
     n=len(records);cov={'denominator':{'kind':'ORIGINAL_MEMBER_ROWS','count':n,'unique_issuers':len(issuer_rows),
                                     'security_id_present':sum(bool(r.get('security_id')) for r in records.values())},'factors':{}}
     for v in CATALOG:
