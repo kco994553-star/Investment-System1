@@ -1,0 +1,598 @@
+{
+  "schema_version": "sector-qgv-reference-study/1",
+  "evaluation_population": {
+    "id": "SYN-EVAL",
+    "version": "1",
+    "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "code_rows": 3,
+    "issuers": 3,
+    "input_hash": "87bfa3b183f2c73b6bf69c8c152e733ff02868adf3d9ac07f513157a2b47e497",
+    "snapshot_id": "synthetic-snapshot/1",
+    "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+    "classification_context": {
+      "dictionary_version": "synthetic/1",
+      "mapping_version": "synthetic/1",
+      "knowledge_as_of": "2026-11-02T23:59:59Z"
+    }
+  },
+  "reference_population": {
+    "id": "SYN-REF",
+    "version": "1",
+    "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+    "group_members_hash": "c4317500e3b28e7fd50e6ba5f35e3cd799eb46a7352fceefc78b45ba034feb85",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "input_hash": "c8a556f7fc4cc8afc7d8a1077383d48c87eace86f812310858db9536d338417f",
+    "code_rows": 20,
+    "issuers": 20,
+    "candidate_code_rows": 20,
+    "additional_issuers": 17,
+    "scope": "FACTOR_VALID_RESEARCH_REFERENCES_NOT_LISTING_OR_SECURITY_ELIGIBILITY",
+    "source_population": {
+      "id": "SYN-REFERENCE-SOURCE",
+      "version": "1",
+      "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+      "valuation_date": "2026-11-02",
+      "as_of": "2026-11-02T23:59:59Z",
+      "code_rows": 20,
+      "issuers": 20,
+      "input_hash": "aed01e48007bc5e3704ef0bbcca248e8d4ccba96b6b21f6a3f3d421c9cbe73ba",
+      "snapshot_id": "synthetic-snapshot/1",
+      "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+      "classification_context": {
+        "dictionary_version": "synthetic/1",
+        "mapping_version": "synthetic/1",
+        "knowledge_as_of": "2026-11-02T23:59:59Z"
+      }
+    },
+    "classification_context": {
+      "dictionary_version": "synthetic/1",
+      "mapping_version": "synthetic/1",
+      "knowledge_as_of": "2026-11-02T23:59:59Z",
+      "source_contexts": [
+        {
+          "dictionary_version": "synthetic/1",
+          "mapping_version": "synthetic/1",
+          "knowledge_as_of": "2026-11-02T23:59:59Z"
+        },
+        {
+          "dictionary_version": "synthetic/1",
+          "mapping_version": "synthetic/1",
+          "knowledge_as_of": "2026-11-02T23:59:59Z"
+        }
+      ]
+    }
+  },
+  "cache_key": "cec1297eb4bfe02ff5bc1e657e5e3ef44cca9584dd0649979608847f8b821d6d",
+  "result_rows": [
+    {
+      "company_id": "company-000",
+      "issuer_id": "issuer-0",
+      "security_id": "security-0",
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "factors": {
+        "operating_margin_ttm": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": 0.0,
+          "score_status": "VALID",
+          "valid_n": 20,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "accruals_assets_ttm": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": 100.0,
+          "score_status": "VALID",
+          "valid_n": 20,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "debt_assets": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": 100.0,
+          "score_status": "VALID",
+          "valid_n": 20,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "roa_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "roe_common_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "common_equity_assets": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "cfo_assets_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "interest_coverage_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "revenue_cagr_3y": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": 0.0,
+          "score_status": "VALID",
+          "valid_n": 20,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "roa_improvement_3y": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": 0.0,
+          "score_status": "VALID",
+          "valid_n": 20,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "common_bps_cagr_3y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "cfo_assets_improvement_3y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "ep_ttm_diluted": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": null,
+          "score_status": "PEER_SAMPLE_SMALL",
+          "valid_n": 3,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "ep_fy_diluted": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "ep_fy1": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "ep_ntm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "net_income_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "common_bp": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "tangible_common_bp": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "sales_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "cfo_mcap": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": null,
+          "score_status": "PEER_SAMPLE_SMALL",
+          "valid_n": 3,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "ni_da_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "ebitda_ev": {
+          "raw_value": 20.0,
+          "raw_status": "VALID",
+          "score": null,
+          "score_status": "PEER_SAMPLE_SMALL",
+          "valid_n": 3,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "ebit_ev": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "sales_ev": {
+          "raw_value": 1.0,
+          "raw_status": "VALID",
+          "score": null,
+          "score_status": "PEER_SAMPLE_SMALL",
+          "valid_n": 3,
+          "raw_components_available": true,
+          "verified_external_available": false
+        },
+        "fcf_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "fcf_ev": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "fcff_ev": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "dividend_yield_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "net_share_reduction": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "shareholder_yield": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "peg_historical": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "peg_forecast": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "nareit_ffo_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "affo_mcap": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "gross_profit_assets_ttm": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "net_debt_assets": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "roic_explicit": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "profit_stability_5y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "noa_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "depreciation_capex": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "revenue_growth_1y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "revenue_cagr_5y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "operating_income_cagr_3y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "eps_diluted_cagr_3y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "revenue_growth_consistency_3y": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "cfo_per_share_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "fcf_per_share_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "tangible_bps_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "ffo_per_share_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        },
+        "consensus_growth": {
+          "raw_value": null,
+          "raw_status": "MISSING_INPUT",
+          "score": null,
+          "score_status": "MISSING_INPUT",
+          "valid_n": 0,
+          "raw_components_available": false,
+          "verified_external_available": false
+        }
+      },
+      "rank": null,
+      "status": "STRICT_INCOMPLETE",
+      "axes": {
+        "Q": 60.0,
+        "G": 0.0,
+        "V": null
+      },
+      "missing_factors": {
+        "Q": [],
+        "G": [],
+        "V": [
+          "ep_ttm_diluted",
+          "cfo_mcap",
+          "sales_ev"
+        ]
+      },
+      "pre_gate_total": null,
+      "total": null,
+      "gate_status": "PASS",
+      "nominal_effective_weights": {
+        "operating_margin_ttm": 0.12,
+        "accruals_assets_ttm": 0.09,
+        "debt_assets": 0.09,
+        "revenue_cagr_3y": 0.15,
+        "roa_improvement_3y": 0.1,
+        "ep_ttm_diluted": 0.135,
+        "cfo_mcap": 0.18,
+        "sales_ev": 0.135
+      },
+      "post_gate_effective_weights": {
+        "operating_margin_ttm": 0.12,
+        "accruals_assets_ttm": 0.09,
+        "debt_assets": 0.09,
+        "revenue_cagr_3y": 0.15,
+        "roa_improvement_3y": 0.1,
+        "ep_ttm_diluted": 0.135,
+        "cfo_mcap": 0.18,
+        "sales_ev": 0.135
+      },
+      "nominal_axis_weights": {
+        "Q": 3000,
+        "G": 2500,
+        "V": 4500
+      },
+      "post_gate_axis_weights": {
+        "Q": 0.3,
+        "G": 0.25,
+        "V": 0.45
+      },
+      "selected_variants": [
+        "operating_margin_ttm",
+        "accruals_assets_ttm",
+        "debt_assets",
+        "revenue_cagr_3y",
+        "roa_improvement_3y",
+        "ep_ttm_diluted",
+        "cfo_mcap",
+        "sales_ev"
+      ]
+    }
+  ]
+}

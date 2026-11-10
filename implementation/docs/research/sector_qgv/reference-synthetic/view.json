@@ -1,0 +1,1098 @@
+{
+  "study": {
+    "schema_version": "sector-qgv-reference-plan/1",
+    "study_id": "SYN-REF-01",
+    "version": "1",
+    "policy": "research-reference-additive/1",
+    "reference_id": "SYN-REF",
+    "reference_version": "1",
+    "minimum": 20,
+    "eligible_groups": [
+      {
+        "sector_id": "INFORMATION_TECHNOLOGY",
+        "accounting_template": "GENERAL",
+        "variant_id": "operating_margin_ttm"
+      },
+      {
+        "sector_id": "INFORMATION_TECHNOLOGY",
+        "accounting_template": "GENERAL",
+        "variant_id": "accruals_assets_ttm"
+      },
+      {
+        "sector_id": "INFORMATION_TECHNOLOGY",
+        "accounting_template": "GENERAL",
+        "variant_id": "debt_assets"
+      },
+      {
+        "sector_id": "INFORMATION_TECHNOLOGY",
+        "accounting_template": "GENERAL",
+        "variant_id": "revenue_cagr_3y"
+      },
+      {
+        "sector_id": "INFORMATION_TECHNOLOGY",
+        "accounting_template": "GENERAL",
+        "variant_id": "roa_improvement_3y"
+      }
+    ]
+  },
+  "request_id": "reference-synthetic-01",
+  "cache_key": "cec1297eb4bfe02ff5bc1e657e5e3ef44cca9584dd0649979608847f8b821d6d",
+  "result_id": "fea7409f8880191954fe72420e7387dacd38641cf9e259b3861fd1d3c2c2d907",
+  "evaluation_population": {
+    "id": "SYN-EVAL",
+    "version": "1",
+    "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "code_rows": 3,
+    "issuers": 3,
+    "input_hash": "87bfa3b183f2c73b6bf69c8c152e733ff02868adf3d9ac07f513157a2b47e497",
+    "snapshot_id": "synthetic-snapshot/1",
+    "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+    "classification_context": {
+      "dictionary_version": "synthetic/1",
+      "mapping_version": "synthetic/1",
+      "knowledge_as_of": "2026-11-02T23:59:59Z"
+    }
+  },
+  "reference_population": {
+    "id": "SYN-REF",
+    "version": "1",
+    "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+    "group_members_hash": "c4317500e3b28e7fd50e6ba5f35e3cd799eb46a7352fceefc78b45ba034feb85",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "input_hash": "c8a556f7fc4cc8afc7d8a1077383d48c87eace86f812310858db9536d338417f",
+    "code_rows": 20,
+    "issuers": 20,
+    "candidate_code_rows": 20,
+    "additional_issuers": 17,
+    "scope": "FACTOR_VALID_RESEARCH_REFERENCES_NOT_LISTING_OR_SECURITY_ELIGIBILITY",
+    "source_population": {
+      "id": "SYN-REFERENCE-SOURCE",
+      "version": "1",
+      "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+      "valuation_date": "2026-11-02",
+      "as_of": "2026-11-02T23:59:59Z",
+      "code_rows": 20,
+      "issuers": 20,
+      "input_hash": "aed01e48007bc5e3704ef0bbcca248e8d4ccba96b6b21f6a3f3d421c9cbe73ba",
+      "snapshot_id": "synthetic-snapshot/1",
+      "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+      "classification_context": {
+        "dictionary_version": "synthetic/1",
+        "mapping_version": "synthetic/1",
+        "knowledge_as_of": "2026-11-02T23:59:59Z"
+      }
+    },
+    "classification_context": {
+      "dictionary_version": "synthetic/1",
+      "mapping_version": "synthetic/1",
+      "knowledge_as_of": "2026-11-02T23:59:59Z",
+      "source_contexts": [
+        {
+          "dictionary_version": "synthetic/1",
+          "mapping_version": "synthetic/1",
+          "knowledge_as_of": "2026-11-02T23:59:59Z"
+        },
+        {
+          "dictionary_version": "synthetic/1",
+          "mapping_version": "synthetic/1",
+          "knowledge_as_of": "2026-11-02T23:59:59Z"
+        }
+      ]
+    }
+  },
+  "bindings": {
+    "config_hash": "f13831e6ec23b090fa6df5ac20c58f05081c60c10d58677a40c7fc0775f7c455",
+    "evaluation": {
+      "id": "SYN-EVAL",
+      "version": "1",
+      "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+      "valuation_date": "2026-11-02",
+      "as_of": "2026-11-02T23:59:59Z",
+      "code_rows": 3,
+      "issuers": 3,
+      "input_hash": "87bfa3b183f2c73b6bf69c8c152e733ff02868adf3d9ac07f513157a2b47e497",
+      "snapshot_id": "synthetic-snapshot/1",
+      "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+      "classification_context": {
+        "dictionary_version": "synthetic/1",
+        "mapping_version": "synthetic/1",
+        "knowledge_as_of": "2026-11-02T23:59:59Z"
+      }
+    },
+    "reference_source": {
+      "id": "SYN-REFERENCE-SOURCE",
+      "version": "1",
+      "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+      "valuation_date": "2026-11-02",
+      "as_of": "2026-11-02T23:59:59Z",
+      "code_rows": 20,
+      "issuers": 20,
+      "input_hash": "aed01e48007bc5e3704ef0bbcca248e8d4ccba96b6b21f6a3f3d421c9cbe73ba",
+      "snapshot_id": "synthetic-snapshot/1",
+      "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+      "classification_context": {
+        "dictionary_version": "synthetic/1",
+        "mapping_version": "synthetic/1",
+        "knowledge_as_of": "2026-11-02T23:59:59Z"
+      }
+    },
+    "retained_evaluation_preview_hash": "2ff1f65cc62d6d5c1e48ef3025aa5ed390d09e2cc814c375d512a8b8e049953b",
+    "retained_reference_preview_hash": "aa96204db4b425fa45d95cca4403cee531f88c69f258e2b76a44d16e951d8dd0",
+    "plan_hash": "6e39bb97d0d75731e300bda5bdc1fb0d5fa358e47779339094dc104413b60469",
+    "engine_version": "sector-qgv-engine/0.1.0",
+    "model_version": "sector-qgv-default/0.1.0",
+    "normalization_version": "sector-midrank-strict20/1",
+    "reference_adapter_version": "sector-qgv-reference-adapter/0.1.0",
+    "reference_code_hash": "35b3165d8bc5a5c0cd11b12c0b7f874f4e63f81bc1bd2e221e81c7f3a5c90b8f"
+  },
+  "comparison": {
+    "denominator_code_rows": 3,
+    "denominator_issuers": 3,
+    "axes": {
+      "Q": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0,
+        "before_issuers": 0,
+        "after_issuers": 3,
+        "gained_issuers": 3,
+        "lost_issuers": 0,
+        "changed_common_issuers": 0
+      },
+      "G": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0,
+        "before_issuers": 0,
+        "after_issuers": 3,
+        "gained_issuers": 3,
+        "lost_issuers": 0,
+        "changed_common_issuers": 0
+      },
+      "V": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0,
+        "before_issuers": 0,
+        "after_issuers": 0,
+        "gained_issuers": 0,
+        "lost_issuers": 0,
+        "changed_common_issuers": 0
+      },
+      "joint": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0,
+        "before_issuers": 0,
+        "after_issuers": 0,
+        "gained_issuers": 0,
+        "lost_issuers": 0,
+        "changed_common_issuers": 0
+      },
+      "total": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0,
+        "before_issuers": 0,
+        "after_issuers": 0,
+        "gained_issuers": 0,
+        "lost_issuers": 0,
+        "changed_common_issuers": 0
+      }
+    },
+    "factors": {
+      "operating_margin_ttm:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "operating_margin_ttm:score": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "accruals_assets_ttm:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "accruals_assets_ttm:score": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "debt_assets:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "debt_assets:score": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "revenue_cagr_3y:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "revenue_cagr_3y:score": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "roa_improvement_3y:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "roa_improvement_3y:score": {
+        "before_rows": 0,
+        "after_rows": 3,
+        "gained_rows": 3,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "ep_ttm_diluted:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "ep_ttm_diluted:score": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "cfo_mcap:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "cfo_mcap:score": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "sales_ev:raw": {
+        "before_rows": 3,
+        "after_rows": 3,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      },
+      "sales_ev:score": {
+        "before_rows": 0,
+        "after_rows": 0,
+        "gained_rows": 0,
+        "lost_rows": 0,
+        "changed_common_rows": 0
+      }
+    },
+    "new_any_axis_issuers": 3,
+    "rows": [
+      {
+        "company_id": "company-000",
+        "issuer_id": "issuer-0",
+        "before_axes": {
+          "Q": null,
+          "G": null,
+          "V": null
+        },
+        "after_axes": {
+          "Q": 60.0,
+          "G": 0.0,
+          "V": null
+        },
+        "before_total": null,
+        "after_total": null,
+        "before_rank": null,
+        "after_rank": null,
+        "factors": [
+          {
+            "variant_id": "operating_margin_ttm",
+            "before": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": 0.0,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "accruals_assets_ttm",
+            "before": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": 100.0,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "debt_assets",
+            "before": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": 100.0,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "revenue_cagr_3y",
+            "before": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": 0.0,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "roa_improvement_3y",
+            "before": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 1.0,
+              "raw_status": "VALID",
+              "score": 0.0,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          }
+        ]
+      },
+      {
+        "company_id": "company-001",
+        "issuer_id": "issuer-1",
+        "before_axes": {
+          "Q": null,
+          "G": null,
+          "V": null
+        },
+        "after_axes": {
+          "Q": 58.94736842105263,
+          "G": 5.2631578947368425,
+          "V": null
+        },
+        "before_total": null,
+        "after_total": null,
+        "before_rank": null,
+        "after_rank": null,
+        "factors": [
+          {
+            "variant_id": "operating_margin_ttm",
+            "before": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": 5.2631578947368425,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "accruals_assets_ttm",
+            "before": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": 94.73684210526315,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "debt_assets",
+            "before": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": 94.73684210526315,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "revenue_cagr_3y",
+            "before": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": 5.2631578947368425,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "roa_improvement_3y",
+            "before": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 2.0,
+              "raw_status": "VALID",
+              "score": 5.2631578947368425,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          }
+        ]
+      },
+      {
+        "company_id": "company-002",
+        "issuer_id": "issuer-2",
+        "before_axes": {
+          "Q": null,
+          "G": null,
+          "V": null
+        },
+        "after_axes": {
+          "Q": 57.89473684210526,
+          "G": 10.526315789473685,
+          "V": null
+        },
+        "before_total": null,
+        "after_total": null,
+        "before_rank": null,
+        "after_rank": null,
+        "factors": [
+          {
+            "variant_id": "operating_margin_ttm",
+            "before": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": 10.526315789473685,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "accruals_assets_ttm",
+            "before": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": 89.47368421052632,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "debt_assets",
+            "before": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": 89.47368421052632,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "revenue_cagr_3y",
+            "before": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": 10.526315789473685,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          },
+          {
+            "variant_id": "roa_improvement_3y",
+            "before": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": null,
+              "score_status": "PEER_SAMPLE_SMALL",
+              "valid_n": 3,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "after": {
+              "raw_value": 3.0,
+              "raw_status": "VALID",
+              "score": 10.526315789473685,
+              "score_status": "VALID",
+              "valid_n": 20,
+              "raw_components_available": true,
+              "verified_external_available": false
+            },
+            "reason": "REFERENCE_POPULATION_CHANGED"
+          }
+        ]
+      }
+    ]
+  },
+  "groups": [
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "accruals_assets_ttm",
+      "before_valid_n": [
+        3
+      ],
+      "after_valid_n": 20,
+      "reference_members": [
+        "company-000",
+        "company-001",
+        "company-002",
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "reference_issuers": [
+        "issuer-0",
+        "issuer-1",
+        "issuer-10",
+        "issuer-11",
+        "issuer-12",
+        "issuer-13",
+        "issuer-14",
+        "issuer-15",
+        "issuer-16",
+        "issuer-17",
+        "issuer-18",
+        "issuer-19",
+        "issuer-2",
+        "issuer-3",
+        "issuer-4",
+        "issuer-5",
+        "issuer-6",
+        "issuer-7",
+        "issuer-8",
+        "issuer-9"
+      ],
+      "additional_members": [
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "minimum": 20
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "debt_assets",
+      "before_valid_n": [
+        3
+      ],
+      "after_valid_n": 20,
+      "reference_members": [
+        "company-000",
+        "company-001",
+        "company-002",
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "reference_issuers": [
+        "issuer-0",
+        "issuer-1",
+        "issuer-10",
+        "issuer-11",
+        "issuer-12",
+        "issuer-13",
+        "issuer-14",
+        "issuer-15",
+        "issuer-16",
+        "issuer-17",
+        "issuer-18",
+        "issuer-19",
+        "issuer-2",
+        "issuer-3",
+        "issuer-4",
+        "issuer-5",
+        "issuer-6",
+        "issuer-7",
+        "issuer-8",
+        "issuer-9"
+      ],
+      "additional_members": [
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "minimum": 20
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "operating_margin_ttm",
+      "before_valid_n": [
+        3
+      ],
+      "after_valid_n": 20,
+      "reference_members": [
+        "company-000",
+        "company-001",
+        "company-002",
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "reference_issuers": [
+        "issuer-0",
+        "issuer-1",
+        "issuer-10",
+        "issuer-11",
+        "issuer-12",
+        "issuer-13",
+        "issuer-14",
+        "issuer-15",
+        "issuer-16",
+        "issuer-17",
+        "issuer-18",
+        "issuer-19",
+        "issuer-2",
+        "issuer-3",
+        "issuer-4",
+        "issuer-5",
+        "issuer-6",
+        "issuer-7",
+        "issuer-8",
+        "issuer-9"
+      ],
+      "additional_members": [
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "minimum": 20
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "revenue_cagr_3y",
+      "before_valid_n": [
+        3
+      ],
+      "after_valid_n": 20,
+      "reference_members": [
+        "company-000",
+        "company-001",
+        "company-002",
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "reference_issuers": [
+        "issuer-0",
+        "issuer-1",
+        "issuer-10",
+        "issuer-11",
+        "issuer-12",
+        "issuer-13",
+        "issuer-14",
+        "issuer-15",
+        "issuer-16",
+        "issuer-17",
+        "issuer-18",
+        "issuer-19",
+        "issuer-2",
+        "issuer-3",
+        "issuer-4",
+        "issuer-5",
+        "issuer-6",
+        "issuer-7",
+        "issuer-8",
+        "issuer-9"
+      ],
+      "additional_members": [
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "minimum": 20
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "roa_improvement_3y",
+      "before_valid_n": [
+        3
+      ],
+      "after_valid_n": 20,
+      "reference_members": [
+        "company-000",
+        "company-001",
+        "company-002",
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "reference_issuers": [
+        "issuer-0",
+        "issuer-1",
+        "issuer-10",
+        "issuer-11",
+        "issuer-12",
+        "issuer-13",
+        "issuer-14",
+        "issuer-15",
+        "issuer-16",
+        "issuer-17",
+        "issuer-18",
+        "issuer-19",
+        "issuer-2",
+        "issuer-3",
+        "issuer-4",
+        "issuer-5",
+        "issuer-6",
+        "issuer-7",
+        "issuer-8",
+        "issuer-9"
+      ],
+      "additional_members": [
+        "company-003",
+        "company-004",
+        "company-005",
+        "company-006",
+        "company-007",
+        "company-008",
+        "company-009",
+        "company-010",
+        "company-011",
+        "company-012",
+        "company-013",
+        "company-014",
+        "company-015",
+        "company-016",
+        "company-017",
+        "company-018",
+        "company-019"
+      ],
+      "minimum": 20
+    }
+  ],
+  "performance": null,
+  "whole_market_denominator": null,
+  "operating_adoption": "NOT_ADOPTED",
+  "rank_scope": "ORIGINAL_EVALUATION_POPULATION_ONLY",
+  "schema_version": "sector-qgv-reference-view/1",
+  "visibility": "PRIVATE_RESEARCH",
+  "source_result_hash": "be582e668cd4c3590a6dbf62ba119c88a9fab7d41b92066c9c78f9875da2ad2d"
+}
