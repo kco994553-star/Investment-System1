@@ -245,10 +245,42 @@ function compareView(row,d,{sectorName}={}){return freeze({company_id:row.compan
    additional:add.filter(([,f])=>f.score!==null).map(([v,f])=>factorText(v,f)),
    additionalMissing:add.filter(([,f])=>f.score===null).length});})});}
 
+/* ---- the research engine route (owner 2026-11-11 §3; development bridge, tools/sector_qgv_engine_bridge.py): requests name the
+   model and the candidate explicitly; an answer is used only when it is the answer to that very request (op, request id, model,
+   model_id) and its board is that candidate's (qgv-dual-board/1, same model_id, no rank without a total). Nothing is computed here. */
+const ENGINE=Object.freeze({REQUEST:'sector-qgv-engine-request/1',RESPONSE:'sector-qgv-engine-response/1',BOARD:'qgv-dual-board/1',SAVED:'qgv-dual-saved/1'});
+const MODEL_OF=Object.freeze(Object.fromEntries(Object.entries(MODELS).map(([k,m])=>[m.model_id,Object.freeze({key:k,model:m.kind==='COMMON'?'INTEGRATED':'SECTOR'})])));
+const ENGINE_OPS=Object.freeze(['context','preview','save','replay']);
+const KIND_WORD=Object.freeze({SYNTHETIC_RECALCULATION:'합성 실제 재계산(지금 설정·지금 입력)',EXACT_REPLAY:'정확 재현(같은 설정·코드·원래 입력)'});
+let reqSeq=0;
+function engineRequest(op,model_id,fields={}){if(!ENGINE_OPS.includes(op))throw Error('DUAL_OP_UNKNOWN');const m=MODEL_OF[model_id];if(!m)throw Error('MODEL_ID_UNKNOWN');
+ reqSeq=(reqSeq+1)%1e9;return Object.freeze({...fields,schema_version:ENGINE.REQUEST,op,request_id:'DUAL-'+op+'-'+m.key+'-'+reqSeq,model:m.model,model_id});}
+// A saved research record (the engine's save_board answer as returned): schema, the four keys, a known candidate, hashes.
+function validateSaved(x){try{exact(x,['schema_version','configuration','bindings','result_hash'],'saved');if(x.schema_version!==ENGINE.SAVED)refuse('SAVED_SCHEMA_MISMATCH','saved.schema_version');
+  if(!isObj(x.configuration)||!MODEL_OF[x.configuration.model_id])refuse('MODEL_ID_UNKNOWN','saved.configuration.model_id');
+  if(!isObj(x.bindings)||!HEX.test(x.bindings.model_hash)||!HEX.test(x.result_hash))refuse('HASH_INVALID','saved');return{ok:true};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+function boardCheck(b,model_id){if(!isObj(b)||b.schema_version!==ENGINE.BOARD)refuse('BOARD_SCHEMA','board');if(b.model_id!==model_id)refuse('MODEL_RESPONSE_MISMATCH','board.model_id');
+ if(!HEX.test(b.result_hash)||!Array.isArray(b.rows))refuse('BOARD_INVALID','board');
+ b.rows.forEach((r,i)=>{const at='board.rows['+i+']';if(!isObj(r)||!isObj(r.axes))refuse('BOARD_INVALID',at);head(r,MODEL_OF[model_id].key,at);});}
+function checkAnswer(req,res){try{if(!isObj(res)||res.schema_version!==ENGINE.RESPONSE)refuse('ENGINE_ANSWER_INVALID','$');
+  if(res.request_id!==req.request_id||res.op!==req.op)refuse('ENGINE_ANSWER_OTHER_REQUEST','$');
+  if(res.ok!==true)return{ok:false,code:typeof res.code==='string'&&/^[A-Z][A-Z0-9_:a-z]{1,79}$/.test(res.code)?res.code:'ENGINE_FAILED',path:'$'};
+  if(res.model!==req.model||res.model_id!==req.model_id)refuse('MODEL_RESPONSE_MISMATCH','$.model_id');
+  if(req.op==='preview'||req.op==='replay'){boardCheck(res.board,req.model_id);
+   if(res.kind!==(req.op==='preview'?'SYNTHETIC_RECALCULATION':'EXACT_REPLAY'))refuse('ANSWER_KIND','$.kind');
+   if(req.op==='replay'&&res.board.result_hash!==req.saved.result_hash)refuse('REPLAY_RESULT_MISMATCH','$.board.result_hash');}
+  if(req.op==='save'){const v=validateSaved(res.saved);if(!v.ok)refuse(v.code,v.path);
+   if(res.saved.configuration.model_id!==req.model_id||res.saved.result_hash!==req.result_hash)refuse('MODEL_RESPONSE_MISMATCH','$.saved');}
+  return{ok:true,value:res};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+function boardRowsView(b,{sectorName}={}){const key=MODEL_OF[b.model_id].key;return b.rows.map(r=>freeze({company_id:r.company_id,Q:fmt(r.axes.Q),G:fmt(r.axes.G),V:fmt(r.axes.V),
+ total:fmt(r.total),rank:rankText(r,sectorName),status:word(r.status)+' · '+word(r.gate_status),key}));}
+
 function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(const f of[...ls]){try{f();}catch(_){}}};
  return Object.freeze({set(scope,v){if(!own(SCOPES,scope)||!CHECKED.has(v)||v.scope!==scope)throw Error('DUAL_UNCHECKED');held.set(scope,Object.freeze({delivery:v,details:new Map()}));tell();},get:scope=>held.get(scope)||null,
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

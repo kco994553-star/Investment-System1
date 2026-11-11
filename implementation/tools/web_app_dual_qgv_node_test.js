@@ -144,3 +144,37 @@ test('RAM: only a checked delivery of that scope; a drop tells the screens', asy
   ram.set('operating504', v); assert.equal(ram.get('operating504').delivery, v); assert.equal(told, 1);
   ram.drop(); assert.equal(ram.get('operating504'), null); assert.equal(told, 2); ram.drop(); assert.equal(told, 2, 'an empty drop says nothing'); un();
 });
+
+// The research engine route (owner 2026-11-11 §3): requests name model and candidate; an answer is used only for that very request.
+test('engine answers: the same request, model and candidate; board of that candidate; no rank without a total; saved records', async () => {
+  const E = require('./web_app_sector_qgv_engine.js'), eng = E.start({ env: {} });
+  try {
+    const U1 = 'unified-roa-core/0.1.0', S1 = 'sector-reduced-core/0.1.0';
+    assert.throws(() => DQ.engineRequest('preview', 'unknown/0.1.0'), /MODEL_ID_UNKNOWN/);
+    assert.throws(() => DQ.engineRequest('comparisons', U1), /DUAL_OP_UNKNOWN/);
+    const q = DQ.engineRequest('preview', U1, { input_id: 'DUAL_BOTH_VALID' });
+    assert.equal(q.model, 'INTEGRATED'); assert.equal(q.model_id, U1); assert.match(q.request_id, /^DUAL-preview-U1-\d+$/);
+    const a = await eng.call(q), ok = DQ.checkAnswer(q, a);
+    assert.equal(ok.ok, true, JSON.stringify(ok.code)); assert.equal(ok.value.board.result_hash, F.parse('summary.json').boards.U1.result_hash);
+    // the answer to another request, or under another model, is never used
+    assert.equal(DQ.checkAnswer({ ...q, request_id: 'DUAL-preview-U1-0' }, a).code, 'ENGINE_ANSWER_OTHER_REQUEST');
+    assert.equal(DQ.checkAnswer({ ...q, model_id: 'unified-sales-core/0.1.0' }, a).code, 'MODEL_RESPONSE_MISMATCH');
+    const forged = JSON.parse(JSON.stringify(a)); forged.board.model_id = S1;
+    assert.equal(DQ.checkAnswer(q, forged).code, 'MODEL_RESPONSE_MISMATCH');
+    const ranked = JSON.parse(JSON.stringify(a)); ranked.board.rows[0].total = null;
+    assert.equal(DQ.checkAnswer(q, ranked).code, 'RANK_WITHOUT_TOTAL');
+    // Q/G only: shown, no total, no rank
+    const g = DQ.engineRequest('preview', S1, { input_id: 'DUAL_QG_ONLY' }), ga = DQ.checkAnswer(g, await eng.call(g));
+    assert.equal(ga.ok, true); const rows = DQ.boardRowsView(ga.value.board);
+    assert.ok(rows.every((r) => r.Q !== '미산출' && r.total === '미산출' && r.rank === '총점 없음 · 순위 없음'));
+    // save → a valid qgv-dual-saved/1 for that candidate; replay of it is the same result
+    const s = DQ.engineRequest('save', U1, { result_hash: ok.value.board.result_hash }), sa = DQ.checkAnswer(s, await eng.call(s));
+    assert.equal(sa.ok, true); assert.equal(DQ.validateSaved(sa.value.saved).ok, true);
+    const r = DQ.engineRequest('replay', U1, { saved: sa.value.saved }), ra = DQ.checkAnswer(r, await eng.call(r));
+    assert.equal(ra.ok, true); assert.equal(ra.value.kind, 'EXACT_REPLAY');
+    // an engine refusal stays the engine's code
+    const u = DQ.engineRequest('replay', U1, { saved: { schema_version: 'sector-qgv-saved/1' } });
+    assert.equal(DQ.checkAnswer(u, await eng.call(u)).code, 'SAVED_SCHEMA_MISMATCH');
+    assert.equal(DQ.validateSaved({ schema_version: 'sector-qgv-saved/1' }).code, 'KEY_MISSING');
+  } finally { eng.close(); }
+});

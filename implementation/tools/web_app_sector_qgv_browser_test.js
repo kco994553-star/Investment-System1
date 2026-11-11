@@ -269,6 +269,54 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.evaluate(([k, v]) => localStorage.setItem(k, v), [KEY, raw]);
       ok(tag + ' 2.2.7 섹터 QGV 설정(요소·가중치): 원본 참조 / 내 설정 identities; N<20 = 요소 점수 미산출 (N=19), no rank; reproduce = engine replay; apply-latest = new result; missing retained input = 연결 전; stored bytes unchanged');
 
+      // ---------------- 2.2.7 연구 후보 (owner 2026-11-11 §3): an explicitly named candidate on the engine route; a late answer
+      // after a switch is dropped and the previous model's result never stays; Q/G with a null total and no rank; save / cancel /
+      // restore (exact replay) on its own key; the sector record is untouched.
+      phase = tag + ' research';
+      {
+        const DB = '[data-de-block]', DKEY = 'investment.web.v2.dual-qgv-saved';
+        const sector0 = await page.evaluate((k) => localStorage.getItem(k), KEY);
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-state'), 'CHOOSE', phase + ': no candidate preselected');
+        assert.equal(await page.locator(DB + ' [data-k=de-compute]').isDisabled(), true);
+        const c0 = eng.calls.length;
+        await page.locator(DB + ' [data-de-model=U1]').click(); await page.locator(DB + ' [data-k=de-compute]').click();
+        await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
+        assert.deepEqual(eng.calls.slice(c0).map((x) => x.op), ['preview', 'save'], phase + ': one click = the engine preview and its save_board record (nothing stored)');
+        assert.equal(await page.evaluate((k) => localStorage.getItem(k), DKEY), null, phase + ': 계산 stores nothing');
+        const u1 = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'docs/research/sector_qgv/dual-synthetic/summary.json'), 'utf8')).boards.U1.result_hash;
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), u1, phase + ': the engine board, the same as Codex\'s synthetic result');
+        assert.deepEqual(await page.locator(DB + ' [data-de-rank]').allInnerTexts(), ['3 / 3 (평가 집단 전체)', '2 / 3 (평가 집단 전체)', '1 / 3 (평가 집단 전체)']);
+        assert.match(await text(DB + ' [data-de-state]'), /^합성 실제 재계산/);
+        // late answer: U1 is asked again, S1 is chosen before it answers → the U1 answer is dropped, no U1 board stays
+        eng.hold(1); await page.locator(DB + ' [data-k=de-compute]').click(); await page.locator(DB + ' [data-de-state=LOADING]').waitFor();
+        await page.locator(DB + ' [data-de-model=S1]').click();
+        assert.equal(await page.locator(DB + ' [data-de-board]').count(), 0, phase + ': switching clears the previous model at once');
+        eng.release(); await page.waitForTimeout(800);
+        assert.equal(await page.locator(DB + ' [data-de-board]').count(), 0, phase + ': the late U1 answer is dropped');
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-state'), 'IDLE');
+        // S1, Q/G only: Q and G shown, total 미산출, no total rank
+        await page.locator(DB + ' select[data-k=de-input]').selectOption('DUAL_QG_ONLY');
+        await page.locator(DB + ' [data-k=de-compute]').click(); await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-board'), 'sector-reduced-core/0.1.0');
+        assert.deepEqual(await page.locator(DB + ' [data-de-rank]').allInnerTexts(), ['총점 없음 · 순위 없음', '총점 없음 · 순위 없음', '총점 없음 · 순위 없음']);
+        const cells = await page.locator(DB + ' [data-de-row]').first().locator('td').allInnerTexts();
+        assert.ok(cells[1] !== '미산출' && cells[2] !== '미산출' && cells[3] === '미산출' && cells[4] === '미산출', phase + ': Q / G shown, V / total 미산출 ' + cells.join('|'));
+        // save → own key; the sector record unchanged; cancel drops the shown result; restore = exact replay of the saved record
+        const shownHash = await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result');
+        await page.locator(DB + ' [data-k=de-save]').click(); await page.locator(DB + ' [data-de-msg]').waitFor({ timeout: 30000 });
+        const rec = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), DKEY));
+        assert.equal(rec.schema_version, 'dual-qgv-saved-set/1'); assert.deepEqual(Object.keys(rec.records), ['sector-reduced-core/0.1.0']);
+        assert.equal(rec.records['sector-reduced-core/0.1.0'].result_hash, shownHash);
+        assert.equal(await page.evaluate((k) => localStorage.getItem(k), KEY), sector0, phase + ': the sector QGV record is never rewritten');
+        await page.locator(DB + ' [data-k=de-cancel]').click();
+        assert.equal(await page.locator(DB + ' [data-de-board]').count(), 0); assert.equal(await page.locator(DB + ' [data-de-saved=OK]').count(), 1);
+        await page.locator(DB + ' [data-k=de-restore]').click(); await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-kind'), 'EXACT_REPLAY');
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), shownHash, phase + ': the replay is the saved result');
+        assert.ok(!/\b(null|undefined|NaN)\b/.test(await text(DB)), phase + ': no null / undefined text');
+      }
+      ok(tag + ' 2.2.7 연구 후보: named candidate only; late answer dropped on switch, no previous-model result; Q/G with no total rank; save on its own key (sector record unchanged), cancel, exact replay');
+
       // ---------------- phone
       if (phone) {
         phase = tag + ' phone';
@@ -284,7 +332,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok(posts.length > 0 && posts.every((m) => m === 'POST'), 'the engine route is POST only');
       assert.deepEqual(seen.requests.filter((u) => /sector/i.test(u) && !/\/(sector-qgv|sector-qgv-axis|screen-sector-qgv-axis-live|screen-sector-qgv-live)\.js$|\/sector-qgv-engine$/.test(new URL(u).pathname)), [], 'no sector data file request');
       const st = await site.storage(page);
-      assert.deepEqual(Object.keys(st.localItems).filter((k) => !/recent-search/.test(k)), [KEY], 'only the sector key is written by this screen');
+      assert.deepEqual(Object.keys(st.localItems).filter((k) => !/recent-search/.test(k)).sort(), [KEY, 'investment.web.v2.dual-qgv-saved'].sort(), 'only the sector key and the research candidate key (2.2.7, its own) are written by this screen');
       assert.equal(await page.evaluate(() => window.__csp), 0);
       assert.deepEqual(eng.stderr, []);
       ok(tag + ' boundaries');
