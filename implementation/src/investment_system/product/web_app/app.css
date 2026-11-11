@@ -154,6 +154,8 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .cc-wrap{min-width:0;max-width:100%;overflow-wrap:anywhere}
 /* A list inside a classification wrapper keeps the wrapper's wrapping: long ids and codes break at 320 px instead of widening the page. */
 .cc-wrap .news-lines{overflow-wrap:anywhere}
+/* A select sizes to its longest option (long factor ids); inside a research block it takes the row, never the page. */
+.cc-wrap select{min-height:44px;width:100%;max-width:100%;min-width:0}
 .result-facts p{margin:0}
 .not-found{font-family:var(--font-display);font-size:24px;color:var(--ink)}
 .star-wrap{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}

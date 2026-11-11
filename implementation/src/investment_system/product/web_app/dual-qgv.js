@@ -28,7 +28,9 @@ const SCOPES=Object.freeze({
  operating504:Object.freeze({label:'운영504',anchor:'operating',input:'evaluation',text:'평가 504코드 행 / 501발행사'}),
  held1057:Object.freeze({label:'보유1057',anchor:'held_financial_subsample',input:'reference',text:'보유 재무 표본 1057발행사 · 운영504와 합치지 않음'})});
 const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference:'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'});
-const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치)',
+// operating504's reference input is not tied to an independent anchor here (the staged bundle names only the evaluation input), so
+// a delivery whose reference hash was changed consistently is not refused on that side; the word says so (Codex binding cases).
+const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력은 독립 기준과 대조 안 됨',
  REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(투영 증명 파일 없음)',
  EVALUATION_INPUT_PROJECTION_ATTESTED:'평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨(화면이 다시 계산한 것 아님)'});
 // The producer's projection proof of held1057's evaluation input (Codex 6794279588 §2, qgv-dual-input-projection-proof/1): it must
@@ -187,7 +189,8 @@ async function checkDelivery(parts,opts){
   let input_check=INPUT_CHECK[SCOPES[o.scope].input];
   if(p.lineage!==undefined&&p.lineage!==null){if(SCOPES[o.scope].input!=='reference')refuse('LINEAGE_NOT_APPLICABLE','lineage');
    if(!isObj(p.lineage)||!isObj(p.lineage.body))refuse('LINEAGE_SCHEMA','lineage');lineageCheck(p.lineage.body,s.boards);input_check='EVALUATION_INPUT_PROJECTION_ATTESTED';}
-  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
+  if(!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','manifest');const manifest_sha256=await o.sha256(p.manifest.bytes);
+  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
@@ -241,6 +244,89 @@ function boardView(d,key){const b=d.summary.boards[key],M=MODELS[key],c=b.covera
   causes:Object.entries(c.causes).map(([k,v])=>word(k)+' ('+k+') · 발행사 '+v.issuers+' · 코드 행 '+v.code_rows),
   incomplete:'총점 미산출 코드 행 '+c.incomplete_unique.code_rows+' · 비교 표본 부족이 걸린 행 '+c.current_sample_barrier.code_rows,
   market:'전체시장 분모·커버리지 미측정 · 관측 카탈로그는 상장 전체시장이 아님'});}
+
+// 개별 요소 상위권 (Codex qgv-dual-factor-leaders/1, an optional companion of one checked delivery): its own manifest pins the
+// delivery's manifest bytes (source_delivery_manifest_sha256); its index repeats each board's identity (model, configuration and
+// result hashes, populations, bindings), which must be the checked delivery's own; each shard holds, per model × ranking scope ×
+// factor, the first top_n of the STORED ranks (ranks 1..min(N, top_n), N = evaluation valid code rows) and the stored decile
+// boundaries. Nothing is ranked, sorted, filled or merged here; the reference N is shown beside N, never instead of it.
+const LEADERS=Object.freeze({MANIFEST:'qgv-dual-factor-leaders-manifest/1',INDEX:'qgv-dual-factor-leaders/1',DETAIL:'qgv-dual-factor-leaders-detail/1'});
+const LEADER_SHARD=/^factor-leaders-\d{3}\.json$/;
+const LEADER_BOARD_KEYS=['model_id','model_version','configuration_hash','result_hash','evaluation_population','reference_population','bindings'];
+const LEADER_GROUP_KEYS=['group_id','board','ranking_scope','variant_id','evaluation_valid_n','reference_valid_n','file'];
+const LEADER_DETAIL_KEYS=['group_id','board','ranking_scope','variant_id','evaluation_rows_in_scope','evaluation_valid_n','reference_valid_n','rank_unit','top_n','leaders','decile_status','decile_boundaries'];
+const LEADER_KEYS=['company_id','issuer_id','security_id','score','rank','rank_n','decile','kind'];
+const BOUNDARY_KEYS=['decile','count','first_rank','last_rank','first_score','last_score'];
+const LEADERS_CHECKED=new WeakSet();
+async function checkLeaders(parts,delivery,sha256){
+ try{const d=delivery;if(!d||!CHECKED.has(d))refuse('DELIVERY_NOT_CHECKED','$');if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  const p=parts||{};if(!isObj(p.manifest)||!isObj(p.manifest.body))refuse('BYTES_REQUIRED','leaders_manifest');const m=p.manifest.body;
+  exact(m,['schema_version','scope','data_kind','source_delivery_manifest_sha256','files'],'leaders_manifest');
+  if(m.schema_version!==LEADERS.MANIFEST)refuse('SCHEMA','leaders_manifest.schema_version');
+  if(m.scope!==d.scope||m.data_kind!==d.data_kind)refuse('SCOPE_MISMATCH','leaders_manifest.scope');
+  if(m.source_delivery_manifest_sha256!==d.manifest_sha256)refuse('LEADERS_SOURCE_MISMATCH','leaders_manifest.source_delivery_manifest_sha256');
+  if(!Array.isArray(m.files)||!m.files.length||m.files.length>400)refuse('FILES_INVALID','leaders_manifest.files');const entries=new Map();
+  m.files.forEach((f,i)=>{exact(f,['path','size','sha256'],'leaders_manifest.files['+i+']');
+   if(!(f.path==='factor-leaders.json'||LEADER_SHARD.test(f.path))||entries.has(f.path)||!int(f.size)||f.size<1||f.size>MAX_BYTES||!HEX.test(f.sha256))refuse('FILES_INVALID','leaders_manifest.files['+i+']');entries.set(f.path,f);});
+  const x=await bytesMatch(p.index,'factor-leaders.json',entries,sha256,'leaders_index');
+  exact(x,['schema_version','scope','data_kind','source_delivery_manifest_sha256','projection_only','rank_recalculated','whole_market_denominator','whole_market_coverage','boards','groups','optional_detail_fields'],'leaders_index');
+  if(x.schema_version!==LEADERS.INDEX)refuse('SCHEMA','leaders_index.schema_version');
+  if(x.scope!==m.scope||x.data_kind!==m.data_kind||x.source_delivery_manifest_sha256!==m.source_delivery_manifest_sha256)refuse('SCOPE_MISMATCH','leaders_index');
+  if(x.projection_only!==true||x.rank_recalculated!==false||x.whole_market_denominator!==null||x.whole_market_coverage!==null)refuse('NOT_PROJECTION','leaders_index');
+  exact(x.boards,d.models,'leaders_index.boards');
+  for(const k of d.models){exact(x.boards[k],LEADER_BOARD_KEYS,'leaders_index.boards.'+k);
+   for(const f of LEADER_BOARD_KEYS)if(!same(x.boards[k][f],d.summary.boards[k][f]))refuse('LEADERS_BOARD_MISMATCH','leaders_index.boards.'+k+'.'+f);}
+  if(!Array.isArray(x.groups))refuse('GROUPS_INVALID','leaders_index.groups');
+  const groups=new Map(),files=new Set(),rows=d.summary.boards[d.models[0]].evaluation_population.code_rows;
+  x.groups.forEach((g,i)=>{const at='leaders_index.groups['+i+']';exact(g,LEADER_GROUP_KEYS,at);
+   if(!own(MODELS,g.board)||!d.models.includes(g.board))refuse('GROUPS_INVALID',at+'.board');
+   if(typeof g.ranking_scope!=='string'||(MODELS[g.board].kind==='COMMON'?g.ranking_scope!=='COMMON':!/^SECTOR\|/.test(g.ranking_scope)))refuse('RANKING_SCOPE',at+'.ranking_scope');
+   if(typeof g.variant_id!=='string'||!g.variant_id||g.group_id!==[g.board,g.ranking_scope,g.variant_id].join('|')||groups.has(g.group_id))refuse('GROUPS_INVALID',at+'.group_id');
+   if(!int(g.evaluation_valid_n)||g.evaluation_valid_n<0||g.evaluation_valid_n>rows||!int(g.reference_valid_n)||g.reference_valid_n<0)refuse('TYPE',at+'.evaluation_valid_n');
+   if(!LEADER_SHARD.test(g.file)||!entries.has(g.file))refuse('DETAIL_NOT_IN_MANIFEST',at+'.file');files.add(g.file);groups.set(g.group_id,g);});
+  for(const f of entries.keys())if(LEADER_SHARD.test(f)&&!files.has(f))refuse('DETAIL_UNREFERENCED','leaders_manifest.files.'+f);
+  const value=freeze({scope:d.scope,delivery:d,entries:Object.fromEntries(entries),groups:[...groups.values()]});LEADERS_CHECKED.add(value);
+  return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// One leaders shard {bytes, body} of checked leaders: every group the index files there, each as indexed; the leaders are exactly
+// the stored ranks 1..min(N, top_n) of the evaluation valid code rows; the decile state follows N (0: NO_VALID_SCORE, below 10:
+// SAMPLE_LT_10 without boundaries, else VALID with the ten stored boundaries, D10 = ranks 1..floor(N/10)); no raw value.
+async function checkLeaderShard(file,name,leaders,sha256){
+ try{const L=leaders;if(!L||!LEADERS_CHECKED.has(L)||!own(L.entries,name)||!LEADER_SHARD.test(name))refuse('NOT_IN_MANIFEST',name);
+  const x=await bytesMatch(file,name,new Map(Object.entries(L.entries)),sha256,name);
+  exact(x,['schema_version','groups'],name);if(x.schema_version!==LEADERS.DETAIL)refuse('SCHEMA',name+'.schema_version');
+  const want=new Map(L.groups.filter(g=>g.file===name).map(g=>[g.group_id,g]));
+  if(!Array.isArray(x.groups)||x.groups.length!==want.size)refuse('GROUPS_MISMATCH',name+'.groups');const out=new Map();
+  x.groups.forEach((g,i)=>{const at=name+'.groups['+i+']';exact(g,LEADER_DETAIL_KEYS,at);const w=want.get(g.group_id);
+   if(!w||out.has(g.group_id))refuse('GROUPS_MISMATCH',at+'.group_id');
+   for(const f of['board','ranking_scope','variant_id','evaluation_valid_n','reference_valid_n'])if(g[f]!==w[f])refuse('GROUP_CONTEXT',at+'.'+f);
+   const n=g.evaluation_valid_n;
+   if(g.rank_unit!=='EVALUATION_CODE_ROW'||!int(g.top_n)||g.top_n<1||!int(g.evaluation_rows_in_scope)||g.evaluation_rows_in_scope<n)refuse('TYPE',at+'.rank_unit');
+   if(!Array.isArray(g.leaders)||g.leaders.length!==Math.min(n,g.top_n))refuse('LEADER_PREFIX',at+'.leaders');
+   const status=n===0?'NO_VALID_SCORE':n<10?'SAMPLE_LT_10':'VALID';if(g.decile_status!==status)refuse('DECILE_STATUS',at+'.decile_status');
+   g.leaders.forEach((r,j)=>{const lt=at+'.leaders['+j+']';if(isObj(r)&&own(r,'raw_value'))refuse('RAW_VALUE_PRESENT',lt);exact(r,LEADER_KEYS,lt);
+    if(typeof r.company_id!=='string'||!r.company_id||r.rank!==j+1||r.rank_n!==n)refuse('LEADER_PREFIX',lt);
+    if(typeof r.score!=='number'||!Number.isFinite(r.score)||!['CORE','ADDITIONAL'].includes(r.kind))refuse('TYPE',lt);
+    if(status==='VALID'?!(int(r.decile)&&r.decile>=1&&r.decile<=10):r.decile!==null)refuse('DECILE_STATUS',lt+'.decile');});
+   if(!Array.isArray(g.decile_boundaries))refuse('TYPE',at+'.decile_boundaries');
+   if(status!=='VALID'){if(g.decile_boundaries.length)refuse('DECILE_STATUS',at+'.decile_boundaries');}
+   else{if(g.decile_boundaries.length!==10)refuse('DECILE_STATUS',at+'.decile_boundaries');
+    g.decile_boundaries.forEach((b,j)=>{exact(b,BOUNDARY_KEYS,at+'.decile_boundaries['+j+']');if(b.decile!==10-j||!int(b.count)||!int(b.first_rank)||!int(b.last_rank))refuse('DECILE_STATUS',at+'.decile_boundaries['+j+']');});
+    const top=g.decile_boundaries[0];if(top.count!==Math.floor(n/10)||top.first_rank!==1||top.last_rank!==top.count)refuse('TOP_DECILE_BOUNDARY',at+'.decile_boundaries[0]');}
+   out.set(g.group_id,freeze(g));});
+  return{ok:true,value:out};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// Display of checked leaders: groups of one model (index order, the producer's), and one group's stored ranks as delivered.
+function leaderGroups(L,key){return L.groups.filter(g=>g.board===key);}
+function leaderView(g,{sectorName}={}){const n=g.evaluation_valid_n,top=g.decile_boundaries[0];
+ const scopeWord=g.ranking_scope==='COMMON'?'공통 순위':'섹터 순위 · '+g.ranking_scope.split('|').slice(1).map((x,i)=>i===0&&sectorName?sectorName(x):x).join(' · ');
+ const d10=g.decile_status==='VALID'?'저장된 D10 '+top.count+'개(순위 1–'+top.last_rank+') · 이 목록 '+g.leaders.length+'개'+(g.leaders.length>=top.count?' · D10 전부 포함':' · D10 일부만(상위 '+g.top_n+'개 표시 한도)')
+  :g.decile_status==='SAMPLE_LT_10'?'평가 유효 '+n+'개 < 10 · 십분위 계산 안 함':'유효 점수 없음 · 순위 없음';
+ return freeze({head:g.variant_id+' · '+scopeWord,
+  counts:'평가 유효 코드 행 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 유효 '+g.reference_valid_n+'(순위 분모 아님)',d10,
+  rows:g.leaders.map(r=>freeze({rank:r.rank+' / '+r.rank_n,company_id:r.company_id,score:r.score.toFixed(1),decile:r.decile===null?'없음':'D'+r.decile,kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
 
 const RULES=Object.freeze(['U1·U2·S1 점수는 같은 척도가 아님 · 평균·합산·차이를 만들지 않음',
  '총점이 없으면 총점 순위도 없음 · 섹터 순위를 이어 붙인 통합 순위 없음',
@@ -302,5 +388,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

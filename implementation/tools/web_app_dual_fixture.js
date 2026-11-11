@@ -55,4 +55,23 @@ function lineage(edit) {
   if (edit) edit(x);
   return Buffer.from(JSON.stringify(x, null, 2) + '\n');
 }
-module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, sha };
+// Codex's synthetic factor leaders companion (dual-factor-leaders-synthetic, pinning Codex's delivery-manifest.json = operating504).
+// Unedited for operating504 over the unedited delivery; for another delivery (scope or bytes) the same files re-pointed at that
+// delivery's manifest bytes (test-made); edit(docs) changes the parsed index / shard first, and the leaders manifest names the bytes.
+const LD = path.join(D, '..', 'dual-factor-leaders-synthetic');
+const LFILES = ['factor-leaders.json', 'factor-leaders-000.json'];
+function leaders(d, edit) {
+  const raw = Object.fromEntries([...LFILES, 'factor-leaders-manifest.json'].map((f) => [f, fs.readFileSync(path.join(LD, f))]));
+  const src = sha(d.files['manifest.json']), m0 = JSON.parse(raw['factor-leaders-manifest.json'].toString('utf8'));
+  if (!edit && src === m0.source_delivery_manifest_sha256 && d.manifest.scope === m0.scope) return { files: raw };
+  const docs = Object.fromEntries(LFILES.map((f) => [f, JSON.parse(raw[f].toString('utf8'))]));
+  docs['factor-leaders.json'].scope = d.manifest.scope; docs['factor-leaders.json'].data_kind = d.manifest.data_kind;
+  docs['factor-leaders.json'].source_delivery_manifest_sha256 = src;
+  if (edit) edit(docs);
+  const files = Object.fromEntries(LFILES.map((f) => [f, Buffer.from(JSON.stringify(docs[f], null, 2) + '\n')]));
+  const m = { schema_version: m0.schema_version, scope: d.manifest.scope, data_kind: d.manifest.data_kind, source_delivery_manifest_sha256: src,
+    files: LFILES.slice().sort().map((f) => ({ path: f, size: files[f].length, sha256: sha(files[f]) })) };
+  files['factor-leaders-manifest.json'] = Buffer.from(JSON.stringify(m, null, 2) + '\n');
+  return { files };
+}
+module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, sha };

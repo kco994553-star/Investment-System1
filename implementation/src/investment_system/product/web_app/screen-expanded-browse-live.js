@@ -11,6 +11,8 @@
 (function(){
 'use strict';
 const I=window.IS2,{h}=I;
+// Checked factor leaders per checked dual delivery in RAM (key = that RAM entry, so they go when it goes).
+const LEAD=new WeakMap();
 const E=()=>I.expandedIssuers;
 // The dual research deliveries in RAM are dropped with the classification bundle (접기 / 연결 끊기 / a dropped token).
 try{if(I.classification&&typeof I.classification.subscribe==='function'&&I.dualQgv)I.classification.subscribe(()=>{const s=I.classification.state();
@@ -156,7 +158,50 @@ function block(anchor){
       h('p',{class:'reason',dataset:{dualTarget:scope+':'+k}},v.target),
       h('p',{class:'meta'},'결손 사유 · 겹칠 수 있음 · 더하지 않음'),list(v.causes,{dualCauses:k},'전달 안 됨'),
       h('p',{class:'meta'},v.incomplete),h('p',{class:'reason'},v.market));}),
-    finder(scope,d));}
+    finder(scope,d),leadersBlock(scope));}
+  // 개별 요소 상위권 (Codex qgv-dual-factor-leaders/1, optional companion of this checked delivery): its own click and two reads
+  // (manifest + index), then one shard read per 보기 when not cached. Kept with the delivery in RAM (dropped with it). Only the
+  // stored ranks 1..min(N, 20) of one model × ranking scope × factor, as delivered; nothing re-sorted, merged or filled.
+  function leadersBlock(scope){const area=h('div',{class:'cc-wrap',dataset:{dualLeaders:scope}});
+   const draw=()=>{const held=DQ.ram.get(scope);if(!held)return;const L=LEAD.get(held);
+    if(!L){const b=h('button',{type:'button',class:'btn',dataset:{dualLeadersOpen:scope}},'개별 요소 상위권 불러오기 (목록표·색인 2개)');
+     const st=h('p',{class:'reason',role:'status',dataset:{dualLeadersState:'IDLE'}},'저장된 요소 순위의 앞부분(최대 20개)만 · 다시 정렬하지 않음');
+     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualLeadersState='LOADING';st.textContent='불러오는 중 · 요소 상위권 목록표·색인 2개 · 서버 요청 간격 5초';
+      let p;try{p=I.prices.kisRead(e,[['classification','dual_leaders_manifest/'+scope],['classification','dual_leaders_index/'+scope]]);}catch(err){p=Promise.reject(err);}
+      Promise.resolve(p).then(async([manifest,index])=>{const r=await DQ.checkLeaders({manifest,index},held.delivery,E().sha256);
+       if(!r.ok){st.dataset.dualLeadersState='ERROR';st.textContent='요소 상위권을 쓰지 않음 · '+(r.code==='LEADERS_SOURCE_MISMATCH'||r.code==='LEADERS_BOARD_MISMATCH'?'이 연구 결과가 아닌 다른 전달본의 순위입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
+       LEAD.set(held,{value:r.value,shards:new Map(),board:null,group:null});draw();},
+      err=>{const c=codeOf(err);st.dataset.dualLeadersState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'요소 상위권 파일이 전달 위치에 없습니다(배치 전)':say(c))+' · 위 결과는 그대로';b.disabled=false;})
+      .finally(()=>{busy=false;});});
+     area.replaceChildren(h('h5',null,'개별 요소 상위권'),b,st);return;}
+    const mid='dual-lb-'+scope,gid='dual-lg-'+scope,M=DQ.MODELS;
+    const mSel=h('select',{id:mid,dataset:{dualLeadersModel:scope}},h('option',{value:''},'모형 선택'),...held.delivery.models.map(k=>h('option',{value:k,selected:L.board===k},M[k].label)));
+    mSel.addEventListener('change',()=>{L.board=mSel.value||null;L.group=null;draw();});
+    const groups=L.board?DQ.leaderGroups(L.value,L.board):[],byScope=new Map();for(const g of groups){if(!byScope.has(g.ranking_scope))byScope.set(g.ranking_scope,[]);byScope.get(g.ranking_scope).push(g);}
+    const gSel=h('select',{id:gid,disabled:!L.board,dataset:{dualLeadersGroup:scope}},h('option',{value:''},L.board?'요소 선택 · '+groups.length+'개':'모형을 먼저 고르세요'),
+     ...[...byScope].map(([rs,gs])=>h('optgroup',{label:rs==='COMMON'?'공통 순위':rs.split('|').slice(1).map((x,i)=>i===0?sectorName(x):x).join(' · ')},
+      ...gs.map(g=>h('option',{value:g.group_id,selected:L.group===g.group_id},g.variant_id+' · 유효 '+g.evaluation_valid_n)))));
+    gSel.addEventListener('change',()=>{L.group=gSel.value||null;draw();});
+    const show=h('button',{type:'button',class:'btn',disabled:!L.group,dataset:{dualLeadersShow:scope}},'보기');
+    const out=h('div',{dataset:{dualLeadersOut:scope}});
+    const render=g=>{const v=DQ.leaderView(g,{sectorName});const th=t=>h('th',{scope:'col'},t);
+     out.replaceChildren(h('p',{class:'hand',dataset:{dualLeadersHead:g.group_id}},M[g.board].label,' · ',v.head),h('p',{class:'meta'},v.counts),h('p',{class:'reason',dataset:{dualLeadersD10:''}},v.d10),
+      v.rows.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{dualLeadersTable:g.group_id}},h('caption',null,'저장된 순위 그대로 · 같은 모형·범위·요소 안에서만 비교'),
+       h('thead',null,h('tr',null,th('순위'),th('기업'),th('요소 점수'),th('십분위'),th('구분'))),
+       h('tbody',null,...v.rows.map(r=>h('tr',{dataset:{dualLeader:r.company_id}},h('td',null,r.rank),h('td',null,r.company_id),h('td',null,r.score),h('td',null,r.decile),h('td',null,r.kind))))))
+      :h('p',{class:'reason',dataset:{dualLeadersEmpty:''}},'이 요소에 저장된 순위가 없음'));};
+    show.addEventListener('click',e=>{const g=L.value.groups.find(x=>x.group_id===L.group);if(!g||busy)return;const cached=L.shards.get(g.file);
+     if(cached){render(cached.get(g.group_id));return;}
+     busy=true;show.disabled=true;out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'LOADING'}},'요소 순위 파일 1개를 불러옵니다'));
+     let p;try{p=I.prices.kisRead(e,[['classification','dual_leaders_detail/'+scope+'/'+g.file.slice(15,18)]]);}catch(err){p=Promise.reject(err);}
+     Promise.resolve(p).then(async([x])=>{const r=await DQ.checkLeaderShard(x,g.file,L.value,E().sha256);
+      if(!r.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'ERROR'}},'이 순위 파일을 쓰지 않음 · '+r.code+' · '+r.path));return;}
+      L.shards.set(g.file,r.value);if(L.group===g.group_id)render(r.value.get(g.group_id));},
+     err=>{out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'ERROR'}},'연결 오류 · '+say(codeOf(err))));}).finally(()=>{busy=false;show.disabled=!L.group;});});
+    area.replaceChildren(h('h5',null,'개별 요소 상위권'),h('p',{class:'meta',dataset:{dualLeadersState:'READY'}},'목록표·색인 검증됨 · 요소 묶음 ',String(L.value.groups.length),'개(유효 0인 요소 포함 · 기업 수 아님) · 저장된 순위의 앞부분만'),
+     h('div',{class:'sort-row'},h('label',{for:mid},'모형'),mSel),h('div',{class:'sort-row'},h('label',{for:gid},'요소'),gSel),h('div',{class:'load-row'},show),out);
+    const g=L.group&&L.shards.size?L.value.groups.find(x=>x.group_id===L.group):null;if(g&&L.shards.has(g.file))render(L.shards.get(g.file).get(g.group_id));};
+   draw();return area;}
   function finder(scope,d){const id='dual-q-'+scope,q=h('input',{type:'search',id,class:'tbl',autocomplete:'off',spellcheck:'false',enterkeyhint:'search',placeholder:'기업 코드 · 발행사 ID',dataset:{dualQuery:scope}});
    const out=h('ul',{class:'news-lines',dataset:{dualResults:scope}}),cmp=h('div',{dataset:{dualCompare:scope}});
    const run=()=>{const t=q.value.trim().toLowerCase();const hits=t?d.rows.filter(r=>r.company_id.toLowerCase().includes(t)||(r.issuer_id||'').toLowerCase().includes(t)).slice(0,LIMIT):[];

@@ -319,6 +319,32 @@ test('classification dual: each part reads its own file for its scope; the manif
   assert.equal(big.status, 502); assert.match(await body(big), /TOO_LARGE/);
 });
 
+test('classification dual leaders: the companion reads classification/dual/<scope>/leaders/; manifest and index name the scope', async () => {
+  for (const [part, file, schema] of [['dual_leaders_manifest', 'factor-leaders-manifest', 'qgv-dual-factor-leaders-manifest/1'], ['dual_leaders_index', 'factor-leaders', 'qgv-dual-factor-leaders/1']]) {
+    for (const scope of ['operating504', 'held1057']) {
+      const s = setup({ github: () => new Response(JSON.stringify({ schema_version: schema, scope }), { status: 200 }) });
+      assert.equal((await s.run('/kis/classification?part=' + part + '&scope=' + scope)).status, 200, part + ' ' + scope);
+      assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual/' + scope + '/leaders/' + file + '.json?ref=data');
+    }
+    const other = JSON.stringify({ schema_version: schema, scope: 'held1057' });
+    assert.equal((await setup({ github: () => new Response(other, { status: 200 }) }).run('/kis/classification?part=' + part + '&scope=operating504')).status, 502, part + ': another scope');
+    const wrong = JSON.stringify({ schema_version: 'qgv-dual-delivery-manifest/1', scope: 'operating504' });
+    assert.equal((await setup({ github: () => new Response(wrong, { status: 200 }) }).run('/kis/classification?part=' + part + '&scope=operating504')).status, 502, part + ': another schema');
+  }
+  const detail = '{"schema_version":"qgv-dual-factor-leaders-detail/1","groups":[]}', s = setup({ github: () => new Response(detail, { status: 200 }) });
+  assert.equal((await s.run('/kis/classification?part=dual_leaders_detail&scope=held1057&shard=000')).status, 200);
+  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual/held1057/leaders/factor-leaders-000.json?ref=data');
+  assert.equal((await setup({ github: () => new Response('{"schema_version":"qgv-dual-detail/1","rows":[]}', { status: 200 }) }).run('/kis/classification?part=dual_leaders_detail&scope=held1057&shard=000')).status, 502, 'a delivery detail is not a leaders shard');
+  const big = await setup({ github: () => new Response(detail, { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=dual_leaders_detail&scope=operating504&shard=000');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  for (const route of ['/kis/classification?part=dual_leaders_detail&scope=operating504', '/kis/classification?part=dual_leaders_detail&scope=operating504&shard=00',
+    '/kis/classification?part=dual_leaders_index&scope=market', '/kis/classification?part=dual_leaders_index', '/kis/classification?part=dual_leaders_manifest&scope=operating504&shard=000',
+    '/kis/classification?part=dual_leaders&scope=operating504']) {
+    const t = setup({ github: () => new Response(detail, { status: 200 }) }), r = await t.run(route);
+    assert.equal(r.status, 400, route); assert.equal(githubCalls(t).length, 0, route);
+  }
+});
+
 test('classification dual: only the exact scope and 3-digit shard forms; nothing else reaches a read', async () => {
   for (const route of ['/kis/classification?part=dual_summary', '/kis/classification?part=dual_summary&scope=market', '/kis/classification?part=dual_summary&scope=Operating504',
     '/kis/classification?scope=operating504&part=dual_summary', '/kis/classification?part=dual_summary&scope=operating504&x=1', '/kis/classification?part=dual_detail&scope=operating504',

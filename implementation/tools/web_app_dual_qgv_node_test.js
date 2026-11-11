@@ -164,6 +164,64 @@ test('preset fields: present on every row with a preset, absent exactly on MAPPI
   assert.equal(await mut((x) => { delete x.rows[1].boards.S1.missing_factors; }), 'PRESET_FIELD_MISSING');
 });
 
+test('Codex binding cases (dual-delivery-binding-cases.json): expectations from the pinned inputs, never from the delivery', async () => {
+  const C = JSON.parse(require('node:fs').readFileSync(require('node:path').join(F.D, '..', 'dual-delivery-binding-cases.json'), 'utf8'));
+  const patch = (c) => (x) => { for (const p of c.patches) { const doc = x[p[0] + '.json']; let o = doc; for (const k of p.slice(1, -2)) o = o[k]; o[p[p.length - 2]] = p[p.length - 1]; } };
+  const proof = () => { const bytes = new Uint8Array(F.lineage((x) => { x.evaluation = C.expected_evaluation; x.reference_source = C.expected_reference; }));
+    return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
+  const run = (scope, c, l) => { const d = F.delivery(scope, c.patches.length ? patch(c) : undefined); return DQ.checkDelivery({ ...parts(d), ...(l ? { lineage: l } : {}) }, { scope, anchor: F.anchor(), sha256 }); };
+  const got = {};
+  for (const c of C.cases) got[c.id] = { op: await run('operating504', c), held: await run('held1057', c, proof()), bare: await run('held1057', c) };
+  assert.equal(got.normal.op.ok, true); assert.equal(got.normal.held.value.input_check, 'EVALUATION_INPUT_PROJECTION_ATTESTED', 'held: both bindings by the trusted proof');
+  assert.equal(got.evaluation_hash_mismatch.op.code, 'DUAL_INPUT_MISMATCH', 'operating504: the staged result anchors the evaluation input');
+  assert.equal(got.evaluation_hash_mismatch.held.code, 'LINEAGE_MISMATCH', 'held1057: the trusted proof refuses the changed evaluation input');
+  assert.equal(got.evaluation_hash_mismatch.bare.value.input_check, 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED', 'no proof: unverified, never attested');
+  assert.equal(got.reference_hash_mismatch.held.code, 'DUAL_INPUT_MISMATCH');
+  // operating504 has no independent reference anchor in the staged bundle: not refused on that side, and the screen says so.
+  assert.equal(got.reference_hash_mismatch.op.value.input_check, 'EVALUATION_INPUT_MATCHED');
+  assert.match(DQ.INPUT_WORD.EVALUATION_INPUT_MATCHED, /참조 입력은 독립 기준과 대조 안 됨/);
+});
+
+test('factor leaders: Codex\'s synthetic companion reads for its own delivery only; stored ranks as delivered, nothing re-sorted', async () => {
+  const lp = (L, f) => { const bytes = new Uint8Array(L.files[f]); return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
+  const open = async (d, L) => { const v = (await check(d)).value; return DQ.checkLeaders({ manifest: lp(L, 'factor-leaders-manifest.json'), index: lp(L, 'factor-leaders.json') }, v, sha256); };
+  const d = F.delivery('operating504'), L = F.leaders(d), r = await open(d, L);
+  assert.equal(r.ok, true, JSON.stringify(r)); assert.equal(r.value.groups.length, 153);
+  assert.deepEqual([...new Set(r.value.groups.map((g) => g.board))], ['S1', 'U1', 'U2']);
+  const s = await DQ.checkLeaderShard(lp(L, 'factor-leaders-000.json'), 'factor-leaders-000.json', r.value, sha256);
+  assert.equal(s.ok, true, JSON.stringify(s)); assert.equal(s.value.size, 153);
+  const g = [...s.value.values()].find((x) => x.leaders.length > 1), v = DQ.leaderView(g);
+  assert.deepEqual(v.rows.map((x) => x.rank), g.leaders.map((x, i) => (i + 1) + ' / ' + g.evaluation_valid_n), 'the stored order');
+  assert.match(v.d10, /^평가 유효 \d+개 < 10 · 십분위 계산 안 함$/); assert.match(v.counts, /참조 유효 \d+\(순위 분모 아님\)/);
+  assert.equal(DQ.leaderView([...s.value.values()].find((x) => x.evaluation_valid_n === 0)).d10, '유효 점수 없음 · 순위 없음');
+  // Not this delivery: another delivery's manifest, another board identity, not a projection.
+  const h = F.delivery('held1057');
+  assert.equal((await open(h, L)).code, 'SCOPE_MISMATCH', 'operating504 leaders on held1057');
+  assert.equal((await open(F.delivery('operating504', () => {}), L)).code, 'LEADERS_SOURCE_MISMATCH', 'the same content under another delivery manifest');
+  assert.equal((await open(h, F.leaders(h))).ok, true, 'a companion re-pointed at held1057 reads there');
+  assert.equal((await open(d, F.leaders(d, (x) => { x['factor-leaders.json'].boards.U1.result_hash = 'a'.repeat(64); }))).code, 'LEADERS_BOARD_MISMATCH');
+  assert.equal((await open(d, F.leaders(d, (x) => { x['factor-leaders.json'].rank_recalculated = true; }))).code, 'NOT_PROJECTION');
+  assert.equal((await open(d, F.leaders(d, (x) => { x['factor-leaders.json'].whole_market_denominator = 8004; }))).code, 'NOT_PROJECTION');
+  assert.equal((await open(d, F.leaders(d, (x) => { x['factor-leaders.json'].groups[0].evaluation_valid_n = 4; }))).code, 'TYPE', 'N above the evaluation code rows');
+  assert.equal((await open(d, F.leaders(d, (x) => { x['factor-leaders.json'].groups[1].group_id = x['factor-leaders.json'].groups[0].group_id; }))).code, 'GROUPS_INVALID');
+  // A shard: each group as indexed, the stored prefix 1..min(N, top_n), the decile state from N, no raw value.
+  const shard = async (edit) => { const E = F.leaders(d, edit), o = await open(d, E); assert.equal(o.ok, true, JSON.stringify(o));
+    return (await DQ.checkLeaderShard(lp(E, 'factor-leaders-000.json'), 'factor-leaders-000.json', o.value, sha256)).code; };
+  const first = (x) => x['factor-leaders-000.json'].groups.find((z) => z.leaders.length > 1);
+  assert.equal(await shard((x) => { const z = first(x); z.leaders = z.leaders.slice(1); }), 'LEADER_PREFIX', 'a missing rank 1');
+  assert.equal(await shard((x) => { const z = first(x); [z.leaders[0], z.leaders[1]] = [z.leaders[1], z.leaders[0]]; }), 'LEADER_PREFIX', 'a re-sorted list');
+  assert.equal(await shard((x) => { first(x).leaders[0].raw_value = 0.1; }), 'RAW_VALUE_PRESENT');
+  assert.equal(await shard((x) => { first(x).decile_status = 'VALID'; }), 'DECILE_STATUS', 'N < 10 is never VALID');
+  assert.equal(await shard((x) => { first(x).leaders[0].decile = 10; }), 'DECILE_STATUS', 'no decile below N 10');
+  assert.equal(await shard((x) => { first(x).reference_valid_n += 1; }), 'GROUP_CONTEXT');
+  assert.equal(await shard((x) => { x['factor-leaders-000.json'].groups.pop(); }), 'GROUPS_MISMATCH');
+  assert.equal((await DQ.checkLeaders({}, { scope: 'operating504' }, sha256)).code, 'DELIVERY_NOT_CHECKED');
+  // The D10 line compares the stored D10 boundary with the list length (display only; checked against the real files locally).
+  const valid = { board: 'S1', ranking_scope: 'SECTOR|X|GENERAL', variant_id: 'v', evaluation_valid_n: 250, evaluation_rows_in_scope: 260, reference_valid_n: 900, top_n: 20, decile_status: 'VALID',
+    decile_boundaries: [{ decile: 10, count: 25, first_rank: 1, last_rank: 25 }], leaders: Array.from({ length: 20 }, (_, i) => ({ company_id: 'c' + i, rank: i + 1, rank_n: 250, score: 99 - i, decile: 10, kind: 'CORE' })) };
+  assert.equal(DQ.leaderView(valid).d10, '저장된 D10 25개(순위 1–25) · 이 목록 20개 · D10 일부만(상위 20개 표시 한도)');
+});
+
 test('RAM: only a checked delivery of that scope; a drop tells the screens', async () => {
   const ram = DQ.ramStore(), v = (await check(F.delivery('operating504'))).value; let told = 0; const un = ram.subscribe(() => { told++; });
   assert.throws(() => ram.set('operating504', { scope: 'operating504', models: ['U1'], rows: [] }), /DUAL_UNCHECKED/);
