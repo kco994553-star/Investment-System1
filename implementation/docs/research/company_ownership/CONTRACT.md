@@ -103,10 +103,10 @@ Review focus: date-only cutoff ambiguity; a recent acquisition of an old documen
 unresolved subsidiary names becoming fake entities;13F corporate/parent inference;
 public output with private reference metadata. These are explicit tests.
 
-- [ ] Task1: failing contract tests → implement normalize/validate and per-company
+- [x] Task1: failing contract tests → implement normalize/validate and per-company
   query using common IdentityRef. Verify Decimal, broken provenance, alias identity,
   dates, differing denominators, planned/control/13F and independent numeric facts.
-- [ ] Task2: failing version/update/public/paths tests → append-only merge, dual-time
+- [x] Task2: failing version/update/public/paths tests → append-only merge, dual-time
   projection, no inferred intervals, failed refresh and bounded offline CLI.
 - [ ] Task3: synthetic cases/expected outcomes generated from the tested public packet;
   Draft PR and Main first handoff before real source review.
@@ -121,4 +121,67 @@ implementation/tests/research/test_company_ownership.py -q`; CLI documented with
 the synthetic handoff after implementation. Existing pytest tests/ discovery
 includes research tests; no CI-list edit requested.
 
-State at plan commit: NOT_STARTED. QGV/V new calculation0; unchanged inputs pending.
+State at plan commit: NOT_STARTED (preserved history). Current: adapter/CLI implemented; first handoff prepared. QGV/V new calculation0; unchanged inputs pending.
+
+## First Main handoff: executable synthetic interface
+
+`synthetic.json` contains 18 cases with the exact upstream identity document bytes,
+source bytes, case input, query, expected view/error, and canonical view SHA-256.
+These are fictional companies. The hand-written tests establish semantic invariants;
+the generated views are shared producer/consumer examples, not independent proof.
+Main can consume `expected_view` directly for5.1.1/5.1.2 and use the same query inputs.
+The failed-refresh tests use `merge_update`; a failure receipt is separate from the
+unchanged last good dataset. No provider is called and no browser has been tested.
+
+Python API:
+
+```python
+normalized = normalize_packet(packet, identity_document_bytes, artifacts_by_sha256)
+view = company_view(normalized, entity_id=existing_issuer_id,
+                    valid_on="2025-12-31", knowledge_at="2026-01-05T12:00:00Z",
+                    generated_at="2026-01-05T12:00:00Z", public=False)
+update = merge_update(previous, incoming, outcome="SUCCESS",
+                      attempted_at="2026-01-06T12:00:00Z")
+```
+
+CLI (local files only; output directory must not exist):
+
+```sh
+PYTHONPATH=implementation/src python implementation/tools/company_ownership.py \
+  --input INPUT.json --input-sha256 INPUT_SHA256 --identity UPSTREAM.json \
+  --artifacts HASH_NAMED_FILES_DIR --entity-id EXISTING_ISSUER_ID \
+  --valid-on 2025-12-31 --knowledge-at 2026-01-05T12:00:00Z \
+  --generated-at 2026-01-05T12:00:00Z --output-dir NEW_PRIVATE_DIRECTORY
+```
+
+Add `--synthetic` only for SYNTHETIC input. RETAINED output inside this checkout is
+rejected. View, normalized input and manifest are each bounded at2MiB; no silent
+truncation. File hashes are raw SHA-256 bytes; `expected_view_sha256` uses
+`json_bytes` (UTF-8, sorted keys, compact separators, LF, no NaN). Main need not
+re-hash JS numeric serialization: observations are deliberate exact Decimal strings;
+raw artifact/view file bytes are the integrity boundary.
+
+A public projection is an explicit Python API request requiring approval on the
+dataset and every visible entity/assertion/history/source. Raw excerpts are omitted
+from all company views. `normalized.json` retains source excerpts and must stay
+private for RETAINED inputs. No publication route is added. Error output contains
+fixed diagnostic codes; no raw source, private paths, or exception payloads.
+
+`VERIFIED_ZERO_IN_SCOPE` additionally needs explicit reviewed zero evidence,
+COMPLETE scope and matching zero_observed_on. It does not prove all relationships
+in the world. `NOT_FOUND_IN_REVIEWED_SCOPE` never becomes a verified zero merely
+because assertions are empty. A later collection review is withheld from an earlier
+knowledge query. `historical_system_pit=false`: upstream identity history is not
+established by this adapter; `query_mode` distinguishes retrospective/system-asof
+queries without claiming completed historical PIT.
+
+Main remains owner of frontend/authenticated retrieval/bridge/operating RIG enum.
+Read this contract through the adapter; do not coerce it into VALUE_CHAIN or use
+RIG's available_at fallback as an ownership valid_from. New tests are under tests/ automatic discovery. No dependency/workflow/CI-list edit
+is requested. One existing Main-owned architecture guard does need a narrow update:
+`tests/test_rig_p0_foundation.py::test_no_other_package_depends_on_rig` currently
+rejects every external RIG import. The owner's requested reuse introduces exactly
+`research/company_ownership.py -> rig.model` (IdentityRef, Node, stable_id). Main
+should permit this specific pure-domain dependency while retaining all other bans.
+Codex did not delete/skip/change the guard or disguise the import. Current targeted
+result: adapter30 passed + RIG14 passed; this single architecture guard failed.
