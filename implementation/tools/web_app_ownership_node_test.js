@@ -1,0 +1,108 @@
+'use strict';
+// Company relationship reader (web_app/ownership-view.js) against Codex #531's synthetic company-ownership-view/1 cases
+// (docs/research/company_ownership/synthetic.json, sha 4946549b…): every producer view reads, the five lists stay apart, the
+// states stay apart, nothing is inferred; counterexamples are consumer edits of those views (marked test-made). Synthetic only.
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const O = require('../src/investment_system/product/web_app/ownership-view.js');
+const FILE = path.join(__dirname, '..', 'docs', 'research', 'company_ownership', 'synthetic.json');
+const RAW = fs.readFileSync(FILE);
+const X = JSON.parse(RAW.toString('utf8'));
+const cases = Object.fromEntries(X.cases.map((c) => [c.case_id, c]));
+const copy = (id) => JSON.parse(JSON.stringify(cases[id].expected_view));
+const list = (v, key) => v.lists.find((l) => l.key === key).rows;
+
+test('Codex\'s pinned synthetic file: every producer view reads for its own centre; producer errors carry no view', () => {
+  assert.equal(crypto.createHash('sha256').update(RAW).digest('hex'), '4946549bd1ff63793a12c04c9d0229e6bbefae14289b27d7947b1594b633e46d');
+  let views = 0;
+  for (const c of X.cases) {
+    if (!c.expected_view) { assert.ok(c.expected_error, c.case_id); continue; }
+    const r = O.validate(c.expected_view, { entityId: c.query.entity_id });
+    assert.equal(r.ok, true, c.case_id + ' ' + JSON.stringify(r)); views++;
+    assert.equal(O.validate(c.expected_view, { entityId: 'SYN-B' }).code, 'CENTRE_MISMATCH', c.case_id);
+  }
+  assert.equal(views, 15);
+});
+
+test('five lists apart: parent / subsidiary / holdings / holders / 13F; percentages never make a parent', () => {
+  const v = O.view(O.validate(copy('direct_ownership_and_parent')).value);
+  assert.deepEqual(v.lists.map((l) => [l.key, l.rows.length]), [['parents', 0], ['subsidiaries', 1], ['holdings', 1], ['holders', 0], ['discretion', 0]]);
+  const hold = list(v, 'holdings')[0];
+  assert.equal(hold.share.length, 1); assert.match(hold.share[0].text, /^지분율 약 60%$/); assert.match(hold.share[0].basis, /해당 주식 종류 발행주식 기준 · Class A · 2025-12-31 기준/);
+  assert.equal(list(v, 'subsidiaries')[0].percentNote, '지분율 미공개 · 관계는 문서에 명시됨');
+  const cv = O.view(O.validate(copy('class_voting_independent')).value), h = list(cv, 'holdings')[0];
+  assert.equal(h.share.length + h.voting.length >= 1, true);
+  for (const r of cv.lists.flatMap((l) => l.rows)) for (const o of [...r.share, ...r.voting]) assert.match(o.text, /^(지분율|의결권) /, 'share and voting on separate lines');
+  const minority = O.view(O.validate(copy('minority_no_control')).value);
+  assert.equal(list(minority, 'subsidiaries').length + list(minority, 'parents').length, 0, 'a minority holding is not a parent');
+  const zero = list(O.view(O.validate(copy('observed_zero')).value), 'holdings')[0];
+  assert.equal(zero.share[0].zero, '0% 관측(보유 아님 · 종료 추정 아님)');
+});
+
+test('states apart: none collected / partial n / not found in scope / filter empty / conflict / review / unresolved', () => {
+  const state = (id) => O.view(O.validate(copy(id)).value).state;
+  assert.deepEqual(state('not_collected'), ['관계 자료 없음 · 수집 전 · 관계가 없다는 뜻이 아님']);
+  assert.deepEqual(state('direct_ownership_and_parent'), ['확인된 2개 · 전체 목록 미확인']);
+  assert.deepEqual(state('not_found_in_reviewed_scope'), ['검토한 범위에서 찾지 못함 · 관계 없음 확인이 아님']);
+  assert.deepEqual(state('filter_empty'), ['고른 종류에 해당 없음 · 다른 종류의 관계는 있음']);
+  assert.deepEqual(state('same_basis_conflict'), ['확인된 2개 · 전체 목록 미확인', '자료 충돌 1건 · 값을 고르지 않음']);
+  assert.deepEqual(state('open_interval_review_required'), ['확인된 2개 · 전체 목록 미확인', '재검토 필요 2건']);
+  const u = O.view(O.validate(copy('unresolved_unlisted_name')).value);
+  assert.equal(u.unresolved.length, 1); assert.equal(u.unresolved[0].word, '목록에 없는 대상 · 기업 페이지 없음');
+  assert.equal(u.lists.every((l) => l.rows.length === 0), true, 'an unresolved name is not an entity row');
+  assert.equal(u.denominator, '전체 관계 수 미상 · 커버리지 계산 안 함');
+});
+
+test('consumer-made states (not in the producer set): holders, indirect, 13F, refresh failed, verified zero', () => {
+  const v = copy('direct_ownership_and_parent'), own = v.relationships.find((r) => r.type === 'OWNERSHIP');
+  // Holders: the same fact read from the investee's side (SYN-B): one relationship_id, INCOMING.
+  const b = JSON.parse(JSON.stringify(v));
+  b.entity_context = { entity_id: 'SYN-B', node_id: 'issuer:SYN-B' };
+  b.relationships = b.relationships.filter((r) => r.relationship_id === own.relationship_id).map((r) => ({ ...r, relative_direction: 'INCOMING' }));
+  b.counts = { ...b.counts, filtered_relationships: 1, relationships: 1 };
+  const rb = O.validate(b, { entityId: 'SYN-B' }); assert.equal(rb.ok, true, JSON.stringify(rb));
+  assert.equal(list(O.view(rb.value), 'holders')[0].relationship_id, own.relationship_id);
+  assert.deepEqual(O.sameFact(O.validate(v).value, rb.value), [{ relationship_id: own.relationship_id, consistent: true }], 'both sides read the same id');
+  // Indirect and 13F discretion.
+  const i = copy('direct_ownership_and_parent'); i.relationships.find((r) => r.type === 'OWNERSHIP').directness = 'INDIRECT';
+  assert.equal(list(O.view(O.validate(i).value), 'holdings')[0].directness, '간접');
+  const f = copy('direct_ownership_and_parent'), fr = f.relationships.find((r) => r.type === 'OWNERSHIP');
+  fr.capacity = 'INVESTMENT_DISCRETION'; fr.assertions.forEach((a) => { a.capacity = 'INVESTMENT_DISCRETION'; });
+  const fv = O.view(O.validate(f).value);
+  assert.equal(list(fv, 'discretion').length, 1); assert.equal(list(fv, 'holdings').length, 0, '13F is never own equity');
+  // Refresh failed (previous good data shown) and a confirmed none in the reviewed scope.
+  const r = copy('direct_ownership_and_parent'); r.collection = { ...r.collection, last_failure: { code: 'FETCH_FAILED', at: '2026-01-06T12:00:00Z' } };
+  assert.match(O.view(O.validate(r).value).state[1], /^마지막 갱신 실패 · 이전에 성공한 자료를 보임/);
+  const z = copy('not_found_in_reviewed_scope'); z.collection_state = 'VERIFIED_ZERO_IN_SCOPE';
+  assert.deepEqual(O.view(O.validate(z).value).state, ['검토한 범위에서 관계 없음 확인 · 그 범위 밖은 모름']);
+});
+
+test('refused: claims the contract forbids, or a view that is not about this centre', () => {
+  const bad = (id, edit, code) => { const v = copy(id); edit(v); assert.equal(O.validate(v).code, code, code); };
+  bad('direct_ownership_and_parent', (v) => { v.relationship_denominator = 10; }, 'COVERAGE_CLAIMED');
+  bad('direct_ownership_and_parent', (v) => { v.historical_system_pit = true; }, 'PIT_CLAIMED');
+  bad('direct_ownership_and_parent', (v) => { v.collection_state = 'COMPLETE'; }, 'COLLECTION_STATE');
+  bad('direct_ownership_and_parent', (v) => { v.relationships[0].relative_direction = 'INCOMING'; }, 'RELATIVE_DIRECTION');
+  bad('explicit_path_duplicate_cycle', (v) => { const r = v.relationships.find((x) => x.relative_direction === 'INCOMING'); r.target_entity_id = 'SYN-C'; r.assertions.forEach((a) => { a.target_entity_id = 'SYN-C'; }); }, 'ENTITY');
+  bad('direct_ownership_and_parent', (v) => { v.relationships[1].relationship_id = v.relationships[0].relationship_id; }, 'RELATIONSHIP_ID');
+  bad('explicit_path_duplicate_cycle', (v) => { v.confirmed_paths[0].economic_ownership_percent = '48'; }, 'LOOK_THROUGH');
+  bad('direct_ownership_and_parent', (v) => { v.counts.filtered_relationships = 3; }, 'COUNTS');
+  bad('not_collected', (v) => { v.relationships = copy('minority_no_control').relationships; v.counts.filtered_relationships = 1; v.counts.relationships = 1; v.entities = copy('minority_no_control').entities; v.counts.legal_entities = 2; }, 'COLLECTION_STATE');
+  bad('direct_ownership_and_parent', (v) => { v.relationships.find((r) => r.type === 'OWNERSHIP').observations[0].value = '101'; }, 'DECIMAL');
+  bad('direct_ownership_and_parent', (v) => { v.relationships.find((r) => r.type === 'OWNERSHIP').observations[0].value = 60; }, 'DECIMAL');
+  bad('direct_ownership_and_parent', (v) => { v.relationships.find((r) => r.type === 'PARENT_SUBSIDIARY').positive_ownership = true; }, 'CONTROL_FROM_PERCENT');
+  bad('direct_ownership_and_parent', (v) => { const r = v.relationships.find((x) => x.type === 'PARENT_SUBSIDIARY'); r.capacity = 'INVESTMENT_DISCRETION'; }, '13F_CAPACITY');
+  bad('unresolved_unlisted_name', (v) => { v.mentions[0].mention_id = 'SYN-A'; }, 'MENTION');
+  bad('direct_ownership_and_parent', (v) => { v.relationships[0].observations[0] = { ...v.relationships[0].observations[0], raw_value: 0.6 }; }, 'KEY_UNEXPECTED');
+});
+
+test('RAM: only checked views; found by the centre\'s code row; a drop tells the screens', () => {
+  const v = O.validate(copy('direct_ownership_and_parent')).value;
+  assert.throws(() => O.ram.put(copy('direct_ownership_and_parent')), /OWNERSHIP_VIEW_NOT_CHECKED/);
+  let told = 0; const off = O.ram.subscribe(() => { told++; });
+  O.ram.put(v); assert.equal(O.ram.forCompany('SYN:A'), v); assert.equal(O.ram.forCompany('SYN:B'), null, 'SYN:B is not the centre of this view');
+  O.ram.clear(); assert.equal(O.ram.forCompany('SYN:A'), null); assert.equal(told, 2); off();
+});
