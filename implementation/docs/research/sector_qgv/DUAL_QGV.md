@@ -344,3 +344,98 @@ Each scope needs three new files; measured maximum sizes1,471,953 and1,545,810by
 Raw factor values are never copied. Private-output CLI refuses Git checkouts.
 Whole-market denominator/coverage remain null. Main owns authenticated retrieval,
 Worker paths, display and browser verification; no deployment is performed here.
+
+### Follow-up: independent input anchors and field presence
+
+The existing held1057 coverage anchor names the **reference** source input. It
+cannot also attest the separately projected evaluation input. Use the independently
+pinned `input-lineage.json` (`evaluation`, `reference_source`) from the private
+follow-up manifest; verify that manifest against the handoff's trusted SHA first.
+For synthetic acceptance, `dual-delivery-binding-cases.json` derives the two
+expected identities from the original hash-pinned evaluation.json/reference.json
+using the existing `_identity` function. It contains one normal case and two
+internally consistent input-hash mutations; no duplicate snapshots are introduced.
+
+After ordinary file/manifest validation call:
+
+```python
+validate_input_bindings(summary, index,
+    expected_evaluation=trusted_lineage['evaluation'],
+    expected_reference=trusted_lineage['reference_source'])
+```
+
+This checks all boards, bindings, index and reference candidate identity. Expected
+values must never be read back from the delivery being checked. A missing evaluation
+anchor is unverified, not a successful reference-only check. Input semantic hashes
+are different from raw file hashes, result hashes and eligible-reference-member
+hashes. Keep all of them; no numerical hash definition or engine version changed.
+
+Direct Node probe of Main `9d1129d223dcd7a73605d1e17736f3d334673cab`:
+
+| Synthetic case | Required result | Existing held consumer |
+|---|---|---|
+| Normal retained inputs | accept both bindings | accepts |
+| Evaluation hash changed consistently in summary/bindings/index | reject EVALUATION_INPUT_BINDING | accepts; Main follow-up needed |
+| Reference hash changed consistently | reject REFERENCE_INPUT_BINDING | rejects DUAL_INPUT_MISMATCH |
+
+The mutation cases regenerate their synthetic transport manifest deliberately.
+They expose a missing independent semantic anchor; they do **not** bypass a pinned
+production manifest. Main owns anchor transport and browser checks. Python/Node
+acceptance is not authenticated browser/deployment evidence.
+
+`validate_detail_weight_fields` now fails the projection when any required field
+is missing. No scorer or old result bytes change. Presence is governed by preset
+applicability, not whether total is null:
+
+| Field | Applicable preset | MAPPING_UNRESOLVED |
+|---|---|---|
+| missing_factors | required Q/G/V → selected missing variant-ID arrays; [] only when none missing | absent; applicability not determined, not [] |
+| nominal_axis_weights | required integer basis points, sum 10000 | absent |
+| nominal_effective_weights | required variant → fraction of total (axis × role × factor); may contain genuine zero allocations | absent |
+| post_gate_axis_weights | required Q/G/V fractions | absent |
+| post_gate_effective_weights | required variant → post-gate fraction | absent |
+
+PASS keeps nominal allocations. VALUE_EXCLUDED sets V allocation to zero and
+normalizes remaining axes; it is **not company exclusion**. With UNKNOWN the
+existing producer carries nominal normalized allocations in the post_gate fields,
+but application remains UNDETERMINED and total/rank are null. Display them as an
+unresolved allocation, never as a passed/applied gate. The validator's returned
+`post_gate_application` makes this distinction without filling missing values.
+
+The retained representative check used two U1 rows per scope (mapped/null-total and
+unmapped), four rows in total. Source result and delivered detail match exactly
+except deliberately omitted raw factor values. Five-field population counts from
+the earlier verified projection remain unchanged; this sample is no new whole-set
+recount or calculation.
+
+### Follow-up: top N versus top 10%, using existing projections
+
+Optional `qgv-dual-factor-leaders-selection/1` is a small additive companion to the
+existing leader files; no shard is rewritten. Its manifest pins the original
+leader manifest, which in turn pins the original delivery. Every group identifies
+board/model, evaluation/reference contexts, ranking scope, variant and both Ns.
+
+- Ordering is the existing unrounded factor score descending, then exact company_id
+  ascending, with unique ordinal ranks. This dual-QGV contract ranks evaluation
+  code rows; it does not claim a verified security ID tie rule.
+- `top_n` reports requested N and returned prefix length. It is a display selection.
+- `top_10_percent` describes the **stored** D10, k=floor(valid evaluation N×0.10).
+  N<10 yields SAMPLE_LT_10 (zero valid rows: NO_VALID_SCORE), k/bounds null.
+- `returned_in_top_n` and `complete_in_top_n` distinguish a top-N prefix from the
+  whole D10. No tie expansion, sector merging, rank/decile recomputation occurs.
+- Additional factors retain zero contribution to core scores. Reference valid N
+  is not the ranking denominator; UI filters cannot change either context.
+
+```sh
+PYTHONPATH=implementation/src python -m investment_system.research.dual_qgv_delivery \
+ --selection-contract --source-dir EXISTING_PRIVATE_FACTOR_LEADERS \
+ --manifest-sha256 EXISTING_LEADERS_MANIFEST_SHA --output-dir NEW_PRIVATE_SELECTION
+```
+
+Public example: `dual-leader-selection-synthetic/`. Private metadata needs two new
+files per scope, maximum672352/605113 bytes (operating504/held1057), below2MB.
+Reused stored groups:1071/969, with D10 available139/151. Of those,26/28 groups have
+more than20 D10 members, so the old top20 is explicitly an incomplete D10 view.
+These are group counts, not companies, coverage gains or new calculated scores.
+New real QGV calculations/adoptions remain0. The new companion requires Main's
+optional reader; do not widen the original strict delivery allowlist silently.

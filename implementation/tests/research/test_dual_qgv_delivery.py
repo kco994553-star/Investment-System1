@@ -8,6 +8,67 @@ import pytest
 
 ROOT=Path(__file__).resolve().parents[2]
 
+def test_independent_evaluation_and_reference_bindings():
+    from copy import deepcopy
+    from investment_system.research.sector_qgv_reference import _identity
+    d=ROOT/'docs/research/sector_qgv/dual-synthetic'
+    evaluation=_identity(json.loads((d/'evaluation.json').read_bytes()))
+    reference=_identity(json.loads((d/'reference.json').read_bytes()))
+    summary=json.loads((d/'summary.json').read_bytes());index=json.loads((d/'index.json').read_bytes())
+    validate=api().validate_input_bindings
+    assert validate(summary,index,expected_evaluation=evaluation,expected_reference=reference)['status']=='VERIFIED_BOTH_INPUT_BINDINGS'
+    # Internally consistent evaluation mutation still cannot match the independently pinned input.
+    bad=deepcopy(summary);ix=deepcopy(index)
+    for b in bad['boards'].values():
+        b['evaluation_population']['input_hash']='0'*64;b['bindings']['evaluation']['input_hash']='0'*64
+    ix['evaluation_population']['input_hash']='0'*64
+    with pytest.raises(ValueError,match='EVALUATION_INPUT_BINDING'):
+        validate(bad,ix,expected_evaluation=evaluation,expected_reference=reference)
+    bad=deepcopy(summary)
+    for b in bad['boards'].values():
+        b['reference_population']['input_hash']='0'*64
+        b['reference_population']['candidate_population']['input_hash']='0'*64
+        b['bindings']['reference']['input_hash']='0'*64
+    with pytest.raises(ValueError,match='REFERENCE_INPUT_BINDING'):
+        validate(bad,index,expected_evaluation=evaluation,expected_reference=reference)
+    with pytest.raises(ValueError,match='EXPECTED_EVALUATION_REQUIRED'):
+        validate(summary,index,expected_evaluation=None,expected_reference=reference)
+
+
+def test_five_fields_required_even_if_total_missing_and_unmapped_not_zero():
+    from copy import deepcopy
+    row=json.loads(files()['detail-000.json'])['rows'][0]['boards']['U1']
+    row.update(total=None,status='STRICT_INCOMPLETE')
+    assert api().validate_detail_weight_fields(row)['presence']=='REQUIRED_PRESENT'
+    for field in api().DETAIL_WEIGHT_FIELDS:
+        bad=deepcopy(row);del bad[field]
+        with pytest.raises(ValueError,match='DETAIL_WEIGHT_FIELD_MISSING'):
+            api().validate_detail_weight_fields(bad)
+    unknown={k:v for k,v in row.items() if k not in api().DETAIL_WEIGHT_FIELDS}
+    unknown.update(status='MAPPING_UNRESOLVED',gate_status='UNKNOWN',axes=dict.fromkeys(('Q','G','V')),pre_gate_total=None)
+    assert api().validate_detail_weight_fields(unknown)['presence']=='NOT_APPLICABLE_MAPPING_UNRESOLVED'
+    unknown['missing_factors']={}
+    with pytest.raises(ValueError,match='UNMAPPED_WEIGHT_FIELDS'):
+        api().validate_detail_weight_fields(unknown)
+    row['gate_status']='UNKNOWN'
+    assert api().validate_detail_weight_fields(row)['post_gate_application']=='UNDETERMINED'
+
+
+def test_stored_leader_selection_keeps_top_n_distinct_from_top_decile():
+    api_ = api()
+    group={'evaluation_valid_n':23,'top_n':1,'leaders':[{'rank':1}],
+      'decile_status':'VALID','decile_boundaries':[{'decile':10,'count':2,'first_rank':1,'last_rank':2}]}
+    before=json.dumps(group,sort_keys=True)
+    info=api_.leader_selection(group)
+    assert info['top_n']=={'requested_n':1,'returned_n':1,'complete':True}
+    assert info['top_10_percent']=={'status':'VALID','k':2,'first_rank':1,'last_rank':2,'returned_in_top_n':1,'complete_in_top_n':False}
+    assert json.dumps(group,sort_keys=True)==before
+    group.update(evaluation_valid_n=3,decile_status='SAMPLE_LT_10',decile_boundaries=[])
+    assert api_.leader_selection(group)['top_10_percent']['k'] is None
+    group.update(evaluation_valid_n=23,decile_status='VALID',decile_boundaries=[{'decile':10,'count':3,'first_rank':1,'last_rank':3}])
+    with pytest.raises(ValueError,match='TOP_DECILE_BOUNDARY'):
+        api_.leader_selection(group)
+
 def api():
     name='investment_system.research.dual_qgv_delivery'
     assert importlib.util.find_spec(name) is not None,'factor leader projection missing'
@@ -106,3 +167,48 @@ def test_projection_cli_uses_pinned_bytes_and_refuses_existing_output(tmp_path):
     second=subprocess.run(command,env=env,capture_output=True,text=True)
     assert second.returncode!=0 and 'Traceback' not in second.stderr
     assert (out/'factor-leaders.json').read_bytes()==before
+
+
+def test_shared_binding_cases_and_independent_input_pins():
+    from copy import deepcopy
+    from investment_system.research.sector_qgv_reference import _identity
+    d=ROOT/'docs/research/sector_qgv'
+    fixture=json.loads((d/'dual-delivery-binding-cases.json').read_bytes())
+    for f in fixture['sources']:assert hashlib.sha256((d/f['path']).read_bytes()).hexdigest()==f['sha256']
+    assert fixture['expected_evaluation']==_identity(json.loads((d/'dual-synthetic/evaluation.json').read_bytes()))
+    assert fixture['expected_reference']==_identity(json.loads((d/'dual-synthetic/reference.json').read_bytes()))
+    base={n:json.loads((d/f'dual-synthetic/{n}.json').read_bytes()) for n in ('summary','index')}
+    for case in fixture['cases']:
+        docs=deepcopy(base)
+        for patch in case['patches']:
+            node=docs
+            for key in patch[:-2]:node=node[key]
+            node[patch[-2]]=patch[-1]
+        try:
+            actual=api().validate_input_bindings(docs['summary'],docs['index'],
+              expected_evaluation=fixture['expected_evaluation'],expected_reference=fixture['expected_reference'])['status']
+        except ValueError as exc:actual=str(exc)
+        assert actual==case['expected']
+
+
+def test_selection_contract_cli_preserves_source_bytes_and_no_scorer(tmp_path,monkeypatch):
+    import subprocess,sys,os
+    d=ROOT/'docs/research/sector_qgv/dual-factor-leaders-synthetic'
+    raw={p.name:p.read_bytes() for p in d.iterdir() if p.is_file()};before=dict(raw)
+    pin=hashlib.sha256(raw['factor-leaders-manifest.json']).hexdigest()
+    import investment_system.research.dual_qgv as scorer
+    def forbidden(*args,**kwargs):raise AssertionError('must not run scorer')
+    monkeypatch.setattr(scorer,'run_board',forbidden)
+    out=api().selection_contract_artifacts(raw,expected_manifest_sha256=pin)
+    target=d.parent/'dual-leader-selection-synthetic'
+    for name,value in out.items():assert (target/name).read_bytes()==api().json_bytes(value)
+    assert raw==before
+    assert out['factor-leaders-selection.json']['tie_policy']['secondary']=='COMPANY_ID_ASC'
+    raw['factor-leaders-000.json']+=b' '
+    with pytest.raises(ValueError,match='FILE_HASH'):api().selection_contract_artifacts(raw,expected_manifest_sha256=pin)
+    command=[sys.executable,'-m','investment_system.research.dual_qgv_delivery','--selection-contract',
+      '--source-dir',str(d),'--manifest-sha256',pin,'--output-dir',str(tmp_path/'selection')]
+    result=subprocess.run(command,env=dict(os.environ,PYTHONPATH=str(ROOT/'src')),capture_output=True,text=True)
+    assert result.returncode==0,result.stderr
+    assert json.loads(result.stdout)['score_calculations']==0
+    for name in out:assert (tmp_path/'selection'/name).read_bytes()==(target/name).read_bytes()
