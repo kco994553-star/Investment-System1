@@ -113,7 +113,7 @@ public output with private reference metadata. These are explicit tests.
 - [x] Task4: inspect only identified retained sources for1–3 groups. Hash→excerpt→
   known issuer/unknown mention→result. Preserve private inputs/output/manifests,
   report units separately. No target count forcing or new collection.
-- [ ] Task5: fresh review and changed regression checks; Main exact SHA/contract,
+- [x] Task5: fresh review and changed regression checks; Main exact SHA/contract,
   real limitations, CI separate from local and browser/deployment.
 
 Commands: `PYTHONPATH=implementation/src python -m pytest
@@ -154,7 +154,7 @@ PYTHONPATH=implementation/src python implementation/tools/company_ownership.py \
   --generated-at 2026-01-05T12:00:00Z --output-dir NEW_PRIVATE_DIRECTORY
 ```
 
-Add `--synthetic` only for SYNTHETIC input. RETAINED output inside this checkout is
+Add `--synthetic` only for SYNTHETIC input. RETAINED output inside any Git checkout/worktree is
 rejected. View, normalized input and manifest are each bounded at2MiB; no silent
 truncation. File hashes are raw SHA-256 bytes; `expected_view_sha256` uses
 `json_bytes` (UTF-8, sorted keys, compact separators, LF, no NaN). Main need not
@@ -198,7 +198,7 @@ relationship paths counted twice under different assertion IDs. No minor finding
 were deferred. Additional source-kind tests reject NEWS/OTHER-only confirmation;
 synthetic source text now matches each scenario's numerical observations.
 
-Changed adapter suite:38 passed. The previously passed RIG14 tests were reused;
+Changed adapter suite:39 passed. The previously passed RIG14 tests were reused;
 the unchanged all-external-RIG-import architecture guard remains Main's narrow
 integration change, already requested at #437 comment6794279588. No broad waiver,
 copy of shared logic or dynamic import is proposed. This is an ownership-boundary
@@ -230,3 +230,5 @@ this review. The INTEGRATED-to-legacy-context bridge difference was handed to Ma
 no duplicate contract/fixture/recalculation was produced. V source/receipt/eligible
 price inputs remain pending. Browser/authenticated delivery/operating adoption/
 deployment are separate and have not been verified by this research adapter.
+
+Additional private-output boundary: the CLI rejects retained output beneath any Git checkout/worktree, not just its own. Regression was reproduced before the guard was broadened. No Main-owned guard was changed. New #530 9d1129d223dcd7a73605d1e17736f3d334673cab arrived after the initial review; its changed model bridge and bounded reader were independently accepted in Python/Node, with no real-company recalculation. Main browser/authenticated live delivery remains separate.

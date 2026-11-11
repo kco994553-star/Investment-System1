@@ -377,3 +377,19 @@ def test_main_fixture_numeric_observations_match_its_fictional_source():
             for observation in claim['observations']:
                 if observation['value'] is not None:
                     assert observation['value']+' percent' in text,case['case_id']
+
+def test_retained_cli_rejects_another_git_checkout(tmp_path):
+    import subprocess,sys
+    p,r,a=fixture();p['data_kind']='RETAINED'
+    packet=tmp_path/'input.json';packet.write_bytes(encoded(p))
+    identity=tmp_path/'identity.json';identity.write_bytes(r)
+    artifacts=tmp_path/'artifacts';artifacts.mkdir()
+    for sha,body in a.items():(artifacts/sha).write_bytes(body)
+    checkout=tmp_path/'other-checkout';checkout.mkdir();(checkout/'.git').write_text('gitdir: synthetic')
+    cli=Path(__file__).resolve().parents[2]/'tools/company_ownership.py'
+    cmd=[sys.executable,str(cli),'--input',str(packet),'--input-sha256',hashlib.sha256(packet.read_bytes()).hexdigest(),
+        '--identity',str(identity),'--artifacts',str(artifacts),'--entity-id','SYN-A','--valid-on','2025-12-31',
+        '--knowledge-at','2026-01-05T12:00:00Z','--generated-at','2026-01-05T12:00:00Z','--output-dir',str(checkout/'out')]
+    result=subprocess.run(cmd,capture_output=True,text=True)
+    assert result.returncode!=0 and 'PRIVATE_OUTPUT_INSIDE_CHECKOUT' in result.stderr
+    assert not (checkout/'out').exists()

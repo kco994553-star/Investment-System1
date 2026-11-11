@@ -43,8 +43,7 @@ def main(argv=None):
         packet = json.loads(raw)
         if args.synthetic != (packet.get("data_kind") == "SYNTHETIC"):
             raise ValueError("DATA_KIND")
-        repo = Path(__file__).resolve().parents[2]
-        if not args.synthetic and (out == repo or repo in out.parents):
+        if not args.synthetic and any((parent / ".git").exists() for parent in (out, *out.parents)):
             raise ValueError("PRIVATE_OUTPUT_INSIDE_CHECKOUT")
         artifacts = {}
         for item in packet["evidence"]:
