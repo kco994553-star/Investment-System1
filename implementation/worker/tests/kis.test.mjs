@@ -297,6 +297,40 @@ test('classification expanded: only ?part=expanded_detail&shard=<2 lowercase hex
   assert.equal(r.status, 403); assert.equal(githubCalls(s).length, 0);
 });
 
+// The dual research delivery (owner 2026-11-11, Codex #529): classification/dual/<scope>/ manifest / summary / index / detail-NNN.
+test('classification dual: each part reads its own file for its scope; the manifest must name the scope asked for', async () => {
+  const FILES = { dual_manifest: ['manifest', 'qgv-dual-delivery-manifest/1'], dual_summary: ['summary', 'qgv-dual-delivery/1'], dual_index: ['index', 'qgv-dual-index/1'] };
+  for (const scope of ['operating504', 'held1057']) for (const [part, [file, schema]] of Object.entries(FILES)) {
+    const text = '{"schema_version":"' + schema + '","scope":"' + scope + '","rows":[]}', s = setup({ github: () => new Response(text, { status: 200 }) });
+    const r = await s.run('/kis/classification?part=' + part + '&scope=' + scope);
+    assert.equal(r.status, 200, part + ' ' + scope); assert.equal(await body(r), text); noStore(r);
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual/' + scope + '/' + file + '.json?ref=data');
+    const w = await setup({ github: () => new Response('{"schema_version":"qgv-dual-detail/1","rows":[]}', { status: 200 }) }).run('/kis/classification?part=' + part + '&scope=' + scope);
+    assert.equal(w.status, 502, part + ' with a detail file');
+  }
+  const other = '{"schema_version":"qgv-dual-delivery-manifest/1","scope":"held1057","files":[]}';
+  assert.equal((await setup({ github: () => new Response(other, { status: 200 }) }).run('/kis/classification?part=dual_manifest&scope=operating504')).status, 502, 'another scope\'s manifest');
+  const detail = '{"schema_version":"qgv-dual-detail/1","rows":[]}', s = setup({ github: () => new Response(detail, { status: 200 }) });
+  const r = await s.run('/kis/classification?part=dual_detail&scope=held1057&shard=045');
+  assert.equal(r.status, 200); assert.equal(await body(r), detail); noStore(r);
+  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual/held1057/detail-045.json?ref=data');
+  const big = await setup({ github: () => new Response(detail, { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=dual_detail&scope=operating504&shard=000');
+  assert.equal(big.status, 502); assert.match(await body(big), /TOO_LARGE/);
+});
+
+test('classification dual: only the exact scope and 3-digit shard forms; nothing else reaches a read', async () => {
+  for (const route of ['/kis/classification?part=dual_summary', '/kis/classification?part=dual_summary&scope=market', '/kis/classification?part=dual_summary&scope=Operating504',
+    '/kis/classification?scope=operating504&part=dual_summary', '/kis/classification?part=dual_summary&scope=operating504&x=1', '/kis/classification?part=dual_detail&scope=operating504',
+    '/kis/classification?part=dual_detail&scope=operating504&shard=00', '/kis/classification?part=dual_detail&scope=operating504&shard=0000', '/kis/classification?part=dual_detail&scope=operating504&shard=..1',
+    '/kis/classification?part=dual_detail&shard=000&scope=operating504', '/kis/classification?part=dual_summary&scope=operating504&shard=000', '/kis/classification?part=dual_index&scope=%6Fperating504',
+    '/kis/classification?part=dual_manifest&scope=../expanded', '/kis/classification?part=dual_detail&scope=held1057&shard=045#x']) {
+    const s = setup(), r = await s.run(route);
+    assert.ok([400, 404].includes(r.status), route + ' ' + r.status); assert.equal(githubCalls(s).length, 0, route);
+  }
+  const s = setup({ authStatus: 400 }), r = await s.run('/kis/classification?part=dual_summary&scope=operating504');
+  assert.equal(r.status, 403); assert.equal(githubCalls(s).length, 0);
+});
+
 test('preflight: GET with the authorization header only, no read and no Google call', async () => {
   const s = setup();
   const r = await s.run('/kis/chart?symbol=NVDA', { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization', Authorization: '' }, 'OPTIONS');

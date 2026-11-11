@@ -78,7 +78,7 @@ const helpers=Object.freeze({SORTS,sortSpec,oppositeSort,sortRows,sicOf,industry
 
 /* ---------------------------------------------------------------- view state (RAM, this page load only) */
 const V={list:'ALL',sort:'qgv',f:{industry:'',sic2:'',sic4:'',type:'',state:'',cc:'',ccSub:''},fav:false,period:'1D',ret:false,
- preview:false,profile:null,gate:true,shown:STEP,panel:false,n:15};
+ preview:false,profile:null,gate:true,shown:STEP,panel:false,n:15,model:'OFFICIAL',rShown:STEP};
 const LISTS=[['ALL','전체'],['RANKED','QGV 종합 순위'],['QG_REFERENCE',null],['PARTIAL_AXES','일부 축만 가능'],['CHECK_DATA','자료 확인 필요']];
 const PERIODS=['1D','5D','20D'],WAIT_PERIODS=['60D','120D','YTD','1Y'];
 const STATES=['SOURCE_MISSING','STALE','PRICE_NEEDED','PARTIAL','NOT_APPLICABLE','IDENTITY_STOPPED','CALC_VERSION'];
@@ -257,16 +257,39 @@ function leaderboard(route,refs){
  function block1(v){
   const pg=v.pg,E=populationOf(v.cls);
   const scope=group('보기 범위',h('span',{class:'chip on',dataset:{scope:'UNIVERSE'}},'Universe504 전체 · 고정 504코드'));
-  // 모형 (owner 2026-11-10 「통합 QGV·섹터 QGV」 queue §2, IS2.qgvModels): only a READY model can be chosen; today that is the official
-  // one this table reads. The research models show their state and reason, never a table of other numbers under their name.
-  const M=I.qgvModels,models=M?h('div',{dataset:{lbModels:''}},group('QGV 모형',...M.MODELS.map(m=>chip(m.label+(m.state==='READY'?'':' · '+M.STATE[m.state]),m.id===M.resolve('OFFICIAL'),
-    {disabled:!M.selectable(m.id),'aria-disabled':String(!M.selectable(m.id)),dataset:{lbModel:m.id,lbModelState:m.state}}))),
-   h('details',{class:'why',dataset:{lbModelWhy:''}},h('summary',null,'모형 구분 ▸'),h('ul',{class:'news-lines'},...M.MODELS.map(m=>h('li',{dataset:{lbModelLine:m.id}},M.line(m),' · ',m.note)),
+  // 모형 (owner 2026-11-10 queue §2, 2026-11-11 §3, IS2.qgvModels): only a READY model can be chosen. The official one always; U1 / U2 /
+  // S1 once the checked operating504 research delivery is in RAM (IS2.dualQgv.ram). A research model shows its own retained board,
+  // never the official numbers under its name and never the official table under a research name.
+  const M=I.qgvModels,rd=researchReady(),cur=M?M.resolve(V.model,rd):'OFFICIAL';
+  const models=M?h('div',{dataset:{lbModels:''}},group('QGV 모형',...M.MODELS.map(m=>{const st=M.stateOf(m.id,rd),sel=st==='READY';
+    return chip(m.label+(sel?'':' · '+M.STATE[st]),m.id===cur,{disabled:!sel,'aria-disabled':String(!sel),dataset:{lbModel:m.id,lbModelState:st,k:'model-'+m.id},
+     onclick:sel?set(()=>{V.model=m.id;V.rShown=STEP;}):null});})),
+   h('details',{class:'why',dataset:{lbModelWhy:''}},h('summary',null,'모형 구분 ▸'),h('ul',{class:'news-lines'},...M.MODELS.map(m=>h('li',{dataset:{lbModelLine:m.id}},M.line(m,rd),' · ',m.note)),
     ...M.RULES.map(r=>h('li',{class:'reason'},r))))):null;
+  if(cur!=='OFFICIAL')return[scope,models,researchBoard(cur)];
   const count=h('p',{class:'count',dataset:{lbCount:''}},'평가: Universe504 중 점수 행 ',E===null?naBox(text('SEC_QGV2_NOT_AVAILABLE'),'SEC_QGV2_NOT_AVAILABLE'):h('b',null,String(E)));
   // A READY page with a reason (V2_SCORES_NOT_AVAILABLE …): the reason above the table, the rows still draw.
   const why=pg.reason?h('p',{class:'reason',dataset:{na:pg.reason,pageReason:''}},say(pg.reason,'QGV 점수를 모두 계산하지 못했습니다')):null;
   return[scope,models,count,why,h('div',{class:'lb-grid'},table(v))];}
+ // The research boards in RAM (operating504 only: the leaderboard's population), or none.
+ function researchReady(){const D=I.dualQgv,x=D&&D.ram.get('operating504');return x?x.delivery.models:[];}
+ // One research model's retained board, as delivered: the producer's row order (code order), never re-sorted by a score; a null total
+ // has no rank; Q / G / V and the status for every row; counts and the 95% line from the producer's coverage.
+ function researchBoard(key){const D=I.dualQgv,d=D.ram.get('operating504').delivery,b=D.boardView(d,key),sn=id=>I.taxonomy?I.taxonomy.sectorName(id):id;
+  const rows=D.rowsView(d,key,{sectorName:sn,limit:V.rShown}),rest=d.rows.length-rows.length;
+  const th=(t,sub)=>h('th',{scope:'col'},t,sub?h('small',{class:'sub'},sub):null);
+  const caption=h('caption',{tabindex:'-1'},b.label,' · 연구 후보 · 생산자 행 순서(코드 순) · 점수로 다시 정렬하지 않음 · 표시 ',String(rows.length),'개');
+  return h('div',{dataset:{lbResearch:key}},h('p',{class:'hand',dataset:{lbResearchHead:''}},b.head),
+   h('dl',{class:'card-body',dataset:{lbResearchStates:''}},b.states.map(([k,v])=>[h('dt',null,h('b',null,k)),h('dd',null,v)])),
+   h('p',{class:'reason',dataset:{lbResearchPopulation:''}},b.population),h('p',{class:'meta'},b.kind),
+   h('ol',{class:'news-lines',dataset:{lbResearchStages:''}},b.stages.map(x=>h('li',{dataset:{lbResearchStage:x.key}},x.label,' ',h('b',null,x.text)))),
+   h('p',{class:'reason',dataset:{lbResearchTarget:''}},b.target),
+   h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{lbResearchTable:key}},caption,
+    h('thead',null,h('tr',null,th('기업'),th('Q'),th('G'),th('V'),th('총점'),th('총점 순위',key==='S1'?'섹터×회계모형 안에서만':'평가 집단 안에서만'),th('상태'))),
+    h('tbody',null,...rows.map(r=>h('tr',{dataset:{lbResearchRow:r.company_id}},h('td',null,r.company_id),h('td',null,r.Q),h('td',null,r.G),h('td',null,r.V),h('td',null,r.total),
+     h('td',{dataset:{lbResearchRank:''}},r.rank),h('td',null,r.status,' · ',r.gate)))))),
+   rest>0?h('button',{type:'button',class:'btn',dataset:{k:'research-more'},onclick:set(()=>{V.rShown+=STEP;})},'더 보기 · 50개 (남은 ',String(rest),'개)'):null,
+   h('p',{class:'reason'},b.market));}
  const LIST_NAME=id=>id==='QG_REFERENCE'?(QS()?QS().QG_REFERENCE_LABEL[0]:'QG 참고 목록'):(LISTS.find(l=>l[0]===id)||LISTS[0])[1];
  function rankHead(v){if(!v.pv)return Q.rankLabel(v.pg);const S=QS(),o=v.pv.out;return Q.rankLabel(o)+' · '+(o.v_weight_zero?S.PERSONAL_V0_LABEL[0]:S.PERSONAL_LABEL[0]);}
  function table(v){
@@ -512,6 +535,8 @@ function leaderboard(route,refs){
  Q.subscribe(why=>{if(why==='DATA'||why==='PRICES'||why==='DEVICE')reload();},{signal});
  P.subscribe(()=>{if(!ctx.pg)paintBand();else{refreshReturns();later();}},{signal});
  I.store.subscribe(()=>{ctx.preview=null;later();},{signal});
+ // A research delivery read (or dropped) on another screen changes which models can be chosen here.
+ if(I.dualQgv){const un=I.dualQgv.ram.subscribe(()=>{if(!signal.aborted)later();});signal.addEventListener('abort',un,{once:true});}
 }
 I.qgvLive=Object.freeze({leaderboard,helpers});
 })();

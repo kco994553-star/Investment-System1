@@ -64,7 +64,7 @@ const LOAD_ORDER=Object.freeze([
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
- 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','input-repair.js','reference-view.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
+ 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','input-repair.js','reference-view.js','dual-qgv.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;

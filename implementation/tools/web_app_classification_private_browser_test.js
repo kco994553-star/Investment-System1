@@ -64,9 +64,17 @@ const LINKED_CODE = BUNDLE.view.rows[0].company_id;
 const REFVIEW = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/docs/research/sector_qgv/reference-synthetic/view.json'), 'utf8'));
 const REPAIR = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/input_repair_comparison/outputs.json'), 'utf8'));
 const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.id === id).output));
+// Codex #529's synthetic dual delivery (pinned in dual-synthetic/manifest.json), served as the held1057 scope; the synthetic coverage's
+// held scope names its evaluation population and reference source input (a synthetic pairing for the screen).
+const DF = require('./web_app_dual_fixture.js');
+const DUAL = DF.delivery('held1057');
+const DUAL_FILE = { dual_manifest: 'manifest.json', dual_summary: 'summary.json', dual_index: 'index.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
   coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
+    const hc = DF.coverageContext('held_financial_subsample'), hs = c.scopes.held_financial_subsample;
+    hs.context = { ...(hs.context || {}), valuation_date: hc.valuation_date, population: { ...((hs.context || {}).population || {}), ...hc.population },
+      result_identity: { ...((hs.context || {}).result_identity || {}), ...hc.result_identity } };
     // the repair comparison names the catalog scope's result; the reference study names the operating scope's result
     k.context = { ...(k.context || {}), valuation_date: x.valuation_date, population: { ...((k.context || {}).population || {}), denominator: x.denominator },
       result_identity: { ...((k.context || {}).result_identity || {}), input_hash: x.after_input_hash } };
@@ -99,7 +107,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         if (early) { w.refused = (w.refused || 0) + 1; await route.fulfill({ status: 429, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ error: { code: 'RATE_LIMITED' } }) }); return; }
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
-        const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part;
+        const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
+        const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] ? part + '/' + scope : part;
+        if (DUAL_FILE[part] || part === 'dual_detail') {
+          const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : DUAL_FILE[part], b = scope === 'held1057' ? DUAL.files[name] : undefined;
+          const d = (w.answers[key] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
         const file = EXF[part] || (part === 'expanded_detail' ? 'expanded-detail/' + shard + '.json' : null);
         const a = (w.answers[key] || (() => file ? (DELIVERY.files[file] === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: DELIVERY.files[file] })
           : { status: 200, body: BUNDLE[part], text: part === 'expanded_summary' ? SUMMARY_TEXT : undefined }))();
@@ -338,6 +352,44 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the study open');
         delete w.answers.reference_view;
         await page.waitForTimeout(5200);
+        // 두 모형 연구 결과 (Codex #529): keyboard; another evaluation population is refused (the bundle stays); the held1057 delivery
+        // reads (three files, bytes checked), U1 / U2 / S1 apart with their own stages and 95% line; one company's models side by side
+        // is one detail read, cached; nothing stored; held1057 alone never makes 2.1's models selectable.
+        const badDual = DF.delivery('held1057', (x) => { for (const b of Object.values(x['summary.json'].boards)) { b.evaluation_population.members_hash = 'e'.repeat(64); b.bindings.evaluation.members_hash = 'e'.repeat(64); }
+          x['index.json'].evaluation_population.members_hash = 'e'.repeat(64); });
+        for (const [k, f] of Object.entries(DUAL_FILE)) w.answers[k + '/held1057'] = () => ({ status: 200, text: badDual.files[f].toString('utf8') });
+        const d0 = w.log.length; await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(d0).map((x) => x.path), ['manifest', 'summary', 'index'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': three reads, in order');
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 지금 받은 결과와 다른 평가 집단·입력의 연구입니다 · DUAL_POPULATION_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-reference-axis]'), 5, phase + ': the reference block stays');
+        for (const k of Object.keys(DUAL_FILE)) delete w.answers[k + '/held1057'];
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=READY]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-state]'), /^두 모형 연구 결과 · 보유1057 · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음$/);
+        assert.deepEqual(await page.locator('[data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['held1057:U1', 'held1057:U2', 'held1057:S1']);
+        for (const k of ['S1', 'U1']) await page.locator('[data-dual-board="held1057:' + k + '"] > summary').click();
+        assert.equal(await text(page, '[data-dual-stages="held1057:S1"] [data-dual-stage=total]'), '최종 총점 코드 행 3 / 3 · 발행사 3 / 3');
+        assert.match(await text(page, '[data-dual-target="held1057:U1"]'), /^95% 목표 · 발행사 3 \/ 3 · 코드 행 3 \/ 3 · /);
+        assert.match(await text(page, '[data-dual-rules]'), /총점이 없으면 총점 순위도 없음/);
+        assert.equal(await count(page, '[data-dual-leaderboard]'), 0, phase + ': only operating504 feeds 2.1');
+        const firstCo = DF.parse('index.json').rows[0].company_id;
+        await page.locator('[data-dual-query=held1057]').fill(firstCo.slice(0, 6));
+        const c0 = w.log.length; await page.locator('[data-dual-result="' + firstCo + '"] button').click();
+        await page.locator('[data-dual-compare-for="' + firstCo + '"]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(c0).map((x) => x.path), ['/kis/classification?part=dual_detail&scope=held1057&shard=000'], phase + ': one detail read');
+        assert.deepEqual(await page.locator('[data-dual-compare-board]').evaluateAll((e) => e.map((x) => x.dataset.dualCompareBoard)), ['U1', 'U2', 'S1']);
+        assert.match(await text(page, '[data-dual-compare-for]'), /점수 차이를 계산하지 않음/);
+        assert.match(await text(page, '[data-dual-compare-rank=S1]'), /^3 \/ 3 \(.+ · GENERAL\)/, phase + ': the sector rank in its own scope');
+        assert.equal(await count(page, '[data-dual-compare-core=S1] li'), 5);
+        await page.waitForTimeout(5200);
+        const c1 = w.log.length; await page.locator('[data-dual-result="' + firstCo + '"] button').click();
+        await page.locator('[data-dual-compare-for="' + firstCo + '"]').waitFor();
+        assert.equal(w.log.length, c1, phase + ': the cached detail is not read again');
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the models open');
+        await page.waitForTimeout(5200);
         await page.waitForTimeout(5200);
         assert.ok(w.log.length > logAt);
       }
@@ -388,6 +440,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await go(page, '#/macro', 'main[data-route=macro]'); await go(page, '#/qgv', 'main[data-route=qgv]');
       await page.locator('[data-cc-filter]:not([data-cc-filter=NONE])').first().waitFor({ timeout: 20000 });
       assert.equal(w.log.length, before, phase + ': the QGV filter and another company read the same RAM bundle, no new read');
+      assert.deepEqual(await page.locator('[data-lb-models] button[data-lb-model]').evaluateAll((e) => e.map((b) => [b.dataset.lbModel, b.disabled])),
+        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true]], phase + ': held1057 alone never makes 2.1 research models selectable');
       ok(tag + ' the same RAM bundle on another company (accounting line apart) and the QGV filter, no new read');
 
       phase = tag + ' fold';
@@ -395,6 +449,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-private-expand=classification]').click();
       await page.locator('.cc-block[data-cc=NONE]').waitFor();
       assert.equal(await count(page, '[data-cc-delivery=PRIVATE]'), 0);
+      assert.equal(await page.evaluate(() => window.IS2.dualQgv.ram.get('held1057')), null, phase + ': 접기 drops the research deliveries too');
       await go(page, '#/macro', 'main[data-route=macro]'); await go(page, '#/qgv', 'main[data-route=qgv]');
       await page.locator('[data-cc-filter=NONE]').first().waitFor({ timeout: 20000 });
       await go(page, '#/prompts/-/search', 'main[data-route=prompts]'); await page.locator('[data-context-screen]').waitFor({ timeout: 20000 });

@@ -29,6 +29,17 @@ retained preview and original snapshot; the answer is the new preview only when 
 field is identical, otherwise Codex's refusal code. A record whose preview this process does not hold is
 RETAINED_INPUT_NOT_FOUND: nothing is recomputed on the current input under that name (that is the ordinary `preview` op).
 
+Research models (owner 2026-11-11 「QGV 후속 연결」 §1; Codex #529 `research.dual_qgv`, DUAL_QGV.md): a request that carries `model`
+is a research request and is never answered by the sector default engine. `model` is INTEGRATED or SECTOR and `model_id` names one
+preregistered candidate explicitly: INTEGRATED → unified-roa-core/0.1.0 (U1) or unified-sales-core/0.1.0 (U2), SECTOR →
+sector-reduced-core/0.1.0 (S1). No candidate is chosen for the caller (no default, best or adopted one); an unknown model, a
+missing or mismatched model_id, or a config other than that candidate is refused. context / view answer Codex's
+candidate_configs() and evidence_catalog(); preview calls run_board(config, evaluation, reference, request_id) on Codex's pinned
+dual synthetic evaluation and reference snapshots (two inputs, never one); save calls save_board; replay calls replay_board with the
+retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted). Every answer names
+the requested model and model_id, and the engine result must carry the same model_id and configuration hash, otherwise
+MODEL_RESPONSE_MISMATCH. A request without `model` keeps the sector default behaviour below unchanged.
+
 Transport: one JSON object per line on stdin -> one JSON object per line on stdout (tools/web_app_sector_qgv_engine.js runs it
 behind the development site's POST route `sector-qgv-engine`). Errors are fixed codes; no input value, company result or
 exception text is printed on stderr.
@@ -48,6 +59,7 @@ from investment_system.qgv.qgv_v2 import GATE_PERCENTILE  # noqa: E402
 from investment_system.research import sector_qgv as engine  # noqa: E402
 from investment_system.research import sector_qgv_main as main_bridge  # noqa: E402
 from investment_system.research import sector_qgv_partial as partial  # noqa: E402
+from investment_system.research import dual_qgv  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
@@ -77,6 +89,19 @@ SYNTHETIC_COMPARISON = ('PARTIAL_SYNTHETIC', FIXTURES / 'partial-synthetic-compa
 # tools/sector_qgv_axis_main_variants.py and checked byte for byte by tests/test_sector_qgv_bridge.py.
 MAIN_SYNTHETIC_I1 = ('MAIN_SYNTHETIC_I1', ROOT / 'tests' / 'fixtures' / 'sector_qgv_axis_i1_synthetic.json')
 MAX_COMPARISON_BYTES = 8 << 20
+
+# Research models (Codex #529): request model → the candidates it may name explicitly (candidate_configs() keys).
+DUAL_MODELS = {'INTEGRATED': {'unified-roa-core/0.1.0': 'U1', 'unified-sales-core/0.1.0': 'U2'},
+               'SECTOR': {'sector-reduced-core/0.1.0': 'S1'}}
+DUAL_OPS = ('context', 'view', 'preview', 'save', 'replay')
+DUAL_FIXTURES = FIXTURES / 'dual-synthetic'
+# Codex's dual synthetic manifest (6766962236 §1); each input file's bytes must be the ones it pins.
+DUAL_MANIFEST_SHA256 = '65c5e549848981e7d2c211575cf3a192c2e30bb3eb04790b0cd6bd1716952446'
+# The dual synthetic inputs: Codex's evaluation / reference pair as pinned, and QG_ONLY (cases.json QG_ONLY: the two V core
+# observations removed from every matching evaluation and reference row; a documented change of that synthetic pair).
+DUAL_INPUTS = ('DUAL_BOTH_VALID', 'DUAL_QG_ONLY')
+DUAL_INPUT_TEXT = {'DUAL_BOTH_VALID': '합성 · 세 축 모두 있음', 'DUAL_QG_ONLY': '합성 · Q/G만 있음(V 핵심 관측 없음)'}
+DUAL_V_CORE = ('ep_ttm_diluted', 'common_bp')
 
 
 class Refused(Exception):
@@ -213,9 +238,59 @@ def _synthetic_comparison():
     return json.loads(raw)
 
 
+def dual_inputs(input_id):
+    """(evaluation, reference) of the named dual synthetic input: Codex's pinned pair, or its QG_ONLY change (applied to copies)."""
+    if input_id not in DUAL_INPUTS:
+        raise Refused('INPUT_UNKNOWN')
+    raw_manifest = (DUAL_FIXTURES / 'manifest.json').read_bytes()
+    if hashlib.sha256(raw_manifest).hexdigest() != DUAL_MANIFEST_SHA256:
+        raise Refused('SYNTHETIC_INPUT_HASH_MISMATCH')
+    pins = {f['path']: f['sha256'] for f in json.loads(raw_manifest)['files']}
+    out = []
+    for name in ('evaluation.json', 'reference.json'):
+        raw = (DUAL_FIXTURES / name).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != pins.get(name):
+            raise Refused('SYNTHETIC_INPUT_HASH_MISMATCH')
+        data = json.loads(raw)
+        if json.loads(raw_manifest).get('data_kind') != 'SYNTHETIC':
+            raise Refused('SYNTHETIC_INPUT_NOT_SYNTHETIC')
+        out.append(data)
+    evaluation, reference = out
+    if input_id == 'DUAL_QG_ONLY':
+        for rows in (evaluation['rows'], reference['rows']):
+            for row in rows:
+                for variant in DUAL_V_CORE:
+                    row['observations'].pop(variant, None)
+    return evaluation, reference
+
+
+def _dual_candidate(req):
+    """(model, model_id, key, candidate config) of a research request; refused unless both are named and known."""
+    model, model_id = req.get('model'), req.get('model_id')
+    if model not in DUAL_MODELS:
+        raise Refused('MODEL_UNKNOWN')
+    if model_id is None:
+        raise Refused('MODEL_ID_REQUIRED')
+    if model_id not in DUAL_MODELS[model]:
+        raise Refused('MODEL_ID_UNKNOWN')
+    key = DUAL_MODELS[model][model_id]
+    config = dual_qgv.candidate_configs()[key]
+    if config['model_id'] != model_id:
+        raise Refused('MODEL_RESPONSE_MISMATCH')
+    if 'config' in req and req['config'] != config:
+        raise Refused('CONFIG_NOT_CANDIDATE')
+    return model, model_id, key, config
+
+
+def _dual_result_check(result, model_id, config):
+    if result.get('model_id') != model_id or result.get('bindings', {}).get('model_hash') != dual_qgv.digest(config):
+        raise Refused('MODEL_RESPONSE_MISMATCH')
+
+
 class Bridge:
     def __init__(self, env=None):
         self.kept = {}
+        self.kept_dual = {}
         self.private = private_comparisons(env)
 
     def handle(self, req):
@@ -226,7 +301,81 @@ class Bridge:
             raise Refused('OP_UNKNOWN')
         if not isinstance(rid, str) or not REQUEST_ID.fullmatch(rid):
             raise Refused('REQUEST_ID_INVALID')
+        if 'model' in req or 'model_id' in req:
+            # A research request: never the sector default engine, never a silent fallback to it.
+            if op not in DUAL_OPS:
+                raise Refused('MODEL_OP_UNSUPPORTED')
+            model, model_id, key, config = _dual_candidate(req)
+            body = getattr(self, '_dual_' + op)(req, rid, key, config)
+            return {'model': model, 'model_id': model_id, **body}
         return getattr(self, '_' + op)(req, rid)
+
+    # ---- research models (Codex #529 research.dual_qgv, called unchanged)
+    def _dual_context(self, req, rid, key, config):
+        return {'versions': {'model_id': config['model_id'], 'model_version': config['version'], 'adapter_version': dual_qgv.VERSION,
+                             'config_schema': config['schema_version'], 'board_schema': dual_qgv.SCHEMA},
+                'candidate': key, 'config': config, 'config_hash': dual_qgv.digest(config),
+                'evidence': dual_qgv.evidence_catalog(),
+                'inputs': [{'input_id': k, 'label': DUAL_INPUT_TEXT[k], 'data_kind': 'SYNTHETIC'} for k in DUAL_INPUTS]}
+
+    def _dual_view(self, req, rid, key, config):
+        if config['kind'] == 'COMMON':
+            return {'candidate': key, 'kind': 'COMMON', 'preset': config['uniform_preset'], 'config_hash': dual_qgv.digest(config)}
+        sector, template = _scope(req)
+        try:
+            current = engine.preset(config['sector_config'], sector, template)
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise Refused(_code(exc)) from None
+        return {'candidate': key, 'kind': 'SECTOR', 'sector_id': sector, 'accounting_template': template, 'preset': current,
+                'config_hash': dual_qgv.digest(config)}
+
+    def _dual_preview(self, req, rid, key, config):
+        input_id = req.get('input_id')
+        evaluation, reference = dual_inputs(input_id)
+        try:
+            result = dual_qgv.run_board(config, evaluation, reference, request_id=rid)
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise Refused(_code(exc)) from None
+        _dual_result_check(result, config['model_id'], config)
+        # kept: the result with its own two inputs and request id (save checks it; replay uses all of them unchanged).
+        self.kept_dual[result['result_hash']] = (copy.deepcopy(config), copy.deepcopy(result), copy.deepcopy(evaluation),
+                                                  copy.deepcopy(reference), rid, input_id)
+        while len(self.kept_dual) > MAX_KEPT_PREVIEWS:
+            self.kept_dual.pop(next(iter(self.kept_dual)))
+        return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'SYNTHETIC_RECALCULATION', 'board': result}
+
+    def _dual_save(self, req, rid, key, config):
+        result_hash = req.get('result_hash')
+        if result_hash not in self.kept_dual:
+            raise Refused('PREVIEW_NOT_FOUND')
+        kept_config, result, *_ = self.kept_dual[result_hash]
+        if kept_config != config:
+            raise Refused('MODEL_RESPONSE_MISMATCH')
+        try:
+            saved = dual_qgv.save_board(config, result)
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise Refused(_code(exc)) from None
+        return {'candidate': key, 'saved': saved, 'data_kind': 'SYNTHETIC'}
+
+    def _dual_replay(self, req, rid, key, config):
+        saved = req.get('saved')
+        if not isinstance(saved, dict):
+            raise Refused('SAVED_CONFIG_INVALID')
+        if saved.get('schema_version') != 'qgv-dual-saved/1':
+            # e.g. a sector-qgv saved record: kept as it is by the caller, never converted to a research record
+            raise Refused('SAVED_SCHEMA_MISMATCH')
+        if (saved.get('configuration') or {}).get('model_id') != config['model_id']:
+            raise Refused('MODEL_RESPONSE_MISMATCH')
+        if saved.get('result_hash') not in self.kept_dual:
+            raise Refused('RETAINED_INPUT_NOT_FOUND')
+        _, retained, evaluation, reference, original_rid, input_id = self.kept_dual[saved['result_hash']]
+        try:
+            out = dual_qgv.replay_board(copy.deepcopy(saved), copy.deepcopy(evaluation), copy.deepcopy(reference), original_rid)
+        except (ValueError, KeyError, TypeError, AttributeError) as exc:
+            raise Refused(_code(exc)) from None
+        _dual_result_check(out, config['model_id'], config)
+        return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY',
+                'retained_result_hash': retained['result_hash'], 'board': out}
 
     def _context(self, req, rid):
         return {'versions': {'model_version': MODEL, 'engine_version': ENGINE, 'normalization_version': NORMALIZATION,

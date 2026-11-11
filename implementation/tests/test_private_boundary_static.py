@@ -468,3 +468,11 @@ def test_file_list_falls_back_to_a_walk_without_git(monkeypatch):
     names = _file_list()
     assert "implementation/tools/pages_artifact_guard.py" in names
     assert not any(n == ".git" or n.startswith(".git/") or "/__pycache__/" in n for n in names)
+
+
+def test_hypothesis_storage_is_outside_the_checkout():
+    # The property tests' storage (example database, constants cache) is written outside the checkout (tests/conftest.py), so the
+    # scan above never meets it; the scan's file list (tracked plus not-yet-added) is not narrowed for it.
+    configuration = pytest.importorskip("hypothesis.configuration")
+    where = configuration.storage_directory("constants", intent_to_write=False).resolve()
+    assert REPO.resolve() not in where.parents, where

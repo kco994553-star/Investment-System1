@@ -12,6 +12,9 @@
 'use strict';
 const I=window.IS2,{h}=I;
 const E=()=>I.expandedIssuers;
+// The dual research deliveries in RAM are dropped with the classification bundle (접기 / 연결 끊기 / a dropped token).
+try{if(I.classification&&typeof I.classification.subscribe==='function'&&I.dualQgv)I.classification.subscribe(()=>{const s=I.classification.state();
+ if(!(s&&s.state==='OK'&&s.delivery==='PRIVATE'))I.dualQgv.ram.drop();});}catch(_){}
 const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
 const codeOf=e=>{const m=e&&typeof e.message==='string'?e.message:'';return CODE.test(m)?m:'PRIVATE_READ_FAILED';};
 const WORD=Object.freeze({KIS_SERIES_NOT_FOUND:'전달 위치에 확장 발행사 묶음이 없습니다',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다(Worker 배포 전)',
@@ -60,6 +63,7 @@ function block(anchor){
    coverageBlock(b.coverage),
    I.inputRepair?repairBlock():null,
    I.referenceView?referenceBlock():null,
+   I.dualQgv&&I.referenceView?dualBlock():null,
    h('label',{for:'held-q',class:'meta'},'확장 발행사 찾기'),q,count,results,detail);}
 
  // Coverage by stage (IS2.expandedIssuers.coverageView): one list per unit in pipeline order, then the gate decisions, the total
@@ -69,6 +73,7 @@ function block(anchor){
   const stageList=(u,late)=>h('ol',{class:'news-lines',dataset:{heldStages:u.unit+(late?':total':':axes'),heldStagesDen:String(u.denominator)}},
    u.stages.filter(s=>(s.group==='총점')===late).map(s=>h('li',{dataset:{heldStage:s.key,heldStageValue:s.text}},h('span',{class:'meta'},s.group,' · '),s.label,' ',h('b',null,s.text))));
   return h('details',{class:'why',dataset:{heldCoverage:''}},h('summary',null,'커버리지 단계 · 95% 목표 · 관문 · 미산출 사유 ▸'),
+   h('p',{class:'hand',dataset:{heldBaseline:''}},'연구 기준선 · 보관 입력·기본 설정(입력 연결 수정 #527 뒤) · 공식 QGV 게시 결과의 커버리지 아님'),
    h('p',{class:'reason'},'단계마다 따로 셉니다 · 분류 확인 수나 원지표 수는 QGV 계산 완료율이 아님 · 95% 목표는 세 축 동시 + 최종 총점 기준'),
    ...v.map(c=>h('div',{class:'cc-wrap',dataset:{heldScope:c.scope}},h('h4',null,c.label),
     ...c.units.map(u=>h('div',null,h('p',null,h('b',null,u.label),' · 분모 ',String(u.denominator)),stageList(u,false))),
@@ -114,6 +119,66 @@ function block(anchor){
     h('details',{class:'why',dataset:{referenceFactors:String(v.factors.length)}},h('summary',null,'바뀐 요소 ',String(v.factors.length),' ▸'),list(v.factors,{},'없음')),
     h('details',{class:'why',dataset:{referenceRows:String(v.rows.length)}},h('summary',null,'값이 바뀐 평가 행 ',String(v.rows.length),' ▸'),list(v.rows.map(r=>r.text),{},'없음')));}
   return h('div',{class:'sk card',dataset:{referenceBlock:''}},h('h4',null,'참조집단 확대 연구 (연구 · 운영 채택 안 됨)'),btn,rs,slot);}
+
+ // 두 모형 연구 결과 (Codex #529 qgv-dual-delivery/1, IS2.dualQgv): one click per scope (운영504 / 보유1057), three reads 5 s apart
+ // (manifest, summary, index), each file's own bytes checked against the manifest, accepted only when its evaluation population is
+ // the result of this checked bundle. Checked deliveries stay in RAM (IS2.dualQgv.ram) for 2.1 until the bundle drops. A company's
+ // models side by side is one more read (its detail file), cached for the delivery. A refusal is this block's error; the rest stays.
+ function dualBlock(){const DQ=I.dualQgv,RV=I.referenceView;
+  const rs=h('p',{class:'reason',role:'status',dataset:{dualState:'IDLE'}},'비교 유형: 연구 후보 U1·U2(통합)·S1(섹터, 핵심 요소 축소) · 운영 채택 안 됨 · 공식 QGV 아님 · 성과 미측정');
+  const slot=h('div',{dataset:{dualArea:''}});
+  const set=(c,t)=>{rs.dataset.dualState=c;rs.textContent=t;};let busy=false;
+  const btns=Object.entries(DQ.SCOPES).map(([scope,S])=>{const b=h('button',{type:'button',class:'btn',dataset:{dualOpen:scope}},S.label+' 두 모형 결과 불러오기');
+   b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+S.label+' 목록표·요약·색인 3개 · 서버 요청 간격 5초');
+    let p;try{p=I.prices.kisRead(e,['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]));}catch(err){p=Promise.reject(err);}
+    Promise.resolve(p).then(async([manifest,summary,index])=>{const r=await DQ.checkDelivery({manifest,summary,index},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
+     if(!r.ok){set('ERROR',S.label+' 연구 결과를 쓰지 않음 · '+(r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')
+      +' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');b.disabled=false;return;}
+     DQ.ram.set(scope,r.value);b.hidden=true;paint();},
+    err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?S.label+' 두 모형 결과가 전달 위치에 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');b.disabled=false;})
+    .finally(()=>{busy=false;});});return b;});
+  const sectorName=id=>I.taxonomy?I.taxonomy.sectorName(id):id;
+  function paint(){const held=Object.keys(DQ.SCOPES).filter(k=>DQ.ram.get(k));if(!held.length)return;
+   set('READY','두 모형 연구 결과 · '+held.map(k=>DQ.SCOPES[k].label).join(' · ')+' · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음');
+   slot.replaceChildren(h('p',{class:'hand',dataset:{dualKinds:''}},'새 후보 결과(U1·U2·S1) · 연구 기준선(#527 보관 기본값 · #528 참조집단 확대)과 공식 QGV 게시 결과는 따로 · 지금 받은 묶음과 같은 평가일·모집단의 결과만 엶'),
+    h('ul',{class:'news-lines',dataset:{dualRules:''}},DQ.RULES.map(t=>h('li',{class:'reason'},t))),...held.map(scopeCard));}
+  function scopeCard(scope){const d=DQ.ram.get(scope).delivery,S=DQ.SCOPES[scope];
+   return h('div',{class:'cc-wrap',dataset:{dualScope:scope}},h('h4',null,S.label,' · ',S.text),
+    scope==='operating504'?h('p',{class:'meta',dataset:{dualLeaderboard:''}},'2.1 리더보드의 QGV 모형에서 U1·U2·S1을 고를 수 있음(이 결과를 RAM에서 읽음)'):null,
+    ...d.models.map(k=>{const v=DQ.boardView(d,k);
+     return h('details',{class:'why',dataset:{dualBoard:scope+':'+k}},h('summary',null,v.head,' ▸'),
+      dl(v.states.map(([a,b])=>[a,b]),{dualStates:k}),
+      h('p',{class:'reason',dataset:{dualPopulation:'evaluation'}},v.population),h('p',{class:'reason',dataset:{dualPopulation:'reference'}},v.reference),
+      h('p',{class:'meta'},v.kind,' · ',v.classification),
+      h('ol',{class:'news-lines',dataset:{dualStages:scope+':'+k}},v.stages.map(x=>h('li',{dataset:{dualStage:x.key}},x.label,' ',h('b',null,x.text)))),
+      h('p',{class:'reason',dataset:{dualTarget:scope+':'+k}},v.target),
+      h('p',{class:'meta'},'결손 사유 · 겹칠 수 있음 · 더하지 않음'),list(v.causes,{dualCauses:k},'전달 안 됨'),
+      h('p',{class:'meta'},v.incomplete),h('p',{class:'reason'},v.market));}),
+    finder(scope,d));}
+  function finder(scope,d){const id='dual-q-'+scope,q=h('input',{type:'search',id,class:'tbl',autocomplete:'off',spellcheck:'false',enterkeyhint:'search',placeholder:'기업 코드 · 발행사 ID',dataset:{dualQuery:scope}});
+   const out=h('ul',{class:'news-lines',dataset:{dualResults:scope}}),cmp=h('div',{dataset:{dualCompare:scope}});
+   const run=()=>{const t=q.value.trim().toLowerCase();const hits=t?d.rows.filter(r=>r.company_id.toLowerCase().includes(t)||(r.issuer_id||'').toLowerCase().includes(t)).slice(0,LIMIT):[];
+    out.replaceChildren(...hits.map(r=>h('li',{dataset:{dualResult:r.company_id}},h('button',{type:'button',class:'lk',onclick:e=>compare(e,scope,r,cmp)},r.company_id),' · 발행사 ',r.issuer_id||'—')));};
+   q.addEventListener('input',run);
+   return h('div',{class:'cc-wrap'},h('label',{for:id,class:'meta'},'기업 상세 · 세 모형 나란히 보기'),q,out,cmp);}
+  function compare(e,scope,row,slotC){const held=DQ.ram.get(scope);if(!held||busy)return;const name=row.detail_file;
+   const show=rows=>{const r=rows.get(row.company_id);const v=DQ.compareView(r,held.delivery,{sectorName});
+    // Not a card inside the card: at 390 px nested padding leaves too little room, and long factor ids must wrap (cc-wrap).
+    slotC.replaceChildren(h('div',{class:'cc-wrap',dataset:{dualCompareFor:row.company_id}},h('p',{class:'hand'},row.company_id,' · ',v.note),
+     ...v.boards.map(b=>h('div',{class:'cc-wrap',dataset:{dualCompareBoard:b.key}},h('h5',null,b.label),h('p',{dataset:{dualCompareAxes:b.key}},b.axes),
+      h('p',{class:'meta',dataset:{dualCompareRank:b.key}},b.rank,' · ',b.status),
+      h('p',{class:'meta'},'핵심 요소 ',String(b.core.length)),list(b.core,{dualCompareCore:b.key},'핵심 요소 없음'),
+      h('details',{class:'why'},h('summary',null,'추가 요소(핵심 점수에 안 들어감) · 산출 ',String(b.additional.length),' · 미산출 ',String(b.additionalMissing),' ▸'),list(b.additional,{dualCompareAdditional:b.key},'산출된 추가 요소 없음'))))));};
+   if(held.details.has(name)){show(held.details.get(name));return;}
+   busy=true;slotC.replaceChildren(h('p',{class:'reason',dataset:{dualCompareState:'LOADING'}},'상세 파일 1개를 불러옵니다'));
+   let p;try{p=I.prices.kisRead(e,[['classification','dual_detail/'+scope+'/'+name.slice(7,10)]]);}catch(err){p=Promise.reject(err);}
+   Promise.resolve(p).then(async([x])=>{const r=await DQ.checkDetail(x,name,held.delivery,E().sha256);
+    if(!r.ok){slotC.replaceChildren(h('p',{class:'reason',dataset:{dualCompareState:'ERROR'}},'이 기업의 상세를 쓰지 않음 · '+r.code+' · '+r.path+' · 목록은 그대로'));return;}
+    held.details.set(name,r.value);show(r.value);},
+   err=>{slotC.replaceChildren(h('p',{class:'reason',dataset:{dualCompareState:'ERROR'}},'연결 오류 · '+say(codeOf(err))));}).finally(()=>{busy=false;});}
+  const wrap=h('div',{class:'sk card',dataset:{dualBlock:''}},h('h4',null,'두 모형 연구 결과 (U1 · U2 · S1 · 연구 · 운영 채택 안 됨)'),h('div',{class:'load-row'},...btns),rs,slot);
+  for(const[k,b]of btns.map((b,i)=>[Object.keys(DQ.SCOPES)[i],b]))if(DQ.ram.get(k))b.hidden=true;
+  paint();return wrap;}
 
  // 입력 연결 수정 전후 비교 (Codex #527, IS2.inputRepair): its own click and one read, accepted only for the result of this checked
  // bundle (a coverage scope with the same date, input hash and denominator). A refusal or a failed read is this block's error; the

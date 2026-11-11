@@ -274,6 +274,8 @@ function krxNumber(value) {
 // issuer delivery (Codex #524) at classification/expanded/; the same 2 MiB limit, nothing widened.
 // …?part=input_repair (owner 2026-11-09): Codex #527's input connection repair comparison, classification/expanded/input-repair-comparison.json.
 // …?part=reference_view (owner 2026-11-10): Codex #528's reference population research view, classification/expanded/reference-view.json.
+// …?part=<dual_manifest|dual_summary|dual_index>&scope=<operating504|held1057> and ?part=dual_detail&scope=<scope>&shard=<3 digits>
+// (owner 2026-11-11): Codex #529's dual research delivery (qgv-dual-delivery/1) at classification/dual/<scope>/; the same 2 MiB limit.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -307,6 +309,11 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   // The evaluation / reference population research view (Codex #528 sector-qgv-reference-view/1, owner 2026-11-10), one file next
   // to the held issuer delivery whose operating result it evaluated; the same 2 MiB limit.
   reference_view: 'sector-qgv-reference-view/1' });
+// The dual research delivery (Codex #529 qgv-dual-delivery/1, owner 2026-11-11): one directory per evaluation scope, a manifest that
+// names its scope, a summary, an index and numbered detail files; each file carries its schema.
+const DUAL_SCOPES = Object.freeze(['operating504', 'held1057']);
+const DUAL_PARTS = Object.freeze({ dual_manifest: ['manifest', 'qgv-dual-delivery-manifest/1'], dual_summary: ['summary', 'qgv-dual-delivery/1'],
+  dual_index: ['index', 'qgv-dual-index/1'], dual_detail: [null, 'qgv-dual-detail/1'] });
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
   input_repair: 'input-repair-comparison.json', reference_view: 'reference-view.json' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
@@ -316,6 +323,10 @@ export function kisClassificationPart(url) {
   if (url.hash) throw new Failure('REQUEST_INVALID', 400);
   const shard = /^\?part=expanded_detail&shard=([0-9a-f]{2})$/.exec(url.search);
   if (shard) return 'expanded_detail/' + shard[1];
+  const dual = /^\?part=(dual_manifest|dual_summary|dual_index)&scope=([a-z0-9]{1,16})$/.exec(url.search);
+  if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2]; }
+  const dualDetail = /^\?part=dual_detail&scope=([a-z0-9]{1,16})&shard=(\d{3})$/.exec(url.search);
+  if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[1])) throw new Failure('REQUEST_INVALID', 400); return 'dual_detail/' + dualDetail[1] + '/' + dualDetail[2]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
   if (!Object.hasOwn(CLASSIFICATION_PARTS, part) || part === 'expanded_detail') throw new Failure('REQUEST_INVALID', 400);
@@ -323,12 +334,17 @@ export function kisClassificationPart(url) {
 }
 function classificationPath(part) {
   if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
+  if (part.startsWith('dual_')) { const [name, scope, shard] = part.split('/');
+    return 'classification/dual/' + scope + '/' + (shard ? 'detail-' + shard : DUAL_PARTS[name][0]) + '.json'; }
   if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
   return 'classification/' + part + '.json';
 }
 // The file must carry its part's schema; a detail shard must also name the shard asked for.
 function classificationSchema(o, part) {
   if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
+  // A dual file carries its part's schema; the manifest also names the scope asked for.
+  if (part.startsWith('dual_')) { const [name, scope] = part.split('/');
+    return o.schema_version === DUAL_PARTS[name][1] && (name !== 'dual_manifest' || o.scope === scope); }
   return o.schema_version === CLASSIFICATION_PARTS[part];
 }
 // Routes that take no query string at all.
