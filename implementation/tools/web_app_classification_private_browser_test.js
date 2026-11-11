@@ -69,6 +69,8 @@ const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.
 const DF = require('./web_app_dual_fixture.js');
 const DUAL = DF.delivery('held1057');
 const DUAL_FILE = { dual_manifest: 'manifest.json', dual_summary: 'summary.json', dual_index: 'index.json' };
+// held1057's producer projection proof (qgv-dual-input-projection-proof/1), a synthetic one binding this delivery (test-made).
+DUAL.files['input-lineage.json'] = DF.lineage();
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
   coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
@@ -108,9 +110,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
         const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
-        const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] ? part + '/' + scope : part;
-        if (DUAL_FILE[part] || part === 'dual_detail') {
-          const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : DUAL_FILE[part], b = scope === 'held1057' ? DUAL.files[name] : undefined;
+        const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] || part === 'dual_lineage' ? part + '/' + scope : part;
+        if (DUAL_FILE[part] || part === 'dual_detail' || part === 'dual_lineage') {
+          const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : part === 'dual_lineage' ? 'input-lineage.json' : DUAL_FILE[part], b = scope === 'held1057' ? DUAL.files[name] : undefined;
           const d = (w.answers[key] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
           await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
         }
@@ -358,18 +360,27 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         const badDual = DF.delivery('held1057', (x) => { for (const b of Object.values(x['summary.json'].boards)) { b.evaluation_population.members_hash = 'e'.repeat(64); b.bindings.evaluation.members_hash = 'e'.repeat(64); }
           x['index.json'].evaluation_population.members_hash = 'e'.repeat(64); });
         for (const [k, f] of Object.entries(DUAL_FILE)) w.answers[k + '/held1057'] = () => ({ status: 200, text: badDual.files[f].toString('utf8') });
+        w.answers['dual_lineage/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
         const d0 = w.log.length; await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
-        assert.deepEqual(w.log.slice(d0).map((x) => x.path), ['manifest', 'summary', 'index'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': three reads, in order');
+        assert.deepEqual(w.log.slice(d0).map((x) => x.path), ['manifest', 'summary', 'index', 'lineage'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': four reads (the proof optional), in order');
         assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 지금 받은 결과와 다른 평가 집단·입력의 연구입니다 · DUAL_POPULATION_MISMATCH .* 위 묶음은 그대로$/);
         assert.equal(await count(page, '[data-reference-axis]'), 5, phase + ': the reference block stays');
         for (const k of Object.keys(DUAL_FILE)) delete w.answers[k + '/held1057'];
+        // A proof for another evaluation input is refused by name; the bundle stays.
+        w.answers['dual_lineage/held1057'] = () => ({ status: 200, text: DF.lineage((x) => { x.selected_issuer_count = 2; }).toString('utf8') });
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 평가 입력 투영 증명이 이 결과와 맞지 않습니다 · LINEAGE_INVALID /);
+        delete w.answers['dual_lineage/held1057'];
         await page.waitForTimeout(5200);
         await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-state=READY]').waitFor({ timeout: 30000 });
         assert.match(await text(page, '[data-dual-state]'), /^두 모형 연구 결과 · 보유1057 · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음$/);
         assert.deepEqual(await page.locator('[data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['held1057:U1', 'held1057:U2', 'held1057:S1']);
         for (const k of ['S1', 'U1']) await page.locator('[data-dual-board="held1057:' + k + '"] > summary').click();
+        assert.match(await text(page, '[data-dual-states="held1057:U1"]'), /평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨\(화면이 다시 계산한 것 아님\)/, phase + ': the proof attests the evaluation input');
         assert.equal(await text(page, '[data-dual-stages="held1057:S1"] [data-dual-stage=total]'), '최종 총점 코드 행 3 / 3 · 발행사 3 / 3');
         assert.match(await text(page, '[data-dual-target="held1057:U1"]'), /^95% 목표 · 발행사 3 \/ 3 · 코드 행 3 \/ 3 · /);
         assert.match(await text(page, '[data-dual-rules]'), /총점이 없으면 총점 순위도 없음/);

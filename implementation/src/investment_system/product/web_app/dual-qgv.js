@@ -29,7 +29,22 @@ const SCOPES=Object.freeze({
  held1057:Object.freeze({label:'보유1057',anchor:'held_financial_subsample',input:'reference',text:'보유 재무 표본 1057발행사 · 운영504와 합치지 않음'})});
 const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference:'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'});
 const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치)',
- REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(생산자 근거 대기)'});
+ REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(투영 증명 파일 없음)',
+ EVALUATION_INPUT_PROJECTION_ATTESTED:'평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨(화면이 다시 계산한 것 아님)'});
+// The producer's projection proof of held1057's evaluation input (Codex 6794279588 §2, qgv-dual-input-projection-proof/1): it must
+// bind exactly this delivery's evaluation population and reference source (the staged held input), a selection of that many
+// issuers, only the five projection fields changed, row values and classification unchanged, no whole market, no new score.
+const LINEAGE_SCHEMA='qgv-dual-input-projection-proof/1';
+const PROJECTION_FIELDS=Object.freeze(['members','rows','snapshot_id','universe_id','universe_version']);
+function lineageCheck(x,boards){const at='lineage';if(!isObj(x)||x.schema_version!==LINEAGE_SCHEMA)refuse('LINEAGE_SCHEMA',at+'.schema_version');
+ for(const[k,b]of Object.entries(boards)){if(!same(x.evaluation,b.evaluation_population))refuse('LINEAGE_MISMATCH',at+'.evaluation');
+  if(!same(x.reference_source,b.bindings.reference))refuse('LINEAGE_MISMATCH',at+'.reference_source');
+  if(x.reference_source.input_hash!==b.reference_population.input_hash)refuse('LINEAGE_MISMATCH',at+'.reference_source.input_hash');}
+ const ev=x.evaluation;
+ if(x.selected_issuer_count!==ev.issuers||!HEX.test(x.selected_issuer_members_hash)||typeof x.selection_rule!=='string'||!x.selection_rule)refuse('LINEAGE_INVALID',at+'.selected_issuer_count');
+ if(x.rows_equal_source_projection!==true||x.row_values_or_classification_changed!==false)refuse('LINEAGE_INVALID',at+'.rows_equal_source_projection');
+ if(!Array.isArray(x.changed_top_level_fields)||!same([...x.changed_top_level_fields].sort(),PROJECTION_FIELDS))refuse('LINEAGE_INVALID',at+'.changed_top_level_fields');
+ if(x.whole_market_denominator!==null||x.reference_source_is_not_eligible_whole_market!==true||x.new_score_calculations!==0)refuse('LINEAGE_INVALID',at+'.whole_market_denominator');}
 const MODELS=Object.freeze({
  U1:Object.freeze({model_id:'unified-roa-core/0.1.0',kind:'COMMON',label:'통합 연구 U1',core:'Q ROA · G ROA 개선 · V 이익·장부'}),
  U2:Object.freeze({model_id:'unified-sales-core/0.1.0',kind:'COMMON',label:'통합 연구 U2',core:'Q ROA · G 매출 성장 · V 이익·장부'}),
@@ -43,9 +58,9 @@ const POP_KEYS=Object.freeze(['id','version','members_hash','valuation_date','as
 const REF_EXTRA=Object.freeze(['factor_members_hash','candidate_population','scope']);
 const HEAD_KEYS=Object.freeze(['axes','total','rank','rank_n','ranking_scope','status','gate_status']);
 const DETAIL_KEYS=Object.freeze(['company_id','issuer_id','security_id','sector_id','accounting_template','factors','rank','status','axes','total','pre_gate_total','gate_status','ranking_scope','rank_n','selected_variants','scoring_representative']);
-// PROVISIONAL (owner 2026-11-11 §2): seen only on synthetic rows scored to a total, absent from the real delivery. Accepted by name
-// only until Codex states their conditional-required rule (#437 6794173362 q.2); not the final contract.
-const DETAIL_OPTIONAL=Object.freeze(['missing_factors','nominal_axis_weights','nominal_effective_weights','post_gate_axis_weights','post_gate_effective_weights']);
+// Conditional-required (Codex #437 6794279588 §3, DUAL_QGV.md): present on every row with an applied preset, absent exactly when the
+// row is MAPPING_UNRESOLVED (no preset); not tied to the total. Never filled with [] / 0 when absent.
+const DETAIL_PRESET_FIELDS=Object.freeze(['missing_factors','nominal_axis_weights','nominal_effective_weights','post_gate_axis_weights','post_gate_effective_weights']);
 const FACTOR_KEYS=Object.freeze(['raw_status','score','score_status','valid_n','raw_components_available','verified_external_available','kind','rank','rank_n','decile','decile_status']);
 const MAX_BYTES=2000000;
 const HEX=/^[0-9a-f]{64}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,FILE=/^(summary|index)\.json$|^detail-\d{3}\.json$/,DETAIL_FILE=/^detail-\d{3}\.json$/;
@@ -168,8 +183,11 @@ async function checkDelivery(parts,opts){
   for(const k of keys)if(!same(s.boards[k].evaluation_population,ev))refuse('EVALUATION_MISMATCH','summary.boards.'+k+'.evaluation_population');
   anchorCheck(o.scope,ev,s.boards,o.anchor);
   const x=await bytesMatch(p.index,'index.json',entries,o.sha256,'index');const rows=indexRows(x,s,entries);
-  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,entries:Object.fromEntries(entries),summary:s,rows,models:keys,
-   input_check:INPUT_CHECK[SCOPES[o.scope].input]});CHECKED.add(value);
+  // held1057's evaluation input: attested only by a matching projection proof; a proof that does not match refuses the delivery.
+  let input_check=INPUT_CHECK[SCOPES[o.scope].input];
+  if(p.lineage!==undefined&&p.lineage!==null){if(SCOPES[o.scope].input!=='reference')refuse('LINEAGE_NOT_APPLICABLE','lineage');
+   if(!isObj(p.lineage)||!isObj(p.lineage.body))refuse('LINEAGE_SCHEMA','lineage');lineageCheck(p.lineage.body,s.boards);input_check='EVALUATION_INPUT_PROJECTION_ATTESTED';}
+  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
@@ -183,7 +201,9 @@ async function checkDetail(file,name,delivery,sha256){
   const out=new Map();
   x.rows.forEach((r,i)=>{const at=name+'.rows['+i+']',w=want[i];exact(r,['company_id','boards'],at);
    if(r.company_id!==w.company_id)refuse('DETAIL_ROWS_MISMATCH',at+'.company_id');exact(r.boards,d.models,at+'.boards');
-   for(const k of d.models){const b=r.boards[k],bt=at+'.boards.'+k;exact(b,DETAIL_KEYS,bt,DETAIL_OPTIONAL);
+   for(const k of d.models){const b=r.boards[k],bt=at+'.boards.'+k;exact(b,DETAIL_KEYS,bt,DETAIL_PRESET_FIELDS);
+    const preset=b.status!=='MAPPING_UNRESOLVED';
+    for(const f of DETAIL_PRESET_FIELDS)if(own(b,f)!==preset)refuse(preset?'PRESET_FIELD_MISSING':'PRESET_FIELD_UNEXPECTED',bt+'.'+f);
     if(b.company_id!==w.company_id||b.issuer_id!==w.issuer_id||b.security_id!==w.security_id)refuse('DETAIL_IDENTITY',bt);
     for(const h of HEAD_KEYS)if(!same(b[h],w.boards[k][h]))refuse('DETAIL_MISMATCH',bt+'.'+h);
     if(!Array.isArray(b.selected_variants)||!isObj(b.factors)||b.selected_variants.some(v=>!own(b.factors,v)))refuse('FACTORS_INVALID',bt+'.selected_variants');
@@ -282,5 +302,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

@@ -19,6 +19,12 @@ function delivery(scope, edit) {
   const docs = Object.fromEntries(FILES.map((f) => [f, parse(f)]));
   const bytes = {};
   if (edit) { edit(docs); for (const f of FILES) bytes[f] = Buffer.from(JSON.stringify(docs[f], null, 2) + '\n'); } else Object.assign(bytes, raw);
+  // Codex's own synthetic delivery manifest (#529 84ab03eb, delivery-manifest.json, sha b758176c…) names these bytes as operating504;
+  // it is used as is for that scope; another scope or an edited file gets a manifest of the same shape naming its bytes.
+  if (scope === 'operating504' && !edit) {
+    bytes['manifest.json'] = fs.readFileSync(path.join(D, 'delivery-manifest.json'));
+    return { files: bytes, manifest: JSON.parse(bytes['manifest.json'].toString('utf8')), docs };
+  }
   const manifest = { schema_version: 'qgv-dual-delivery-manifest/1', data_kind: 'SYNTHETIC', scope, files: FILES.map((f) => ({ path: f, size: bytes[f].length, sha256: sha(bytes[f]) })) };
   bytes['manifest.json'] = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
   return { files: bytes, manifest, docs };
@@ -37,4 +43,16 @@ function coverageContext(scope) {
   return { valuation_date: e.valuation_date, population: { id: e.id, version: e.version, members_hash: e.members_hash, denominator: e.code_rows },
     result_identity: { input_hash: scope === 'operating' ? e.input_hash : b.reference_population.input_hash } };
 }
-module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, sha };
+// A synthetic projection proof (qgv-dual-input-projection-proof/1, the shape of Codex's real input-lineage.json) binding this
+// synthetic evaluation and reference source, for the held1057 scope. Test-made: Codex's synthetic set has no proof file.
+function lineage(edit) {
+  const b = parse('summary.json').boards.U1;
+  const x = { schema_version: 'qgv-dual-input-projection-proof/1', evaluation: b.evaluation_population, reference_source: b.bindings.reference,
+    evaluation_byte_sha256: 'a'.repeat(64), reference_byte_sha256: 'b'.repeat(64), held_financials_byte_sha256: 'c'.repeat(64),
+    selection_rule: 'financials[issuer_id].state != NOT_AVAILABLE', selected_issuer_count: b.evaluation_population.issuers, selected_issuer_members_hash: 'd'.repeat(64),
+    rows_equal_source_projection: true, row_values_or_classification_changed: false, changed_top_level_fields: ['rows', 'members', 'snapshot_id', 'universe_id', 'universe_version'],
+    reference_source_is_not_eligible_whole_market: true, whole_market_denominator: null, new_score_calculations: 0 };
+  if (edit) edit(x);
+  return Buffer.from(JSON.stringify(x, null, 2) + '\n');
+}
+module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, sha };

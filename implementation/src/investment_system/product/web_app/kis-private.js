@@ -38,7 +38,7 @@ const EXPANDED_PARTS=Object.freeze(['expanded_manifest','expanded_index','expand
 const EXPANDED_DETAIL=/^expanded_detail\/([0-9a-f]{2})$/;
 // The dual research delivery (Codex #529, owner 2026-11-11): 'dual_manifest|dual_summary|dual_index/<scope>' and
 // 'dual_detail/<scope>/<3 digits>', each with its bytes (the reader checks them against the delivery manifest).
-const DUAL_PART=/^(dual_manifest|dual_summary|dual_index)\/(operating504|held1057)$/,DUAL_DETAIL=/^dual_detail\/(operating504|held1057)\/(\d{3})$/;
+const DUAL_PART=/^(dual_manifest|dual_summary|dual_index|dual_lineage)\/(operating504|held1057)$/,DUAL_DETAIL=/^dual_detail\/(operating504|held1057)\/(\d{3})$/;
 const dualPart=x=>typeof x==='string'&&(DUAL_PART.test(x)||DUAL_DETAIL.test(x));
 // The expanded summary also comes with its bytes: their SHA-256 is what the held issuer delivery names.
 const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x)||dualPart(x));

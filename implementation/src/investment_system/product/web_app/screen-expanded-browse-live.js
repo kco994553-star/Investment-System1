@@ -129,10 +129,12 @@ function block(anchor){
   const slot=h('div',{dataset:{dualArea:''}});
   const set=(c,t)=>{rs.dataset.dualState=c;rs.textContent=t;};let busy=false;
   const btns=Object.entries(DQ.SCOPES).map(([scope,S])=>{const b=h('button',{type:'button',class:'btn',dataset:{dualOpen:scope}},S.label+' 두 모형 결과 불러오기');
-   b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+S.label+' 목록표·요약·색인 3개 · 서버 요청 간격 5초');
-    let p;try{p=I.prices.kisRead(e,['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]));}catch(err){p=Promise.reject(err);}
-    Promise.resolve(p).then(async([manifest,summary,index])=>{const r=await DQ.checkDelivery({manifest,summary,index},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
-     if(!r.ok){set('ERROR',S.label+' 연구 결과를 쓰지 않음 · '+(r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')
+   // held1057 (평가 입력 = 참조 원천의 투영) also reads the producer's projection proof when staged (OPTIONAL: absent = 평가 입력 미검증).
+   const proof=S.input==='reference',reads=[...['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]),...(proof?[['classification','dual_lineage/'+scope,'OPTIONAL']]:[])];
+   b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+S.label+' 목록표·요약·색인'+(proof?'·투영 증명 ':' ')+reads.length+'개 · 서버 요청 간격 5초');
+    let p;try{p=I.prices.kisRead(e,reads);}catch(err){p=Promise.reject(err);}
+    Promise.resolve(p).then(async([manifest,summary,index,lineage])=>{const r=await DQ.checkDelivery({manifest,summary,index,...(lineage?{lineage}:{})},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
+     if(!r.ok){set('ERROR',S.label+' 연구 결과를 쓰지 않음 · '+(r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':/^LINEAGE_/.test(r.code)?'평가 입력 투영 증명이 이 결과와 맞지 않습니다':'형식 오류')
       +' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');b.disabled=false;return;}
      DQ.ram.set(scope,r.value);b.hidden=true;paint();},
     err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?S.label+' 두 모형 결과가 전달 위치에 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');b.disabled=false;})
@@ -147,7 +149,7 @@ function block(anchor){
     scope==='operating504'?h('p',{class:'meta',dataset:{dualLeaderboard:''}},'2.1 리더보드의 QGV 모형에서 U1·U2·S1을 고를 수 있음(이 결과를 RAM에서 읽음)'):null,
     ...d.models.map(k=>{const v=DQ.boardView(d,k);
      return h('details',{class:'why',dataset:{dualBoard:scope+':'+k}},h('summary',null,v.head,' ▸'),
-      dl(v.states.map(([a,b])=>[a,b]),{dualStates:k}),
+      dl(v.states.map(([a,b])=>[a,b]),{dualStates:scope+':'+k}),
       h('p',{class:'reason',dataset:{dualPopulation:'evaluation'}},v.population),h('p',{class:'reason',dataset:{dualPopulation:'reference'}},v.reference),
       h('p',{class:'meta'},v.kind,' · ',v.classification),
       h('ol',{class:'news-lines',dataset:{dualStages:scope+':'+k}},v.stages.map(x=>h('li',{dataset:{dualStage:x.key}},x.label,' ',h('b',null,x.text)))),

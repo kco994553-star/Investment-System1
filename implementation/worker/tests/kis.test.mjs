@@ -299,7 +299,8 @@ test('classification expanded: only ?part=expanded_detail&shard=<2 lowercase hex
 
 // The dual research delivery (owner 2026-11-11, Codex #529): classification/dual/<scope>/ manifest / summary / index / detail-NNN.
 test('classification dual: each part reads its own file for its scope; the manifest must name the scope asked for', async () => {
-  const FILES = { dual_manifest: ['manifest', 'qgv-dual-delivery-manifest/1'], dual_summary: ['summary', 'qgv-dual-delivery/1'], dual_index: ['index', 'qgv-dual-index/1'] };
+  const FILES = { dual_manifest: ['manifest', 'qgv-dual-delivery-manifest/1'], dual_summary: ['summary', 'qgv-dual-delivery/1'], dual_index: ['index', 'qgv-dual-index/1'],
+    dual_lineage: ['input-lineage', 'qgv-dual-input-projection-proof/1'] };
   for (const scope of ['operating504', 'held1057']) for (const [part, [file, schema]] of Object.entries(FILES)) {
     const text = '{"schema_version":"' + schema + '","scope":"' + scope + '","rows":[]}', s = setup({ github: () => new Response(text, { status: 200 }) });
     const r = await s.run('/kis/classification?part=' + part + '&scope=' + scope);

@@ -137,6 +137,33 @@ test('words: each model on its own, ranks only in their scope, null is 미산출
   assert.ok(DQ.RULES.some((r) => /총점이 없으면 총점 순위도 없음/.test(r)) && !DQ.RULES.join('').includes('TARGET'));
 });
 
+test('held1057 evaluation input: attested only by a matching projection proof; a mismatching proof refuses; none = unverified', async () => {
+  const h = F.delivery('held1057'), lin = (edit) => { const bytes = new Uint8Array(F.lineage(edit)); return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
+  const go = (l, d = h, scope = 'held1057') => DQ.checkDelivery({ ...parts(d), lineage: l }, { scope, anchor: F.anchor(), sha256 });
+  assert.equal((await go(undefined)).value.input_check, 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED');
+  const ok = await go(lin()); assert.equal(ok.ok, true, JSON.stringify(ok)); assert.equal(ok.value.input_check, 'EVALUATION_INPUT_PROJECTION_ATTESTED');
+  assert.match(DQ.boardView(ok.value, 'U1').states[1][1], /생산자 투영 증명과 대조됨/);
+  for (const [code, edit] of [
+    ['LINEAGE_SCHEMA', (x) => { x.schema_version = 'other/1'; }],
+    ['LINEAGE_MISMATCH', (x) => { x.evaluation = { ...x.evaluation, members_hash: 'e'.repeat(64) }; }],
+    ['LINEAGE_MISMATCH', (x) => { x.reference_source = { ...x.reference_source, input_hash: 'e'.repeat(64) }; }],
+    ['LINEAGE_INVALID', (x) => { x.selected_issuer_count = 2; }],
+    ['LINEAGE_INVALID', (x) => { x.row_values_or_classification_changed = true; }],
+    ['LINEAGE_INVALID', (x) => { x.changed_top_level_fields.push('classification'); }],
+    ['LINEAGE_INVALID', (x) => { x.whole_market_denominator = 8004; }],
+    ['LINEAGE_INVALID', (x) => { x.new_score_calculations = 1; }]]) assert.equal((await go(lin(edit))).code, code, code);
+  assert.equal((await go(lin(), F.delivery('operating504'), 'operating504')).code, 'LINEAGE_NOT_APPLICABLE', 'operating504 needs no proof and takes none');
+});
+
+test('preset fields: present on every row with a preset, absent exactly on MAPPING_UNRESOLVED; never optional', async () => {
+  const d = F.delivery('operating504'), v = (await check(d)).value;
+  const mut = async (f) => { const x = F.parse('detail-000.json'); f(x); const bytes = Buffer.from(JSON.stringify(x));
+    const e = { ...v.entries, 'detail-000.json': { path: 'detail-000.json', size: bytes.length, sha256: crypto.createHash('sha256').update(bytes).digest('hex') } };
+    return (await DQ.checkDetail({ bytes: new Uint8Array(bytes), body: x }, 'detail-000.json', { ...v, entries: e }, sha256)).code; };
+  assert.equal(await mut((x) => { delete x.rows[0].boards.U1.nominal_axis_weights; }), 'PRESET_FIELD_MISSING');
+  assert.equal(await mut((x) => { delete x.rows[1].boards.S1.missing_factors; }), 'PRESET_FIELD_MISSING');
+});
+
 test('RAM: only a checked delivery of that scope; a drop tells the screens', async () => {
   const ram = DQ.ramStore(), v = (await check(F.delivery('operating504'))).value; let told = 0; const un = ram.subscribe(() => { told++; });
   assert.throws(() => ram.set('operating504', { scope: 'operating504', models: ['U1'], rows: [] }), /DUAL_UNCHECKED/);

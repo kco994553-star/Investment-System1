@@ -138,3 +138,70 @@ def test_public_data_dir_and_unknown_scope_are_refused(tmp_path):
         tool.stage(delivery, 'operating504', pin, ROOT)
     with pytest.raises(tool.StageError, match='^SCOPE_UNKNOWN$'):
         tool.check(delivery, 'market', pin, data)
+
+
+def _lineage(tmp_path, delivery, edit=None):
+    b = json.loads((delivery / 'summary.json').read_bytes())['boards']['U1']
+    x = {'schema_version': 'qgv-dual-input-projection-proof/1', 'evaluation': b['evaluation_population'], 'reference_source': b['bindings']['reference'],
+         'evaluation_byte_sha256': 'a' * 64, 'reference_byte_sha256': 'b' * 64, 'held_financials_byte_sha256': 'c' * 64,
+         'selection_rule': 'financials[issuer_id].state != NOT_AVAILABLE', 'selected_issuer_count': b['evaluation_population']['issuers'],
+         'selected_issuer_members_hash': 'd' * 64, 'rows_equal_source_projection': True, 'row_values_or_classification_changed': False,
+         'changed_top_level_fields': ['members', 'rows', 'snapshot_id', 'universe_id', 'universe_version'],
+         'reference_source_is_not_eligible_whole_market': True, 'whole_market_denominator': None, 'new_score_calculations': 0}
+    if edit:
+        edit(x)
+    path = tmp_path / 'input-lineage.json'
+    path.write_bytes((json.dumps(x, indent=2) + '\n').encode())
+    return path, _sha(path.read_bytes())
+
+
+def test_held_projection_proof_is_staged_beside_the_delivery_and_attests_the_evaluation_input(tmp_path, capsys):
+    delivery, data, pin = _setup(tmp_path, 'held1057')
+    lin, lpin = _lineage(tmp_path, delivery)
+    assert tool.main(['--delivery', str(delivery), '--scope', 'held1057', '--manifest-sha256', pin, '--data-dir', str(data),
+                      '--input-lineage', str(lin), '--input-lineage-sha256', lpin]) == 0
+    out = data / 'classification' / 'dual' / 'held1057'
+    assert sorted(p.name for p in out.iterdir()) == sorted(FILES + ('manifest.json', 'input-lineage.json'))
+    assert (out / 'input-lineage.json').read_bytes() == lin.read_bytes()
+    line = capsys.readouterr().out
+    assert ' lineage sha256=' + lpin + ' ' in line and line.rstrip().endswith('input_check=EVALUATION_INPUT_PROJECTION_ATTESTED')
+
+
+@pytest.mark.parametrize('kind, code', [
+    ('pin', 'LINEAGE_PIN_MISMATCH'),
+    ('no_pin', 'LINEAGE_PIN_REQUIRED'),
+    ('schema', 'LINEAGE_SCHEMA'),
+    ('evaluation', 'LINEAGE_MISMATCH'),
+    ('reference', 'LINEAGE_MISMATCH'),
+    ('count', 'LINEAGE_INVALID'),
+    ('changed_rows', 'LINEAGE_INVALID'),
+    ('fields', 'LINEAGE_INVALID'),
+    ('whole_market', 'LINEAGE_INVALID'),
+    ('whole_market_absent', 'LINEAGE_INVALID'),
+    ('scores', 'LINEAGE_INVALID'),
+    ('operating', 'LINEAGE_NOT_APPLICABLE'),
+])
+def test_projection_proof_refusals_keep_the_existing_copy(tmp_path, kind, code):
+    scope = 'operating504' if kind == 'operating' else 'held1057'
+    delivery, data, pin = _setup(tmp_path, scope)
+    edits = {'schema': lambda x: x.update(schema_version='other/1'),
+             'evaluation': lambda x: x['evaluation'].update(members_hash='e' * 64),
+             'reference': lambda x: x['reference_source'].update(input_hash='e' * 64),
+             'count': lambda x: x.update(selected_issuer_count=2),
+             'changed_rows': lambda x: x.update(row_values_or_classification_changed=True),
+             'fields': lambda x: x['changed_top_level_fields'].append('classification'),
+             'whole_market': lambda x: x.update(whole_market_denominator=8004),
+             'whole_market_absent': lambda x: x.pop('whole_market_denominator'),
+             'scores': lambda x: x.update(new_score_calculations=1)}
+    lin, lpin = _lineage(tmp_path, delivery, edits.get(kind))
+    if kind == 'pin':
+        lpin = 'c' * 64
+    elif kind == 'no_pin':
+        lpin = None
+    old = data / 'classification' / 'dual' / scope
+    old.mkdir(parents=True)
+    (old / 'kept.json').write_text('{}')
+    with pytest.raises(tool.StageError) as error:
+        tool.stage(delivery, scope, pin, data, lin, lpin)
+    assert str(error.value) == code
+    assert sorted(p.name for p in old.iterdir()) == ['kept.json']

@@ -7,7 +7,8 @@ The private Worker serves /kis/classification?part=dual_manifest|dual_summary|du
 re-serializes nothing and fetches nothing.
 
   python implementation/tools/stage_private_dual_qgv.py --delivery <delivery/<scope> dir> --scope operating504|held1057 \
-      --manifest-sha256 <that manifest's SHA-256 as the pinned handoff manifest names it> --data-dir <private data branch checkout>
+      --manifest-sha256 <that manifest's SHA-256 as the pinned handoff manifest names it> --data-dir <private data branch checkout> \
+      [--input-lineage <input-lineage.json> --input-lineage-sha256 <its SHA-256 as the pinned handoff manifest names it>]   (held1057 only)
 
 Checks, all before anything is written:
 - manifest.json's own SHA-256 equals --manifest-sha256 (the pin; the files' own hashes alone prove nothing), its schema is
@@ -19,7 +20,13 @@ Checks, all before anything is written:
 - the evaluation population is the result already staged in classification/expanded/coverage.json: the coverage scope (operating
   for operating504, held_financial_subsample for held1057) with the same population id / version / members hash / denominator and
   evaluation day, and the same input hash (operating504: the evaluation input; held1057: the reference source input);
-- --data-dir is outside this public repository.
+- --data-dir is outside this public repository;
+- held1057 only, with --input-lineage: the producer's projection proof (qgv-dual-input-projection-proof/1, Codex 2026-11-11) has
+  the pinned SHA-256 and names exactly this delivery: its evaluation is every board's evaluation population, its reference source is
+  every board's reference binding (same input hash as the reference population), it selects evaluation.issuers issuers, changes no
+  row value or classification and only the projection fields, and claims no whole-market denominator and no new score. It is then
+  staged beside the delivery as input-lineage.json and the evaluation input is reported ATTESTED (by the producer's proof; nothing
+  here recomputes the projection). Without it, held1057 stays REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED.
 classification/dual/<scope>/ is replaced whole or not at all; on any failure the existing copy stays. A later restage of
 classification/ (stage_private_classification.py) replaces the directory whole, so this delivery is staged again after it.
 Output: one line with counts, sizes and hashes (no content).
@@ -41,6 +48,11 @@ MODELS = {'U1': 'unified-roa-core/0.1.0', 'U2': 'unified-sales-core/0.1.0', 'S1'
 # operating504's evaluation input is the staged result's own input; held1057 is tied by its reference source input only, so its
 # evaluation input is reported UNVERIFIED (owner 2026-11-11 §2) until the producer gives the evaluation input's derivation.
 INPUT_CHECK = {'evaluation': 'EVALUATION_INPUT_MATCHED', 'reference': 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'}
+ATTESTED = 'EVALUATION_INPUT_PROJECTION_ATTESTED'
+LINEAGE_SCHEMA = 'qgv-dual-input-projection-proof/1'
+LINEAGE_FILE = 'input-lineage.json'
+PROJECTION_FIELDS = ['members', 'rows', 'snapshot_id', 'universe_id', 'universe_version']
+HEX = re.compile(r'^[0-9a-f]{64}$')
 FILE = re.compile(r'^(summary|index)\.json$|^detail-\d{3}\.json$')
 
 
@@ -139,12 +151,49 @@ def check(delivery: Path, scope: str, pin: str, data_dir: Path) -> tuple:
     return files, manifest, summary
 
 
-def stage(delivery: Path, scope: str, pin: str, data_dir: Path) -> tuple:
+def check_lineage(path: Path, pin: str, scope: str, summary: dict) -> bytes:
+    if SCOPES[scope][1] != 'reference':
+        raise StageError('LINEAGE_NOT_APPLICABLE')
+    _pin(pin, 'LINEAGE_PIN_INVALID')
+    if path.is_symlink() or not path.is_file():
+        raise StageError('LINEAGE_MISSING')
+    data = path.read_bytes()
+    if len(data) > MAX_BYTES:
+        raise StageError('FILE_TOO_LARGE:' + LINEAGE_FILE)
+    if hashlib.sha256(data).hexdigest() != pin:
+        raise StageError('LINEAGE_PIN_MISMATCH')
+    x = _json(data, LINEAGE_FILE)
+    if not isinstance(x, dict) or x.get('schema_version') != LINEAGE_SCHEMA:
+        raise StageError('LINEAGE_SCHEMA')
+    for b in summary['boards'].values():
+        reference = (b.get('bindings') or {}).get('reference')
+        if x.get('evaluation') != b.get('evaluation_population') or x.get('reference_source') != reference:
+            raise StageError('LINEAGE_MISMATCH')
+        if not isinstance(reference, dict) or reference.get('input_hash') != (b.get('reference_population') or {}).get('input_hash'):
+            raise StageError('LINEAGE_MISMATCH')
+    ev = next(iter(summary['boards'].values()))['evaluation_population']
+    count = x.get('selected_issuer_count')
+    if (type(count) is not int or count != ev.get('issuers') or not HEX.match(str(x.get('selected_issuer_members_hash')))
+            or not isinstance(x.get('selection_rule'), str) or not x['selection_rule']
+            or x.get('rows_equal_source_projection') is not True or x.get('row_values_or_classification_changed') is not False
+            or not isinstance(x.get('changed_top_level_fields'), list) or sorted(map(str, x['changed_top_level_fields'])) != PROJECTION_FIELDS
+            or len(x['changed_top_level_fields']) != len(PROJECTION_FIELDS)
+            or x.get('whole_market_denominator', 0) is not None or x.get('reference_source_is_not_eligible_whole_market') is not True
+            or type(x.get('new_score_calculations')) is not int or x['new_score_calculations'] != 0):
+        raise StageError('LINEAGE_INVALID')
+    return data
+
+
+def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None) -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
     if not (data_dir / 'classification').is_dir():
         raise StageError('CLASSIFICATION_NOT_STAGED')
+    if (lineage is None) != (lineage_pin is None):
+        raise StageError('LINEAGE_PIN_REQUIRED')
     files, manifest, summary = check(delivery, scope, pin, data_dir)
+    if lineage is not None:
+        files = {**files, LINEAGE_FILE: check_lineage(lineage, lineage_pin, scope, summary)}
     target = data_dir / 'classification' / 'dual' / scope
     fresh, old = target.with_name(scope + '.staging'), target.with_name(scope + '.previous')
     for leftover in (fresh, old):
@@ -177,9 +226,11 @@ def main(argv=None) -> int:
     parser.add_argument('--scope', required=True, choices=sorted(SCOPES))
     parser.add_argument('--manifest-sha256', required=True)
     parser.add_argument('--data-dir', required=True, type=Path)
+    parser.add_argument('--input-lineage', type=Path)
+    parser.add_argument('--input-lineage-sha256')
     args = parser.parse_args(argv)
     try:
-        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir)
+        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir, args.input_lineage, args.input_lineage_sha256)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_QGV refused=' + str(error))
         return 1
@@ -187,8 +238,9 @@ def main(argv=None) -> int:
     print('STAGE_PRIVATE_DUAL_QGV scope=' + args.scope + ' manifest sha256=' + hashlib.sha256(files['manifest.json']).hexdigest()
           + ' models=' + ','.join(summary['boards']) + ' code_rows=' + str(ev['code_rows']) + ' issuers=' + str(ev['issuers'])
           + ' details=' + str(sum(1 for k in files if k.startswith('detail-'))) + ' files=' + str(len(files))
+          + (' lineage sha256=' + hashlib.sha256(files[LINEAGE_FILE]).hexdigest() if LINEAGE_FILE in files else '')
           + ' bytes=' + str(sum(len(v) for v in files.values())) + ' max_file_bytes=' + str(max(len(v) for v in files.values()))
-          + ' kind=' + manifest['data_kind'] + ' input_check=' + INPUT_CHECK[SCOPES[args.scope][1]])
+          + ' kind=' + manifest['data_kind'] + ' input_check=' + (ATTESTED if LINEAGE_FILE in files else INPUT_CHECK[SCOPES[args.scope][1]]))
     return 0
 
 
