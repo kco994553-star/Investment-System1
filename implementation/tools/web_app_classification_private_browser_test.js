@@ -72,8 +72,9 @@ const DUAL_FILE = { dual_manifest: 'manifest.json', dual_summary: 'summary.json'
 // held1057's producer projection proof (qgv-dual-input-projection-proof/1), a synthetic one binding this delivery (test-made).
 DUAL.files['input-lineage.json'] = DF.lineage();
 // Codex's synthetic factor leaders companion, re-pointed at this held1057 delivery's manifest (test-made).
-const LEADERS = DF.leaders(DUAL).files;
-const LEADER_FILE = { dual_leaders_manifest: 'factor-leaders-manifest.json', dual_leaders_index: 'factor-leaders.json' };
+const LEADERS_SET = DF.leaders(DUAL), LEADERS = { ...LEADERS_SET.files, ...DF.selection(LEADERS_SET).files };
+const LEADER_FILE = { dual_leaders_manifest: 'factor-leaders-manifest.json', dual_leaders_index: 'factor-leaders.json',
+  dual_leaders_selection_manifest: 'factor-leaders-selection-manifest.json', dual_leaders_selection: 'factor-leaders-selection.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
   coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
@@ -409,13 +410,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.equal(w.log.length, c1, phase + ': the cached detail is not read again');
         // 개별 요소 상위권: not staged → 배치 전 (the results stay); then two reads (manifest, index), a model and a factor by keyboard,
         // 보기 = one shard read, the stored ranks in order; the shard is cached; a companion of another delivery is refused.
-        for (const k of Object.keys(LEADER_FILE)) w.answers[k + '/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+        for (const k of ['dual_leaders_manifest', 'dual_leaders_index']) w.answers[k + '/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
         await page.waitForTimeout(5200);
         await page.locator('[data-dual-leaders-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-leaders-state=ERROR]').waitFor({ timeout: 30000 });
         assert.match(await text(page, '[data-dual-leaders-state]'), /^요소 상위권 파일이 전달 위치에 없습니다\(배치 전\) · 위 결과는 그대로$/);
         const otherLeaders = DF.leaders(DF.delivery('held1057', () => {})).files;
-        for (const [k, f] of Object.entries(LEADER_FILE)) w.answers[k + '/held1057'] = () => ({ status: 200, text: otherLeaders[f].toString('utf8') });
+        for (const [k, f] of Object.entries(LEADER_FILE)) if (otherLeaders[f]) w.answers[k + '/held1057'] = () => ({ status: 200, text: otherLeaders[f].toString('utf8') });
         await page.waitForTimeout(5200);
         await page.locator('[data-dual-leaders-open=held1057]').click();
         await page.waitForFunction(() => { const e = document.querySelector('[data-dual-leaders-state]'); return e && /LEADERS_SOURCE_MISMATCH/.test(e.textContent); }, null, { timeout: 30000 });
@@ -424,8 +425,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.waitForTimeout(5200);
         const l0 = w.log.length; await page.locator('[data-dual-leaders-open=held1057]').click();
         await page.locator('[data-dual-leaders-model=held1057]').waitFor({ timeout: 30000 });
-        assert.deepEqual(w.log.slice(l0).map((x) => x.path), ['manifest', 'index'].map((p) => '/kis/classification?part=dual_leaders_' + p + '&scope=held1057'), phase + ': two leaders reads');
-        assert.match(await text(page, '[data-dual-leaders] [data-dual-leaders-state=READY]'), /요소 묶음 153개\(유효 0인 요소 포함 · 기업 수 아님\)/);
+        assert.deepEqual(w.log.slice(l0).map((x) => x.path), ['manifest', 'index', 'selection_manifest', 'selection'].map((p) => '/kis/classification?part=dual_leaders_' + p + '&scope=held1057'), phase + ': leaders reads (selection optional)');
+        assert.match(await text(page, '[data-dual-leaders] [data-dual-leaders-state=READY]'), /목록표·색인 검증됨 · 선택 계약 검증됨 · 요소 묶음 153개\(유효 0인 요소 포함 · 기업 수 아님\)/);
         assert.equal(await page.locator('[data-dual-leaders-show=held1057]').isDisabled(), true, phase + ': nothing chosen, nothing to show');
         await page.locator('[data-dual-leaders-model=held1057]').selectOption('S1');
         const lg = JSON.parse(LEADERS['factor-leaders-000.json'].toString('utf8')).groups.find((g) => g.board === 'S1' && g.leaders.length === 3);
@@ -436,6 +437,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.deepEqual(w.log.slice(l1).map((x) => x.path), ['/kis/classification?part=dual_leaders_detail&scope=held1057&shard=000'], phase + ': one shard read');
         assert.deepEqual(await page.locator('[data-dual-leader]').evaluateAll((e) => e.map((x) => x.dataset.dualLeader)), lg.leaders.map((x) => x.company_id), phase + ': the stored order');
         assert.match(await text(page, '[data-dual-leaders-d10]'), /^평가 유효 3개 < 10 · 십분위 계산 안 함$/);
+        assert.equal(await page.locator('[data-dual-leaders-selection=MATCHED]').count(), 1, phase + ': the selection contract agrees with the shard');
         const l2 = w.log.length; await page.locator('[data-dual-leaders-show=held1057]').click();
         await page.locator('[data-dual-leaders-table="' + lg.group_id + '"]').waitFor();
         assert.equal(w.log.length, l2, phase + ': the cached shard is not read again');

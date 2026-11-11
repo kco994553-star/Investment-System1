@@ -222,6 +222,33 @@ test('factor leaders: Codex\'s synthetic companion reads for its own delivery on
   assert.equal(DQ.leaderView(valid).d10, '저장된 D10 25개(순위 1–25) · 이 목록 20개 · D10 일부만(상위 20개 표시 한도)');
 });
 
+test('selection contract: Codex\'s synthetic chain checks; it pins these leaders; top N and the stored D10 stay apart', async () => {
+  const lp = (X, f) => { const bytes = new Uint8Array(X.files[f]); return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
+  const d = F.delivery('operating504'), v = (await check(d)).value, L = F.leaders(d);
+  const lv = (await DQ.checkLeaders({ manifest: lp(L, 'factor-leaders-manifest.json'), index: lp(L, 'factor-leaders.json') }, v, sha256)).value;
+  const sel = (S, leaders = lv) => DQ.checkSelection({ manifest: lp(S, 'factor-leaders-selection-manifest.json'), body: lp(S, 'factor-leaders-selection.json') }, leaders, sha256);
+  const r = await sel(F.selection(L)); assert.equal(r.ok, true, JSON.stringify(r)); assert.equal(r.value.groups.size, 153);
+  const shard = (await DQ.checkLeaderShard(lp(L, 'factor-leaders-000.json'), 'factor-leaders-000.json', lv, sha256)).value;
+  for (const g of shard.values()) assert.equal(DQ.selectionMatchesShard(r.value.groups.get(g.group_id), g), true, g.group_id);
+  const g = [...shard.values()].find((x) => x.leaders.length > 1);
+  assert.match(DQ.leaderView(g, { selection: r.value.groups.get(g.group_id) }).sel, /^생산자 선택 계약과 대조됨/);
+  assert.match(DQ.leaderView(g).sel, /^생산자 선택 계약 없음/);
+  // Not these leaders, not a projection, a group that is not the leaders', a top-10 % that breaks the contract rule.
+  const h = F.delivery('held1057'), hv = (await check(h)).value, HL = F.leaders(h);
+  const hlv = (await DQ.checkLeaders({ manifest: lp(HL, 'factor-leaders-manifest.json'), index: lp(HL, 'factor-leaders.json') }, hv, sha256)).value;
+  assert.equal((await sel(F.selection(L), hlv)).code, 'SCOPE_MISMATCH');
+  assert.equal((await sel(F.selection(HL), hlv)).ok, true, 're-pointed at held1057 leaders');
+  assert.equal((await sel(F.selection(L, (x) => { x.rank_recalculated = true; }))).code, 'NOT_PROJECTION');
+  assert.equal((await sel(F.selection(L, (x) => { x.groups.pop(); }))).code, 'GROUPS_MISMATCH');
+  assert.equal((await sel(F.selection(L, (x) => { x.groups[0].evaluation_valid_n += 1; }))).code, 'GROUP_CONTEXT');
+  assert.equal((await sel(F.selection(L, (x) => { x.groups[0].top_10_percent.status = 'VALID'; }))).code, 'DECILE_STATUS');
+  assert.equal((await sel(F.selection(L, (x) => { x.groups[0].top_10_percent.complete_in_top_n = true; }))).code, 'TOP_DECILE_BOUNDARY');
+  assert.equal((await sel(F.selection(L, (x) => { x.source_delivery_manifest_sha256 = 'a'.repeat(64); }))).code, 'SELECTION_SOURCE_MISMATCH');
+  // A selection entry that disagrees with the loaded shard is shown as a disagreement, never as the list.
+  const e = JSON.parse(JSON.stringify(r.value.groups.get(g.group_id))); e.top_n.returned_n += 1;
+  assert.equal(DQ.selectionMatchesShard(e, g), false); assert.equal(DQ.leaderView(g, { selection: e }).selectionOk, false);
+});
+
 test('RAM: only a checked delivery of that scope; a drop tells the screens', async () => {
   const ram = DQ.ramStore(), v = (await check(F.delivery('operating504'))).value; let told = 0; const un = ram.subscribe(() => { told++; });
   assert.throws(() => ram.set('operating504', { scope: 'operating504', models: ['U1'], rows: [] }), /DUAL_UNCHECKED/);

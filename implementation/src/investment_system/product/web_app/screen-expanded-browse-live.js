@@ -164,13 +164,17 @@ function block(anchor){
   // stored ranks 1..min(N, 20) of one model × ranking scope × factor, as delivered; nothing re-sorted, merged or filled.
   function leadersBlock(scope){const area=h('div',{class:'cc-wrap',dataset:{dualLeaders:scope}});
    const draw=()=>{const held=DQ.ram.get(scope);if(!held)return;const L=LEAD.get(held);
-    if(!L){const b=h('button',{type:'button',class:'btn',dataset:{dualLeadersOpen:scope}},'개별 요소 상위권 불러오기 (목록표·색인 2개)');
+    if(!L){const b=h('button',{type:'button',class:'btn',dataset:{dualLeadersOpen:scope}},'개별 요소 상위권 불러오기 (목록표·색인 + 선택 계약)');
      const st=h('p',{class:'reason',role:'status',dataset:{dualLeadersState:'IDLE'}},'저장된 요소 순위의 앞부분(최대 20개)만 · 다시 정렬하지 않음');
-     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualLeadersState='LOADING';st.textContent='불러오는 중 · 요소 상위권 목록표·색인 2개 · 서버 요청 간격 5초';
-      let p;try{p=I.prices.kisRead(e,[['classification','dual_leaders_manifest/'+scope],['classification','dual_leaders_index/'+scope]]);}catch(err){p=Promise.reject(err);}
-      Promise.resolve(p).then(async([manifest,index])=>{const r=await DQ.checkLeaders({manifest,index},held.delivery,E().sha256);
-       if(!r.ok){st.dataset.dualLeadersState='ERROR';st.textContent='요소 상위권을 쓰지 않음 · '+(r.code==='LEADERS_SOURCE_MISMATCH'||r.code==='LEADERS_BOARD_MISMATCH'?'이 연구 결과가 아닌 다른 전달본의 순위입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
-       LEAD.set(held,{value:r.value,shards:new Map(),board:null,group:null});draw();},
+     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualLeadersState='LOADING';st.textContent='불러오는 중 · 요소 상위권 목록표·색인·선택 계약 4개(선택 계약은 없으면 없음) · 서버 요청 간격 5초';
+      let p;try{p=I.prices.kisRead(e,[['classification','dual_leaders_manifest/'+scope],['classification','dual_leaders_index/'+scope],
+       ['classification','dual_leaders_selection_manifest/'+scope,'OPTIONAL'],['classification','dual_leaders_selection/'+scope,'OPTIONAL']]);}catch(err){p=Promise.reject(err);}
+      Promise.resolve(p).then(async([manifest,index,selManifest,selBody])=>{let r=await DQ.checkLeaders({manifest,index},held.delivery,E().sha256),sel=null;
+       // The selection contract is optional, but one that is delivered must check: half of it, or one that disagrees, refuses the click.
+       if(r.ok&&(selManifest||selBody)){const q=selManifest&&selBody?await DQ.checkSelection({manifest:selManifest,body:selBody},r.value,E().sha256):{ok:false,code:'SELECTION_INCOMPLETE',path:'selection'};
+        if(q.ok)sel=q.value;else r=q;}
+       if(!r.ok){st.dataset.dualLeadersState='ERROR';st.textContent='요소 상위권을 쓰지 않음 · '+(r.code==='LEADERS_SOURCE_MISMATCH'||r.code==='LEADERS_BOARD_MISMATCH'||r.code==='SELECTION_SOURCE_MISMATCH'?'이 연구 결과가 아닌 다른 전달본의 순위입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
+       LEAD.set(held,{value:r.value,selection:sel,shards:new Map(),board:null,group:null});draw();},
       err=>{const c=codeOf(err);st.dataset.dualLeadersState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'요소 상위권 파일이 전달 위치에 없습니다(배치 전)':say(c))+' · 위 결과는 그대로';b.disabled=false;})
       .finally(()=>{busy=false;});});
      area.replaceChildren(h('h5',null,'개별 요소 상위권'),b,st);return;}
@@ -184,8 +188,10 @@ function block(anchor){
     gSel.addEventListener('change',()=>{L.group=gSel.value||null;draw();});
     const show=h('button',{type:'button',class:'btn',disabled:!L.group,dataset:{dualLeadersShow:scope}},'보기');
     const out=h('div',{dataset:{dualLeadersOut:scope}});
-    const render=g=>{const v=DQ.leaderView(g,{sectorName});const th=t=>h('th',{scope:'col'},t);
-     out.replaceChildren(h('p',{class:'hand',dataset:{dualLeadersHead:g.group_id}},M[g.board].label,' · ',v.head),h('p',{class:'meta'},v.counts),h('p',{class:'reason',dataset:{dualLeadersD10:''}},v.d10),
+    const render=g=>{const v=DQ.leaderView(g,{sectorName,selection:L.selection?L.selection.groups.get(g.group_id):null});const th=t=>h('th',{scope:'col'},t);
+     const selLine=h('p',{class:v.selectionOk?'meta':'hand err',dataset:{dualLeadersSelection:v.selectionOk?(L.selection?'MATCHED':'NONE'):'MISMATCH'}},v.sel);
+     if(!v.selectionOk){out.replaceChildren(selLine);return;}
+     out.replaceChildren(h('p',{class:'hand',dataset:{dualLeadersHead:g.group_id}},M[g.board].label,' · ',v.head),h('p',{class:'meta'},v.counts),h('p',{class:'reason',dataset:{dualLeadersD10:''}},v.d10),selLine,
       v.rows.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{dualLeadersTable:g.group_id}},h('caption',null,'저장된 순위 그대로 · 같은 모형·범위·요소 안에서만 비교'),
        h('thead',null,h('tr',null,th('순위'),th('기업'),th('요소 점수'),th('십분위'),th('구분'))),
        h('tbody',null,...v.rows.map(r=>h('tr',{dataset:{dualLeader:r.company_id}},h('td',null,r.rank),h('td',null,r.company_id),h('td',null,r.score),h('td',null,r.decile),h('td',null,r.kind))))))
@@ -198,7 +204,7 @@ function block(anchor){
       if(!r.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'ERROR'}},'이 순위 파일을 쓰지 않음 · '+r.code+' · '+r.path));return;}
       L.shards.set(g.file,r.value);if(L.group===g.group_id)render(r.value.get(g.group_id));},
      err=>{out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'ERROR'}},'연결 오류 · '+say(codeOf(err))));}).finally(()=>{busy=false;show.disabled=!L.group;});});
-    area.replaceChildren(h('h5',null,'개별 요소 상위권'),h('p',{class:'meta',dataset:{dualLeadersState:'READY'}},'목록표·색인 검증됨 · 요소 묶음 ',String(L.value.groups.length),'개(유효 0인 요소 포함 · 기업 수 아님) · 저장된 순위의 앞부분만'),
+    area.replaceChildren(h('h5',null,'개별 요소 상위권'),h('p',{class:'meta',dataset:{dualLeadersState:'READY'}},'목록표·색인 검증됨',L.selection?' · 선택 계약 검증됨':' · 선택 계약 없음',' · 요소 묶음 ',String(L.value.groups.length),'개(유효 0인 요소 포함 · 기업 수 아님) · 저장된 순위의 앞부분만'),
      h('div',{class:'sort-row'},h('label',{for:mid},'모형'),mSel),h('div',{class:'sort-row'},h('label',{for:gid},'요소'),gSel),h('div',{class:'load-row'},show),out);
     const g=L.group&&L.shards.size?L.value.groups.find(x=>x.group_id===L.group):null;if(g&&L.shards.has(g.file))render(L.shards.get(g.file).get(g.group_id));};
    draw();return area;}

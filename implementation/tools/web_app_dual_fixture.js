@@ -74,4 +74,18 @@ function leaders(d, edit) {
   files['factor-leaders-manifest.json'] = Buffer.from(JSON.stringify(m, null, 2) + '\n');
   return { files };
 }
-module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, sha };
+// Codex's synthetic selection contract (dual-leader-selection-synthetic, pinning Codex's synthetic leaders manifest). Unedited when the
+// leaders are Codex's own; else re-pointed at those leaders' manifest and delivery (test-made); edit(body) changes it first.
+const SD = path.join(D, '..', 'dual-leader-selection-synthetic');
+function selection(L, edit) {
+  const rawM = fs.readFileSync(path.join(SD, 'factor-leaders-selection-manifest.json')), rawB = fs.readFileSync(path.join(SD, 'factor-leaders-selection.json'));
+  const m0 = JSON.parse(rawM.toString('utf8')), src = sha(L.files['factor-leaders-manifest.json']), index = JSON.parse(L.files['factor-leaders.json'].toString('utf8'));
+  if (!edit && src === m0.source_leaders_manifest_sha256) return { files: { 'factor-leaders-selection-manifest.json': rawM, 'factor-leaders-selection.json': rawB } };
+  const body = JSON.parse(rawB.toString('utf8'));
+  Object.assign(body, { scope: index.scope, data_kind: index.data_kind, source_leaders_manifest_sha256: src, source_delivery_manifest_sha256: index.source_delivery_manifest_sha256 });
+  if (edit) edit(body);
+  const b = Buffer.from(JSON.stringify(body, null, 2) + '\n');
+  const m = { schema_version: m0.schema_version, scope: index.scope, data_kind: index.data_kind, source_leaders_manifest_sha256: src, files: [{ path: 'factor-leaders-selection.json', size: b.length, sha256: sha(b) }] };
+  return { files: { 'factor-leaders-selection-manifest.json': Buffer.from(JSON.stringify(m, null, 2) + '\n'), 'factor-leaders-selection.json': b } };
+}
+module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha };

@@ -320,7 +320,8 @@ test('classification dual: each part reads its own file for its scope; the manif
 });
 
 test('classification dual leaders: the companion reads classification/dual/<scope>/leaders/; manifest and index name the scope', async () => {
-  for (const [part, file, schema] of [['dual_leaders_manifest', 'factor-leaders-manifest', 'qgv-dual-factor-leaders-manifest/1'], ['dual_leaders_index', 'factor-leaders', 'qgv-dual-factor-leaders/1']]) {
+  for (const [part, file, schema] of [['dual_leaders_manifest', 'factor-leaders-manifest', 'qgv-dual-factor-leaders-manifest/1'], ['dual_leaders_index', 'factor-leaders', 'qgv-dual-factor-leaders/1'],
+    ['dual_leaders_selection_manifest', 'factor-leaders-selection-manifest', 'qgv-dual-factor-leaders-selection-manifest/1'], ['dual_leaders_selection', 'factor-leaders-selection', 'qgv-dual-factor-leaders-selection/1']]) {
     for (const scope of ['operating504', 'held1057']) {
       const s = setup({ github: () => new Response(JSON.stringify({ schema_version: schema, scope }), { status: 200 }) });
       assert.equal((await s.run('/kis/classification?part=' + part + '&scope=' + scope)).status, 200, part + ' ' + scope);

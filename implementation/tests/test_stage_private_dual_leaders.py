@@ -124,3 +124,73 @@ def test_public_data_dir_is_refused(tmp_path):
     leaders, data, pin = _setup(tmp_path)
     with pytest.raises(tool.StageError, match='^DATA_DIR_INSIDE_PUBLIC_REPOSITORY$'):
         tool.stage(leaders, 'operating504', pin, ROOT)
+
+
+SEL = ('factor-leaders-selection-manifest.json', 'factor-leaders-selection.json')
+
+
+def _selection(tmp_path, edit=None, manifest_edit=None):
+    sel = tmp_path / 'selection'
+    sel.mkdir()
+    docs = {n: (SYN / 'dual-leader-selection-synthetic' / n).read_bytes() for n in SEL}
+    if edit:
+        body = json.loads(docs[SEL[1]])
+        edit(body)
+        docs[SEL[1]] = (json.dumps(body, indent=2) + '\n').encode()
+        m = json.loads(docs[SEL[0]])
+        m['files'] = [{'path': SEL[1], 'size': len(docs[SEL[1]]), 'sha256': _sha(docs[SEL[1]])}]
+        docs[SEL[0]] = (json.dumps(m, indent=2) + '\n').encode()
+    if manifest_edit:
+        m = json.loads(docs[SEL[0]])
+        manifest_edit(m)
+        docs[SEL[0]] = (json.dumps(m, indent=2) + '\n').encode()
+    for n, b in docs.items():
+        (sel / n).write_bytes(b)
+    return sel, _sha(docs[SEL[0]])
+
+
+def test_codex_synthetic_selection_is_staged_with_its_leaders(tmp_path, capsys):
+    leaders, data, pin = _setup(tmp_path)
+    sel, spin = _selection(tmp_path)
+    assert spin == _sha((SYN / 'dual-leader-selection-synthetic' / SEL[0]).read_bytes()), 'unedited Codex bytes'
+    assert tool.main(['--leaders', str(leaders), '--scope', 'operating504', '--manifest-sha256', pin, '--data-dir', str(data),
+                      '--selection', str(sel), '--selection-manifest-sha256', spin]) == 0
+    out = data / 'classification' / 'dual' / 'operating504' / 'leaders'
+    assert sorted(p.name for p in out.iterdir()) == sorted(LEADERS + SEL)
+    assert ' selection manifest sha256=' + spin in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('kind, code', [
+    ('pin', 'SELECTION_PIN_MISMATCH'),
+    ('no_pin', 'SELECTION_PIN_REQUIRED'),
+    ('other_leaders', 'SELECTION_SOURCE_MISMATCH'),
+    ('extra_file', 'SELECTION_FILE_SET_MISMATCH'),
+    ('recalculated', 'SELECTION_NOT_PROJECTION'),
+    ('groups', 'SELECTION_GROUPS_MISMATCH'),
+])
+def test_selection_refusals_keep_the_existing_copy(tmp_path, kind, code):
+    leaders, data, pin = _setup(tmp_path)
+    edit = manifest_edit = None
+    if kind == 'recalculated':
+        def edit(x):
+            x['rank_recalculated'] = True
+    elif kind == 'groups':
+        def edit(x):
+            x['groups'].pop()
+    elif kind == 'other_leaders':
+        def manifest_edit(m):
+            m['source_leaders_manifest_sha256'] = 'b' * 64
+    sel, spin = _selection(tmp_path, edit, manifest_edit)
+    if kind == 'pin':
+        spin = 'c' * 64
+    elif kind == 'no_pin':
+        spin = None
+    elif kind == 'extra_file':
+        (sel / 'other.json').write_text('{}')
+    target = data / 'classification' / 'dual' / 'operating504' / 'leaders'
+    target.mkdir()
+    (target / 'kept.json').write_text('{}')
+    with pytest.raises(tool.StageError) as error:
+        tool.stage(leaders, 'operating504', pin, data, sel, spin)
+    assert str(error.value) == code
+    assert sorted(p.name for p in target.iterdir()) == ['kept.json']

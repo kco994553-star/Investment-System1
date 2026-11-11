@@ -8,7 +8,8 @@ separate tool from stage_private_dual_qgv.py on purpose: the delivery's own stri
 "Do not put it through the existing strict delivery reader or silently widen its allowlist"). It computes, ranks and fetches nothing.
 
   python implementation/tools/stage_private_dual_leaders.py --leaders <dir with factor-leaders*.json> --scope operating504|held1057 \
-      --manifest-sha256 <factor-leaders-manifest.json's SHA-256 as the pinned handoff manifest names it> --data-dir <private data checkout>
+      --manifest-sha256 <factor-leaders-manifest.json's SHA-256 as the pinned handoff manifest names it> --data-dir <private data checkout> \
+      [--selection <dir with factor-leaders-selection*.json> --selection-manifest-sha256 <its manifest's SHA-256 as the handoff names it>]
 
 Checks, all before anything is written:
 - factor-leaders-manifest.json's own SHA-256 equals --manifest-sha256; schema qgv-dual-factor-leaders-manifest/1; its scope is --scope
@@ -18,7 +19,12 @@ Checks, all before anything is written:
 - the index (qgv-dual-factor-leaders/1) names the same scope, data kind and source, is a projection (projection_only, no rank
   recalculated, no whole-market denominator or coverage), and repeats each staged board's identity (model, configuration and result
   hashes, populations, bindings); every shard (qgv-dual-factor-leaders-detail/1) is listed and carries no raw value;
-- --data-dir is outside this public repository.
+- --data-dir is outside this public repository;
+- with --selection (Codex qgv-dual-factor-leaders-selection/1, #437 6795150039): its manifest has the pinned SHA-256, names this scope
+  and data kind and pins THIS leaders manifest (source_leaders_manifest_sha256); the directory holds exactly the manifest and
+  factor-leaders-selection.json with the listed size and SHA-256; the body names the same scope, leaders and delivery manifests, is a
+  projection (no rank recalculated, no new score, no whole market) and lists exactly the leaders index's groups. It is staged in the
+  same leaders/ directory.
 classification/dual/<scope>/leaders/ is replaced whole or not at all; on any failure the existing copy stays. Restaging the delivery
 (stage_private_dual_qgv.py) replaces classification/dual/<scope>/ whole and so drops this companion with it: a companion pins one
 delivery manifest, so it is staged again after its delivery. Output: one line with counts, sizes and hashes (no content).
@@ -139,10 +145,60 @@ def check(leaders: Path, scope: str, pin: str, data_dir: Path) -> tuple:
     return files, m, index
 
 
-def stage(leaders: Path, scope: str, pin: str, data_dir: Path) -> tuple:
+SEL_MANIFEST = 'factor-leaders-selection-manifest.json'
+SEL_FILE = 'factor-leaders-selection.json'
+
+
+def check_selection(selection: Path, pin: str, scope: str, files: dict, manifest: dict, index: dict) -> dict:
+    if not isinstance(pin, str) or not re.fullmatch(r'[0-9a-f]{64}', pin):
+        raise StageError('SELECTION_PIN_INVALID')
+    if not selection.is_dir():
+        raise StageError('SELECTION_MISSING')
+    got = {}
+    for p in sorted(selection.iterdir()):
+        if p.is_symlink() or not p.is_file():
+            raise StageError('ENTRY_REFUSED:' + p.name)
+        data = p.read_bytes()
+        if len(data) > MAX_BYTES:
+            raise StageError('FILE_TOO_LARGE:' + p.name)
+        got[p.name] = data
+    if set(got) != {SEL_MANIFEST, SEL_FILE}:
+        raise StageError('SELECTION_FILE_SET_MISMATCH')
+    if hashlib.sha256(got[SEL_MANIFEST]).hexdigest() != pin:
+        raise StageError('SELECTION_PIN_MISMATCH')
+    m = _json(got[SEL_MANIFEST], SEL_MANIFEST)
+    leaders_sha = hashlib.sha256(files[MANIFEST]).hexdigest()
+    if (not isinstance(m, dict) or set(m) != {'schema_version', 'scope', 'data_kind', 'source_leaders_manifest_sha256', 'files'}
+            or m['schema_version'] != 'qgv-dual-factor-leaders-selection-manifest/1' or m['scope'] != scope or m['data_kind'] != manifest['data_kind']):
+        raise StageError('SELECTION_MANIFEST_SCHEMA')
+    if m['source_leaders_manifest_sha256'] != leaders_sha:
+        raise StageError('SELECTION_SOURCE_MISMATCH')
+    if (not isinstance(m['files'], list) or len(m['files']) != 1 or not isinstance(m['files'][0], dict) or m['files'][0].get('path') != SEL_FILE
+            or m['files'][0].get('size') != len(got[SEL_FILE]) or m['files'][0].get('sha256') != hashlib.sha256(got[SEL_FILE]).hexdigest()):
+        raise StageError('SELECTION_FILE_MISMATCH')
+    x = _json(got[SEL_FILE], SEL_FILE)
+    if (not isinstance(x, dict) or x.get('schema_version') != 'qgv-dual-factor-leaders-selection/1' or x.get('scope') != scope
+            or x.get('data_kind') != manifest['data_kind'] or x.get('source_leaders_manifest_sha256') != leaders_sha
+            or x.get('source_delivery_manifest_sha256') != manifest['source_delivery_manifest_sha256']):
+        raise StageError('SELECTION_SCHEMA')
+    if (x.get('rank_recalculated') is not False or x.get('new_score_calculations') != 0 or x.get('additional_factor_score_contribution') != 0
+            or x.get('whole_market_denominator', 0) is not None or x.get('whole_market_coverage', 0) is not None):
+        raise StageError('SELECTION_NOT_PROJECTION')
+    if not isinstance(x.get('groups'), list) or sorted(g.get('group_id') for g in x['groups'] if isinstance(g, dict)) != sorted(g['group_id'] for g in index['groups']):
+        raise StageError('SELECTION_GROUPS_MISMATCH')
+    if _has_raw(x):
+        raise StageError('RAW_VALUE_PRESENT:' + SEL_FILE)
+    return got
+
+
+def stage(leaders: Path, scope: str, pin: str, data_dir: Path, selection: Path = None, selection_pin: str = None) -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
+    if (selection is None) != (selection_pin is None):
+        raise StageError('SELECTION_PIN_REQUIRED')
     files, manifest, index = check(leaders, scope, pin, data_dir)
+    if selection is not None:
+        files = {**files, **check_selection(selection, selection_pin, scope, files, manifest, index)}
     target = data_dir / 'classification' / 'dual' / scope / 'leaders'
     fresh, old = target.with_name('leaders.staging'), target.with_name('leaders.previous')
     for leftover in (fresh, old):
@@ -175,15 +231,18 @@ def main(argv=None) -> int:
     parser.add_argument('--scope', required=True, choices=SCOPES)
     parser.add_argument('--manifest-sha256', required=True)
     parser.add_argument('--data-dir', required=True, type=Path)
+    parser.add_argument('--selection', type=Path)
+    parser.add_argument('--selection-manifest-sha256')
     args = parser.parse_args(argv)
     try:
-        files, manifest, index = stage(args.leaders, args.scope, args.manifest_sha256, args.data_dir)
+        files, manifest, index = stage(args.leaders, args.scope, args.manifest_sha256, args.data_dir, args.selection, args.selection_manifest_sha256)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_LEADERS refused=' + str(error))
         return 1
     print('STAGE_PRIVATE_DUAL_LEADERS scope=' + args.scope + ' manifest sha256=' + hashlib.sha256(files[MANIFEST]).hexdigest()
           + ' source_delivery_manifest sha256=' + manifest['source_delivery_manifest_sha256'] + ' models=' + ','.join(index['boards'])
           + ' groups=' + str(len(index['groups'])) + ' shards=' + str(sum(1 for k in files if SHARD.match(k))) + ' files=' + str(len(files))
+          + (' selection manifest sha256=' + hashlib.sha256(files[SEL_MANIFEST]).hexdigest() if SEL_MANIFEST in files else ' selection=NONE')
           + ' bytes=' + str(sum(len(v) for v in files.values())) + ' max_file_bytes=' + str(max(len(v) for v in files.values()))
           + ' kind=' + manifest['data_kind'])
     return 0

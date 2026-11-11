@@ -285,7 +285,8 @@ async function checkLeaders(parts,delivery,sha256){
    if(!int(g.evaluation_valid_n)||g.evaluation_valid_n<0||g.evaluation_valid_n>rows||!int(g.reference_valid_n)||g.reference_valid_n<0)refuse('TYPE',at+'.evaluation_valid_n');
    if(!LEADER_SHARD.test(g.file)||!entries.has(g.file))refuse('DETAIL_NOT_IN_MANIFEST',at+'.file');files.add(g.file);groups.set(g.group_id,g);});
   for(const f of entries.keys())if(LEADER_SHARD.test(f)&&!files.has(f))refuse('DETAIL_UNREFERENCED','leaders_manifest.files.'+f);
-  const value=freeze({scope:d.scope,delivery:d,entries:Object.fromEntries(entries),groups:[...groups.values()]});LEADERS_CHECKED.add(value);
+  if(!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','leaders_manifest');const manifest_sha256=await sha256(p.manifest.bytes);
+  const value=freeze({scope:d.scope,delivery:d,manifest_sha256,entries:Object.fromEntries(entries),groups:[...groups.values()]});LEADERS_CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
@@ -318,14 +319,55 @@ async function checkLeaderShard(file,name,leaders,sha256){
   return{ok:true,value:out};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
+// The optional selection contract of checked leaders (Codex qgv-dual-factor-leaders-selection/1, #437 6795150039): its manifest pins
+// the leaders manifest bytes; per group it states the top-N prefix and the STORED top 10 % (k = floor(N/10), N < 10 not calculated)
+// apart, and whether the top-N prefix holds the whole D10. Checked here only against the contract rules and the leaders (same groups,
+// same contexts); nothing is ranked or counted from rows. Against a loaded shard, selectionMatchesShard compares the two.
+const SELECTION=Object.freeze({MANIFEST:'qgv-dual-factor-leaders-selection-manifest/1',BODY:'qgv-dual-factor-leaders-selection/1'});
+const SELECTION_KEYS=['schema_version','scope','data_kind','source_leaders_manifest_sha256','source_delivery_manifest_sha256','boards','groups','rank_unit','tie_policy',
+ 'top_decile_policy','additional_factor_score_contribution','rank_recalculated','new_score_calculations','whole_market_denominator','whole_market_coverage'];
+const SELECTION_CHECKED=new WeakSet();
+async function checkSelection(parts,leaders,sha256){
+ try{const L=leaders;if(!L||!LEADERS_CHECKED.has(L))refuse('LEADERS_NOT_CHECKED','$');const d=L.delivery,p=parts||{};
+  if(!isObj(p.manifest)||!isObj(p.manifest.body))refuse('BYTES_REQUIRED','selection_manifest');const m=p.manifest.body;
+  exact(m,['schema_version','scope','data_kind','source_leaders_manifest_sha256','files'],'selection_manifest');
+  if(m.schema_version!==SELECTION.MANIFEST)refuse('SCHEMA','selection_manifest.schema_version');
+  if(m.scope!==L.scope||m.data_kind!==d.data_kind)refuse('SCOPE_MISMATCH','selection_manifest.scope');
+  if(m.source_leaders_manifest_sha256!==L.manifest_sha256)refuse('SELECTION_SOURCE_MISMATCH','selection_manifest.source_leaders_manifest_sha256');
+  if(!Array.isArray(m.files)||m.files.length!==1)refuse('FILES_INVALID','selection_manifest.files');const f=m.files[0];exact(f,['path','size','sha256'],'selection_manifest.files[0]');
+  if(f.path!=='factor-leaders-selection.json'||!int(f.size)||f.size<1||f.size>MAX_BYTES||!HEX.test(f.sha256))refuse('FILES_INVALID','selection_manifest.files[0]');
+  const x=await bytesMatch(p.body,f.path,new Map([[f.path,f]]),sha256,'selection');exact(x,SELECTION_KEYS,'selection');
+  if(x.schema_version!==SELECTION.BODY)refuse('SCHEMA','selection.schema_version');
+  if(x.scope!==m.scope||x.data_kind!==m.data_kind||x.source_leaders_manifest_sha256!==L.manifest_sha256||x.source_delivery_manifest_sha256!==d.manifest_sha256)refuse('SELECTION_SOURCE_MISMATCH','selection');
+  if(x.rank_unit!=='EVALUATION_CODE_ROW'||x.rank_recalculated!==false||x.new_score_calculations!==0||x.additional_factor_score_contribution!==0||x.whole_market_denominator!==null||x.whole_market_coverage!==null)refuse('NOT_PROJECTION','selection');
+  exact(x.boards,d.models,'selection.boards');
+  for(const k of d.models){for(const fld of LEADER_BOARD_KEYS)if(!same(x.boards[k][fld],d.summary.boards[k][fld]))refuse('LEADERS_BOARD_MISMATCH','selection.boards.'+k+'.'+fld);}
+  if(!Array.isArray(x.groups)||x.groups.length!==L.groups.length)refuse('GROUPS_MISMATCH','selection.groups');
+  const want=new Map(L.groups.map(g=>[g.group_id,g])),out=new Map();
+  x.groups.forEach((g,i)=>{const at='selection.groups['+i+']';exact(g,[...LEADER_GROUP_KEYS,'top_n','top_10_percent'],at);const w=want.get(g.group_id);
+   if(!w||out.has(g.group_id))refuse('GROUPS_MISMATCH',at+'.group_id');for(const fld of LEADER_GROUP_KEYS)if(g[fld]!==w[fld])refuse('GROUP_CONTEXT',at+'.'+fld);
+   exact(g.top_n,['requested_n','returned_n','complete'],at+'.top_n');const t=g.top_10_percent,n=g.evaluation_valid_n;
+   exact(t,['status','k','first_rank','last_rank','returned_in_top_n','complete_in_top_n'],at+'.top_10_percent');
+   if(!int(g.top_n.requested_n)||g.top_n.requested_n<1||g.top_n.returned_n!==Math.min(n,g.top_n.requested_n)||g.top_n.complete!==true)refuse('TOP_N',at+'.top_n');
+   const status=n===0?'NO_VALID_SCORE':n<10?'SAMPLE_LT_10':'VALID',k=Math.floor(n/10);
+   if(t.status!==status)refuse('DECILE_STATUS',at+'.top_10_percent.status');
+   if(status==='VALID'?(t.k!==k||t.first_rank!==1||t.last_rank!==k||t.returned_in_top_n!==Math.min(k,g.top_n.returned_n)||t.complete_in_top_n!==(g.top_n.returned_n>=k))
+     :(t.k!==null||t.first_rank!==null||t.last_rank!==null||t.returned_in_top_n!==0||t.complete_in_top_n!==false))refuse('TOP_DECILE_BOUNDARY',at+'.top_10_percent');
+   out.set(g.group_id,freeze(g));});
+  const value=freeze({leaders:L,groups:out});SELECTION_CHECKED.add(value);return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+// A checked selection entry and the same group's checked shard tell the same: the prefix length and the stored D10 size.
+function selectionMatchesShard(sel,g){if(!sel||!g)return false;const t=sel.top_10_percent;
+ return sel.top_n.returned_n===g.leaders.length&&(t.status==='VALID'?g.decile_status==='VALID'&&g.decile_boundaries[0].count===t.k:g.decile_status===t.status);}
 // Display of checked leaders: groups of one model (index order, the producer's), and one group's stored ranks as delivered.
 function leaderGroups(L,key){return L.groups.filter(g=>g.board===key);}
-function leaderView(g,{sectorName}={}){const n=g.evaluation_valid_n,top=g.decile_boundaries[0];
+function leaderView(g,{sectorName,selection}={}){const n=g.evaluation_valid_n,top=g.decile_boundaries[0];
  const scopeWord=g.ranking_scope==='COMMON'?'공통 순위':'섹터 순위 · '+g.ranking_scope.split('|').slice(1).map((x,i)=>i===0&&sectorName?sectorName(x):x).join(' · ');
  const d10=g.decile_status==='VALID'?'저장된 D10 '+top.count+'개(순위 1–'+top.last_rank+') · 이 목록 '+g.leaders.length+'개'+(g.leaders.length>=top.count?' · D10 전부 포함':' · D10 일부만(상위 '+g.top_n+'개 표시 한도)')
   :g.decile_status==='SAMPLE_LT_10'?'평가 유효 '+n+'개 < 10 · 십분위 계산 안 함':'유효 점수 없음 · 순위 없음';
+ const sel=selection?(selectionMatchesShard(selection,g)?'생산자 선택 계약과 대조됨(D10 '+(selection.top_10_percent.complete_in_top_n?'전부 포함':selection.top_10_percent.status==='VALID'?'일부만':'해당 없음')+')':'생산자 선택 계약과 다름 · 이 목록 쓰지 않음'):'생산자 선택 계약 없음(저장된 경계로만 표시)';
  return freeze({head:g.variant_id+' · '+scopeWord,
-  counts:'평가 유효 코드 행 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 유효 '+g.reference_valid_n+'(순위 분모 아님)',d10,
+  counts:'평가 유효 코드 행 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 유효 '+g.reference_valid_n+'(순위 분모 아님)',d10,sel,selectionOk:!selection||selectionMatchesShard(selection,g),
   rows:g.leaders.map(r=>freeze({rank:r.rank+' / '+r.rank_n,company_id:r.company_id,score:r.score.toFixed(1),decile:r.decile===null?'없음':'D'+r.decile,kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
 
 const RULES=Object.freeze(['U1·U2·S1 점수는 같은 척도가 아님 · 평균·합산·차이를 만들지 않음',
@@ -388,5 +430,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });
