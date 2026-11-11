@@ -1,0 +1,1711 @@
+{
+  "schema_version": "qgv-dual-factor-leaders/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_delivery_manifest_sha256": "b758176c698c834bb819abb1a6a187ffd701e07742276b1d1a04e3ce87b152bc",
+  "boards": {
+    "U1": {
+      "model_id": "unified-roa-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE:COMMON_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "33dbca97b51aab25bb8be5e471c5d68ca5a16d2c51d0a1ba9ec9cd282dbb92c8",
+        "candidate_population": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "0bd3ae5bf0b5c8014ed5d1675ef9c06e1f0c0dac0813f5de4b498fe52380ec91",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "result_hash": "2009e03ddc054ce270b9486ff769a9cef4a32a09005cf563156040f5deeadae4",
+      "configuration_hash": "0bd3ae5bf0b5c8014ed5d1675ef9c06e1f0c0dac0813f5de4b498fe52380ec91"
+    },
+    "U2": {
+      "model_id": "unified-sales-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE:COMMON_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "33dbca97b51aab25bb8be5e471c5d68ca5a16d2c51d0a1ba9ec9cd282dbb92c8",
+        "candidate_population": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "c9eda31c54b40a0b6a673880d611b78c4a5237e84f28e8188ab8ae755263a090",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "result_hash": "f8c01b869389c21ace41eec924ef064d3899e70dc56ca5549c6181de19c78816",
+      "configuration_hash": "c9eda31c54b40a0b6a673880d611b78c4a5237e84f28e8188ab8ae755263a090"
+    },
+    "S1": {
+      "model_id": "sector-reduced-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 3,
+        "issuers": 3,
+        "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE:SECTOR_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "d54cceb1236f5a636be9306ca9f8cde1589a0de89a5f4855dc8a434c99a525f6",
+        "candidate_population": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "9cd3027bae4f7d195523d9f0c7739c5668c02345704fc65353352f498267a2b7",
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 3,
+          "issuers": 3,
+          "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "3bac67d907a07748558171d3b3742798f10d7b2f681a40a206ab51d89b80bc30",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.1.0"
+      },
+      "result_hash": "e4d86762b61d66111848e3e620e83c0b49bd338465c6763afc517ec546635124",
+      "configuration_hash": "9cd3027bae4f7d195523d9f0c7739c5668c02345704fc65353352f498267a2b7"
+    }
+  },
+  "groups": [
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|accruals_assets_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "accruals_assets_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|affo_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "affo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_improvement_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "cfo_assets_improvement_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "cfo_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "cfo_mcap",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_per_share_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "cfo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bp",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "common_bp",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bps_cagr_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "common_bps_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_equity_assets",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "common_equity_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|consensus_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "consensus_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|debt_assets",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "debt_assets",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|depreciation_capex",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "depreciation_capex",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|dividend_yield_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "dividend_yield_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebit_ev",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ebit_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebitda_ev",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ebitda_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy1",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ep_fy1",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy_diluted",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ep_fy_diluted",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ntm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ep_ntm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ttm_diluted",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ep_ttm_diluted",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|eps_diluted_cagr_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "eps_diluted_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_ev",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "fcf_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "fcf_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_per_share_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "fcf_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcff_ev",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "fcff_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ffo_per_share_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ffo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|gross_profit_assets_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "gross_profit_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|interest_coverage_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "interest_coverage_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|nareit_ffo_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "nareit_ffo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_debt_assets",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "net_debt_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_income_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "net_income_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_share_reduction",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "net_share_reduction",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ni_da_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "ni_da_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|noa_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "noa_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_income_cagr_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "operating_income_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_margin_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "operating_margin_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_forecast",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "peg_forecast",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_historical",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "peg_historical",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|profit_stability_5y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "profit_stability_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "revenue_cagr_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_5y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "revenue_cagr_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_1y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "revenue_growth_1y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_consistency_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "revenue_growth_consistency_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_improvement_3y",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "roa_improvement_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "roa_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roe_common_ttm",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "roe_common_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roic_explicit",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "roic_explicit",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_ev",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "sales_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_mcap",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "sales_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|shareholder_yield",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "shareholder_yield",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_bps_growth",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "tangible_bps_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_common_bp",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "tangible_common_bp",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|accruals_assets_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "accruals_assets_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|affo_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "affo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|cfo_assets_improvement_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_assets_improvement_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|cfo_assets_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|cfo_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_mcap",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|cfo_per_share_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|common_bp",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_bp",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|common_bps_cagr_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_bps_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|common_equity_assets",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_equity_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|consensus_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "consensus_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|debt_assets",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "debt_assets",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|depreciation_capex",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "depreciation_capex",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|dividend_yield_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "dividend_yield_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ebit_ev",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ebit_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ebitda_ev",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ebitda_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ep_fy1",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_fy1",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ep_fy_diluted",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_fy_diluted",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ep_ntm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_ntm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ep_ttm_diluted",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_ttm_diluted",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|eps_diluted_cagr_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "eps_diluted_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|fcf_ev",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|fcf_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|fcf_per_share_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|fcff_ev",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcff_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ffo_per_share_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ffo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|gross_profit_assets_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "gross_profit_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|interest_coverage_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "interest_coverage_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|nareit_ffo_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "nareit_ffo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|net_debt_assets",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_debt_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|net_income_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_income_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|net_share_reduction",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_share_reduction",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|ni_da_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "ni_da_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|noa_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "noa_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|operating_income_cagr_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "operating_income_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|operating_margin_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "operating_margin_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|peg_forecast",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "peg_forecast",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|peg_historical",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "peg_historical",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|profit_stability_5y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "profit_stability_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|revenue_cagr_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_cagr_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|revenue_cagr_5y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_cagr_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|revenue_growth_1y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_growth_1y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|revenue_growth_consistency_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_growth_consistency_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|roa_improvement_3y",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "roa_improvement_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|roa_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "roa_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|roe_common_ttm",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "roe_common_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|roic_explicit",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "roic_explicit",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|sales_ev",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "sales_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|sales_mcap",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "sales_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|shareholder_yield",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "shareholder_yield",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|tangible_bps_growth",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "tangible_bps_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U1|COMMON|tangible_common_bp",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "tangible_common_bp",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|accruals_assets_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "accruals_assets_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|affo_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "affo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|cfo_assets_improvement_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_assets_improvement_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|cfo_assets_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|cfo_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_mcap",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|cfo_per_share_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "cfo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|common_bp",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_bp",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|common_bps_cagr_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_bps_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|common_equity_assets",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "common_equity_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|consensus_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "consensus_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|debt_assets",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "debt_assets",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|depreciation_capex",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "depreciation_capex",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|dividend_yield_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "dividend_yield_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ebit_ev",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ebit_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ebitda_ev",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ebitda_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ep_fy1",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_fy1",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ep_fy_diluted",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_fy_diluted",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ep_ntm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_ntm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ep_ttm_diluted",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ep_ttm_diluted",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|eps_diluted_cagr_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "eps_diluted_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|fcf_ev",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|fcf_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|fcf_per_share_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcf_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|fcff_ev",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "fcff_ev",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ffo_per_share_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ffo_per_share_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|gross_profit_assets_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "gross_profit_assets_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|interest_coverage_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "interest_coverage_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|nareit_ffo_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "nareit_ffo_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|net_debt_assets",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_debt_assets",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|net_income_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_income_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|net_share_reduction",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "net_share_reduction",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|ni_da_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "ni_da_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|noa_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "noa_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|operating_income_cagr_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "operating_income_cagr_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|operating_margin_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "operating_margin_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|peg_forecast",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "peg_forecast",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|peg_historical",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "peg_historical",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|profit_stability_5y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "profit_stability_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|revenue_cagr_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_cagr_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|revenue_cagr_5y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_cagr_5y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|revenue_growth_1y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_growth_1y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|revenue_growth_consistency_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "revenue_growth_consistency_3y",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|roa_improvement_3y",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "roa_improvement_3y",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|roa_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "roa_ttm",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|roe_common_ttm",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "roe_common_ttm",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|roic_explicit",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "roic_explicit",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|sales_ev",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "sales_ev",
+      "evaluation_valid_n": 3,
+      "reference_valid_n": 20,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|sales_mcap",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "sales_mcap",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|shareholder_yield",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "shareholder_yield",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|tangible_bps_growth",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "tangible_bps_growth",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    },
+    {
+      "group_id": "U2|COMMON|tangible_common_bp",
+      "board": "U2",
+      "ranking_scope": "COMMON",
+      "variant_id": "tangible_common_bp",
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 0,
+      "file": "factor-leaders-000.json"
+    }
+  ],
+  "optional_detail_fields": {
+    "U1": {
+      "missing_factors": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      }
+    },
+    "U2": {
+      "missing_factors": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      }
+    },
+    "S1": {
+      "missing_factors": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "nominal_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_axis_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      },
+      "post_gate_effective_weights": {
+        "present": 3,
+        "absent": 0,
+        "absent_statuses": {}
+      }
+    }
+  },
+  "projection_only": true,
+  "rank_recalculated": false,
+  "whole_market_denominator": null,
+  "whole_market_coverage": null
+}
