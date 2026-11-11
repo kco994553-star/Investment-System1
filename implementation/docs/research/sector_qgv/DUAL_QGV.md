@@ -252,3 +252,95 @@ Keep all three research candidates, flag U2's known applicability limit, and do
 not promote any to a default until missing V and economic comparability have
 been evaluated. A future stability variant/expanded ROA accounting scope needs
 an explicit definition/comparison; existing variants were not broadened here.
+
+## 2026-11-11 Main #530 changed-boundary handoff
+
+Consumer head `9d1129d223dcd7a73605d1e17736f3d334673cab`: Codex independently
+exercised the new Bridge model route (previous missing-model-ID fallback now
+`MODEL_ID_REQUIRED`), three explicit candidate contexts/previews, separate3-row
+evaluation/20-row reference, QG_ONLY, save/exact replay, incompatible saved schema,
+and missing-original-input rejection. Published synthetic result hashes match;
+original snapshots and saved descriptor remain unchanged. Real results were not
+recalculated. Node checked both original operating504/held1057 indices and one
+23-row detail shard per scope, date mismatch rejection and display limit preserving
+stored rows. This is direct Python/Node acceptance, not browser/live deployment.
+
+### Main question1: held1057 input lineage
+
+Evaluation hash `d10961f48f4e8d0911062bd5277fecd6d8a538f5a8c9af76050bf564595c4e40`
+is the existing8,004-row source input
+`91f3726c1a4c54538049f7d577be4f2ce41f6bdd364b61ba4d5d787ca0523804`
+projected to the1,057 issuer IDs whose retained financial state is not NOT_AVAILABLE.
+Rows are selected in source order, without changing any row value/classification.
+Only rows, members, snapshot_id, universe_id and universe_version differ. The
+preparation script is already preserved in the original private #529 archive.
+`run_board` independently requires each evaluation row to equal its reference
+source row. `bindings.evaluation` and `bindings.reference` retain both input hashes;
+`reference_population.candidate_population` describes the source candidate set,
+not an eligible whole market. New private `input-lineage.json` records this exact
+projection/byte hashes; it is a lineage check, not another QGV run.
+
+### Main question2: conditional detail fields
+
+`missing_factors`, `nominal_axis_weights`, `nominal_effective_weights`,
+`post_gate_axis_weights`, `post_gate_effective_weights` are emitted by aggregate()
+when an applicable preset exists. They do NOT require a valid total. An unresolved
+sector/accounting mapping bypasses aggregate(): the five fields are absent, axes/
+total/pre_gate_total are null and gate_status is UNKNOWN. Do not replace absent
+fields by empty arrays, zero weights, or a claim of no missing inputs.
+
+Existing real data: each of these five fields is present on424/504 operating rows
+and844/1057 held rows, absent on80/213 respectively (MAPPING_UNRESOLVED), in all
+three candidates. These are reused result counts, not newly calculated axes.
+
+### Main question3: exact synthetic delivery manifest
+
+`dual-synthetic/delivery-manifest.json` uses the SAME existing
+`qgv-dual-delivery-manifest/1` format (SYNTHETIC, operating504, path/size/sha256)
+for original summary.json/index.json/detail-000.json bytes. The original seven-file
+`dual-synthetic/manifest.json` and all original fixture bytes are unchanged, so the
+bridge's existing input pin and stored result hashes remain valid. No duplicated
+summary/index/detail fixture was created.
+
+### Main question4: factor leader projection (new optional companion)
+
+`research.dual_qgv_delivery.factor_leaders_artifacts` consumes hash-pinned existing
+summary/index/detail files and projects the stored factor rank, score and decile.
+It never calls run_board/preview, ranks scores, changes ties, or chooses new peers.
+`top_n=20` is a display limit on existing ranks, not a portfolio selection rule.
+The scorer's code-file list is unchanged; replay/config/result hashes stay valid.
+
+Outputs:
+- `factor-leaders.json`, schema qgv-dual-factor-leaders/1: original board contexts,
+  source delivery manifest SHA, group→file index, effective evaluation N and
+  reference valid N, plus counts of optional-detail field presence.
+- `factor-leaders-NNN.json`, schema qgv-dual-factor-leaders-detail/1: each
+  model×ranking_scope×variant, original rank unit EVALUATION_CODE_ROW, first20
+  existing ranks and stored decile boundaries (first/last rank and unrounded score).
+  N<10 retains SAMPLE_LT_10; no scores retains NO_VALID_SCORE. Zero-valid groups
+  remain visible in the index. Reference N is never substituted for evaluation N.
+- `factor-leaders-manifest.json`, schema qgv-dual-factor-leaders-manifest/1:
+  source_delivery_manifest_sha256 plus path/size/sha256 for every new file.
+
+The companion manifest pins the new projection and original delivery together.
+Original delivery manifests/summary/index/detail files are not changed. Main's
+current reader allows only summary/index/detail filenames; this companion needs
+an explicit optional route/reader before use. Do not put it through the existing
+strict delivery reader or silently widen its allowlist. Public synthetic counterpart:
+`dual-factor-leaders-synthetic/`; all actual company outputs remain private.
+
+Offline projection (existing data only; fresh output directory):
+
+```sh
+PYTHONPATH=implementation/src python -m investment_system.research.dual_qgv_delivery \
+  --source-dir EXISTING_PRIVATE_DELIVERY --manifest-sha256 ORIGINAL_MANIFEST_SHA \
+  --output-dir NEW_PRIVATE_PROJECTION --top-n 20
+```
+
+Files are bounded to1,800,000 bytes (Main2,000,000-byte limit retained). Existing
+private delivery: operating1071 groups/139 with valid scores; held969/151. These
+include all registered factor groups, not company coverage or new calculations.
+Each scope needs three new files; measured maximum sizes1,471,953 and1,545,810bytes.
+Raw factor values are never copied. Private-output CLI refuses Git checkouts.
+Whole-market denominator/coverage remain null. Main owns authenticated retrieval,
+Worker paths, display and browser verification; no deployment is performed here.
