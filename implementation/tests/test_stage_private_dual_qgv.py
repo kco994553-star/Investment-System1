@@ -61,6 +61,7 @@ def test_stages_every_file_byte_for_byte(tmp_path, capsys, scope):
         assert (out / p.name).read_bytes() == p.read_bytes()
     line = capsys.readouterr().out
     assert line.startswith('STAGE_PRIVATE_DUAL_QGV scope=' + scope + ' manifest sha256=' + pin) and 'models=U1,U2,S1 code_rows=3 issuers=3 details=1 files=4' in line
+    assert line.rstrip().endswith('input_check=' + ('EVALUATION_INPUT_MATCHED' if scope == 'operating504' else 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'))
 
 
 def _board(name, f):

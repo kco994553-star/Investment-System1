@@ -20,9 +20,16 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.dualQgv=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SCHEMA=Object.freeze({MANIFEST:'qgv-dual-delivery-manifest/1',SUMMARY:'qgv-dual-delivery/1',INDEX:'qgv-dual-index/1',DETAIL:'qgv-dual-detail/1'});
+// input: which side's input hash the delivered result names. operating504's evaluation input is that result's own input
+// (EVALUATION_INPUT_MATCHED). held1057's evaluation input (a projection of the held rows) is not the delivered result's input;
+// only its reference source input is, so its evaluation input stays UNVERIFIED until Codex gives the members / derivation / hash
+// link (owner 2026-11-11 §2, #437 6794173362 q.1). The screen says so; it is never shown as a verified evaluation input.
 const SCOPES=Object.freeze({
  operating504:Object.freeze({label:'운영504',anchor:'operating',input:'evaluation',text:'평가 504코드 행 / 501발행사'}),
  held1057:Object.freeze({label:'보유1057',anchor:'held_financial_subsample',input:'reference',text:'보유 재무 표본 1057발행사 · 운영504와 합치지 않음'})});
+const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference:'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'});
+const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치)',
+ REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(생산자 근거 대기)'});
 const MODELS=Object.freeze({
  U1:Object.freeze({model_id:'unified-roa-core/0.1.0',kind:'COMMON',label:'통합 연구 U1',core:'Q ROA · G ROA 개선 · V 이익·장부'}),
  U2:Object.freeze({model_id:'unified-sales-core/0.1.0',kind:'COMMON',label:'통합 연구 U2',core:'Q ROA · G 매출 성장 · V 이익·장부'}),
@@ -36,7 +43,8 @@ const POP_KEYS=Object.freeze(['id','version','members_hash','valuation_date','as
 const REF_EXTRA=Object.freeze(['factor_members_hash','candidate_population','scope']);
 const HEAD_KEYS=Object.freeze(['axes','total','rank','rank_n','ranking_scope','status','gate_status']);
 const DETAIL_KEYS=Object.freeze(['company_id','issuer_id','security_id','sector_id','accounting_template','factors','rank','status','axes','total','pre_gate_total','gate_status','ranking_scope','rank_n','selected_variants','scoring_representative']);
-// Present on rows the producer scored to a total (synthetic BOTH_VALID); named, so nothing else slips in.
+// PROVISIONAL (owner 2026-11-11 §2): seen only on synthetic rows scored to a total, absent from the real delivery. Accepted by name
+// only until Codex states their conditional-required rule (#437 6794173362 q.2); not the final contract.
 const DETAIL_OPTIONAL=Object.freeze(['missing_factors','nominal_axis_weights','nominal_effective_weights','post_gate_axis_weights','post_gate_effective_weights']);
 const FACTOR_KEYS=Object.freeze(['raw_status','score','score_status','valid_n','raw_components_available','verified_external_available','kind','rank','rank_n','decile','decile_status']);
 const MAX_BYTES=2000000;
@@ -160,7 +168,8 @@ async function checkDelivery(parts,opts){
   for(const k of keys)if(!same(s.boards[k].evaluation_population,ev))refuse('EVALUATION_MISMATCH','summary.boards.'+k+'.evaluation_population');
   anchorCheck(o.scope,ev,s.boards,o.anchor);
   const x=await bytesMatch(p.index,'index.json',entries,o.sha256,'index');const rows=indexRows(x,s,entries);
-  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,entries:Object.fromEntries(entries),summary:s,rows,models:keys});CHECKED.add(value);
+  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,entries:Object.fromEntries(entries),summary:s,rows,models:keys,
+   input_check:INPUT_CHECK[SCOPES[o.scope].input]});CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
@@ -199,7 +208,7 @@ const share=(c,d)=>String(c)+' / '+String(d);
 function boardView(d,key){const b=d.summary.boards[key],M=MODELS[key],c=b.coverage,den=c.denominator,st=c.stages;
  return freeze({key,label:M.label,core:M.core,kind:KIND[M.kind],
   head:M.label+' · '+M.core+' · 연구 후보 · 운영 채택 안 됨 · 성과 미측정',
-  states:[['보관 결과 조회','가능 · 목록표·요약·색인 검증됨'],
+  states:[['보관 결과 조회','가능 · 목록표·요약·색인 검증됨'],['입력 연결',INPUT_WORD[d.input_check]],
    ['최종 총점',st.total.code_rows?'산출 '+share(st.total.code_rows,den.code_rows)+'코드 행':'미산출 · 이 모형의 총점 순위 없음'],
    ['화면 재계산','연결 안 됨 · 보관 결과만 보임'],
    ['저장·재현','생산자 저장본(설정·코드·두 입력 결합)으로만 · 다른 입력이면 거부 · 설정 '+b.configuration_hash.slice(0,12)+'… · 결과 '+b.result_hash.slice(0,12)+'…']],
@@ -241,5 +250,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({SCHEMA,SCOPES,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

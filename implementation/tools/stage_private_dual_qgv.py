@@ -38,6 +38,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 2 * 1024 * 1024
 SCOPES = {'operating504': ('operating', 'evaluation'), 'held1057': ('held_financial_subsample', 'reference')}
 MODELS = {'U1': 'unified-roa-core/0.1.0', 'U2': 'unified-sales-core/0.1.0', 'S1': 'sector-reduced-core/0.1.0'}
+# operating504's evaluation input is the staged result's own input; held1057 is tied by its reference source input only, so its
+# evaluation input is reported UNVERIFIED (owner 2026-11-11 §2) until the producer gives the evaluation input's derivation.
+INPUT_CHECK = {'evaluation': 'EVALUATION_INPUT_MATCHED', 'reference': 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'}
 FILE = re.compile(r'^(summary|index)\.json$|^detail-\d{3}\.json$')
 
 
@@ -185,7 +188,7 @@ def main(argv=None) -> int:
           + ' models=' + ','.join(summary['boards']) + ' code_rows=' + str(ev['code_rows']) + ' issuers=' + str(ev['issuers'])
           + ' details=' + str(sum(1 for k in files if k.startswith('detail-'))) + ' files=' + str(len(files))
           + ' bytes=' + str(sum(len(v) for v in files.values())) + ' max_file_bytes=' + str(max(len(v) for v in files.values()))
-          + ' kind=' + manifest['data_kind'])
+          + ' kind=' + manifest['data_kind'] + ' input_check=' + INPUT_CHECK[SCOPES[args.scope][1]])
     return 0
 
 

@@ -110,9 +110,13 @@ test('words: each model on its own, ranks only in their scope, null is 미산출
   const d = F.delivery('operating504'), v = (await check(d)).value, sn = (id) => (id === 'INFORMATION_TECHNOLOGY' ? '정보기술' : id);
   const u1 = DQ.boardView(v, 'U1');
   assert.equal(u1.head, '통합 연구 U1 · Q ROA · G ROA 개선 · V 이익·장부 · 연구 후보 · 운영 채택 안 됨 · 성과 미측정');
-  assert.deepEqual(u1.states.map((s) => s[0]), ['보관 결과 조회', '최종 총점', '화면 재계산', '저장·재현']);
-  assert.match(u1.states[2][1], /^연결 안 됨 · 보관 결과만 보임$/);
-  assert.match(u1.states[3][1], /^생산자 저장본\(설정·코드·두 입력 결합\)으로만 · 다른 입력이면 거부/);
+  assert.deepEqual(u1.states.map((s) => s[0]), ['보관 결과 조회', '입력 연결', '최종 총점', '화면 재계산', '저장·재현']);
+  assert.equal(v.input_check, 'EVALUATION_INPUT_MATCHED'); assert.match(u1.states[1][1], /^평가 입력 = 지금 받은 결과의 입력/);
+  const hv = (await check(F.delivery('held1057'))).value;
+  assert.equal(hv.input_check, 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED', 'a reference input match is not a verified evaluation input');
+  assert.match(DQ.boardView(hv, 'U1').states[1][1], /평가 입력 연결 미확인/);
+  assert.match(u1.states[3][1], /^연결 안 됨 · 보관 결과만 보임$/);
+  assert.match(u1.states[4][1], /^생산자 저장본\(설정·코드·두 입력 결합\)으로만 · 다른 입력이면 거부/);
   assert.equal(u1.stages.find((s) => s.key === 'total').text, '코드 행 3 / 3 · 발행사 3 / 3');
   assert.match(u1.target, /^95% 목표 · 발행사 3 \/ 3 · 코드 행 3 \/ 3 · 세 축 동시 부족 발행사 0 · 최종 총점 부족 발행사 0$/);
   assert.match(u1.market, /전체시장 분모·커버리지 미측정/);
