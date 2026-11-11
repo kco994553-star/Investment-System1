@@ -108,9 +108,9 @@ public output with private reference metadata. These are explicit tests.
   dates, differing denominators, planned/control/13F and independent numeric facts.
 - [x] Task2: failing version/update/public/paths tests → append-only merge, dual-time
   projection, no inferred intervals, failed refresh and bounded offline CLI.
-- [ ] Task3: synthetic cases/expected outcomes generated from the tested public packet;
+- [x] Task3: synthetic cases/expected outcomes generated from the tested public packet;
   Draft PR and Main first handoff before real source review.
-- [ ] Task4: inspect only identified retained sources for1–3 groups. Hash→excerpt→
+- [x] Task4: inspect only identified retained sources for1–3 groups. Hash→excerpt→
   known issuer/unknown mention→result. Preserve private inputs/output/manifests,
   report units separately. No target count forcing or new collection.
 - [ ] Task5: fresh review and changed regression checks; Main exact SHA/contract,
@@ -185,3 +185,48 @@ rejects every external RIG import. The owner's requested reuse introduces exactl
 should permit this specific pure-domain dependency while retaining all other bans.
 Codex did not delete/skip/change the guard or disguise the import. Current targeted
 result: adapter30 passed + RIG14 passed; this single architecture guard failed.
+
+
+## Final review and retained-source result
+
+Fresh reviewer checked the whole implementation without rerunning completed suites.
+Five findings were independently reproduced and corrected with failing-then-passing
+regression tests: private updates retaining public approval; later observations
+hiding an earlier applicable version; nested source-period metadata escaping public
+projection; merged verified-zero scope conflicting with retained claims; equivalent
+relationship paths counted twice under different assertion IDs. No minor findings
+were deferred. Additional source-kind tests reject NEWS/OTHER-only confirmation;
+synthetic source text now matches each scenario's numerical observations.
+
+Changed adapter suite:38 passed. The previously passed RIG14 tests were reused;
+the unchanged all-external-RIG-import architecture guard remains Main's narrow
+integration change, already requested at #437 comment6794279588. No broad waiver,
+copy of shared logic or dynamic import is proposed. This is an ownership-boundary
+integration dependency, not an owner approval request.
+
+Retained-source execution:1 company group reviewed,1 existing issuer connected,
+1 unresolved investee mention,0 confirmed relationships,0 ownership observations.
+One already preserved historical disclosure/receipt was hash-checked and passed
+through the same offline CLI. Its transaction-percentage wording does not establish
+current ownership, a remaining percentage, investee legal identity, directness or
+continuity. Publication date remains DATE, original acquisition timestamp is
+preserved, assertion review/knowledge time is the actual new review time. Historical
+system PIT is not claimed. This run neither recalculates nor increases QGV/V.
+Company-level input/source/view stay in the approved private handoff; no real
+company examples were added to this contract or synthetic fixture.
+
+Publication permissions only become more restrictive during merge; updates cannot
+inherit old approval for newly private content. Assertion history is selected by
+both valid time and system knowledge. Conflicting zero-scope updates fail closed
+instead of deleting prior facts. Equivalent paths use stable relationship IDs;
+all supporting assertions are retained without indirect percentage arithmetic.
+`merge_update` failure returns the previous dataset unchanged plus a separate
+attempt receipt: Main should retain the original file bytes and write only the
+attempt sidecar, not reserialize the last good file on failure.
+
+QGV consumption status is reused from #4376792797898: #530
+c84e85d86dd7108dbe66a7a6696ca65094410b64 has no newly delivered consumer SHA at
+this review. The INTEGRATED-to-legacy-context bridge difference was handed to Main;
+no duplicate contract/fixture/recalculation was produced. V source/receipt/eligible
+price inputs remain pending. Browser/authenticated delivery/operating adoption/
+deployment are separate and have not been verified by this research adapter.

@@ -317,3 +317,63 @@ def test_main_shared_synthetic_views_and_hashes():
             result=api().company_view(b,**case['query'])
             assert result==case['expected_view'],case['case_id']
             assert hashlib.sha256(api().json_bytes(result)).hexdigest()==case['expected_view_sha256']
+
+def test_review_private_update_cannot_inherit_publication_approval():
+    p,r,a=fixture();previous=api().normalize_packet(p,r,a)
+    p['version']='2';p['publication']='PRIVATE';p['collection']['scope']='PRIVATE_REVIEW_SCOPE'
+    incoming=api().normalize_packet(p,r,a)
+    merged=api().merge_update(previous,incoming,outcome='SUCCESS',attempted_at='2026-01-06T12:00:00Z')['dataset']
+    with pytest.raises(ValueError,match='PUBLIC'):view(merged,public=True)
+
+
+def test_review_later_observation_does_not_erase_earlier_valid_version():
+    p,r,a=fixture();p['assertions']=p['assertions'][:1]
+    later=deepcopy(p['assertions'][0]);later.update(version=2,previous_version=1)
+    later['temporal'].update(observed_on='2026-01-31',system_known_at='2026-02-01T10:00:00Z',reviewed_at='2026-02-01T10:00:00Z')
+    later['observations'][0].update(observed_as_of='2026-01-31',value='40')
+    p['assertions'].append(later)
+    b=api().normalize_packet(p,r,a)
+    result=api().company_view(b,entity_id='SYN-A',valid_on='2025-12-31',knowledge_at='2026-02-01T12:00:00Z',generated_at='2026-02-01T12:00:00Z')
+    assert len(result['relationships'])==1
+    assert result['relationships'][0]['observations'][0]['value']=='60'
+    assert [h['version'] for h in result['relationships'][0]['history']]==[1]
+
+
+def test_review_nested_source_period_is_not_a_public_metadata_channel():
+    p,r,a=fixture();p['evidence'][0]['source_period']={'value':'2025-12-31','private_path':'PRIVATE_SENTINEL'}
+    with pytest.raises(ValueError,match='SOURCE_PERIOD'):api().normalize_packet(p,r,a)
+
+
+def test_review_zero_update_conflicts_with_retained_relations():
+    p,r,a=fixture();previous=api().normalize_packet(p,r,a)
+    body=b'<p>Synthetic entity had no subsidiaries at 2025-12-31.</p>';sha=hashlib.sha256(body).hexdigest()
+    p['assertions']=[];p['evidence'][0].update(evidence_id='zero',artifact_hash=sha,excerpt='Synthetic entity had no subsidiaries at 2025-12-31.')
+    p['collection'].update(zero_relationships_evidence_ids=['zero'],zero_observed_on='2025-12-31',completeness='COMPLETE')
+    incoming=api().normalize_packet(p,r,{sha:body})
+    with pytest.raises(ValueError,match='ZERO_SCOPE_CONFLICT'):
+        api().merge_update(previous,incoming,outcome='SUCCESS',attempted_at='2026-01-06T12:00:00Z')
+
+
+def test_review_equivalent_assertion_paths_do_not_duplicate_relationship_paths():
+    p,r,a=fixture();other=deepcopy(p['assertions'][1]);other['assertion_id']='c1b'
+    child=deepcopy(other);child.update(assertion_id='c2',source_entity_id='SYN-B',target_entity_id='SYN-C')
+    p['assertions'] += [other,child];p['paths']=[['c1','c2'],['c1b','c2']]
+    v=view(api().normalize_packet(p,r,a))
+    assert len(v['confirmed_paths'])==1 and v['diagnostics']['duplicate_paths']==1
+    assert {a['assertion_id'] for a in v['confirmed_paths'][0]['assertions']}=={'c1','c1b','c2'}
+
+@pytest.mark.parametrize('kind',['NEWS','OTHER'])
+def test_review_non_primary_text_cannot_confirm_ownership(kind):
+    p,r,a=fixture();p['evidence'][0]['source_kind']=kind
+    with pytest.raises(ValueError,match='PRIMARY_EVIDENCE_REQUIRED'):api().normalize_packet(p,r,a)
+
+def test_main_fixture_numeric_observations_match_its_fictional_source():
+    data=json.loads((Path(__file__).resolve().parents[2]/'docs/research/company_ownership/synthetic.json').read_text())
+    for case in data['cases']:
+        if 'expected_error' in case:continue
+        for claim in case['input']['assertions']:
+            sources=[e for e in case['input']['evidence'] if e['evidence_id'] in claim['evidence_ids']]
+            text=' '.join(data['artifacts_utf8'][e['artifact_hash']] for e in sources)
+            for observation in claim['observations']:
+                if observation['value'] is not None:
+                    assert observation['value']+' percent' in text,case['case_id']

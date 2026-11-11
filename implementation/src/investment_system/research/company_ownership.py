@@ -136,6 +136,8 @@ def _observation(o, target, securities):
     if qualifier != "NOT_DISCLOSED":
         _require(o.get("missing_reason") is None, "PERCENT_MISSING_REASON")
     _text(o.get("denominator_basis"), "DENOMINATOR")
+    if o.get("share_class") is not None:
+        _text(o["share_class"], "SHARE_CLASS")
     _day(o.get("observed_as_of"), nullable=True)
     if o.get("denominator_basis") == "CLASS_OUTSTANDING":
         _text(o.get("share_class"), "SHARE_CLASS")
@@ -198,6 +200,8 @@ def normalize_packet(packet, identity_document, artifacts):
         _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == sha, "ARTIFACT_HASH")
         _text(item.get("locator"), "LOCATOR")
         _text(item.get("document_id"), "DOCUMENT_ID")
+        if item.get("source_period") is not None:
+            _text(item["source_period"], "SOURCE_PERIOD")
         url = urlsplit(_text(item.get("url"), "SOURCE_URL"))
         _require(url.scheme in {"https", "http"} and bool(url.netloc) and url.username is None and url.password is None, "SOURCE_URL")
         excerpt = _text(item.get("excerpt"), "EXCERPT")
@@ -232,6 +236,9 @@ def normalize_packet(packet, identity_document, artifacts):
             _observation(observation, assertion.get("target_entity_id"), securities)
         if any(evidence[e]["source_kind"] == "FORM_13F" for e in assertion["evidence_ids"]):
             _require(assertion["type"] == "OWNERSHIP" and assertion["capacity"] == "INVESTMENT_DISCRETION" and all(o["metric"] == "MANAGED_HOLDINGS" for o in obs), "13F_CAPACITY")
+        if assertion["status"] not in {"UNREVIEWED", "CONFLICT"}:
+            _require(any(evidence[e]["source_kind"] in {"PRIMARY_DISCLOSURE", "FORM_13F"}
+                         for e in assertion["evidence_ids"]), "PRIMARY_EVIDENCE_REQUIRED")
         temporal = assertion.get("temporal", {})
         start, end = (_day(temporal.get(k), nullable=True) for k in ("valid_from", "valid_to"))
         _require(start is None or end is None or start < end, "VALID_INTERVAL")
@@ -265,6 +272,7 @@ def normalize_packet(packet, identity_document, artifacts):
     # Stable ordering affects no factual content. Unknown interval/ratio values stay null.
     for field, key in (("entities", "entity_id"), ("mentions", "mention_id"), ("evidence", "evidence_id")):
         p[field] = sorted(p[field], key=lambda x: x[key])
+    p["paths"] = sorted(p["paths"])
     p["assertions"] = sorted(p["assertions"], key=lambda x: (x["assertion_id"], x["version"]))
     for assertion in p["assertions"]:
         assertion["evidence_ids"] = sorted(assertion["evidence_ids"])
@@ -352,6 +360,8 @@ def company_view(bundle, *, entity_id, valid_on, knowledge_at, generated_at,
             if entity_id in (assertion["source_entity_id"], assertion["target_entity_id"]):
                 unavailable += 1
             continue
+        if _state(assertion, day) is None:
+            continue
         old = latest.get(assertion["assertion_id"])
         if old is None or old["version"] < assertion["version"]:
             latest[assertion["assertion_id"]] = assertion
@@ -402,12 +412,12 @@ def company_view(bundle, *, entity_id, valid_on, knowledge_at, generated_at,
                 or not any(o["metric"] == "SHARE_CAPITAL" and o["qualifier"] != "NOT_DISCLOSED" for o in observations)):
             relationship["positive_ownership"] = None
         relationship["history"] = [_claim_projection(a) for a in bundle["assertions"]
-            if a["assertion_id"] in {c["assertion_id"] for c in claims} and _known(a, evidence, cutoff)]
+            if a["assertion_id"] in {c["assertion_id"] for c in claims} and _known(a, evidence, cutoff) and _state(a, day) is not None]
         used_evidence.update(e for a in relationship["history"] for e in a["evidence_ids"])
         if public:
             _require(all(a["publication"] == "PUBLIC_APPROVED" for a in relationship["history"]), "PUBLIC_HISTORY")
         relationships.append(relationship)
-    paths, seen_paths, cyclic, duplicate = [], set(), 0, 0
+    paths, seen_paths, path_index, cyclic, duplicate = [], set(), {}, 0, 0
     for path in bundle["paths"]:
         key = tuple(path)
         if key in seen_paths:
@@ -431,7 +441,19 @@ def company_view(bundle, *, entity_id, valid_on, knowledge_at, generated_at,
             _require(all(a["publication"] == "PUBLIC_APPROVED" for a in claims), "PUBLIC_PATH")
         used_entities.update(nodes)
         used_evidence.update(e for a in claims for e in a["evidence_ids"])
-        paths.append({"assertion_ids": path[:], "entity_ids": nodes, "economic_ownership_percent": None, "assertions": [_claim_projection(a) for a in claims]})
+        relationship_ids = [stable_id("ownership", a["type"], a["source_entity_id"], a["target_entity_id"]) for a in claims]
+        path_key = tuple(relationship_ids)
+        if path_key in path_index:
+            duplicate += 1
+            existing = path_index[path_key]
+            supports = {a["assertion_id"]: a for a in existing["assertions"]}
+            supports.update({a["assertion_id"]: _claim_projection(a) for a in claims})
+            existing["assertions"] = [supports[i] for i in sorted(supports)]
+            continue
+        item = {"assertion_ids": path[:], "relationship_ids": relationship_ids, "entity_ids": nodes,
+                "economic_ownership_percent": None, "assertions": [_claim_projection(a) for a in claims]}
+        path_index[path_key] = item
+        paths.append(item)
     all_count = len(relationships)
     filtered = [r for r in relationships if relationship_type is None or r["type"] == relationship_type]
     collection = _projection(bundle["collection"], "target_entity_ids reviewed_entity_ids scope completeness last_success_at")
@@ -513,4 +535,9 @@ def merge_update(previous, incoming, *, outcome, attempted_at):
     merged["paths"] = [list(p) for p in sorted({tuple(p) for p in previous["paths"] + incoming["paths"]})]
     merged["collection"] = deepcopy(incoming["collection"])
     merged["version"] = incoming["version"]
+    _require(not (merged["collection"].get("zero_relationships_evidence_ids") and merged["assertions"]), "ZERO_SCOPE_CONFLICT")
+    publications = {previous.get("publication"), incoming.get("publication")}
+    _require(publications <= PUBLICATIONS, "PUBLICATION")
+    merged["publication"] = ("PRIVATE" if "PRIVATE" in publications else
+                             "UNKNOWN" if "UNKNOWN" in publications else "PUBLIC_APPROVED")
     return {"dataset": merged, "attempt": attempt}
