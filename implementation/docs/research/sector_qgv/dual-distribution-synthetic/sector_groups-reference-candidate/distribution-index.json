@@ -1,0 +1,461 @@
+{
+  "schema_version": "qgv-dual-factor-distribution/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "display_policy": "reference-score-deciles/1",
+  "policy_state": "RESEARCH_DISPLAY_CANDIDATE",
+  "bands": [
+    {
+      "decile": 10,
+      "top_percent_from": 0,
+      "top_percent_to": 10,
+      "label": "상위 0–10%"
+    },
+    {
+      "decile": 9,
+      "top_percent_from": 10,
+      "top_percent_to": 20,
+      "label": "상위 10–20%"
+    },
+    {
+      "decile": 8,
+      "top_percent_from": 20,
+      "top_percent_to": 30,
+      "label": "상위 20–30%"
+    },
+    {
+      "decile": 7,
+      "top_percent_from": 30,
+      "top_percent_to": 40,
+      "label": "상위 30–40%"
+    },
+    {
+      "decile": 6,
+      "top_percent_from": 40,
+      "top_percent_to": 50,
+      "label": "상위 40–50%"
+    },
+    {
+      "decile": 5,
+      "top_percent_from": 50,
+      "top_percent_to": 60,
+      "label": "상위 50–60%"
+    },
+    {
+      "decile": 4,
+      "top_percent_from": 60,
+      "top_percent_to": 70,
+      "label": "상위 60–70%"
+    },
+    {
+      "decile": 3,
+      "top_percent_from": 70,
+      "top_percent_to": 80,
+      "label": "상위 70–80%"
+    },
+    {
+      "decile": 2,
+      "top_percent_from": 80,
+      "top_percent_to": 90,
+      "label": "상위 80–90%"
+    },
+    {
+      "decile": 1,
+      "top_percent_from": 90,
+      "top_percent_to": 100,
+      "label": "상위 90–100%"
+    }
+  ],
+  "boards": {
+    "S1": {
+      "model_id": "sector-reduced-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "04d39ba4210e9193da07c7ff005c26785965a021e3e6874f536b1f11bdf3dfdd",
+        "valuation_date": "2026-11-04",
+        "as_of": "2026-11-04T20:00:00Z",
+        "code_rows": 40,
+        "issuers": 40,
+        "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "input_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+        "members_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+        "factor_members_hash": "580ea9712f60caa31f714c740fdce49f6ab57e4faa420b0660af4a7699eb4133"
+      },
+      "bindings": {
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "04d39ba4210e9193da07c7ff005c26785965a021e3e6874f536b1f11bdf3dfdd",
+          "valuation_date": "2026-11-04",
+          "as_of": "2026-11-04T20:00:00Z",
+          "code_rows": 40,
+          "issuers": 40,
+          "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "reference": {
+          "input_hash": "4444444444444444444444444444444444444444444444444444444444444444"
+        }
+      },
+      "result_hash": "cd07cb88511bc0325a7058d91b2612303780f577e8e6887b21dcad7d2cf15278",
+      "normalization_version": "common-midrank-strict20/1",
+      "engine_version": "SYN-ENGINE",
+      "adapter_version": "SYN-ADAPTER",
+      "configuration_hash": "ddd93dc714dbcb761598cdc1d2a290d49d3b7dbe9dfca2610356d33318605b71",
+      "source_result_sha256": "f23ebd8bd1d4cd789c6fbcb05c536c6ef2400aadf47eb026450c5a034cae1db8"
+    }
+  },
+  "companies": [
+    {
+      "company_id": "SYN-000",
+      "issuer_id": "issuer:000",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-001",
+      "issuer_id": "issuer:001",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-002",
+      "issuer_id": "issuer:002",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-003",
+      "issuer_id": "issuer:003",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-004",
+      "issuer_id": "issuer:004",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-005",
+      "issuer_id": "issuer:005",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-006",
+      "issuer_id": "issuer:006",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-007",
+      "issuer_id": "issuer:007",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-008",
+      "issuer_id": "issuer:008",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-009",
+      "issuer_id": "issuer:009",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-010",
+      "issuer_id": "issuer:010",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-011",
+      "issuer_id": "issuer:011",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-012",
+      "issuer_id": "issuer:012",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-013",
+      "issuer_id": "issuer:013",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-014",
+      "issuer_id": "issuer:014",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-015",
+      "issuer_id": "issuer:015",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-016",
+      "issuer_id": "issuer:016",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-017",
+      "issuer_id": "issuer:017",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-018",
+      "issuer_id": "issuer:018",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-019",
+      "issuer_id": "issuer:019",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-000",
+      "issuer_id": "other:issuer:000",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-001",
+      "issuer_id": "other:issuer:001",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-002",
+      "issuer_id": "other:issuer:002",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-003",
+      "issuer_id": "other:issuer:003",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-004",
+      "issuer_id": "other:issuer:004",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-005",
+      "issuer_id": "other:issuer:005",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-006",
+      "issuer_id": "other:issuer:006",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-007",
+      "issuer_id": "other:issuer:007",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-008",
+      "issuer_id": "other:issuer:008",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-009",
+      "issuer_id": "other:issuer:009",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-010",
+      "issuer_id": "other:issuer:010",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-011",
+      "issuer_id": "other:issuer:011",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-012",
+      "issuer_id": "other:issuer:012",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-013",
+      "issuer_id": "other:issuer:013",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-014",
+      "issuer_id": "other:issuer:014",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-015",
+      "issuer_id": "other:issuer:015",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-016",
+      "issuer_id": "other:issuer:016",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-017",
+      "issuer_id": "other:issuer:017",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-018",
+      "issuer_id": "other:issuer:018",
+      "security_id": null
+    },
+    {
+      "company_id": "OTHER-SYN-019",
+      "issuer_id": "other:issuer:019",
+      "security_id": null
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "S1|SECTOR|INDUSTRIALS|GENERAL|debt_assets",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+      "variant_id": "debt_assets",
+      "raw_direction": "LOWER",
+      "score_direction": "HIGHER_IS_BETTER",
+      "evaluation_rows_in_scope": 20,
+      "evaluation_valid_n": 20,
+      "reference_valid_n": 20,
+      "comparison_group": {
+        "role": "FACTOR_REFERENCE",
+        "unit": "REPRESENTATIVE_ISSUER",
+        "n": 20,
+        "members_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "reference_members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "reference_issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 3
+        },
+        {
+          "decile": 9,
+          "count": 2
+        },
+        {
+          "decile": 8,
+          "count": 2
+        },
+        {
+          "decile": 7,
+          "count": 2
+        },
+        {
+          "decile": 6,
+          "count": 2
+        },
+        {
+          "decile": 5,
+          "count": 2
+        },
+        {
+          "decile": 4,
+          "count": 2
+        },
+        {
+          "decile": 3,
+          "count": 2
+        },
+        {
+          "decile": 2,
+          "count": 1
+        },
+        {
+          "decile": 1,
+          "count": 2
+        }
+      ],
+      "unavailable_count": 0,
+      "unavailable_reasons": {},
+      "legacy_tie_splits": [],
+      "files": [
+        "distribution-000.json"
+      ]
+    },
+    {
+      "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|debt_assets",
+      "board": "S1",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "variant_id": "debt_assets",
+      "raw_direction": "LOWER",
+      "score_direction": "HIGHER_IS_BETTER",
+      "evaluation_rows_in_scope": 20,
+      "evaluation_valid_n": 20,
+      "reference_valid_n": 20,
+      "comparison_group": {
+        "role": "FACTOR_REFERENCE",
+        "unit": "REPRESENTATIVE_ISSUER",
+        "n": 20,
+        "members_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "reference_members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "reference_issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 3
+        },
+        {
+          "decile": 9,
+          "count": 2
+        },
+        {
+          "decile": 8,
+          "count": 2
+        },
+        {
+          "decile": 7,
+          "count": 2
+        },
+        {
+          "decile": 6,
+          "count": 2
+        },
+        {
+          "decile": 5,
+          "count": 2
+        },
+        {
+          "decile": 4,
+          "count": 2
+        },
+        {
+          "decile": 3,
+          "count": 2
+        },
+        {
+          "decile": 2,
+          "count": 1
+        },
+        {
+          "decile": 1,
+          "count": 2
+        }
+      ],
+      "unavailable_count": 0,
+      "unavailable_reasons": {},
+      "legacy_tie_splits": [],
+      "files": [
+        "distribution-000.json"
+      ]
+    }
+  ],
+  "rank_policy": "UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL",
+  "minimum_reference_score_n": 20,
+  "minimum_stored_evaluation_decile_n": 10,
+  "complete_evaluation_rows": true,
+  "filter_changes_population": false,
+  "rank_recalculated": false,
+  "additional_factor_score_contribution": 0,
+  "new_score_calculations": 0,
+  "whole_market_denominator": null,
+  "whole_market_coverage": null
+}

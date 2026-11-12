@@ -1,0 +1,24 @@
+{
+  "schema_version": "qgv-dual-factor-distribution-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "display_policy": "reference-score-deciles/1",
+  "source_results": {
+    "U1": {
+      "result_hash": "ea05390ee5db5171165c591f9e4e0e125af400630ec6a6f7b3f6f6f414d7c4d2",
+      "sha256": "a7a2f95d3c142124bcb093098095281f964f81d6d6585d1aee6eef54d5f61463"
+    }
+  },
+  "files": [
+    {
+      "path": "distribution-000.json",
+      "size": 1251,
+      "sha256": "fbb1f9e4e696095d879950ed5444c2f7142bab9924a78c0a37c724091198aad1"
+    },
+    {
+      "path": "distribution-index.json",
+      "size": 5663,
+      "sha256": "6b567584b0b53c454c996461e5a6674893dd5250227b0914e7c75f970ff80bff"
+    }
+  ]
+}
