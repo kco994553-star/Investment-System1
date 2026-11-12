@@ -439,3 +439,13 @@ more than20 D10 members, so the old top20 is explicitly an incomplete D10 view.
 These are group counts, not companies, coverage gains or new calculated scores.
 New real QGV calculations/adoptions remain0. The new companion requires Main's
 optional reader; do not widen the original strict delivery allowlist silently.
+
+### 2026-11-12: all ten bands supersede the top-N-only handoff scope
+
+The owner's factor upper-percent view requires every decile and every evaluation
+row, including unavailable rows. The optional top-N/selection companions remain
+compatible, but do not complete that feature. See [full distribution contract](FACTOR_DISTRIBUTION.md)
+and `dual-distribution-synthetic/cases.json`. The new projection consumes saved
+results without changing scores/ranks/engine/input hashes. Existing evaluation-rank
+bins and a tie-preserving reference-score display candidate are explicitly distinct;
+the latter has no default/operating adoption pending owner basis clarification.

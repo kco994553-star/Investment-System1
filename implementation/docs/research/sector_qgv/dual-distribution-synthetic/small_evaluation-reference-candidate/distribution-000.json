@@ -1,0 +1,49 @@
+{
+  "schema_version": "qgv-dual-factor-distribution-part/1",
+  "parts": [
+    {
+      "group_id": "U1|COMMON|debt_assets",
+      "rows": [
+        {
+          "company_id": "SYN-000",
+          "score": 100,
+          "rank": 1,
+          "rank_n": 3,
+          "stored_decile": null,
+          "stored_decile_status": "SAMPLE_LT_10",
+          "decile": 10,
+          "decile_status": "VALID",
+          "score_status": "VALID",
+          "raw_status": "VALID",
+          "kind": "ADDITIONAL"
+        },
+        {
+          "company_id": "SYN-001",
+          "score": 50,
+          "rank": 2,
+          "rank_n": 3,
+          "stored_decile": null,
+          "stored_decile_status": "SAMPLE_LT_10",
+          "decile": 6,
+          "decile_status": "VALID",
+          "score_status": "VALID",
+          "raw_status": "VALID",
+          "kind": "ADDITIONAL"
+        },
+        {
+          "company_id": "SYN-002",
+          "score": 0,
+          "rank": 3,
+          "rank_n": 3,
+          "stored_decile": null,
+          "stored_decile_status": "SAMPLE_LT_10",
+          "decile": 1,
+          "decile_status": "VALID",
+          "score_status": "VALID",
+          "raw_status": "VALID",
+          "kind": "ADDITIONAL"
+        }
+      ]
+    }
+  ]
+}

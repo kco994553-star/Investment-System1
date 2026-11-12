@@ -1,0 +1,783 @@
+{
+  "schema_version": "qgv-dual-distribution-cases/1",
+  "data_kind": "SYNTHETIC",
+  "synthetic_method": "Hand-worked stored-score result fixtures; no live company input, engine score calculation or performance validation.",
+  "cases": [
+    {
+      "case_id": "all_ten-stored",
+      "source": "all_ten-source.json",
+      "source_sha256": "33176beda0e5d5e08b820c64d53e1720df18e6528feec400ed3944eea210282e",
+      "display_policy": "stored-evaluation-deciles/1",
+      "output": "all_ten-stored",
+      "manifest_sha256": "d07a4518ffcea47d45539dba80b956688274e1b4a8fff1f352de6062fc9a14ea",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 2
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 2
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": false
+    },
+    {
+      "case_id": "all_ten-reference-candidate",
+      "source": "all_ten-source.json",
+      "source_sha256": "33176beda0e5d5e08b820c64d53e1720df18e6528feec400ed3944eea210282e",
+      "display_policy": "reference-score-deciles/1",
+      "output": "all_ten-reference-candidate",
+      "manifest_sha256": "3c1b87847144ce245fb76b9378e6e5a8f311c812e577891186d3a2c256eb7d59",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 3
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 1
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": true
+    },
+    {
+      "case_id": "equal_scores-stored",
+      "source": "equal_scores-source.json",
+      "source_sha256": "6517af1a603aa6c398d3542249c6b28d42cfb9dc7d38f3790a7ab8864bf277b1",
+      "display_policy": "stored-evaluation-deciles/1",
+      "output": "equal_scores-stored",
+      "manifest_sha256": "bbe2c80864d31be3109bb55cc363d51670b68ff7247c5ecff1dda8c72ca33bae",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 2
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 2
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": false
+    },
+    {
+      "case_id": "equal_scores-reference-candidate",
+      "source": "equal_scores-source.json",
+      "source_sha256": "6517af1a603aa6c398d3542249c6b28d42cfb9dc7d38f3790a7ab8864bf277b1",
+      "display_policy": "reference-score-deciles/1",
+      "output": "equal_scores-reference-candidate",
+      "manifest_sha256": "939df4a4aed8c5e8001a068994edbe3ef035d6c29b0d3c73f307c0ea2e9d412e",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 0
+          },
+          {
+            "decile": 9,
+            "count": 0
+          },
+          {
+            "decile": 8,
+            "count": 0
+          },
+          {
+            "decile": 7,
+            "count": 0
+          },
+          {
+            "decile": 6,
+            "count": 20
+          },
+          {
+            "decile": 5,
+            "count": 0
+          },
+          {
+            "decile": 4,
+            "count": 0
+          },
+          {
+            "decile": 3,
+            "count": 0
+          },
+          {
+            "decile": 2,
+            "count": 0
+          },
+          {
+            "decile": 1,
+            "count": 0
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": true
+    },
+    {
+      "case_id": "small_evaluation-stored",
+      "source": "small_evaluation-source.json",
+      "source_sha256": "2b760e125c1a4d22f5c479b9b81e8071038f70472ae36324ed64700d880e4370",
+      "display_policy": "stored-evaluation-deciles/1",
+      "output": "small_evaluation-stored",
+      "manifest_sha256": "81e22dce33cc8b972a691a97baeba19b684c7fc5774ef7415d544b9f979333e6",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 0
+          },
+          {
+            "decile": 9,
+            "count": 0
+          },
+          {
+            "decile": 8,
+            "count": 0
+          },
+          {
+            "decile": 7,
+            "count": 0
+          },
+          {
+            "decile": 6,
+            "count": 0
+          },
+          {
+            "decile": 5,
+            "count": 0
+          },
+          {
+            "decile": 4,
+            "count": 0
+          },
+          {
+            "decile": 3,
+            "count": 0
+          },
+          {
+            "decile": 2,
+            "count": 0
+          },
+          {
+            "decile": 1,
+            "count": 0
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        3
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": false
+    },
+    {
+      "case_id": "small_evaluation-reference-candidate",
+      "source": "small_evaluation-source.json",
+      "source_sha256": "2b760e125c1a4d22f5c479b9b81e8071038f70472ae36324ed64700d880e4370",
+      "display_policy": "reference-score-deciles/1",
+      "output": "small_evaluation-reference-candidate",
+      "manifest_sha256": "8509e41accaf3e8a434083ddc13d6381889f446a3c65566ff64758057cb5d107",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 1
+          },
+          {
+            "decile": 9,
+            "count": 0
+          },
+          {
+            "decile": 8,
+            "count": 0
+          },
+          {
+            "decile": 7,
+            "count": 0
+          },
+          {
+            "decile": 6,
+            "count": 1
+          },
+          {
+            "decile": 5,
+            "count": 0
+          },
+          {
+            "decile": 4,
+            "count": 0
+          },
+          {
+            "decile": 3,
+            "count": 0
+          },
+          {
+            "decile": 2,
+            "count": 0
+          },
+          {
+            "decile": 1,
+            "count": 1
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": true
+    },
+    {
+      "case_id": "missing_reference-stored",
+      "source": "missing_reference-source.json",
+      "source_sha256": "04da3cd5c2bfc5d6aeec1922382484fe59b86366fea0420ed6a0959f130479a2",
+      "display_policy": "stored-evaluation-deciles/1",
+      "output": "missing_reference-stored",
+      "manifest_sha256": "960e92ce069211ebb344957cdc8f0b86baa1329ee5904474e11f4666c491eeeb",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 0
+          },
+          {
+            "decile": 9,
+            "count": 0
+          },
+          {
+            "decile": 8,
+            "count": 0
+          },
+          {
+            "decile": 7,
+            "count": 0
+          },
+          {
+            "decile": 6,
+            "count": 0
+          },
+          {
+            "decile": 5,
+            "count": 0
+          },
+          {
+            "decile": 4,
+            "count": 0
+          },
+          {
+            "decile": 3,
+            "count": 0
+          },
+          {
+            "decile": 2,
+            "count": 0
+          },
+          {
+            "decile": 1,
+            "count": 0
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        20
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": false
+    },
+    {
+      "case_id": "missing_reference-reference-candidate",
+      "source": "missing_reference-source.json",
+      "source_sha256": "04da3cd5c2bfc5d6aeec1922382484fe59b86366fea0420ed6a0959f130479a2",
+      "display_policy": "reference-score-deciles/1",
+      "output": "missing_reference-reference-candidate",
+      "manifest_sha256": "41df9250d3e9468a51831b7df6e0c21965eab165c46af90d277d6300b6936dff",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 0
+          },
+          {
+            "decile": 9,
+            "count": 0
+          },
+          {
+            "decile": 8,
+            "count": 0
+          },
+          {
+            "decile": 7,
+            "count": 0
+          },
+          {
+            "decile": 6,
+            "count": 0
+          },
+          {
+            "decile": 5,
+            "count": 0
+          },
+          {
+            "decile": 4,
+            "count": 0
+          },
+          {
+            "decile": 3,
+            "count": 0
+          },
+          {
+            "decile": 2,
+            "count": 0
+          },
+          {
+            "decile": 1,
+            "count": 0
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        20
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": true
+    },
+    {
+      "case_id": "sector_groups-stored",
+      "source": "sector_groups-source.json",
+      "source_sha256": "16eb7a9d571d2e029dae362febda8953607a4159d7e36e00b90a70b74f37112a",
+      "display_policy": "stored-evaluation-deciles/1",
+      "output": "sector_groups-stored",
+      "manifest_sha256": "695e9de0c627a650402be860a03bb8977867e2ae64573472da6cabe098ce527a",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 2
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 2
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ],
+        [
+          {
+            "decile": 10,
+            "count": 2
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 2
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0,
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": false
+    },
+    {
+      "case_id": "sector_groups-reference-candidate",
+      "source": "sector_groups-source.json",
+      "source_sha256": "16eb7a9d571d2e029dae362febda8953607a4159d7e36e00b90a70b74f37112a",
+      "display_policy": "reference-score-deciles/1",
+      "output": "sector_groups-reference-candidate",
+      "manifest_sha256": "a7ae0e6f7d56463319c1ef5172bd731f95e345fe7bbc18207ffd2e3fd4722e7c",
+      "expected_bins": [
+        [
+          {
+            "decile": 10,
+            "count": 3
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 1
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ],
+        [
+          {
+            "decile": 10,
+            "count": 3
+          },
+          {
+            "decile": 9,
+            "count": 2
+          },
+          {
+            "decile": 8,
+            "count": 2
+          },
+          {
+            "decile": 7,
+            "count": 2
+          },
+          {
+            "decile": 6,
+            "count": 2
+          },
+          {
+            "decile": 5,
+            "count": 2
+          },
+          {
+            "decile": 4,
+            "count": 2
+          },
+          {
+            "decile": 3,
+            "count": 2
+          },
+          {
+            "decile": 2,
+            "count": 1
+          },
+          {
+            "decile": 1,
+            "count": 2
+          }
+        ]
+      ],
+      "expected_unavailable": [
+        0,
+        0
+      ],
+      "query_example": {
+        "deciles": [
+          10,
+          1
+        ],
+        "must_preserve": [
+          "rank",
+          "rank_n",
+          "evaluation_population",
+          "reference_population",
+          "comparison_group"
+        ]
+      },
+      "reference_candidate_not_approved_default": true
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "U1": {
+    "schema_version": "qgv-dual-board/1",
+    "model_id": "unified-roa-core/0.1.0",
+    "model_version": "0.1.0",
+    "evaluation_population": {
+      "id": "SYN-EVALUATION",
+      "version": "1",
+      "members_hash": "d2537788b490ebf0f6da577eefcdfdca6dc1c0df5d885963cead2c08c0da63cf",
+      "valuation_date": "2026-11-04",
+      "as_of": "2026-11-04T20:00:00Z",
+      "code_rows": 20,
+      "issuers": 20,
+      "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "reference_population": {
+      "id": "SYN-REFERENCE",
+      "version": "1",
+      "input_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "members_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+      "factor_members_hash": "1d8ebedbda1994da9217955b6daa8a4c5b7fca62e3d7b868a486157c2ce106df"
+    },
+    "configuration": {
+      "minimum": 20
+    },
+    "normalization_version": "common-midrank-strict20/1",
+    "bindings": {
+      "evaluation": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "d2537788b490ebf0f6da577eefcdfdca6dc1c0df5d885963cead2c08c0da63cf",
+        "valuation_date": "2026-11-04",
+        "as_of": "2026-11-04T20:00:00Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "reference": {
+        "input_hash": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    },
+    "engine_version": "SYN-ENGINE",
+    "adapter_version": "SYN-ADAPTER",
+    "rows": [
+      {
+        "company_id": "SYN-000",
+        "issuer_id": "issuer:000",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-001",
+        "issuer_id": "issuer:001",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-002",
+        "issuer_id": "issuer:002",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-003",
+        "issuer_id": "issuer:003",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-004",
+        "issuer_id": "issuer:004",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-005",
+        "issuer_id": "issuer:005",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-006",
+        "issuer_id": "issuer:006",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-007",
+        "issuer_id": "issuer:007",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-008",
+        "issuer_id": "issuer:008",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-009",
+        "issuer_id": "issuer:009",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-010",
+        "issuer_id": "issuer:010",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-011",
+        "issuer_id": "issuer:011",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-012",
+        "issuer_id": "issuer:012",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-013",
+        "issuer_id": "issuer:013",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-014",
+        "issuer_id": "issuer:014",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-015",
+        "issuer_id": "issuer:015",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-016",
+        "issuer_id": "issuer:016",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-017",
+        "issuer_id": "issuer:017",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-018",
+        "issuer_id": "issuer:018",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-019",
+        "issuer_id": "issuer:019",
+        "security_id": null,
+        "ranking_scope": "COMMON",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": null,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE",
+            "valid_n": 19,
+            "score_status": "PEER_SAMPLE_SMALL",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      }
+    ],
+    "groups": [
+      {
+        "ranking_scope": "COMMON",
+        "variant_id": "debt_assets",
+        "valid_n": 19,
+        "members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333"
+      }
+    ],
+    "result_hash": "44240217b57816dcf50bf96102a3dbcb229fe588e37744bf1c363f2ccd5d39df"
+  }
+}
