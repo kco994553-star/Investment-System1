@@ -86,7 +86,7 @@ def test_source_pin_and_policy_are_separate_from_internal_consistency():
 
 def test_public_examples_match_exact_members_and_pins():
     root=Path(__file__).resolve().parents[2]/'docs/research/sector_qgv/dual-bin-synthetic'
-    cases=json.loads((root/'cases.json').read_bytes())['cases'];assert len(cases)==5
+    cases=json.loads((root/'cases.json').read_bytes())['cases'];assert len(cases)==9
     for c in cases:
         source=root/c['source'];files={p.name:p.read_bytes() for p in source.iterdir()}
         out=bin_index_artifacts(files,expected_manifest_sha256=c['source_manifest_sha256'])
@@ -115,3 +115,13 @@ def test_cli_partial_failure_does_not_create_or_overwrite_output(tmp_path):
     before={p.name:p.read_bytes() for p in dest.iterdir()}
     again=subprocess.run(cmd,env=env,capture_output=True,text=True)
     assert again.returncode==1 and before=={p.name:p.read_bytes() for p in dest.iterdir()}
+
+
+@pytest.mark.parametrize('n,counts',[(9,[0]*10),(10,[1]*10),(11,[1,2,1,1,1,1,1,1,1,1]),(17,[1,2,2,2,2,2,2,2,1,1])])
+def test_requested_small_sample_examples(n,counts):
+    root=Path(__file__).resolve().parents[2]/'docs/research/sector_qgv/dual-bin-synthetic'/f'boundary-{n}'
+    g=json.loads((root/'routing/bins-000.json').read_bytes())['groups'][0]
+    assert [b['count'] for b in g['bins']]==counts
+    assert g['reference_valid_n']==20 and g['evaluation_valid_n']==n
+    assert g['binned_evaluation_n']==(n if n>=10 else 0)
+    assert g['unavailable_count']==(0 if n>=10 else n)

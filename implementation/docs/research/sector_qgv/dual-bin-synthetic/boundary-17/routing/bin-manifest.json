@@ -1,0 +1,18 @@
+{
+  "schema_version": "qgv-dual-factor-bins-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_manifest_sha256": "89752164ca77716028c8346fbaf905b71a701f12d04e0f9dc28fcca95a311102",
+  "files": [
+    {
+      "path": "bin-index.json",
+      "size": 4210,
+      "sha256": "ed589872cae46670afb9a4b165bcb14f83a603056113cef3338bb6ad56c1aa43"
+    },
+    {
+      "path": "bins-000.json",
+      "size": 5549,
+      "sha256": "bcc20204450b3cc0abb691e50941aa9ea353f54808602f53182596ff9cfc6013"
+    }
+  ]
+}

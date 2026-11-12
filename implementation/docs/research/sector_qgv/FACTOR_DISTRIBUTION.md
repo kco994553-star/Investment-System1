@@ -219,3 +219,10 @@ synthetic distribution bytes and lists every expected company/rank in every bin.
 No company values are copied from private results. New acceptance tests cover
 missing shard, corrupted bytes, duplicated member, foreign group, mismatched
 scope/count/rank, missing bin, N<10, N=23 remainder/ties and N=230 D10>top20.
+
+Main #437/6819503612 requested N9/10/11/17/20: the additive bin fixture now
+contains nine cases (five retained cases plus four manual small-N boundaries).
+N9 has no bins with reference N20; N10 counts are all1; N11 counts D10..D1 are
+1,2,1,1,1,1,1,1,1,1; N17 counts are1,2,2,2,2,2,2,2,1,1. These explicit saved
+synthetic scores/ranks do not invoke the financial/scoring engine. Original
+synthetic distribution and all real distribution/routing bytes remain unchanged.

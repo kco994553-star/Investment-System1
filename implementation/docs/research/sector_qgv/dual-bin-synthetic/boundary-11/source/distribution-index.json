@@ -1,0 +1,249 @@
+{
+  "schema_version": "qgv-dual-factor-distribution/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "display_policy": "stored-evaluation-deciles/1",
+  "policy_state": "EXISTING_RULE",
+  "bands": [
+    {
+      "decile": 10,
+      "top_percent_from": 0,
+      "top_percent_to": 10,
+      "label": "상위 0–10%"
+    },
+    {
+      "decile": 9,
+      "top_percent_from": 10,
+      "top_percent_to": 20,
+      "label": "상위 10–20%"
+    },
+    {
+      "decile": 8,
+      "top_percent_from": 20,
+      "top_percent_to": 30,
+      "label": "상위 20–30%"
+    },
+    {
+      "decile": 7,
+      "top_percent_from": 30,
+      "top_percent_to": 40,
+      "label": "상위 30–40%"
+    },
+    {
+      "decile": 6,
+      "top_percent_from": 40,
+      "top_percent_to": 50,
+      "label": "상위 40–50%"
+    },
+    {
+      "decile": 5,
+      "top_percent_from": 50,
+      "top_percent_to": 60,
+      "label": "상위 50–60%"
+    },
+    {
+      "decile": 4,
+      "top_percent_from": 60,
+      "top_percent_to": 70,
+      "label": "상위 60–70%"
+    },
+    {
+      "decile": 3,
+      "top_percent_from": 70,
+      "top_percent_to": 80,
+      "label": "상위 70–80%"
+    },
+    {
+      "decile": 2,
+      "top_percent_from": 80,
+      "top_percent_to": 90,
+      "label": "상위 80–90%"
+    },
+    {
+      "decile": 1,
+      "top_percent_from": 90,
+      "top_percent_to": 100,
+      "label": "상위 90–100%"
+    }
+  ],
+  "boards": {
+    "U1": {
+      "model_id": "unified-roa-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "c42080f01b109ed1221d7b673e226bb5bca3b31362d5d61cd4410260c9e169c1",
+        "valuation_date": "2026-11-04",
+        "as_of": "2026-11-04T20:00:00Z",
+        "code_rows": 11,
+        "issuers": 11,
+        "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "input_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+        "members_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+        "factor_members_hash": "a2a9ab85d3b03a322ad37d8ecc83e4e6b9c60bb98dbb237a2583683e7524bade"
+      },
+      "bindings": {
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "c42080f01b109ed1221d7b673e226bb5bca3b31362d5d61cd4410260c9e169c1",
+          "valuation_date": "2026-11-04",
+          "as_of": "2026-11-04T20:00:00Z",
+          "code_rows": 11,
+          "issuers": 11,
+          "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "reference": {
+          "input_hash": "4444444444444444444444444444444444444444444444444444444444444444"
+        }
+      },
+      "result_hash": "a0db99bb8915dd6334b8f3e4b5a90661067c6c0ffed7e108d74bcef3ff2dcbb3",
+      "normalization_version": "common-midrank-strict20/1",
+      "engine_version": "SYN-ENGINE",
+      "adapter_version": "SYN-ADAPTER",
+      "configuration_hash": "ddd93dc714dbcb761598cdc1d2a290d49d3b7dbe9dfca2610356d33318605b71",
+      "source_result_sha256": "cbd62c2bd60b174efa2f4e7d7f5e0c3cf4966668760647b33c931c1bcf9a2486"
+    }
+  },
+  "companies": [
+    {
+      "company_id": "SYN-000",
+      "issuer_id": "issuer:000",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-001",
+      "issuer_id": "issuer:001",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-002",
+      "issuer_id": "issuer:002",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-003",
+      "issuer_id": "issuer:003",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-004",
+      "issuer_id": "issuer:004",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-005",
+      "issuer_id": "issuer:005",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-006",
+      "issuer_id": "issuer:006",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-007",
+      "issuer_id": "issuer:007",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-008",
+      "issuer_id": "issuer:008",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-009",
+      "issuer_id": "issuer:009",
+      "security_id": null
+    },
+    {
+      "company_id": "SYN-010",
+      "issuer_id": "issuer:010",
+      "security_id": null
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "U1|COMMON|debt_assets",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "debt_assets",
+      "raw_direction": "LOWER",
+      "score_direction": "HIGHER_IS_BETTER",
+      "evaluation_rows_in_scope": 11,
+      "evaluation_valid_n": 11,
+      "reference_valid_n": 20,
+      "comparison_group": {
+        "role": "EVALUATION_VALID",
+        "unit": "EVALUATION_CODE_ROW",
+        "n": 11,
+        "members_hash": "c42080f01b109ed1221d7b673e226bb5bca3b31362d5d61cd4410260c9e169c1"
+      },
+      "reference_members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "reference_issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 1
+        },
+        {
+          "decile": 9,
+          "count": 2
+        },
+        {
+          "decile": 8,
+          "count": 1
+        },
+        {
+          "decile": 7,
+          "count": 1
+        },
+        {
+          "decile": 6,
+          "count": 1
+        },
+        {
+          "decile": 5,
+          "count": 1
+        },
+        {
+          "decile": 4,
+          "count": 1
+        },
+        {
+          "decile": 3,
+          "count": 1
+        },
+        {
+          "decile": 2,
+          "count": 1
+        },
+        {
+          "decile": 1,
+          "count": 1
+        }
+      ],
+      "unavailable_count": 0,
+      "unavailable_reasons": {},
+      "legacy_tie_splits": [],
+      "files": [
+        "distribution-000.json"
+      ]
+    }
+  ],
+  "rank_policy": "UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL",
+  "minimum_reference_score_n": 20,
+  "minimum_stored_evaluation_decile_n": 10,
+  "complete_evaluation_rows": true,
+  "filter_changes_population": false,
+  "rank_recalculated": false,
+  "additional_factor_score_contribution": 0,
+  "new_score_calculations": 0,
+  "whole_market_denominator": null,
+  "whole_market_coverage": null
+}
