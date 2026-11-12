@@ -123,6 +123,13 @@ test('bound to the checked delivery: same models, results, populations, date and
   for (const g of ok.value.groups) assert.equal(DQ.distributionGroup(ok.value, g.group_id, m).ok, true, g.group_id);
   const u1 = ok.value.groups.find((g) => g.board === 'U1'), G = DQ.distributionGroup(ok.value, u1.group_id, m).value, gv = DQ.distributionView(ok.value, G, { band: 'NONE' });
   assert.match(gv.head, /U1 · .+ · 통합 비교집단\(평가 집단 전체\)$/); assert.equal(gv.unavailable.count, 3);
+  // The input state rides with the results: operating504 without its reference anchor is an unverified view; with it, verified.
+  assert.equal(gv.inputVerified, false); assert.match(gv.input, /^입력 검증 미완료 · 미검증 조회 · 평가 입력 = 지금 받은 결과의 입력/);
+  const ab = new Uint8Array(F.referenceAnchor()), va = (await DQ.checkDelivery({ manifest: file(d.files, 'manifest.json'), summary: file(d.files, 'summary.json'), index: file(d.files, 'index.json'),
+    reference_anchor: { bytes: ab, body: JSON.parse(Buffer.from(ab).toString('utf8')) } }, { scope: 'operating504', anchor: F.anchor(), sha256 })).value;
+  const okA = (await DQ.checkDistribution(parts(F.distribution(d)), va, sha256)).value, GA = DQ.distributionGroup(okA, u1.group_id, await load(okA, F.distribution(d))).value;
+  const gvA = DQ.distributionView(okA, GA); assert.equal(gvA.inputVerified, true); assert.match(gvA.input, /^입력 검증 완료 · .+참조 입력 = 생산자 독립 기준/);
+  assert.equal(DQ.inputVerified(v), false); assert.equal(DQ.inputVerified(va), true); assert.equal(DQ.inputVerified({ input_check: 'EVALUATION_INPUT_PROJECTION_ATTESTED' }), false, 'only a checked delivery');
   assert.ok(ok.value.groups.filter((g) => g.board === 'S1').every((g) => /^SECTOR\|/.test(g.ranking_scope)), 'S1 groups are sector groups only');
   const bad = async (edit) => (await DQ.checkDistribution(parts(F.distribution(d, edit)), v, sha256)).code;
   assert.equal(await bad((docs) => { docs['distribution-index.json'].boards.U1.result_hash = 'a'.repeat(64); }), 'DIST_BOARD_MISMATCH', 'another result');

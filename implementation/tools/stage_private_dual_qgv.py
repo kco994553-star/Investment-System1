@@ -8,7 +8,8 @@ re-serializes nothing and fetches nothing.
 
   python implementation/tools/stage_private_dual_qgv.py --delivery <delivery/<scope> dir> --scope operating504|held1057 \
       --manifest-sha256 <that manifest's SHA-256 as the pinned handoff manifest names it> --data-dir <private data branch checkout> \
-      [--input-lineage <input-lineage.json> --input-lineage-sha256 <its SHA-256 as the pinned handoff manifest names it>]   (held1057 only)
+      [--input-lineage <input-lineage.json> --input-lineage-sha256 <its SHA-256 as the pinned handoff manifest names it>]   (held1057: required,
+      or --unverified to stage it explicitly unverified)
 
 Checks, all before anything is written:
 - manifest.json's own SHA-256 equals --manifest-sha256 (the pin; the files' own hashes alone prove nothing), its schema is
@@ -184,7 +185,7 @@ def check_lineage(path: Path, pin: str, scope: str, summary: dict) -> bytes:
     return data
 
 
-def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None) -> tuple:
+def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None, unverified: bool = False) -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
     if not (data_dir / 'classification').is_dir():
@@ -192,6 +193,10 @@ def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = 
     if (lineage is None) != (lineage_pin is None):
         raise StageError('LINEAGE_PIN_REQUIRED')
     files, manifest, summary = check(delivery, scope, pin, data_dir)
+    # held1057's evaluation input: the strict path needs the producer's projection proof; staging without it is an explicit choice
+    # (--unverified) and the delivery stays REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED on every screen (owner 2026-11-12 §2).
+    if SCOPES[scope][1] == 'reference' and lineage is None and not unverified:
+        raise StageError('LINEAGE_REQUIRED')
     if lineage is not None:
         files = {**files, LINEAGE_FILE: check_lineage(lineage, lineage_pin, scope, summary)}
     target = data_dir / 'classification' / 'dual' / scope
@@ -228,9 +233,10 @@ def main(argv=None) -> int:
     parser.add_argument('--data-dir', required=True, type=Path)
     parser.add_argument('--input-lineage', type=Path)
     parser.add_argument('--input-lineage-sha256')
+    parser.add_argument('--unverified', action='store_true', help='held1057 only: stage without a projection proof; its evaluation input stays UNVERIFIED')
     args = parser.parse_args(argv)
     try:
-        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir, args.input_lineage, args.input_lineage_sha256)
+        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir, args.input_lineage, args.input_lineage_sha256, args.unverified)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_QGV refused=' + str(error))
         return 1

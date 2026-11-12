@@ -77,8 +77,9 @@ const LEADER_FILE = { dual_leaders_manifest: 'factor-leaders-manifest.json', dua
   dual_leaders_selection_manifest: 'factor-leaders-selection-manifest.json', dual_leaders_selection: 'factor-leaders-selection.json' };
 // A full factor distribution bound to this held1057 delivery (test-made projection of its stored factor values, Codex's
 // qgv-dual-factor-distribution/1 shape; Codex's own synthetic cases are read in web_app_dual_distribution_node_test.js).
-const DIST = DF.distribution(DUAL);
-const DIST_FILE = { dual_dist_manifest: 'distribution-manifest.json', dual_dist_index: 'distribution-index.json' };
+const DIST = { ...DF.distribution(DUAL) };
+Object.assign(DIST, DF.bins(DIST)); // its all-bin routing (test-made, Codex's qgv-dual-factor-bins/1 shape)
+const DIST_FILE = { dual_dist_manifest: 'distribution-manifest.json', dual_dist_index: 'distribution-index.json', dual_bins_manifest: 'bin-manifest.json', dual_bins_index: 'bin-index.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
   coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
@@ -119,9 +120,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
         const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
         const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] || part === 'dual_lineage' ? part + '/' + scope : part;
-        if (DIST_FILE[part] || part === 'dual_dist_detail') {
-          const dkey = part === 'dual_dist_detail' ? part + '/' + scope + '/' + shard : part + '/' + scope;
-          const name = part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : DIST_FILE[part], b = scope === 'held1057' ? DIST[name] : undefined;
+        if (DIST_FILE[part] || part === 'dual_dist_detail' || part === 'dual_bins_detail') {
+          const dkey = /_detail$/.test(part) ? part + '/' + scope + '/' + shard : part + '/' + scope;
+          const name = part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : part === 'dual_bins_detail' ? 'bins-' + shard + '.json' : DIST_FILE[part], b = scope === 'held1057' ? DIST[name] : undefined;
           const d = (w.answers[dkey] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
           await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
         }
@@ -474,13 +475,20 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
           await page.waitForTimeout(5200); await page.locator('[data-dual-dist-open=held1057]').click();
           await page.waitForFunction(() => { const e = document.querySelector('[data-dual-dist] [data-dual-dist-state]'); return e && /DIST_BOARD_MISMATCH/.test(e.textContent); }, null, { timeout: 30000 });
           assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state]'), /^10분위 자료를 쓰지 않음 · 이 연구 결과가 아닌 다른 결과의 분위입니다 · DIST_BOARD_MISMATCH /);
+          // Half of the bin routing (its index missing) refuses the click: the distribution alone is never shown as routed.
+          delete w.answers['dual_dist_manifest/held1057']; delete w.answers['dual_dist_index/held1057'];
+          w.answers['dual_bins_index/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+          await page.waitForTimeout(5200); await page.locator('[data-dual-dist-open=held1057]').click();
+          await page.waitForFunction(() => { const e = document.querySelector('[data-dual-dist] [data-dual-dist-state]'); return e && /BINS_INCOMPLETE/.test(e.textContent); }, null, { timeout: 30000 });
+          assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state]'), /^10분위 자료를 쓰지 않음 · 구간 색인 파일이 반만 있습니다 · BINS_INCOMPLETE /);
+          delete w.answers['dual_bins_index/held1057'];
         }
         delete w.answers['dual_dist_manifest/held1057']; delete w.answers['dual_dist_index/held1057'];
         await page.waitForTimeout(5200);
         const z0 = w.log.length; await page.locator('[data-dual-dist-open=held1057]').click();
         await page.locator('[data-dual-dist-model=held1057]').waitFor({ timeout: 30000 });
-        assert.deepEqual(w.log.slice(z0).map((x) => x.path), ['manifest', 'index'].map((p) => '/kis/classification?part=dual_dist_' + p + '&scope=held1057'), phase + ': two reads');
-        assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state=READY]'), /^목록표·색인 검증됨 · 요소 묶음 \d+개\(기업 수 아님\) · 저장된 평가 순위 분위 · 평가 기업 전체 · 분위 없음도 사유와 함께$/);
+        assert.deepEqual(w.log.slice(z0).map((x) => x.path), ['dist_manifest', 'dist_index', 'bins_manifest', 'bins_index'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': four reads');
+        assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state=READY]'), /^목록표·색인 검증됨 · 요소 묶음 \d+개\(기업 수 아님\) · 저장된 평가 순위 분위 · 평가 기업 전체 · 분위 없음도 사유와 함께 · 구간 색인 검증됨$/);
         await page.locator('[data-dual-dist-model=held1057]').selectOption('U1');
         const zg = JSON.parse(DIST['distribution-index.json'].toString('utf8')).groups.find((g) => g.board === 'U1');
         await page.locator('[data-dual-dist-group=held1057]').selectOption(zg.group_id);
@@ -494,7 +502,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.waitForTimeout(5200);
         const z1 = w.log.length; await page.locator('[data-dual-dist-show=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-dist-bands="' + zg.group_id + '"]').waitFor({ timeout: 30000 });
-        assert.deepEqual(w.log.slice(z1).map((x) => x.path), ['/kis/classification?part=dual_dist_detail&scope=held1057&shard=000'], phase + ': one part read');
+        assert.deepEqual(w.log.slice(z1).map((x) => x.path), ['/kis/classification?part=dual_dist_detail&scope=held1057&shard=000', '/kis/classification?part=dual_bins_detail&scope=held1057&shard=000'], phase + ': the part and its bins file');
+        assert.match(await text(page, '[data-dual-dist-routed=true]'), /^전체 구성원 · 구간 색인과 대조됨\(10개 구간의 개수·저장 순위·구성원 해시 일치\)$/, phase + ': every bin checked against the routing');
         assert.deepEqual(await page.locator('[data-dual-dist-band]').evaluateAll((e) => e.map((x) => x.dataset.dualDistBand)), ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'NONE'], phase + ': ten bands and the unavailable rows apart');
         assert.match(await text(page, '[data-dual-dist-band="10"]'), /^상위 0–10% · 0개$/); assert.match(await text(page, '[data-dual-dist-band="1"]'), /^상위 90–100% · 0개$/);
         assert.match(await text(page, '[data-dual-dist-band=NONE]'), new RegExp('^분위 없음 · ' + zg.unavailable_count + '개$'));

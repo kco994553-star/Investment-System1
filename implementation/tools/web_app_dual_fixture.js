@@ -159,4 +159,32 @@ function referenceAnchor(edit) {
   if (edit) edit(x);
   return Buffer.from(JSON.stringify(x, null, 2) + '\n');
 }
-module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor };
+// All-bin routing for a fixture distribution (test-made, Codex's qgv-dual-factor-bins/1 shape): every group routed to bins-000.json
+// with its ten bins (count, saved first/last rank, members hash = SHA-256 of the canonical id list in saved rank order, member files).
+const canon = (ids) => '[' + ids.map((x) => JSON.stringify(x)).join(',') + ']';
+function bins(dist, edit) {
+  const m0 = JSON.parse(dist['distribution-manifest.json'].toString('utf8')), index = JSON.parse(dist['distribution-index.json'].toString('utf8'));
+  const desc = Object.fromEntries(m0.files.map((f) => [f.path, f])), rows = {};
+  for (const f of Object.keys(dist).filter((x) => /^distribution-\d{3}\.json$/.test(x))) for (const q of JSON.parse(dist[f].toString('utf8')).parts) for (const r of q.rows) (rows[q.group_id] ||= []).push([r, f]);
+  const groups = index.groups.map((g) => {
+    const b = g.bins.map((x) => { const ms = (rows[g.group_id] || []).filter(([r]) => r.decile === x.decile).sort(([a], [c]) => a.rank - c.rank);
+      return { ...x, first_rank: ms.length ? ms[0][0].rank : null, last_rank: ms.length ? ms[ms.length - 1][0].rank : null, members_hash: sha(Buffer.from(canon(ms.map(([r]) => r.company_id)))),
+        member_files: [...new Set(ms.map(([, f]) => f))].sort().map((f) => desc[f]) }; });
+    const n = g.evaluation_valid_n;
+    return { ...g, bins: b, binned_evaluation_n: b.reduce((a, x) => a + x.count, 0), partition_status: n >= 10 ? 'COMPLETE' : n ? 'SAMPLE_LT_10' : 'NO_VALID_SCORE' };
+  });
+  const docs = { 'bin-index.json': { schema_version: 'qgv-dual-factor-bins/1', scope: index.scope, data_kind: index.data_kind,
+    source_distribution_manifest: { path: 'distribution-manifest.json', size: dist['distribution-manifest.json'].length, sha256: sha(dist['distribution-manifest.json']) },
+    source_index: desc['distribution-index.json'], display_policy: index.display_policy, boards: index.boards, bands: index.bands, groups: groups.map((g) => ({ group_id: g.group_id, path: 'bins-000.json' })),
+    rank_policy: index.rank_policy, minimum_reference_score_n: 20, minimum_stored_evaluation_decile_n: 10, tie_policy: 'PRESERVE_STORED_ORDINAL_COMPANY_ID_BOUNDARIES',
+    remainder_policy: 'D10_D1_FLOOR_N_OVER_10;MIDDLE_REMAINDER_D9_TO_D2', new_score_calculations: 0, additional_factor_score_contribution: 0, filter_changes_population: false,
+    whole_market_denominator: null, whole_market_coverage: null }, 'bins-000.json': { schema_version: 'qgv-dual-factor-bins-part/1', groups } };
+  const m = { schema_version: 'qgv-dual-factor-bins-manifest/1', scope: index.scope, data_kind: index.data_kind, source_manifest_sha256: sha(dist['distribution-manifest.json']), files: [] };
+  if (edit) edit(docs, m);
+  const out = {};
+  for (const f of Object.keys(docs)) out[f] = json(docs[f]);
+  m.files = Object.keys(docs).sort().map((f) => ({ path: f, size: out[f].length, sha256: sha(out[f]) }));
+  out['bin-manifest.json'] = json(m);
+  return out;
+}
+module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor, bins };

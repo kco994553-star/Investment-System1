@@ -54,7 +54,8 @@ def _setup(tmp_path, scope='operating504', edit=None, coverage_edit=None):
 @pytest.mark.parametrize('scope', ['operating504', 'held1057'])
 def test_stages_every_file_byte_for_byte(tmp_path, capsys, scope):
     delivery, data, pin = _setup(tmp_path, scope)
-    assert tool.main(['--delivery', str(delivery), '--scope', scope, '--manifest-sha256', pin, '--data-dir', str(data)]) == 0
+    extra = ['--unverified'] if scope == 'held1057' else []
+    assert tool.main(['--delivery', str(delivery), '--scope', scope, '--manifest-sha256', pin, '--data-dir', str(data)] + extra) == 0
     out = data / 'classification' / 'dual' / scope
     assert sorted(p.name for p in out.iterdir()) == sorted(FILES + ('manifest.json',))
     for p in delivery.iterdir():
@@ -122,6 +123,14 @@ def test_refusals_keep_the_existing_copy(tmp_path, kind, code):
         tool.stage(delivery, scope, pin, data)
     assert str(error.value) == code
     assert (old / 'kept.json').read_text() == '{}' and sorted(p.name for p in old.iterdir()) == ['kept.json']
+
+
+def test_held_scope_needs_its_projection_proof_or_an_explicit_unverified_choice(tmp_path):
+    delivery, data, pin = _setup(tmp_path, 'held1057')
+    with pytest.raises(tool.StageError, match='^LINEAGE_REQUIRED$'):
+        tool.stage(delivery, 'held1057', pin, data)
+    assert not (data / 'classification' / 'dual' / 'held1057').exists()
+    assert tool.main(['--delivery', str(delivery), '--scope', 'held1057', '--manifest-sha256', pin, '--data-dir', str(data)]) == 1
 
 
 def test_held_scope_is_tied_by_the_reference_input_not_the_evaluation_projection(tmp_path):

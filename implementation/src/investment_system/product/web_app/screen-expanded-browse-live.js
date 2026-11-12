@@ -228,12 +228,18 @@ function block(anchor){
    const draw=()=>{const held=DQ.ram.get(scope);if(!held)return;const S=DISTS.get(held);
     if(!S){const b=h('button',{type:'button',class:'btn',dataset:{dualDistOpen:scope}},'요소 10분위 전체 불러오기 (목록표·색인)');
      const st=h('p',{class:'reason',role:'status',dataset:{dualDistState:'IDLE'}},'요소마다 평가 기업 전체를 10개 구간으로 · 위 상위권은 상위 20개 미리보기');
-     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualDistState='LOADING';st.textContent='불러오는 중 · 10분위 목록표·색인 2개 · 서버 요청 간격 5초';
-      let p;try{p=I.prices.kisRead(e,[['classification','dual_dist_manifest/'+scope],['classification','dual_dist_index/'+scope]]);}catch(err){p=Promise.reject(err);}
-      Promise.resolve(p).then(async([manifest,index])=>{const r=await DQ.checkDistribution({manifest,index},held.delivery,E().sha256);
+     // The all-bin routing (Codex qgv-dual-factor-bins/1) is OPTIONAL, but one that is delivered must check: half of it, or one that
+     // disagrees, refuses the click (the distribution alone is never shown as routed).
+     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualDistState='LOADING';st.textContent='불러오는 중 · 10분위 목록표·색인 + 구간 색인 4개(구간 색인은 없으면 없음) · 서버 요청 간격 5초';
+      let p;try{p=I.prices.kisRead(e,[['classification','dual_dist_manifest/'+scope],['classification','dual_dist_index/'+scope],
+       ['classification','dual_bins_manifest/'+scope,'OPTIONAL'],['classification','dual_bins_index/'+scope,'OPTIONAL']]);}catch(err){p=Promise.reject(err);}
+      Promise.resolve(p).then(async([manifest,index,binsManifest,binsIndex])=>{let r=await DQ.checkDistribution({manifest,index},held.delivery,E().sha256),bins=null;
+       if(r.ok&&(binsManifest||binsIndex)){const q=binsManifest&&binsIndex?await DQ.checkBins({manifest:binsManifest,index:binsIndex},r.value,E().sha256):{ok:false,code:'BINS_INCOMPLETE',path:'bins'};
+        if(q.ok)bins=q.value;else r=q;}
        if(!r.ok){st.dataset.dualDistState='ERROR';st.textContent='10분위 자료를 쓰지 않음 · '+(r.code==='DIST_BOARD_MISMATCH'||r.code==='COMPANIES_MISMATCH'?'이 연구 결과가 아닌 다른 결과의 분위입니다'
+        :r.code==='BINS_SOURCE_MISMATCH'?'구간 색인이 이 분위 파일의 것이 아닙니다':r.code==='BINS_INCOMPLETE'?'구간 색인 파일이 반만 있습니다'
         :r.code==='POLICY_NOT_CONFIRMED'?'오너 기준 확인 전의 표시 후보입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
-       DISTS.set(held,{value:r.value,parts:new Map(),board:null,group:null,band:null,page:0,view:null});draw();},
+       DISTS.set(held,{value:r.value,bins,binParts:new Map(),parts:new Map(),board:null,group:null,band:null,page:0,view:null,routed:false});draw();},
       err=>{const c=codeOf(err);st.dataset.dualDistState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'10분위 전체 자료가 전달 위치에 없습니다(배치 전) · 위 상위 20개 미리보기만 있음 · 10분위 전체 조회 아님':say(c))+' · 위 결과는 그대로';b.disabled=false;})
       .finally(()=>{busy=false;});});
      area.replaceChildren(h('h5',null,'요소 10분위 전체'),b,st);return;}
@@ -255,8 +261,10 @@ function block(anchor){
        (()=>{const x=h('button',{type:'button',class:'btn',disabled:v.page===0,dataset:{dualDistPage:'prev'}},'이전 50개');x.addEventListener('click',()=>{S.page=v.page-1;render();});return x;})(),
        h('span',{class:'meta',dataset:{dualDistRange:''}},v.range+' · '+(v.page+1)+' / '+v.pages+'쪽'),
        (()=>{const x=h('button',{type:'button',class:'btn',disabled:v.page>=v.pages-1,dataset:{dualDistPage:'next'}},'다음 50개');x.addEventListener('click',()=>{S.page=v.page+1;render();});return x;})()):null;
-     out.replaceChildren(h('p',{class:'hand',dataset:{dualDistHead:G.group.group_id}},v.head),h('p',{class:'meta',dataset:{dualDistContext:''}},v.context),
-      h('p',{class:'meta'},v.members),h('p',{class:'reason',dataset:{dualDistPolicy:D.display_policy}},v.policy),
+     out.replaceChildren(h('p',{class:'hand',dataset:{dualDistHead:G.group.group_id}},v.head),
+      h('p',{class:'meta',dataset:{dualDistRouted:String(S.routed)}},S.routed?'전체 구성원 · 구간 색인과 대조됨(10개 구간의 개수·저장 순위·구성원 해시 일치)':'전체 구성원 · 분위 파일 전체 행으로 확인(구간 색인 없음)'),h('p',{class:'meta',dataset:{dualDistContext:''}},v.context),
+      h('p',{class:'meta'},v.members),h('p',{class:v.inputVerified?'meta':'reason',dataset:{dualDistInput:String(v.inputVerified)}},v.input),
+      h('p',{class:'reason',dataset:{dualDistPolicy:D.display_policy}},v.policy),
       h('p',{class:'meta'},'구간을 고르면 그 구간의 기업만 보임 · 순위·분위·분모는 생산자 값 그대로'),
       h('div',{class:'chips',role:'group','aria-label':'분위 구간',dataset:{dualDistBands:G.group.group_id}},...v.bands.map(b=>bandBtn(b.decile,b.label,b.count,b.selected)),
        bandBtn('NONE','분위 없음',v.unavailable.count,v.unavailable.selected)),
@@ -268,18 +276,23 @@ function block(anchor){
       :v.selected?h('p',{class:'reason',dataset:{dualDistEmpty:''}},'이 구간의 기업 0개 · 확인된 빈 구간(불러오기 실패 아님)'):null,
       pager,cmpD);};
     show.addEventListener('click',e=>{const g=D.groups.find(x=>x.group_id===S.group);if(!g||busy)return;const need=g.files.filter(f=>!S.parts.has(f));
-     const finish=()=>{const G=DQ.distributionGroup(D,g.group_id,S.parts);
-      if(!G.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'이 요소의 분위를 쓰지 않음 · '+G.code+' · '+G.path+' · 기업 없음이 아님'));return;}
-      S.view=G.value;render();};
-     if(!need.length){finish();return;}
-     busy=true;show.disabled=true;out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'LOADING'}},'분위 파일 '+need.length+'개를 불러옵니다'));
-     let p;try{p=I.prices.kisRead(e,need.map(f=>['classification','dual_dist_detail/'+scope+'/'+f.slice(13,16)]));}catch(err){p=Promise.reject(err);}
+     const binFile=S.bins?S.bins.routes[g.group_id]:null,needBin=binFile&&!S.binParts.has(binFile)?[binFile]:[];
+     const fail=(w,c,pa)=>out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},w+' · '+c+' · '+pa+' · 기업 없음이 아님'));
+     // Every bin of the group is checked against the routing (count, saved ranks, members hash) before any band is shown.
+     const finish=async()=>{const G=DQ.distributionGroup(D,g.group_id,S.parts);
+      if(!G.ok){fail('이 요소의 분위를 쓰지 않음',G.code,G.path);return;}
+      if(S.bins){const m=await DQ.binsMatchGroup(S.binParts.get(binFile).get(g.group_id),G.value,E().sha256);if(!m.ok){fail('구간 색인과 이 요소의 분위가 다름 · 쓰지 않음',m.code,m.path);return;}}
+      if(S.group!==g.group_id)return;S.view=G.value;S.routed=!!S.bins;render();};
+     if(!need.length&&!needBin.length){finish();return;}
+     busy=true;show.disabled=true;out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'LOADING'}},'분위 파일 '+need.length+'개'+(needBin.length?' + 구간 색인 1개':'')+'를 불러옵니다'));
+     let p;try{p=I.prices.kisRead(e,[...need.map(f=>['classification','dual_dist_detail/'+scope+'/'+f.slice(13,16)]),...needBin.map(f=>['classification','dual_bins_detail/'+scope+'/'+f.slice(5,8)])]);}catch(err){p=Promise.reject(err);}
      Promise.resolve(p).then(async xs=>{for(let i=0;i<need.length;i++){const r=await DQ.checkDistributionPart(xs[i],need[i],D,E().sha256);
-       if(!r.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'이 분위 파일을 쓰지 않음 · '+r.code+' · '+r.path+' · 기업 없음이 아님'));return;}S.parts.set(need[i],r.value);}
-      if(S.group===g.group_id)finish();},
+       if(!r.ok){fail('이 분위 파일을 쓰지 않음',r.code,r.path);return;}S.parts.set(need[i],r.value);}
+      if(needBin.length){const r=await DQ.checkBinsPart(xs[need.length],binFile,S.bins,E().sha256);if(!r.ok){fail('이 구간 색인 파일을 쓰지 않음',r.code,r.path);return;}S.binParts.set(binFile,r.value);}
+      if(S.group===g.group_id)await finish();},
      err=>{out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'분위 파일을 불러오지 못함 · '+say(codeOf(err))+' · 기업 없음이 아님'));}).finally(()=>{busy=false;show.disabled=!S.group;});});
     area.replaceChildren(h('h5',null,'요소 10분위 전체'),h('p',{class:'meta',dataset:{dualDistState:'READY'}},'목록표·색인 검증됨 · 요소 묶음 ',String(D.groups.length),'개(기업 수 아님) · ',
-      D.display_policy==='stored-evaluation-deciles/1'?'저장된 평가 순위 분위':'연구 표시 후보(합성)',' · 평가 기업 전체 · 분위 없음도 사유와 함께'),
+      D.display_policy==='stored-evaluation-deciles/1'?'저장된 평가 순위 분위':'연구 표시 후보(합성)',' · 평가 기업 전체 · 분위 없음도 사유와 함께',S.bins?' · 구간 색인 검증됨':' · 구간 색인 없음'),
      h('div',{class:'sort-row'},h('label',{for:mid},'모형'),mSel),h('div',{class:'sort-row'},h('label',{for:gid},'요소 · 비교 범위'),gSel),h('div',{class:'load-row'},show),out);
     if(S.view)render();};
    draw();return area;}

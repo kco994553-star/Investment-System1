@@ -38,6 +38,12 @@ const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금
 // of the retained reference candidate snapshot, pinned at staging with its byte SHA and the staged #528 view's SHA. Every board's
 // reference binding and its candidate population must be exactly that identity. The #528 view's selected-reference members are a
 // different set and are not compared as if they were the same; the original catalog binding is another population again.
+// Both sides of the input checked against an independent producer file: held1057 by its projection proof, operating504 by its
+// reference anchor (its evaluation input is the result's own). Any other state is an unverified view, said so on every screen that
+// shows the delivery's results, and never taken as verified.
+const INPUT_VERIFIED=Object.freeze(['EVALUATION_INPUT_PROJECTION_ATTESTED','EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED']);
+const inputVerified=d=>!!d&&CHECKED.has(d)&&INPUT_VERIFIED.includes(d.input_check);
+const inputLine=d=>(inputVerified(d)?'입력 검증 완료 · ':'입력 검증 미완료 · 미검증 조회 · ')+INPUT_WORD[d.input_check];
 const REF_ANCHOR_SCHEMA='qgv-dual-reference-anchor/1';
 const REF_ANCHOR_KEYS=['schema_version','scope','expected_reference','source_snapshot_sha256','source_reference_view_sha256','source_reference_view_path',
  'source_reference_view_input_hash_field','source_reference_view_members_not_interchangeable','source_original_catalog_binding','matches_all_dual_boards',
@@ -555,11 +561,85 @@ function distributionView(D,G,{band=null,page=0,sectorName}={}){const g=G.group,
  return freeze({head:MODELS[g.board].label+' · '+g.variant_id+' · '+scope,
   context:'평가 유효 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 N '+g.reference_valid_n+'(순위 분모 아님) · 원지표 '+(g.raw_direction==='LOWER'?'낮을수록 좋음':'높을수록 좋음')+' · 점수는 높을수록 좋음 · 평가일 '+b.evaluation_population.valuation_date,
   members:'비교집단 구성원 해시 '+g.comparison_group.members_hash.slice(0,12)+'… · 결과 '+b.result_hash.slice(0,12)+'…',policy,bands,
+  input:D.bound?inputLine(D.delivery):'합성 사례 · 전달본과 묶이지 않음',inputVerified:D.bound&&inputVerified(D.delivery),
   unavailable:freeze({count:g.unavailable_count,selected:band==='NONE',reasons:Object.entries(g.unavailable_reasons).map(([k,v])=>word(k)+' '+v)}),
   selected:band===null?null:band==='NONE'?'분위 없음 · '+total+'개':BAND[band]+' · 분위 '+band+' · '+total+'개'+(total?'':' · 확인된 빈 구간'),
   page:pg,pages,range:total?(pg*DIST_PAGE+1)+'–'+(pg*DIST_PAGE+slice.length)+' / '+total:'0 / 0',
   rows:slice.map(r=>freeze({company_id:r.company_id,rank:r.rank===null?'순위 없음':r.rank+' / '+r.rank_n,score:r.score===null?'미산출':fmt(r.score),
    band:r.decile===null?'분위 없음 · '+word(r.decile_status):BAND[r.decile]+'(분위 '+r.decile+')',kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
+
+// 구간 색인 (Codex qgv-dual-factor-bins/1, "All-bin routing companion /1", #529 9a51b4ae): an optional companion of one checked
+// distribution. Its manifest pins the distribution manifest (source_manifest_sha256); its index repeats the distribution's boards,
+// bands and source index descriptor and routes every group to one bins file; each group record is the distribution's own group with
+// all ten bins enriched: count, first/last SAVED rank, the members hash (SHA-256 of the canonical JSON list of company ids in saved
+// rank order) and the distribution files that hold those members. The reader checks every record against the distribution and then,
+// for a loaded group, every bin's members against its rows. Nothing is ranked or binned here.
+const BINS=Object.freeze({MANIFEST:'qgv-dual-factor-bins-manifest/1',INDEX:'qgv-dual-factor-bins/1',PART:'qgv-dual-factor-bins-part/1'});
+const BINS_PART=/^bins-\d{3}\.json$/;
+const BINS_INDEX_KEYS=['schema_version','scope','data_kind','source_distribution_manifest','source_index','display_policy','boards','bands','groups','rank_policy',
+ 'minimum_reference_score_n','minimum_stored_evaluation_decile_n','tie_policy','remainder_policy','new_score_calculations','additional_factor_score_contribution',
+ 'filter_changes_population','whole_market_denominator','whole_market_coverage'];
+const BIN_KEYS=['decile','count','first_rank','last_rank','members_hash','member_files'];
+const BINS_CHECKED=new WeakSet();
+async function checkBins(parts,D,sha256){
+ try{if(!D||!DIST_CHECKED.has(D))refuse('DISTRIBUTION_NOT_CHECKED','$');if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  const p=parts||{};if(!isObj(p.manifest)||!isObj(p.manifest.body)||!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','bins_manifest');const m=p.manifest.body;
+  exact(m,['schema_version','scope','data_kind','source_manifest_sha256','files'],'bins_manifest');
+  if(m.schema_version!==BINS.MANIFEST)refuse('SCHEMA','bins_manifest.schema_version');
+  if(m.scope!==D.scope||m.data_kind!==D.data_kind)refuse('SCOPE_MISMATCH','bins_manifest.scope');
+  if(m.source_manifest_sha256!==D.manifest_sha256)refuse('BINS_SOURCE_MISMATCH','bins_manifest.source_manifest_sha256');
+  if(!Array.isArray(m.files)||!m.files.length||m.files.length>400)refuse('FILES_INVALID','bins_manifest.files');const entries=new Map();
+  m.files.forEach((f,i)=>{exact(f,['path','size','sha256'],'bins_manifest.files['+i+']');
+   if(!(f.path==='bin-index.json'||BINS_PART.test(f.path))||entries.has(f.path)||!int(f.size)||f.size<1||f.size>MAX_BYTES||!HEX.test(f.sha256))refuse('FILES_INVALID','bins_manifest.files['+i+']');entries.set(f.path,f);});
+  const x=await bytesMatch(p.index,'bin-index.json',entries,sha256,'bins_index');exact(x,BINS_INDEX_KEYS,'bins_index');
+  if(x.schema_version!==BINS.INDEX)refuse('SCHEMA','bins_index.schema_version');
+  if(x.scope!==D.scope||x.data_kind!==D.data_kind||x.display_policy!==DIST.STORED||D.display_policy!==DIST.STORED)refuse('SCOPE_MISMATCH','bins_index');
+  if(!same(x.source_distribution_manifest,{path:'distribution-manifest.json',size:x.source_distribution_manifest&&x.source_distribution_manifest.size,sha256:D.manifest_sha256})
+   ||!int(x.source_distribution_manifest.size)||!same(x.source_index,D.entries['distribution-index.json']))refuse('BINS_SOURCE_MISMATCH','bins_index.source_distribution_manifest');
+  if(!same(x.boards,D.boards))refuse('BINS_SOURCE_MISMATCH','bins_index.boards');
+  if(!Array.isArray(x.bands)||x.bands.length!==10||x.bands.some((b,j)=>b.decile!==10-j||b.label!==BAND[b.decile]))refuse('BANDS_INVALID','bins_index.bands');
+  if(x.rank_policy!=='UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL'||x.minimum_reference_score_n!==20||x.minimum_stored_evaluation_decile_n!==10
+   ||x.tie_policy!=='PRESERVE_STORED_ORDINAL_COMPANY_ID_BOUNDARIES'||x.remainder_policy!=='D10_D1_FLOOR_N_OVER_10;MIDDLE_REMAINDER_D9_TO_D2')refuse('RULE_MISMATCH','bins_index.rank_policy');
+  if(x.new_score_calculations!==0||x.additional_factor_score_contribution!==0||x.filter_changes_population!==false||x.whole_market_denominator!==null||x.whole_market_coverage!==null)refuse('NOT_PROJECTION','bins_index');
+  // Every distribution group is routed once, to a listed bins file; every listed bins file holds a routed group.
+  if(!Array.isArray(x.groups)||x.groups.length!==D.groups.length)refuse('ROUTES_INVALID','bins_index.groups');const routes=new Map(),files=new Set();
+  x.groups.forEach((r,i)=>{exact(r,['group_id','path'],'bins_index.groups['+i+']');
+   if(!D.groups.some(g=>g.group_id===r.group_id)||routes.has(r.group_id)||!BINS_PART.test(r.path)||!entries.has(r.path))refuse('ROUTES_INVALID','bins_index.groups['+i+']');routes.set(r.group_id,r.path);files.add(r.path);});
+  for(const f of entries.keys())if(BINS_PART.test(f)&&!files.has(f))refuse('PART_UNREFERENCED','bins_manifest.files.'+f);
+  const value=freeze({dist:D,entries:Object.fromEntries(entries),routes:Object.fromEntries(routes)});BINS_CHECKED.add(value);return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// One bins file of checked bins: exactly the groups routed there; each is the distribution's own group record (every original field
+// the same) with ten bins in order whose counts are the distribution's, ranks null exactly when empty, and member files that are the
+// distribution's own file descriptors among that group's files. Returns Map group_id → routed group.
+async function checkBinsPart(file,name,B,sha256){
+ try{if(!B||!BINS_CHECKED.has(B)||!own(B.entries,name)||!BINS_PART.test(name))refuse('NOT_IN_MANIFEST',name);
+  const x=await bytesMatch(file,name,new Map(Object.entries(B.entries)),sha256,name);exact(x,['schema_version','groups'],name);
+  if(x.schema_version!==BINS.PART)refuse('SCHEMA',name+'.schema_version');const D=B.dist,want=Object.entries(B.routes).filter(([,p])=>p===name).map(([g])=>g);
+  if(!Array.isArray(x.groups)||x.groups.length!==want.length)refuse('GROUPS_MISMATCH',name+'.groups');const out=new Map();
+  x.groups.forEach((r,i)=>{const at=name+'.groups['+i+']',g=D.groups.find(y=>y.group_id===(r&&r.group_id));
+   if(!g||!want.includes(g.group_id)||out.has(g.group_id))refuse('GROUPS_MISMATCH',at+'.group_id');exact(r,[...DIST_GROUP_KEYS,'binned_evaluation_n','partition_status'],at);
+   for(const k of DIST_GROUP_KEYS)if(k!=='bins'&&!same(r[k],g[k]))refuse('GROUP_CONTEXT',at+'.'+k);
+   const n=g.evaluation_valid_n,status=n>=10?'COMPLETE':n>0?'SAMPLE_LT_10':'NO_VALID_SCORE';
+   if(!Array.isArray(r.bins)||r.bins.length!==10)refuse('BINS_INVALID',at+'.bins');let sum=0;
+   r.bins.forEach((b,j)=>{const bt=at+'.bins['+j+']';exact(b,BIN_KEYS,bt);if(b.decile!==10-j||b.count!==g.bins[j].count)refuse('BIN_COUNT',bt);sum+=b.count;
+    if(b.count?(!int(b.first_rank)||!int(b.last_rank)||b.first_rank<1||b.last_rank<b.first_rank||b.last_rank>n):(b.first_rank!==null||b.last_rank!==null))refuse('BIN_RANKS',bt);
+    if(!HEX.test(b.members_hash)||!Array.isArray(b.member_files)||(b.count?!b.member_files.length:b.member_files.length))refuse('BIN_FILES',bt);
+    b.member_files.forEach(f=>{if(!isObj(f)||!g.files.includes(f.path)||!same(f,D.entries[f.path]))refuse('BIN_FILES',bt+'.member_files');});});
+   if(r.binned_evaluation_n!==sum||r.partition_status!==status||(n>=10?sum!==n:sum!==0))refuse('BIN_PARTITION',at);out.set(g.group_id,r);});
+  return{ok:true,value:freeze(out)};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// A loaded group's rows against its routed record: in every bin, the rows carrying that decile, in saved rank order, are exactly the
+// stated count, first and last rank and members hash. Any difference refuses the whole group (never an empty or shorter band).
+async function binsMatchGroup(record,G,sha256){
+ try{if(!record||!G||record.group_id!==G.group.group_id)refuse('GROUP_MISMATCH','$');
+  for(const b of record.bins){const rows=G.rows.filter(r=>r.decile===b.decile).sort((a,c)=>a.rank-c.rank),at=record.group_id+'.D'+b.decile;
+   if(rows.length!==b.count)refuse('BIN_MEMBERS',at+'.count');
+   if(b.count&&(rows[0].rank!==b.first_rank||rows[rows.length-1].rank!==b.last_rank))refuse('BIN_MEMBERS',at+'.ranks');
+   if((await sha256(new TextEncoder().encode(canonical(rows.map(r=>r.company_id)))))!==b.members_hash)refuse('BIN_MEMBERS',at+'.members_hash');}
+  return{ok:true};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
 const RULES=Object.freeze(['U1·U2·S1 점수는 같은 척도가 아님 · 평균·합산·차이를 만들지 않음',
  '총점이 없으면 총점 순위도 없음 · 섹터 순위를 이어 붙인 통합 순위 없음',
@@ -625,5 +705,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });
