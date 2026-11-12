@@ -106,3 +106,57 @@ test('RAM: only checked views; found by the centre\'s code row; a drop tells the
   O.ram.put(v); assert.equal(O.ram.forCompany('SYN:A'), v); assert.equal(O.ram.forCompany('SYN:B'), null, 'SYN:B is not the centre of this view');
   O.ram.clear(); assert.equal(O.ram.forCompany('SYN:A'), null); assert.equal(told, 2); off();
 });
+
+// Codex #531 b53b0ec0: twelve producer-made consumer cases (consumer-synthetic.json, sha 213d8ce0…), each with its expected view and
+// byte hash, and three separate refresh-attempt receipts bound to their retained view.
+const CX = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'docs', 'research', 'company_ownership', 'consumer-synthetic.json'), 'utf8'));
+const cx = Object.fromEntries(CX.cases.map((c) => [c.case_id, c]));
+const sha256 = async (b) => crypto.createHash('sha256').update(b).digest('hex');
+const canon = (x) => Array.isArray(x) ? '[' + x.map(canon).join(',') + ']' : x !== null && typeof x === 'object' ? '{' + Object.keys(x).sort().map((k) => JSON.stringify(k) + ':' + canon(x[k])).join(',') + '}' : JSON.stringify(x);
+
+test('Codex\'s twelve consumer cases: pinned; every view reads for its centre with the producer\'s byte hash; lists as expected', () => {
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname, '..', 'docs', 'research', 'company_ownership', 'consumer-synthetic.json'))).digest('hex'), '213d8ce0f40ea02e42df945cabfe10e391193ccf45c06b0bb893a4be17774f1a');
+  assert.equal(CX.cases.length, 12);
+  for (const c of CX.cases) {
+    const r = O.validate(c.expected_view, { entityId: c.query.entity_id }); assert.equal(r.ok, true, c.case_id + ' ' + JSON.stringify(r));
+    assert.equal(crypto.createHash('sha256').update(canon(c.expected_view) + '\n').digest('hex'), c.expected_view_sha256, c.case_id + ': the producer\'s view bytes');
+  }
+  const counts = (id) => Object.fromEntries(O.view(O.validate(cx[id].expected_view).value).lists.map((l) => [l.key, l.rows.length]));
+  assert.deepEqual([counts('incoming_holder').holders, counts('incoming_holder').parents], [1, 1], 'read from the investee side');
+  assert.equal(counts('indirect_ownership').holdings, 1); assert.equal(counts('13f_investment_discretion').discretion, 1);
+  assert.equal(counts('13f_investment_discretion').holdings + counts('13f_investment_discretion').subsidiaries, 0, '13F is never own equity or control');
+  const ind = O.view(O.validate(cx.indirect_ownership.expected_view).value).lists.find((l) => l.key === 'holdings').rows[0];
+  assert.equal(ind.directness, '간접');
+});
+
+test('scope state and evidence state apart: REVIEWED_SCOPE read; a not-reviewed centre keeps the incoming relationships others confirm', () => {
+  const rs = O.view(O.validate(cx.reviewed_scope.expected_view).value);
+  assert.equal(rs.scopeState, '검토한 범위는 검토 완료 · 그 범위 밖은 모름 · 전체 관계 완결 아님');
+  const nc = O.view(O.validate(cx.incoming_centre_not_reviewed.expected_view).value);
+  assert.equal(nc.scopeState, '이 기업 자체 검토 전 · 관계가 없다는 뜻이 아님');
+  assert.match(nc.evidenceState, /^다른 기업 근거로 확인된 관계 2개\(이 기업을 향한 관계\)$/);
+  assert.ok(nc.lists.flatMap((l) => l.rows).every((r) => r.relative === 'INCOMING'));
+  assert.deepEqual(O.view(O.validate(cx.not_collected.expected_view).value).state, ['관계 자료 없음 · 수집 전 · 관계가 없다는 뜻이 아님'], 'not collected and nothing delivered');
+  assert.equal(O.view(O.validate(cx.verified_zero_in_scope.expected_view).value).scopeState, '검토한 범위에서 관계 없음 확인 · 그 범위 밖은 모름');
+  // Still refused: a not-reviewed centre stating its own (outgoing) relationship.
+  const out = JSON.parse(JSON.stringify(cx.incoming_centre_not_reviewed.expected_view)); out.relationships[0].relative_direction = 'OUTGOING';
+  assert.ok(['COLLECTION_STATE', 'RELATIVE_DIRECTION'].includes(O.validate(out).code));
+});
+
+test('refresh receipts: bound to the retained view bytes and times; shown beside the view; the view itself unchanged', async () => {
+  for (const [id, word] of [['refresh_failed', '실패'], ['refresh_partial', '일부만 성공'], ['refresh_parse_failed', '해석 실패']]) {
+    const c = cx[id], v = O.validate(c.expected_view).value, r = await O.checkReceipt(c.refresh, v, sha256);
+    assert.equal(r.ok, true, id + ' ' + JSON.stringify(r));
+    const w = O.view(v, { receipt: r.value });
+    assert.equal(w.refresh, '마지막 갱신 시도 ' + word + ' · 시도 ' + c.refresh.attempt.attempted_at + ' · 이전에 성공한 자료를 보임(성공 ' + c.refresh.unchanged_last_success_at + ' · 생성 ' + c.refresh.unchanged_generated_at + ')');
+    assert.equal(v.collection.last_failure, null, 'the producer\'s view keeps last_failure null'); assert.equal(v.generated_at, c.refresh.unchanged_generated_at);
+    assert.equal(O.view(v).refresh, null, 'no receipt, no refresh line (not a success either)');
+  }
+  const c = cx.refresh_failed, v = O.validate(c.expected_view).value, other = O.validate(cx.reviewed_scope.expected_view).value;
+  assert.equal((await O.checkReceipt(c.refresh, other, sha256)).code, 'RECEIPT_VIEW_MISMATCH', 'a receipt for another view');
+  assert.equal((await O.checkReceipt({ ...c.refresh, unchanged_generated_at: '2026-01-06T00:00:00Z' }, v, sha256)).code, 'RECEIPT_VIEW_MISMATCH', 'a changed time');
+  assert.equal((await O.checkReceipt({ ...c.refresh, attempt: { ...c.refresh.attempt, outcome: 'TIMEOUT' } }, v, sha256)).code, 'RECEIPT_OUTCOME');
+  assert.equal((await O.checkReceipt({ ...c.refresh, attempt: { ...c.refresh.attempt, attempted_at: '2026-01-01T00:00:00Z' } }, v, sha256)).code, 'RECEIPT_TIME');
+  assert.throws(() => O.ram.put(v, { ...c.refresh }), /OWNERSHIP_RECEIPT_NOT_CHECKED/);
+  const r = (await O.checkReceipt(c.refresh, v, sha256)).value; O.ram.put(v, r); assert.equal(O.ram.receiptFor(v), r); O.ram.clear();
+});

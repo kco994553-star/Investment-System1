@@ -27,6 +27,16 @@ function caseView(id) {
   const e = v.entities.find((x) => x.entity_id === v.entity_context.entity_id); e.company_ids = [CODE];
   return v;
 }
+// Codex #531 b53b0ec0 consumer cases (consumer-synthetic.json), the centre mapped the same way; a refresh receipt is re-pointed at the
+// mapped view's bytes (test-made: the mapping changes the bytes its retained hash names).
+const CX = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'docs', 'research', 'company_ownership', 'consumer-synthetic.json'), 'utf8'));
+const canon = (x) => Array.isArray(x) ? '[' + x.map(canon).join(',') + ']' : x !== null && typeof x === 'object' ? '{' + Object.keys(x).sort().map((k) => JSON.stringify(k) + ':' + canon(x[k])).join(',') + '}' : JSON.stringify(x);
+function consumerView(id) {
+  const c = CX.cases.find((x) => x.case_id === id), v = JSON.parse(JSON.stringify(c.expected_view));
+  const e = v.entities.find((x) => x.entity_id === v.entity_context.entity_id); e.company_ids = [CODE];
+  const r = c.refresh ? { ...c.refresh, retained_view_sha256: require('node:crypto').createHash('sha256').update(canon(v) + '\n').digest('hex') } : null;
+  return { v, r };
+}
 let phase = 'START', pass = 0;
 
 (async () => {
@@ -79,6 +89,23 @@ let phase = 'START', pass = 0;
       await page.locator('[data-own-unresolved]').waitFor();
       assert.match(await text(page, '[data-own-unresolved]'), /Unresolved same-name unlisted company · 목록에 없는 대상 · 기업 페이지 없음/);
       assert.equal(await page.locator('[data-own-rel]').count(), 0, label + ': an unresolved name makes no row');
+      phase = label + ' consumer cases';
+      // A centre not reviewed itself, with relationships another centre's evidence confirms: two lines, scope and evidence.
+      await page.evaluate(() => window.IS2.ownershipView.ram.clear()); assert.equal(await put(page, consumerView('incoming_centre_not_reviewed').v), 'OK');
+      await page.locator('[data-own-scope=NOT_COLLECTED]').waitFor();
+      assert.match(await text(page, '[data-own-scope]'), /^조사 범위 · 이 기업 자체 검토 전 · 관계가 없다는 뜻이 아님$/);
+      assert.match(await text(page, '[data-own-evidence-state]'), /^근거 확인 · 다른 기업 근거로 확인된 관계 2개\(이 기업을 향한 관계\)$/);
+      await page.evaluate(() => window.IS2.ownershipView.ram.clear()); assert.equal(await put(page, consumerView('reviewed_scope').v), 'OK');
+      await page.locator('[data-own-scope=REVIEWED_SCOPE]').waitFor();
+      assert.match(await text(page, '[data-own-scope]'), /검토한 범위는 검토 완료 · 그 범위 밖은 모름/);
+      // A failed refresh: the separate receipt beside the retained view; the view's own times unchanged.
+      await page.evaluate(() => window.IS2.ownershipView.ram.clear());
+      const fr = consumerView('refresh_failed');
+      assert.equal(await page.evaluate(async ({ v, r }) => { const O = window.IS2.ownershipView, x = O.validate(v); if (!x.ok) return x.code;
+        const sha = async (b) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', b))].map((n) => n.toString(16).padStart(2, '0')).join('');
+        const c = await O.checkReceipt(r, x.value, sha); if (!c.ok) return c.code; O.ram.put(x.value, c.value); return 'OK'; }, fr), 'OK');
+      await page.locator('[data-own-refresh]').waitFor();
+      assert.match(await text(page, '[data-own-refresh]'), new RegExp('^마지막 갱신 시도 실패 · 시도 ' + fr.r.attempt.attempted_at + ' · 이전에 성공한 자료를 보임'));
       phase = label + ' company page';
       await page.evaluate(() => window.IS2.ownershipView.ram.clear()); assert.equal(await put(page, caseView('direct_ownership_and_parent')), 'OK');
       await page.goto(s.origin + '/#/company/nvda');

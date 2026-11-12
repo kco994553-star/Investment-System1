@@ -43,7 +43,12 @@ const COLLECTION=Object.freeze({
  PARTIAL_REVIEW:'일부 검토',
  NOT_FOUND_IN_REVIEWED_SCOPE:'검토한 범위에서 찾지 못함 · 관계 없음 확인이 아님',
  VERIFIED_ZERO_IN_SCOPE:'검토한 범위에서 관계 없음 확인 · 그 범위 밖은 모름',
- FILTER_EMPTY:'고른 종류에 해당 없음 · 다른 종류의 관계는 있음'});
+ FILTER_EMPTY:'고른 종류에 해당 없음 · 다른 종류의 관계는 있음',
+ // Codex #531 b53b0ec0 (CONTRACT.md 4fc9f07c…): the sixth state. Complete within the declared scope only; no whole-market claim.
+ REVIEWED_SCOPE:'검토한 범위는 검토 완료 · 그 범위 밖은 모름 · 전체 관계 완결 아님'});
+// A centre without its own review (NOT_COLLECTED) can still carry relationships that another centre's reviewed evidence states about
+// it (INCOMING only): the review state and the evidence state are then two lines, never one "관계 자료 없음".
+const NOT_REVIEWED_WITH_INCOMING='이 기업 자체 검토 전 · 관계가 없다는 뜻이 아님';
 const LISTS=Object.freeze([['parents','모회사'],['subsidiaries','자회사'],['holdings','보유 지분 (이 기업이 보유)'],['holders','주주 (이 기업을 보유)'],['discretion','운용 재량(13F) · 자기 지분 아님']]);
 const DEC=/^(?:0|[1-9]\d{0,2})(?:\.\d{1,12})?$/;
 
@@ -110,7 +115,10 @@ function validate(v,opts={}){
   const c=v.counts;exact(c,['code_rows','filtered_relationships','legal_entities','ownership_observations','relationships','unresolved_assertions'],'$.counts');
   if(c.filtered_relationships!==v.relationships.length||c.unresolved_assertions!==v.unresolved_assertions.length||c.legal_entities!==v.entities.length||c.relationships<c.filtered_relationships)refuse('COUNTS','$.counts');
   if(v.collection_state==='FILTER_EMPTY'?(v.relationships.length!==0||c.relationships===0):false)refuse('COLLECTION_STATE','$.collection_state');
-  if(['NOT_COLLECTED','NOT_FOUND_IN_REVIEWED_SCOPE','VERIFIED_ZERO_IN_SCOPE'].includes(v.collection_state)&&(v.relationships.length||v.unresolved_assertions.length))refuse('COLLECTION_STATE','$.collection_state');
+  if(['NOT_FOUND_IN_REVIEWED_SCOPE','VERIFIED_ZERO_IN_SCOPE'].includes(v.collection_state)&&(v.relationships.length||v.unresolved_assertions.length))refuse('COLLECTION_STATE','$.collection_state');
+  // NOT_COLLECTED: no review of this centre, so nothing it states itself (no outgoing relationship, no unresolved assertion of its
+  // own); relationships other centres' evidence states about it (INCOMING) are kept (Codex consumer case incoming_centre_not_reviewed).
+  if(v.collection_state==='NOT_COLLECTED'&&(v.unresolved_assertions.length||v.relationships.some(r=>r.relative_direction!=='INCOMING')))refuse('COLLECTION_STATE','$.collection_state');
   if(!isObj(v.collection)||!own(v.collection,'last_failure')||!own(v.collection,'last_success_at'))refuse('TYPE','$.collection');
   const value=freeze(JSON.parse(JSON.stringify(v)));CHECKED.add(value);return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
@@ -124,7 +132,7 @@ function pct(o){const q=QUALIFIER[o.qualifier];
 function obsLine(o){return freeze({metric:o.metric,text:METRIC[o.metric]+' '+pct(o),basis:(BASIS[o.denominator_basis]||o.denominator_basis)+(o.share_class?' · '+o.share_class:'')+' · '+o.observed_as_of+' 기준',
  zero:o.value==='0'?'0% 관측(보유 아님 · 종료 추정 아님)':null});}
 // The centre's view: five lists kept apart, unresolved mentions, the state line and the dates. Words only; nothing computed.
-function view(v,{companyLink}={}){const centre=v.entity_context.entity_id,ents=new Map(v.entities.map(e=>[e.entity_id,e])),ment=new Map(v.mentions.map(m=>[m.mention_id,m]));
+function view(v,{companyLink,receipt}={}){const centre=v.entity_context.entity_id,ents=new Map(v.entities.map(e=>[e.entity_id,e])),ment=new Map(v.mentions.map(m=>[m.mention_id,m]));
  const party=id=>{const e=ents.get(id);const link=companyLink?e.company_ids.map(companyLink).find(Boolean)||null:null;return freeze({entity_id:id,name:e.display_name,company_ids:e.company_ids,link});};
  const lists=Object.fromEntries(LISTS.map(([k])=>[k,[]]));
  for(const r of v.relationships){const other=r.relative_direction==='OUTGOING'?r.target_entity_id:r.source_entity_id;
@@ -138,21 +146,49 @@ function view(v,{companyLink}={}){const centre=v.entity_context.entity_id,ents=n
  const unresolved=v.unresolved_assertions.map(a=>{const side=a.source_entity_id===centre?'target':'source',m=ment.get(a[side+'_mention_id']);
   return freeze({assertion_id:a.assertion_id,name:m.name,word:'목록에 없는 대상 · 기업 페이지 없음',type:a.type,relative:side==='target'?'OUTGOING':'INCOMING',directness:DIRECTNESS[a.directness]});});
  const n=v.relationships.length,conflicts=v.relationships.filter(r=>r.state==='CONFLICT').length,review=v.relationships.filter(r=>r.state==='REVIEW_REQUIRED').length;
- const state=[v.collection_state==='PARTIAL_REVIEW'?'확인된 '+n+'개 · 전체 목록 미확인':COLLECTION[v.collection_state]];
+ // Two states apart: how far this centre was reviewed (scope) and what the delivered evidence confirms (evidence).
+ const scopeState=v.collection_state==='NOT_COLLECTED'&&n?NOT_REVIEWED_WITH_INCOMING:v.collection_state==='PARTIAL_REVIEW'?'일부 검토 · 전체 목록 미확인':COLLECTION[v.collection_state];
+ const evidenceState=n?(v.collection_state==='NOT_COLLECTED'?'다른 기업 근거로 확인된 관계 '+n+'개(이 기업을 향한 관계)':'근거로 확인된 관계 '+n+'개'):'근거로 확인된 관계 없음 · 관계가 없다는 확인은 위 범위 상태만 말함';
+ const state=[v.collection_state==='PARTIAL_REVIEW'?'확인된 '+n+'개 · 전체 목록 미확인':scopeState];
+ if(v.collection_state==='NOT_COLLECTED'&&n)state.push(evidenceState);
  if(v.collection.last_failure)state.push('마지막 갱신 실패 · 이전에 성공한 자료를 보임'+(v.collection.last_success_at?' ('+v.collection.last_success_at+')':''));
+ // A separate refresh receipt (checkReceipt) bound to these very view bytes: the failed attempt is shown beside the retained view,
+ // whose own generated and last-success times stay as they are.
+ const refresh=receipt&&RECEIPTS.has(receipt)&&receipt.attempt.outcome!=='SUCCESS'?'마지막 갱신 시도 '+(ATTEMPT[receipt.attempt.outcome])+' · 시도 '+receipt.attempt.attempted_at
+  +' · 이전에 성공한 자료를 보임(성공 '+receipt.unchanged_last_success_at+' · 생성 '+receipt.unchanged_generated_at+')':null;
+
  if(conflicts)state.push('자료 충돌 '+conflicts+'건 · 값을 고르지 않음');if(review)state.push('재검토 필요 '+review+'건');
  if(unresolved.length)state.push('목록에 없는 대상 '+unresolved.length+'건');
- return freeze({centre:party(centre),collection_state:v.collection_state,state,lists:LISTS.map(([k,label])=>freeze({key:k,label,rows:lists[k]})),unresolved,
+ return freeze({centre:party(centre),collection_state:v.collection_state,state,scopeState,evidenceState,refresh,lists:LISTS.map(([k,label])=>freeze({key:k,label,rows:lists[k]})),unresolved,
   denominator:'전체 관계 수 미상 · 커버리지 계산 안 함',when:'조회 기준일 '+v.query_as_of.valid_on+' · 알려진 시점 '+v.query_as_of.knowledge_at+' · 과거 시점 재현(PIT) 아님',
   dataKind:v.dataset_id});}
+// The producer's refresh attempt receipt (CONTRACT.md "merge_update receipts", consumer-synthetic refresh_* cases): kept apart from the
+// view (the view's collection.last_failure stays null by contract). It must name the SHA-256 of exactly these view bytes (the
+// producer's json_bytes: sorted-key compact JSON + newline) and the view's unchanged generated and last-success times; its attempt
+// is later than the view. Anything else is refused and the view is shown without a refresh line.
+const ATTEMPT=Object.freeze({SUCCESS:'성공',FAILED:'실패',PARTIAL:'일부만 성공',PARSE_FAILED:'해석 실패'});
+const RECEIPTS=new WeakSet();
+const canonicalJson=x=>Array.isArray(x)?'['+x.map(canonicalJson).join(',')+']':isObj(x)?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canonicalJson(x[k])).join(',')+'}':JSON.stringify(x);
+async function checkReceipt(r,v,sha256){
+ try{if(!CHECKED.has(v))refuse('OWNERSHIP_VIEW_NOT_CHECKED','$');if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  exact(r,['attempt','retained_dataset_sha256','retained_view_sha256','unchanged_generated_at','unchanged_last_success_at'],'$receipt');
+  exact(r.attempt,['attempted_at','outcome'],'$receipt.attempt');if(!own(ATTEMPT,r.attempt.outcome))refuse('RECEIPT_OUTCOME','$receipt.attempt.outcome');
+  if(!/^[0-9a-f]{64}$/.test(r.retained_dataset_sha256)||!/^[0-9a-f]{64}$/.test(r.retained_view_sha256))refuse('TYPE','$receipt');
+  if((await sha256(new TextEncoder().encode(canonicalJson(v)+'\n')))!==r.retained_view_sha256)refuse('RECEIPT_VIEW_MISMATCH','$receipt.retained_view_sha256');
+  if(r.unchanged_generated_at!==v.generated_at||r.unchanged_last_success_at!==v.collection.last_success_at)refuse('RECEIPT_VIEW_MISMATCH','$receipt.unchanged_generated_at');
+  if(typeof r.attempt.attempted_at!=='string'||!(Date.parse(r.attempt.attempted_at)>Date.parse(v.generated_at)))refuse('RECEIPT_TIME','$receipt.attempt.attempted_at');
+  const value=freeze(JSON.parse(JSON.stringify(r)));RECEIPTS.add(value);return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 // A relationship read from both sides is one fact: the same relationship_id, opposite relative directions (5.1.2 연결 근거).
 function sameFact(a,b){const x=new Map(a.relationships.map(r=>[r.relationship_id,r]));return b.relationships.filter(r=>x.has(r.relationship_id))
  .map(r=>{const o=x.get(r.relationship_id);return freeze({relationship_id:r.relationship_id,consistent:o.source_entity_id===r.source_entity_id&&o.target_entity_id===r.target_entity_id&&o.type===r.type&&o.relative_direction!==r.relative_direction});});}
 // RAM only (nothing stored): checked views by centre; a screen finds the view whose centre entity carries that code row. A value that
 // validate did not return is refused; a drop tells the screens.
 const ram=(()=>{const views=new Map(),subs=new Set();const tell=()=>{for(const f of subs)try{f();}catch(_){}};
- return Object.freeze({put(v){if(!CHECKED.has(v))throw Error('OWNERSHIP_VIEW_NOT_CHECKED');views.set(v.entity_context.entity_id,v);tell();},
+ const receipts=new WeakMap();
+ return Object.freeze({put(v,receipt){if(!CHECKED.has(v))throw Error('OWNERSHIP_VIEW_NOT_CHECKED');if(receipt!==undefined&&!RECEIPTS.has(receipt))throw Error('OWNERSHIP_RECEIPT_NOT_CHECKED');
+   views.set(v.entity_context.entity_id,v);if(receipt)receipts.set(v,receipt);tell();},receiptFor(v){return receipts.get(v)||null;},
   forCompany(code){for(const v of views.values()){const e=v.entities.find(x=>x.entity_id===v.entity_context.entity_id);if(e&&e.company_ids.includes(code))return v;}return null;},
   get(id){return views.get(id)||null;},all(){return[...views.values()];},clear(){views.clear();tell();},subscribe(f){subs.add(f);return()=>subs.delete(f);}});})();
-return Object.freeze({ram,SCHEMA,TYPE,DIRECTNESS,CAPACITY,STATE,METRIC,QUALIFIER,COLLECTION,LISTS,validate,view,sameFact});
+return Object.freeze({ram,SCHEMA,TYPE,DIRECTNESS,CAPACITY,STATE,METRIC,QUALIFIER,COLLECTION,LISTS,ATTEMPT,validate,view,sameFact,checkReceipt});
 });

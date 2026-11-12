@@ -13,9 +13,11 @@
 'use strict';
 const I=window.IS2,{h}=I;
 const O=()=>I.ownershipView;
-function block(v,{compact=false,href,companies}={}){const M=O(),x=M.view(v,{companyLink:code=>{const r=companies&&companies.get(code);return r&&href?href('company',r.id):null;}});
+function block(v,{compact=false,href,companies}={}){const M=O(),x=M.view(v,{receipt:M.ram.receiptFor?M.ram.receiptFor(v):null,companyLink:code=>{const r=companies&&companies.get(code);return r&&href?href('company',r.id):null;}});
  const centre=x.centre.entity_id;
  const head=h('div',{class:'cc-wrap',dataset:{ownState:x.collection_state}},...x.state.map(t=>h('p',{class:'reason',role:'status'},t)),
+  h('p',{class:'meta',dataset:{ownScope:x.collection_state}},'조사 범위 · ',x.scopeState),h('p',{class:'meta',dataset:{ownEvidenceState:''}},'근거 확인 · ',x.evidenceState),
+  x.refresh?h('p',{class:'reason',dataset:{ownRefresh:''}},x.refresh):null,
   h('p',{class:'meta'},x.when),h('p',{class:'meta'},x.denominator));
  const party=p=>p.link?h('a',{class:'lk',href:p.link,dataset:{ownParty:p.entity_id}},p.name):h('span',{dataset:{ownParty:p.entity_id}},p.name,h('span',{class:'meta'},' · 기업 목록에 없음 · 기업 페이지 없음'));
  const obs=(label,list,key)=>list.length?h('ul',{class:'news-lines',dataset:{ownObs:key}},...list.map(o=>h('li',null,o.text,' · ',h('span',{class:'meta'},o.basis),o.zero?h('span',{class:'meta'},' · ',o.zero):null))):null;
