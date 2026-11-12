@@ -1,0 +1,622 @@
+{
+  "schema_version": "qgv-dual-bin-examples/1",
+  "data_kind": "SYNTHETIC",
+  "cases": [
+    {
+      "source": "../dual-distribution-synthetic/all_ten-stored",
+      "source_manifest_sha256": "d07a4518ffcea47d45539dba80b956688274e1b4a8fff1f352de6062fc9a14ea",
+      "output": "all_ten-stored",
+      "manifest_sha256": "4327d44ae912ddce3b51e0c55e533ab3557355373e984c1a56ad41a137b87c44",
+      "expected_groups": [
+        {
+          "group_id": "U1|COMMON|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [
+                "SYN-000",
+                "SYN-001"
+              ],
+              "ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "decile": 9,
+              "members": [
+                "SYN-002",
+                "SYN-003"
+              ],
+              "ranks": [
+                3,
+                4
+              ]
+            },
+            {
+              "decile": 8,
+              "members": [
+                "SYN-004",
+                "SYN-005"
+              ],
+              "ranks": [
+                5,
+                6
+              ]
+            },
+            {
+              "decile": 7,
+              "members": [
+                "SYN-006",
+                "SYN-007"
+              ],
+              "ranks": [
+                7,
+                8
+              ]
+            },
+            {
+              "decile": 6,
+              "members": [
+                "SYN-008",
+                "SYN-009"
+              ],
+              "ranks": [
+                9,
+                10
+              ]
+            },
+            {
+              "decile": 5,
+              "members": [
+                "SYN-010",
+                "SYN-011"
+              ],
+              "ranks": [
+                11,
+                12
+              ]
+            },
+            {
+              "decile": 4,
+              "members": [
+                "SYN-012",
+                "SYN-013"
+              ],
+              "ranks": [
+                13,
+                14
+              ]
+            },
+            {
+              "decile": 3,
+              "members": [
+                "SYN-014",
+                "SYN-015"
+              ],
+              "ranks": [
+                15,
+                16
+              ]
+            },
+            {
+              "decile": 2,
+              "members": [
+                "SYN-016",
+                "SYN-017"
+              ],
+              "ranks": [
+                17,
+                18
+              ]
+            },
+            {
+              "decile": 1,
+              "members": [
+                "SYN-018",
+                "SYN-019"
+              ],
+              "ranks": [
+                19,
+                20
+              ]
+            }
+          ],
+          "unavailable_count": 0
+        }
+      ]
+    },
+    {
+      "source": "../dual-distribution-synthetic/equal_scores-stored",
+      "source_manifest_sha256": "bbe2c80864d31be3109bb55cc363d51670b68ff7247c5ecff1dda8c72ca33bae",
+      "output": "equal_scores-stored",
+      "manifest_sha256": "0b9c9506b5033923b9b0536bf3ffce082a5b124a9c92d4534896027984003ab9",
+      "expected_groups": [
+        {
+          "group_id": "U1|COMMON|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [
+                "SYN-000",
+                "SYN-001"
+              ],
+              "ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "decile": 9,
+              "members": [
+                "SYN-002",
+                "SYN-003"
+              ],
+              "ranks": [
+                3,
+                4
+              ]
+            },
+            {
+              "decile": 8,
+              "members": [
+                "SYN-004",
+                "SYN-005"
+              ],
+              "ranks": [
+                5,
+                6
+              ]
+            },
+            {
+              "decile": 7,
+              "members": [
+                "SYN-006",
+                "SYN-007"
+              ],
+              "ranks": [
+                7,
+                8
+              ]
+            },
+            {
+              "decile": 6,
+              "members": [
+                "SYN-008",
+                "SYN-009"
+              ],
+              "ranks": [
+                9,
+                10
+              ]
+            },
+            {
+              "decile": 5,
+              "members": [
+                "SYN-010",
+                "SYN-011"
+              ],
+              "ranks": [
+                11,
+                12
+              ]
+            },
+            {
+              "decile": 4,
+              "members": [
+                "SYN-012",
+                "SYN-013"
+              ],
+              "ranks": [
+                13,
+                14
+              ]
+            },
+            {
+              "decile": 3,
+              "members": [
+                "SYN-014",
+                "SYN-015"
+              ],
+              "ranks": [
+                15,
+                16
+              ]
+            },
+            {
+              "decile": 2,
+              "members": [
+                "SYN-016",
+                "SYN-017"
+              ],
+              "ranks": [
+                17,
+                18
+              ]
+            },
+            {
+              "decile": 1,
+              "members": [
+                "SYN-018",
+                "SYN-019"
+              ],
+              "ranks": [
+                19,
+                20
+              ]
+            }
+          ],
+          "unavailable_count": 0
+        }
+      ]
+    },
+    {
+      "source": "../dual-distribution-synthetic/small_evaluation-stored",
+      "source_manifest_sha256": "81e22dce33cc8b972a691a97baeba19b684c7fc5774ef7415d544b9f979333e6",
+      "output": "small_evaluation-stored",
+      "manifest_sha256": "795f301edc89b289064b984e298b733b0e07aa398c968b799e19142404b4b590",
+      "expected_groups": [
+        {
+          "group_id": "U1|COMMON|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 9,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 8,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 7,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 6,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 5,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 4,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 3,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 2,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 1,
+              "members": [],
+              "ranks": []
+            }
+          ],
+          "unavailable_count": 3
+        }
+      ]
+    },
+    {
+      "source": "../dual-distribution-synthetic/missing_reference-stored",
+      "source_manifest_sha256": "960e92ce069211ebb344957cdc8f0b86baa1329ee5904474e11f4666c491eeeb",
+      "output": "missing_reference-stored",
+      "manifest_sha256": "1266368e6531a6966c5285462f8a0a5a11b88e342cd9448c962b0974cef6539d",
+      "expected_groups": [
+        {
+          "group_id": "U1|COMMON|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 9,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 8,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 7,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 6,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 5,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 4,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 3,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 2,
+              "members": [],
+              "ranks": []
+            },
+            {
+              "decile": 1,
+              "members": [],
+              "ranks": []
+            }
+          ],
+          "unavailable_count": 20
+        }
+      ]
+    },
+    {
+      "source": "../dual-distribution-synthetic/sector_groups-stored",
+      "source_manifest_sha256": "695e9de0c627a650402be860a03bb8977867e2ae64573472da6cabe098ce527a",
+      "output": "sector_groups-stored",
+      "manifest_sha256": "1c493bda6274ed27a61310d6dfdb6d1cad93755a9c23c2a17cd608c6c80177bf",
+      "expected_groups": [
+        {
+          "group_id": "S1|SECTOR|INDUSTRIALS|GENERAL|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [
+                "OTHER-SYN-000",
+                "OTHER-SYN-001"
+              ],
+              "ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "decile": 9,
+              "members": [
+                "OTHER-SYN-002",
+                "OTHER-SYN-003"
+              ],
+              "ranks": [
+                3,
+                4
+              ]
+            },
+            {
+              "decile": 8,
+              "members": [
+                "OTHER-SYN-004",
+                "OTHER-SYN-005"
+              ],
+              "ranks": [
+                5,
+                6
+              ]
+            },
+            {
+              "decile": 7,
+              "members": [
+                "OTHER-SYN-006",
+                "OTHER-SYN-007"
+              ],
+              "ranks": [
+                7,
+                8
+              ]
+            },
+            {
+              "decile": 6,
+              "members": [
+                "OTHER-SYN-008",
+                "OTHER-SYN-009"
+              ],
+              "ranks": [
+                9,
+                10
+              ]
+            },
+            {
+              "decile": 5,
+              "members": [
+                "OTHER-SYN-010",
+                "OTHER-SYN-011"
+              ],
+              "ranks": [
+                11,
+                12
+              ]
+            },
+            {
+              "decile": 4,
+              "members": [
+                "OTHER-SYN-012",
+                "OTHER-SYN-013"
+              ],
+              "ranks": [
+                13,
+                14
+              ]
+            },
+            {
+              "decile": 3,
+              "members": [
+                "OTHER-SYN-014",
+                "OTHER-SYN-015"
+              ],
+              "ranks": [
+                15,
+                16
+              ]
+            },
+            {
+              "decile": 2,
+              "members": [
+                "OTHER-SYN-016",
+                "OTHER-SYN-017"
+              ],
+              "ranks": [
+                17,
+                18
+              ]
+            },
+            {
+              "decile": 1,
+              "members": [
+                "OTHER-SYN-018",
+                "OTHER-SYN-019"
+              ],
+              "ranks": [
+                19,
+                20
+              ]
+            }
+          ],
+          "unavailable_count": 0
+        },
+        {
+          "group_id": "S1|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|debt_assets",
+          "bins": [
+            {
+              "decile": 10,
+              "members": [
+                "SYN-000",
+                "SYN-001"
+              ],
+              "ranks": [
+                1,
+                2
+              ]
+            },
+            {
+              "decile": 9,
+              "members": [
+                "SYN-002",
+                "SYN-003"
+              ],
+              "ranks": [
+                3,
+                4
+              ]
+            },
+            {
+              "decile": 8,
+              "members": [
+                "SYN-004",
+                "SYN-005"
+              ],
+              "ranks": [
+                5,
+                6
+              ]
+            },
+            {
+              "decile": 7,
+              "members": [
+                "SYN-006",
+                "SYN-007"
+              ],
+              "ranks": [
+                7,
+                8
+              ]
+            },
+            {
+              "decile": 6,
+              "members": [
+                "SYN-008",
+                "SYN-009"
+              ],
+              "ranks": [
+                9,
+                10
+              ]
+            },
+            {
+              "decile": 5,
+              "members": [
+                "SYN-010",
+                "SYN-011"
+              ],
+              "ranks": [
+                11,
+                12
+              ]
+            },
+            {
+              "decile": 4,
+              "members": [
+                "SYN-012",
+                "SYN-013"
+              ],
+              "ranks": [
+                13,
+                14
+              ]
+            },
+            {
+              "decile": 3,
+              "members": [
+                "SYN-014",
+                "SYN-015"
+              ],
+              "ranks": [
+                15,
+                16
+              ]
+            },
+            {
+              "decile": 2,
+              "members": [
+                "SYN-016",
+                "SYN-017"
+              ],
+              "ranks": [
+                17,
+                18
+              ]
+            },
+            {
+              "decile": 1,
+              "members": [
+                "SYN-018",
+                "SYN-019"
+              ],
+              "ranks": [
+                19,
+                20
+              ]
+            }
+          ],
+          "unavailable_count": 0
+        }
+      ]
+    }
+  ]
+}

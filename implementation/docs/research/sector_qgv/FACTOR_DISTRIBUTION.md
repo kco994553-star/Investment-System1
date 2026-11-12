@@ -5,7 +5,7 @@ bands, not a top-N/D10 prefix. Codex owns this projection/contract/examples;
 Main owns the band selector, company-detail join, authentication and staging.
 This is a companion to #529 saved dual results, not a new QGV scorer.
 
-## Existing rules and one unresolved display choice
+## Existing rules and owner-selected delivery basis
 
 The existing `_rank_factors` first ranks **valid evaluation code rows** within
 COMMON (U1/U2) or SECTOR|sector_id|accounting_template (S1). It orders unrounded,
@@ -20,13 +20,14 @@ factors once, and requires at least20 valid reference issuers. Reference-only
 issuers are not silently added to the evaluation display. A reference N of20
 and evaluation N of3 are both valid facts and must not be interchanged.
 
-The owner's no-arbitrary-tie-splitting direction needs that distinction made
-explicit. Two named display policies are implemented, with no implicit default:
+The 2026-11-12 follow-up explicitly selects the existing saved evaluation
+deciles and tie boundaries for this delivery. No score or bin is recalculated.
+The earlier reference-score display remains a separate archived research candidate:
 
 | display_policy | Basis | Ties | Status |
 |---|---|---|---|
 | stored-evaluation-deciles/1 | original evaluation factor rank/decile | existing company_id boundary splitting retained and flagged | existing compatibility rule; full private projection supplied |
-| reference-score-deciles/1 | existing direction-adjusted reference percentile score, in ten score intervals | same score always same band | research display candidate; synthetic only, awaiting owner basis clarification |
+| reference-score-deciles/1 | existing direction-adjusted reference percentile score, in ten score intervals | same score always same band | archived research display candidate; synthetic only, not selected for this delivery |
 
 The candidate preserves original rank and stored_decile side by side. It neither
 recalculates factor scores nor changes the original board result, cache/saved
@@ -37,9 +38,8 @@ valid; no tie is split to fill a quota. Twenty scores of50 all enter D6. With
 only3 evaluation rows and a valid20-issuer reference, these three can receive
 candidate bands even though their stored evaluation deciles are null.
 
-Do not present the compatibility output as satisfying the unresolved tie-preserving
-interpretation. Do not automatically enable the candidate. The same-score example
-and both policies are supplied to make that decision concrete. Original scores,
+Do not automatically enable the candidate or alter stored ties. The owner has
+selected the stored rule for this delivery, including its flagged tie splits. Original scores,
 rankings, reference samples, minimum20, missing rules, gates and axis/factor weights
 are unchanged. Additional-factor displays contribute zero to the core score.
 
@@ -165,3 +165,57 @@ operating-reference-anchor.json supplies the full `_identity` of the retained
 snapshot, its raw SHA, and the view SHA. Original source8004 remains another
 population in #528 bindings.reference_source. Use these distinctions when pinning
 the second anchor; do not compare all three membership hashes as if identical.
+
+## All-bin routing companion /1 (2026-11-12)
+
+`dual_qgv_distribution_index.bin_index_artifacts` validates the **entire pinned
+saved distribution batch** and adds `qgv-dual-factor-bins-manifest/1` →
+`bin-index.json` (`qgv-dual-factor-bins/1`) → `bins-NNN.json`
+(`qgv-dual-factor-bins-part/1`). The original distribution files remain byte
+identical. This optional companion does not rename or replace top-N delivery,
+its completeness checks, or the old manifest allowlist. Main adds an authenticated
+route for these bounded files; no Worker/auth/limit change is made by Codex.
+
+Each group has all ten bins with count, first/last **saved** ordinal rank,
+ordered code-row members hash and `member_files` (path/bytes/SHA-256 in the
+original distribution root). Empty bins have null ranks and no files. The bin
+index points to the independently pinned source distribution manifest/index;
+board metadata supplies model/version/configuration hash, evaluation/reference
+identities/date/input/classification context and original result hash. Group
+records supply variant, scope, both valid Ns and member hashes. Thus a bin must
+be read with its group and board context, never as a freestanding ranking.
+
+For N>=10, every scored evaluation code row belongs to exactly one stored bin;
+sum of ten bins=N. For 0<N<10 all scored rows remain outside bins with
+SAMPLE_LT_10; for N=0 NO_VALID_SCORE. Original unscored rows remain in the source
+and denominator. One issuer's different code rows remain separate. No S1 scopes
+are merged. Existing ordinal ties and their boundary splits are explicitly
+retained; upper-percent labels describe nominal bands, not equal-sized quotas.
+
+Main acceptance:
+
+1. Pin `bin-manifest.json` from approved handoff, verify every listed size/hash;
+   its source manifest pin must equal the approved original delivery pin.
+2. Resolve group → bins file → selected band(s) → original member files. A file
+   may hold other groups/bands: select exact group_id and decile after validation.
+3. Check selected members' count, ranks and ordered member hash against the bin.
+   Do not replace original N or ranks after filtering. Empty is valid; absent,
+   duplicate, wrong-scope or corrupt files are batch failures, not empty bands.
+4. Validate the complete batch before replacing the previous normal bundle;
+   partial failure must retain the old manifest and its original clocks.
+5. Input projection attestation is separate: distribution byte consistency
+   neither proves source financial inputs nor substitutes for evaluation/reference
+   independent anchors. A missing held1057 proof remains UNVERIFIED.
+
+Reproduce (offline; output must be new, private output outside checkout):
+
+```sh
+PYTHONPATH=implementation/src python -m investment_system.research.dual_qgv_distribution_index --source-dir <existing-distribution> --source-manifest-sha256 <approved-pin> --output-dir <new-bin-routing>
+PYTHONPATH=implementation/src python implementation/tools/generate_dual_bin_examples.py
+```
+
+Shared synthetic cases: `dual-bin-synthetic/cases.json` references the existing
+synthetic distribution bytes and lists every expected company/rank in every bin.
+No company values are copied from private results. New acceptance tests cover
+missing shard, corrupted bytes, duplicated member, foreign group, mismatched
+scope/count/rank, missing bin, N<10, N=23 remainder/ties and N=230 D10>top20.

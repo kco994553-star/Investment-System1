@@ -1,0 +1,138 @@
+{
+  "schema_version": "qgv-dual-factor-bins/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_distribution_manifest": {
+    "path": "distribution-manifest.json",
+    "size": 718,
+    "sha256": "960e92ce069211ebb344957cdc8f0b86baa1329ee5904474e11f4666c491eeeb"
+  },
+  "source_index": {
+    "path": "distribution-index.json",
+    "size": 7445,
+    "sha256": "02e8b28f7322a69e42b3326bde6aedee9e9eb2c3d02a1e4d798e3bd152928d58"
+  },
+  "display_policy": "stored-evaluation-deciles/1",
+  "boards": {
+    "U1": {
+      "model_id": "unified-roa-core/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "d2537788b490ebf0f6da577eefcdfdca6dc1c0df5d885963cead2c08c0da63cf",
+        "valuation_date": "2026-11-04",
+        "as_of": "2026-11-04T20:00:00Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "reference_population": {
+        "id": "SYN-REFERENCE",
+        "version": "1",
+        "input_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+        "members_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+        "factor_members_hash": "1d8ebedbda1994da9217955b6daa8a4c5b7fca62e3d7b868a486157c2ce106df"
+      },
+      "bindings": {
+        "evaluation": {
+          "id": "SYN-EVALUATION",
+          "version": "1",
+          "members_hash": "d2537788b490ebf0f6da577eefcdfdca6dc1c0df5d885963cead2c08c0da63cf",
+          "valuation_date": "2026-11-04",
+          "as_of": "2026-11-04T20:00:00Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "reference": {
+          "input_hash": "4444444444444444444444444444444444444444444444444444444444444444"
+        }
+      },
+      "result_hash": "44240217b57816dcf50bf96102a3dbcb229fe588e37744bf1c363f2ccd5d39df",
+      "normalization_version": "common-midrank-strict20/1",
+      "engine_version": "SYN-ENGINE",
+      "adapter_version": "SYN-ADAPTER",
+      "configuration_hash": "ddd93dc714dbcb761598cdc1d2a290d49d3b7dbe9dfca2610356d33318605b71",
+      "source_result_sha256": "86e27bf6bcf67652233e9e3028026f3f4cfa3fce94e693144953daa6c120cb62"
+    }
+  },
+  "bands": [
+    {
+      "decile": 10,
+      "top_percent_from": 0,
+      "top_percent_to": 10,
+      "label": "상위 0–10%"
+    },
+    {
+      "decile": 9,
+      "top_percent_from": 10,
+      "top_percent_to": 20,
+      "label": "상위 10–20%"
+    },
+    {
+      "decile": 8,
+      "top_percent_from": 20,
+      "top_percent_to": 30,
+      "label": "상위 20–30%"
+    },
+    {
+      "decile": 7,
+      "top_percent_from": 30,
+      "top_percent_to": 40,
+      "label": "상위 30–40%"
+    },
+    {
+      "decile": 6,
+      "top_percent_from": 40,
+      "top_percent_to": 50,
+      "label": "상위 40–50%"
+    },
+    {
+      "decile": 5,
+      "top_percent_from": 50,
+      "top_percent_to": 60,
+      "label": "상위 50–60%"
+    },
+    {
+      "decile": 4,
+      "top_percent_from": 60,
+      "top_percent_to": 70,
+      "label": "상위 60–70%"
+    },
+    {
+      "decile": 3,
+      "top_percent_from": 70,
+      "top_percent_to": 80,
+      "label": "상위 70–80%"
+    },
+    {
+      "decile": 2,
+      "top_percent_from": 80,
+      "top_percent_to": 90,
+      "label": "상위 80–90%"
+    },
+    {
+      "decile": 1,
+      "top_percent_from": 90,
+      "top_percent_to": 100,
+      "label": "상위 90–100%"
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "U1|COMMON|debt_assets",
+      "path": "bins-000.json"
+    }
+  ],
+  "rank_policy": "UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL",
+  "minimum_reference_score_n": 20,
+  "minimum_stored_evaluation_decile_n": 10,
+  "tie_policy": "PRESERVE_STORED_ORDINAL_COMPANY_ID_BOUNDARIES",
+  "remainder_policy": "D10_D1_FLOOR_N_OVER_10;MIDDLE_REMAINDER_D9_TO_D2",
+  "new_score_calculations": 0,
+  "additional_factor_score_contribution": 0,
+  "filter_changes_population": false,
+  "whole_market_denominator": null,
+  "whole_market_coverage": null
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": "qgv-dual-factor-bins-part/1",
+  "groups": [
+    {
+      "group_id": "U1|COMMON|debt_assets",
+      "board": "U1",
+      "ranking_scope": "COMMON",
+      "variant_id": "debt_assets",
+      "raw_direction": "LOWER",
+      "score_direction": "HIGHER_IS_BETTER",
+      "evaluation_rows_in_scope": 20,
+      "evaluation_valid_n": 0,
+      "reference_valid_n": 19,
+      "comparison_group": {
+        "role": "EVALUATION_VALID",
+        "unit": "EVALUATION_CODE_ROW",
+        "n": 0,
+        "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "reference_members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "reference_issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 9,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 8,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 7,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 6,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 5,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 4,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 3,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 2,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        },
+        {
+          "decile": 1,
+          "count": 0,
+          "first_rank": null,
+          "last_rank": null,
+          "members_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "member_files": []
+        }
+      ],
+      "unavailable_count": 20,
+      "unavailable_reasons": {
+        "PEER_SAMPLE_SMALL": 20
+      },
+      "legacy_tie_splits": [],
+      "files": [
+        "distribution-000.json"
+      ],
+      "binned_evaluation_n": 0,
+      "partition_status": "NO_VALID_SCORE"
+    }
+  ]
+}
