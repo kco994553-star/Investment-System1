@@ -145,6 +145,28 @@ test('words: each model on its own, ranks only in their scope, null is 미산출
   assert.ok(DQ.RULES.some((r) => /총점이 없으면 총점 순위도 없음/.test(r)) && !DQ.RULES.join('').includes('TARGET'));
 });
 
+test('operating504 reference input: anchored only by a matching independent anchor; a mismatching anchor refuses; none = not compared', async () => {
+  const d = F.delivery('operating504'), anc = (edit) => { const bytes = new Uint8Array(F.referenceAnchor(edit)); return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
+  const run = (a) => DQ.checkDelivery({ ...parts(d), ...(a ? { reference_anchor: a } : {}) }, { scope: 'operating504', anchor: F.anchor(), sha256 });
+  assert.equal((await run()).value.input_check, 'EVALUATION_INPUT_MATCHED', 'no anchor: the reference side is not compared');
+  assert.match(DQ.INPUT_WORD.EVALUATION_INPUT_MATCHED, /참조 입력은 독립 기준과 대조 안 됨$/);
+  const ok = await run(anc()); assert.equal(ok.ok, true, JSON.stringify(ok)); assert.equal(ok.value.input_check, 'EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED');
+  assert.match(DQ.INPUT_WORD.EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED, /참조 입력 = 생산자 독립 기준/);
+  assert.equal((await run(anc((x) => { x.expected_reference.input_hash = 'f'.repeat(64); }))).code, 'REFERENCE_ANCHOR_MISMATCH', 'another reference input');
+  assert.equal((await run(anc((x) => { x.expected_reference.members_hash = 'f'.repeat(64); }))).code, 'REFERENCE_ANCHOR_MISMATCH', 'another reference membership');
+  assert.equal((await run(anc((x) => { x.expected_reference.code_rows += 1; x.candidate_rows += 1; }))).code, 'REFERENCE_ANCHOR_MISMATCH');
+  assert.equal((await run(anc((x) => { x.matches_all_dual_boards = false; }))).code, 'REFERENCE_ANCHOR_INVALID');
+  assert.equal((await run(anc((x) => { x.new_score_calculations = 1; }))).code, 'REFERENCE_ANCHOR_INVALID');
+  assert.equal((await run(anc((x) => { x.scope = 'held1057'; }))).code, 'SCOPE_MISMATCH');
+  assert.equal((await run(anc((x) => { x.extra = 1; }))).code, 'KEY_UNKNOWN');
+  // The delivery whose reference binding was changed consistently (Codex binding case) is now refused when an anchor is staged.
+  const moved = F.delivery('operating504', (docs) => { for (const b of Object.values(docs['summary.json'].boards)) { b.bindings.reference.input_hash = 'e'.repeat(64); b.reference_population.input_hash = 'e'.repeat(64); b.reference_population.candidate_population.input_hash = 'e'.repeat(64); } });
+  const r = await DQ.checkDelivery({ ...parts(moved), reference_anchor: anc() }, { scope: 'operating504', anchor: F.anchor(), sha256 });
+  assert.equal(r.code, 'REFERENCE_ANCHOR_MISMATCH', JSON.stringify(r));
+  const h = F.delivery('held1057');
+  assert.equal((await DQ.checkDelivery({ ...parts(h), reference_anchor: anc((x) => { x.scope = 'held1057'; }) }, { scope: 'held1057', anchor: F.anchor(), sha256 })).code, 'REFERENCE_ANCHOR_NOT_APPLICABLE');
+});
+
 test('held1057 evaluation input: attested only by a matching projection proof; a mismatching proof refuses; none = unverified', async () => {
   const h = F.delivery('held1057'), lin = (edit) => { const bytes = new Uint8Array(F.lineage(edit)); return { bytes, body: JSON.parse(Buffer.from(bytes).toString('utf8')) }; };
   const go = (l, d = h, scope = 'held1057') => DQ.checkDelivery({ ...parts(d), lineage: l }, { scope, anchor: F.anchor(), sha256 });

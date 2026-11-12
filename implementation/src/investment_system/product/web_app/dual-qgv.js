@@ -32,7 +32,24 @@ const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference
 // a delivery whose reference hash was changed consistently is not refused on that side; the word says so (Codex binding cases).
 const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력은 독립 기준과 대조 안 됨',
  REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(투영 증명 파일 없음)',
- EVALUATION_INPUT_PROJECTION_ATTESTED:'평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨(화면이 다시 계산한 것 아님)'});
+ EVALUATION_INPUT_PROJECTION_ATTESTED:'평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨(화면이 다시 계산한 것 아님)',
+ EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력 = 생산자 독립 기준(참조 후보 스냅숏의 전체 신원)과 일치'});
+// operating504's reference input against Codex's independent anchor (qgv-dual-reference-anchor/1, #437 6819835921): the full identity
+// of the retained reference candidate snapshot, pinned at staging with its byte SHA and the staged #528 view's SHA. Every board's
+// reference binding and its candidate population must be exactly that identity. The #528 view's selected-reference members are a
+// different set and are not compared as if they were the same; the original catalog binding is another population again.
+const REF_ANCHOR_SCHEMA='qgv-dual-reference-anchor/1';
+const REF_ANCHOR_KEYS=['schema_version','scope','expected_reference','source_snapshot_sha256','source_reference_view_sha256','source_reference_view_path',
+ 'source_reference_view_input_hash_field','source_reference_view_members_not_interchangeable','source_original_catalog_binding','matches_all_dual_boards',
+ 'eligible_members_are_not_candidate_members','old_selected_reference_rows','candidate_rows','generation_rule','new_score_calculations'];
+function referenceAnchorCheck(x,scope,boards){const at='reference_anchor';exact(x,REF_ANCHOR_KEYS,at);
+ if(x.schema_version!==REF_ANCHOR_SCHEMA)refuse('REFERENCE_ANCHOR_SCHEMA',at+'.schema_version');if(x.scope!==scope)refuse('SCOPE_MISMATCH',at+'.scope');
+ if(!HEX.test(x.source_snapshot_sha256)||!HEX.test(x.source_reference_view_sha256)||x.matches_all_dual_boards!==true||x.new_score_calculations!==0
+  ||x.source_reference_view_members_not_interchangeable!==true||!isObj(x.expected_reference)||x.expected_reference.code_rows!==x.candidate_rows)refuse('REFERENCE_ANCHOR_INVALID',at);
+ for(const[k,b]of Object.entries(boards)){
+  if(!same(b.bindings.reference,x.expected_reference))refuse('REFERENCE_ANCHOR_MISMATCH',at+'.expected_reference@'+k+'.bindings.reference');
+  if(!same(b.reference_population.candidate_population,x.expected_reference)||b.reference_population.input_hash!==x.expected_reference.input_hash)
+   refuse('REFERENCE_ANCHOR_MISMATCH',at+'.expected_reference@'+k+'.reference_population');}}
 // The producer's projection proof of held1057's evaluation input (Codex 6794279588 §2, qgv-dual-input-projection-proof/1): it must
 // bind exactly this delivery's evaluation population and reference source (the staged held input), a selection of that many
 // issuers, only the five projection fields changed, row values and classification unchanged, no whole market, no new score.
@@ -68,7 +85,8 @@ const MAX_BYTES=2000000;
 const HEX=/^[0-9a-f]{64}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,FILE=/^(summary|index)\.json$|^detail-\d{3}\.json$/,DETAIL_FILE=/^detail-\d{3}\.json$/;
 const STATUS_WORD=Object.freeze({VALID:'산출',MISSING_INPUT:'입력 없음',MAPPING_UNRESOLVED:'분류 미확정',NOT_APPLICABLE:'산식 적용 부적합',PERIOD_MISMATCH:'기간 불일치',
  PEER_SAMPLE_SMALL:'비교 표본 부족(20 미만)',DOMAIN_INVALID:'값 범위 밖',GATE_UNKNOWN:'관문 판정 불가(UNKNOWN)',STRICT_INCOMPLETE:'핵심 요소 일부 미산출',
- PASS:'관문 통과',UNKNOWN:'관문 판정 불가',VALUE_EXCLUDED:'V 총점 반영 제외 · 기업 탈락 아님'});
+ PASS:'관문 통과',UNKNOWN:'관문 판정 불가',VALUE_EXCLUDED:'V 총점 반영 제외 · 기업 탈락 아님',
+ ISSUER_REPRESENTATIVE_UNRESOLVED:'발행사 대표 행 미확정',SCOPE_MISMATCH:'비교 범위 불일치',SAMPLE_LT_10:'평가 유효 10개 미만 · 분위 없음',NO_VALID_SCORE:'유효 점수 없음'});
 const word=c=>c===null||c===undefined?'—':STATUS_WORD[c]||String(c);
 
 class Refusal extends Error{constructor(code,path){super(code);this.code=code;this.path=path;}}
@@ -189,6 +207,10 @@ async function checkDelivery(parts,opts){
   let input_check=INPUT_CHECK[SCOPES[o.scope].input];
   if(p.lineage!==undefined&&p.lineage!==null){if(SCOPES[o.scope].input!=='reference')refuse('LINEAGE_NOT_APPLICABLE','lineage');
    if(!isObj(p.lineage)||!isObj(p.lineage.body))refuse('LINEAGE_SCHEMA','lineage');lineageCheck(p.lineage.body,s.boards);input_check='EVALUATION_INPUT_PROJECTION_ATTESTED';}
+  // operating504's reference input: anchored only by a matching independent anchor; one that does not match refuses the delivery.
+  if(p.reference_anchor!==undefined&&p.reference_anchor!==null){if(SCOPES[o.scope].input!=='evaluation')refuse('REFERENCE_ANCHOR_NOT_APPLICABLE','reference_anchor');
+   if(!isObj(p.reference_anchor)||!isObj(p.reference_anchor.body))refuse('REFERENCE_ANCHOR_SCHEMA','reference_anchor');
+   referenceAnchorCheck(p.reference_anchor.body,o.scope,s.boards);input_check='EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED';}
   if(!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','manifest');const manifest_sha256=await o.sha256(p.manifest.bytes);
   const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
   return{ok:true,value};}
@@ -388,6 +410,155 @@ function leaderView(g,{sectorName,selection}={}){const n=g.evaluation_valid_n,to
   preview:'상위 '+g.top_n+'개 미리보기 · 10분위 전체 조회가 아님 · 10개 구간의 개수·순위 범위는 저장된 경계 그대로',selectionOk:!selection||selectionMatchesShard(selection,g),
   rows:g.leaders.map(r=>freeze({d:r.decile,rank:r.rank+' / '+r.rank_n,company_id:r.company_id,score:r.score.toFixed(1),decile:r.decile===null?'분위 없음':BAND[r.decile],kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
 
+// 요소 10분위 전체 조회 (owner 2026-11-12; Codex qgv-dual-factor-distribution/1, #529 430f89ca FACTOR_DISTRIBUTION.md d6abe24b…):
+// an optional companion of one checked delivery, read on its own route. The index repeats each board's identity, which must be the
+// checked delivery's own (model, configuration and result hashes, populations, bindings), and lists every model × ranking scope ×
+// factor group with its ten stored band counts and the unavailable count; each part holds ALL evaluation rows of a group (scored or
+// not). The reader checks bytes, completeness and agreement (counts, ranks, bands) and keeps the rows as delivered: nothing is
+// ranked, binned, filled or merged here. The display policy is the producer's and explicit; the reference-score candidate is
+// research only and is refused on private data until the owner confirms it.
+const DIST=Object.freeze({MANIFEST:'qgv-dual-factor-distribution-manifest/1',INDEX:'qgv-dual-factor-distribution/1',PART:'qgv-dual-factor-distribution-part/1',
+ STORED:'stored-evaluation-deciles/1',REFERENCE:'reference-score-deciles/1'});
+const DIST_PART=/^distribution-\d{3}\.json$/;
+const DIST_INDEX_KEYS=['schema_version','scope','data_kind','display_policy','policy_state','bands','boards','companies','groups','rank_policy','minimum_reference_score_n',
+ 'minimum_stored_evaluation_decile_n','complete_evaluation_rows','filter_changes_population','rank_recalculated','additional_factor_score_contribution',
+ 'new_score_calculations','whole_market_denominator','whole_market_coverage'];
+const DIST_BOARD_KEYS=['model_id','model_version','evaluation_population','reference_population','bindings','result_hash','normalization_version','engine_version',
+ 'adapter_version','configuration_hash','source_result_sha256'];
+const DIST_GROUP_KEYS=['group_id','board','ranking_scope','variant_id','raw_direction','score_direction','evaluation_rows_in_scope','evaluation_valid_n','reference_valid_n',
+ 'comparison_group','reference_members_hash','reference_issuer_members_hash','bins','unavailable_count','unavailable_reasons','legacy_tie_splits','files'];
+const DIST_ROW_KEYS=['company_id','score','rank','rank_n','stored_decile','stored_decile_status','decile','decile_status','score_status','raw_status','kind'];
+const DIST_CHECKED=new WeakSet();
+const isScore=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=100;
+// The delivery context a distribution is checked against: a checked delivery (the screens), or — tests of Codex's own synthetic cases
+// only — the synthetic files' own boards and companies (bound:false; never held in RAM, never shown by the screens).
+function deliveryContext(d){return{bound:true,delivery:d,scope:d.scope,data_kind:d.data_kind,models:d.models,boards:d.summary.boards,
+ rows:d.rows.map(r=>({company_id:r.company_id,issuer_id:r.issuer_id,security_id:r.security_id,scopes:Object.fromEntries(d.models.map(k=>[k,r.boards[k].ranking_scope]))}))};}
+async function checkDistribution(parts,delivery,sha256){if(!delivery||!CHECKED.has(delivery))return{ok:false,code:'DELIVERY_NOT_CHECKED',path:'$'};
+ return checkDist(parts,deliveryContext(delivery),sha256);}
+async function checkDistributionSynthetic(parts,sha256,{scopes}={}){const x=parts&&parts.index&&parts.index.body;
+ if(!isObj(x)||x.data_kind!=='SYNTHETIC'||!isObj(x.boards)||!Array.isArray(x.companies)||!isObj(scopes))return{ok:false,code:'SYNTHETIC_ONLY',path:'dist_index'};
+ return checkDist(parts,{bound:false,delivery:null,scope:x.scope,data_kind:'SYNTHETIC',models:Object.keys(x.boards),boards:x.boards,
+  rows:x.companies.map(c=>({...c,scopes:scopes[c.company_id]||{}}))},sha256);}
+async function checkDist(parts,ctx,sha256){
+ try{const d=ctx;if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  const p=parts||{};if(!isObj(p.manifest)||!isObj(p.manifest.body)||!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','dist_manifest');const m=p.manifest.body;
+  exact(m,['schema_version','scope','data_kind','display_policy','source_results','files'],'dist_manifest');
+  if(m.schema_version!==DIST.MANIFEST)refuse('SCHEMA','dist_manifest.schema_version');
+  if(m.display_policy!==DIST.STORED&&m.display_policy!==DIST.REFERENCE)refuse('DISPLAY_POLICY','dist_manifest.display_policy');
+  if(m.display_policy===DIST.REFERENCE&&m.data_kind!=='SYNTHETIC')refuse('POLICY_NOT_CONFIRMED','dist_manifest.display_policy');
+  if(m.scope!==d.scope||m.data_kind!==d.data_kind)refuse('SCOPE_MISMATCH','dist_manifest.scope');
+  if(!Array.isArray(m.files)||!m.files.length||m.files.length>400)refuse('FILES_INVALID','dist_manifest.files');const entries=new Map();
+  m.files.forEach((f,i)=>{exact(f,['path','size','sha256'],'dist_manifest.files['+i+']');
+   if(!(f.path==='distribution-index.json'||DIST_PART.test(f.path))||entries.has(f.path)||!int(f.size)||f.size<1||f.size>MAX_BYTES||!HEX.test(f.sha256))refuse('FILES_INVALID','dist_manifest.files['+i+']');entries.set(f.path,f);});
+  const x=await bytesMatch(p.index,'distribution-index.json',entries,sha256,'dist_index');exact(x,DIST_INDEX_KEYS,'dist_index');
+  if(x.schema_version!==DIST.INDEX)refuse('SCHEMA','dist_index.schema_version');
+  if(x.scope!==m.scope||x.data_kind!==m.data_kind||x.display_policy!==m.display_policy)refuse('SCOPE_MISMATCH','dist_index');
+  if(x.policy_state!==(x.display_policy===DIST.STORED?'EXISTING_RULE':'RESEARCH_DISPLAY_CANDIDATE'))refuse('DISPLAY_POLICY','dist_index.policy_state');
+  if(x.rank_policy!=='UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL'||x.minimum_reference_score_n!==20||x.minimum_stored_evaluation_decile_n!==10)refuse('RULE_MISMATCH','dist_index.rank_policy');
+  if(x.complete_evaluation_rows!==true||x.filter_changes_population!==false||x.rank_recalculated!==false||x.additional_factor_score_contribution!==0
+   ||x.new_score_calculations!==0||x.whole_market_denominator!==null||x.whole_market_coverage!==null)refuse('NOT_PROJECTION','dist_index');
+  if(!Array.isArray(x.bands)||x.bands.length!==10)refuse('BANDS_INVALID','dist_index.bands');
+  x.bands.forEach((b,j)=>{exact(b,['decile','top_percent_from','top_percent_to','label'],'dist_index.bands['+j+']');
+   if(b.decile!==10-j||b.top_percent_from!==j*10||b.top_percent_to!==j*10+10||b.label!==BAND[b.decile])refuse('BANDS_INVALID','dist_index.bands['+j+']');});
+  if(!isObj(x.boards)||!Object.keys(x.boards).length)refuse('BOARDS_INVALID','dist_index.boards');exact(m.source_results,Object.keys(x.boards),'dist_manifest.source_results');
+  for(const[k,b]of Object.entries(x.boards)){const at='dist_index.boards.'+k;if(!d.models.includes(k))refuse('BOARDS_INVALID',at);exact(b,DIST_BOARD_KEYS,at);
+   for(const f of DIST_BOARD_KEYS.filter(f=>f!=='source_result_sha256'))if(!same(b[f],d.boards[k][f]))refuse('DIST_BOARD_MISMATCH',at+'.'+f);
+   exact(m.source_results[k],['result_hash','sha256'],'dist_manifest.source_results.'+k);
+   if(m.source_results[k].result_hash!==b.result_hash||m.source_results[k].sha256!==b.source_result_sha256||!HEX.test(b.source_result_sha256))refuse('DIST_BOARD_MISMATCH','dist_manifest.source_results.'+k);}
+  // The companies are the delivery's evaluation code rows, with their identity (a null security id stays null).
+  if(!Array.isArray(x.companies)||x.companies.length!==d.rows.length)refuse('COMPANIES_MISMATCH','dist_index.companies');
+  const rowOf=new Map(d.rows.map(r=>[r.company_id,r])),seen=new Set();
+  x.companies.forEach((c,i)=>{exact(c,['company_id','issuer_id','security_id'],'dist_index.companies['+i+']');const r=rowOf.get(c.company_id);
+   if(!r||seen.has(c.company_id)||c.issuer_id!==r.issuer_id||c.security_id!==r.security_id)refuse('COMPANIES_MISMATCH','dist_index.companies['+i+']');seen.add(c.company_id);});
+  if(!Array.isArray(x.groups))refuse('GROUPS_INVALID','dist_index.groups');const groups=new Map(),files=new Set();
+  x.groups.forEach((g,i)=>{const at='dist_index.groups['+i+']';exact(g,DIST_GROUP_KEYS,at);
+   if(!own(x.boards,g.board))refuse('GROUPS_INVALID',at+'.board');
+   if(typeof g.ranking_scope!=='string'||(MODELS[g.board].kind==='COMMON'?g.ranking_scope!=='COMMON':!/^SECTOR\|/.test(g.ranking_scope)))refuse('RANKING_SCOPE',at+'.ranking_scope');
+   if(typeof g.variant_id!=='string'||!g.variant_id||g.group_id!==[g.board,g.ranking_scope,g.variant_id].join('|')||groups.has(g.group_id))refuse('GROUPS_INVALID',at+'.group_id');
+   if((g.raw_direction!=='HIGHER'&&g.raw_direction!=='LOWER')||g.score_direction!=='HIGHER_IS_BETTER')refuse('DIRECTION',at+'.score_direction');
+   const n=g.evaluation_valid_n,rows=g.evaluation_rows_in_scope;
+   if(!int(rows)||rows<1||rows>d.rows.length||!int(n)||n<0||n>rows||!int(g.reference_valid_n)||g.reference_valid_n<0)refuse('TYPE',at+'.evaluation_valid_n');
+   exact(g.comparison_group,['role','unit','n','members_hash'],at+'.comparison_group');const cg=g.comparison_group;
+   if(x.display_policy===DIST.STORED?(cg.role!=='EVALUATION_VALID'||cg.unit!=='EVALUATION_CODE_ROW'||cg.n!==n||!HEX.test(cg.members_hash))
+    :(cg.role!=='FACTOR_REFERENCE'||cg.unit!=='REPRESENTATIVE_ISSUER'||cg.n!==g.reference_valid_n))refuse('COMPARISON_GROUP',at+'.comparison_group');
+   if(!Array.isArray(g.bins)||g.bins.length!==10)refuse('BINS_INVALID',at+'.bins');let sum=0;
+   g.bins.forEach((b,j)=>{exact(b,['decile','count'],at+'.bins['+j+']');if(b.decile!==10-j||!int(b.count)||b.count<0)refuse('BINS_INVALID',at+'.bins['+j+']');sum+=b.count;});
+   if(!isObj(g.unavailable_reasons)||!int(g.unavailable_count)||Object.values(g.unavailable_reasons).some(v=>!int(v)||v<1)
+    ||Object.values(g.unavailable_reasons).reduce((a,v)=>a+v,0)!==g.unavailable_count||sum+g.unavailable_count!==rows)refuse('BINS_INVALID',at+'.unavailable_count');
+   // The stored policy: ten bands only from N 10, holding every valid row; below 10 the valid rows are unavailable (SAMPLE_LT_10).
+   if(x.display_policy===DIST.STORED&&(n>=10?sum!==n:sum!==0))refuse('BINS_INVALID',at+'.bins');
+   if(!Array.isArray(g.legacy_tie_splits))refuse('TYPE',at+'.legacy_tie_splits');
+   g.legacy_tie_splits.forEach((t,j)=>exact(t,['score','last_rank','next_rank','from_decile','to_decile'],at+'.legacy_tie_splits['+j+']'));
+   if(!Array.isArray(g.files)||!g.files.length||new Set(g.files).size!==g.files.length||g.files.some(f=>!DIST_PART.test(f)||!entries.has(f)))refuse('PART_NOT_IN_MANIFEST',at+'.files');
+   g.files.forEach(f=>files.add(f));groups.set(g.group_id,g);});
+  for(const f of entries.keys())if(DIST_PART.test(f)&&!files.has(f))refuse('PART_UNREFERENCED','dist_manifest.files.'+f);
+  const manifest_sha256=await sha256(p.manifest.bytes);
+  const value=freeze({scope:d.scope,bound:d.bound,delivery:d.delivery,manifest_sha256,display_policy:x.display_policy,policy_state:x.policy_state,data_kind:x.data_kind,
+   entries:Object.fromEntries(entries),boards:x.boards,groups:[...groups.values()],scopeOf:Object.fromEntries(d.rows.map(r=>[r.company_id,r.scopes]))});DIST_CHECKED.add(value);
+  return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// One distribution part {bytes, body} of a checked distribution: its parts name only groups the index files there; the rows of each
+// are kept (a group may continue in another part). Returns Map group_id → rows of this part.
+async function checkDistributionPart(file,name,D,sha256){
+ try{if(!D||!DIST_CHECKED.has(D)||!own(D.entries,name)||!DIST_PART.test(name))refuse('NOT_IN_MANIFEST',name);
+  const x=await bytesMatch(file,name,new Map(Object.entries(D.entries)),sha256,name);
+  exact(x,['schema_version','parts'],name);if(x.schema_version!==DIST.PART)refuse('SCHEMA',name+'.schema_version');
+  if(!Array.isArray(x.parts)||!x.parts.length)refuse('PARTS_INVALID',name+'.parts');const byId=new Map(D.groups.map(g=>[g.group_id,g])),out=new Map();
+  x.parts.forEach((q,i)=>{const at=name+'.parts['+i+']';exact(q,['group_id','rows'],at);const g=byId.get(q.group_id);
+   if(!g||!g.files.includes(name))refuse('GROUP_NOT_IN_PART',at+'.group_id');if(!Array.isArray(q.rows)||!q.rows.length)refuse('ROWS_INVALID',at+'.rows');
+   q.rows.forEach((r,j)=>exact(r,DIST_ROW_KEYS,at+'.rows['+j+']'));out.set(q.group_id,(out.get(q.group_id)||[]).concat(q.rows));});
+  for(const g of D.groups)if(g.files.includes(name)&&!out.has(g.group_id))refuse('GROUP_MISSING',name+'.'+g.group_id);
+  return{ok:true,value:freeze(out)};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// All rows of one group, once every part it names is checked (Map part name → checkDistributionPart value): complete (every evaluation
+// row of its scope once, none from another ranking scope), and in agreement with the index (N, ranks 1..N in the stored order, band
+// counts, unavailable reasons, tie splits). Any disagreement refuses the group; nothing is repaired.
+function distributionGroup(D,group_id,parts){
+ try{if(!D||!DIST_CHECKED.has(D))refuse('NOT_CHECKED','$');const g=D.groups.find(x=>x.group_id===group_id);if(!g)refuse('GROUP_UNKNOWN',group_id);
+  const rows=[];for(const f of g.files){const p=parts&&parts.get(f);if(!p)refuse('PART_NOT_LOADED',f);rows.push(...(p.get(group_id)||[]));}
+  const at=group_id,ids=new Set(),scopeOf=new Map(Object.entries(D.scopeOf).map(([k,v])=>[k,v[g.board]]));
+  if(rows.length!==g.evaluation_rows_in_scope)refuse('GROUP_ROWS',at);
+  for(const r of rows){if(ids.has(r.company_id))refuse('GROUP_ROWS',at+'.'+r.company_id);ids.add(r.company_id);
+   if(scopeOf.get(r.company_id)!==g.ranking_scope)refuse('RANKING_SCOPE',at+'.'+r.company_id);
+   if(r.kind!=='CORE'&&r.kind!=='ADDITIONAL')refuse('TYPE',at+'.'+r.company_id+'.kind');
+   if(r.score===null){if(r.rank!==null||r.stored_decile!==null||r.decile!==null||typeof r.score_status!=='string')refuse('RANK_WITHOUT_SCORE',at+'.'+r.company_id);}
+   else if(!isScore(r.score)||!int(r.rank)||r.rank_n!==g.evaluation_valid_n)refuse('TYPE',at+'.'+r.company_id);
+   if(r.decile===null?r.decile_status==='VALID':(!int(r.decile)||r.decile<1||r.decile>10||r.decile_status!=='VALID'))refuse('DECILE_INVALID',at+'.'+r.company_id);
+   if(D.display_policy===DIST.STORED&&(r.decile!==r.stored_decile||(r.score!==null&&r.decile_status!==r.stored_decile_status)))refuse('DECILE_INVALID',at+'.'+r.company_id);}
+  const valid=rows.filter(r=>r.score!==null).sort((a,b)=>a.rank-b.rank);
+  if(valid.length!==g.evaluation_valid_n||valid.some((r,i)=>r.rank!==i+1))refuse('RANK_INTEGRITY',at);
+  for(let i=1;i<valid.length;i++){const a=valid[i-1],b=valid[i];if(a.score<b.score||(a.score===b.score&&a.company_id>b.company_id))refuse('STORED_ORDER',at+'.'+b.company_id);}
+  const counts=new Map(),reasons=new Map();for(const r of rows){if(r.decile!==null)counts.set(r.decile,(counts.get(r.decile)||0)+1);else reasons.set(r.decile_status,(reasons.get(r.decile_status)||0)+1);}
+  if(g.bins.some(b=>(counts.get(b.decile)||0)!==b.count))refuse('BINS_MISMATCH',at);
+  if(reasons.size!==Object.keys(g.unavailable_reasons).length||[...reasons].some(([k,v])=>g.unavailable_reasons[k]!==v))refuse('BINS_MISMATCH',at+'.unavailable_reasons');
+  const splits=valid.filter((r,i)=>i&&valid[i-1].score===r.score&&valid[i-1].stored_decile!==r.stored_decile).length;
+  if(splits!==g.legacy_tie_splits.length)refuse('TIE_SPLITS_MISMATCH',at);
+  return{ok:true,value:freeze({group:g,rows})};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// What the screen shows for one checked group: its context once, the ten bands with their stored counts and the unavailable rows apart,
+// and for a chosen band (a decile, or 'NONE') one page of its rows in the stored rank order (unavailable rows as delivered). Choosing
+// a band or a page narrows what is shown; the rank, N and band of every row stay the producer's.
+const DIST_PAGE=50;
+function distributionView(D,G,{band=null,page=0,sectorName}={}){const g=G.group,b=D.boards[g.board],n=g.evaluation_valid_n;
+ const scope=g.ranking_scope==='COMMON'?'통합 비교집단(평가 집단 전체)':'섹터 비교집단 · '+g.ranking_scope.split('|').slice(1).map((x,i)=>i===0&&sectorName?sectorName(x):x).join(' · ');
+ const policy=D.display_policy===DIST.STORED?'분위 기준: 저장된 평가 순위 분위(기존 규칙)'+(g.legacy_tie_splits.length?' · 같은 점수가 구간 경계에서 갈린 곳 '+g.legacy_tie_splits.length+'곳(회사 ID 순 · 오너 기준 확인 중)':'')
+  :'분위 기준: 참조 점수 10점 구간(연구 표시 후보 · 오너 기준 확인 전 · 합성만)';
+ const bands=g.bins.map(x=>freeze({decile:x.decile,label:BAND[x.decile],count:x.count,selected:band===x.decile}));
+ const pick=band===null?null:band==='NONE'?G.rows.filter(r=>r.decile===null):G.rows.filter(r=>r.decile===band).sort((a,c)=>a.rank-c.rank);
+ const total=pick?pick.length:0,pages=Math.max(1,Math.ceil(total/DIST_PAGE)),pg=Math.min(Math.max(0,page|0),pages-1),slice=pick?pick.slice(pg*DIST_PAGE,pg*DIST_PAGE+DIST_PAGE):[];
+ return freeze({head:MODELS[g.board].label+' · '+g.variant_id+' · '+scope,
+  context:'평가 유효 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 N '+g.reference_valid_n+'(순위 분모 아님) · 원지표 '+(g.raw_direction==='LOWER'?'낮을수록 좋음':'높을수록 좋음')+' · 점수는 높을수록 좋음 · 평가일 '+b.evaluation_population.valuation_date,
+  members:'비교집단 구성원 해시 '+g.comparison_group.members_hash.slice(0,12)+'… · 결과 '+b.result_hash.slice(0,12)+'…',policy,bands,
+  unavailable:freeze({count:g.unavailable_count,selected:band==='NONE',reasons:Object.entries(g.unavailable_reasons).map(([k,v])=>word(k)+' '+v)}),
+  selected:band===null?null:band==='NONE'?'분위 없음 · '+total+'개':BAND[band]+' · 분위 '+band+' · '+total+'개'+(total?'':' · 확인된 빈 구간'),
+  page:pg,pages,range:total?(pg*DIST_PAGE+1)+'–'+(pg*DIST_PAGE+slice.length)+' / '+total:'0 / 0',
+  rows:slice.map(r=>freeze({company_id:r.company_id,rank:r.rank===null?'순위 없음':r.rank+' / '+r.rank_n,score:r.score===null?'미산출':fmt(r.score),
+   band:r.decile===null?'분위 없음 · '+word(r.decile_status):BAND[r.decile]+'(분위 '+r.decile+')',kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
+
 const RULES=Object.freeze(['U1·U2·S1 점수는 같은 척도가 아님 · 평균·합산·차이를 만들지 않음',
  '총점이 없으면 총점 순위도 없음 · 섹터 순위를 이어 붙인 통합 순위 없음',
  '연구 후보 · 공식 QGV·기본값·포트폴리오 목표에 반영되지 않음 · 성과 미측정',
@@ -452,5 +623,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

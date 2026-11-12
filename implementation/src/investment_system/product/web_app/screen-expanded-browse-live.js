@@ -12,7 +12,7 @@
 'use strict';
 const I=window.IS2,{h}=I;
 // Checked factor leaders per checked dual delivery in RAM (key = that RAM entry, so they go when it goes).
-const LEAD=new WeakMap();
+const LEAD=new WeakMap(),DISTS=new WeakMap();
 const E=()=>I.expandedIssuers;
 // The dual research deliveries in RAM are dropped with the classification bundle (접기 / 연결 끊기 / a dropped token).
 try{if(I.classification&&typeof I.classification.subscribe==='function'&&I.dualQgv)I.classification.subscribe(()=>{const s=I.classification.state();
@@ -132,11 +132,12 @@ function block(anchor){
   const set=(c,t)=>{rs.dataset.dualState=c;rs.textContent=t;};let busy=false;
   const btns=Object.entries(DQ.SCOPES).map(([scope,S])=>{const b=h('button',{type:'button',class:'btn',dataset:{dualOpen:scope}},S.label+' 두 모형 결과 불러오기');
    // held1057 (평가 입력 = 참조 원천의 투영) also reads the producer's projection proof when staged (OPTIONAL: absent = 평가 입력 미검증).
-   const proof=S.input==='reference',reads=[...['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]),...(proof?[['classification','dual_lineage/'+scope,'OPTIONAL']]:[])];
-   b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+S.label+' 목록표·요약·색인'+(proof?'·투영 증명 ':' ')+reads.length+'개 · 서버 요청 간격 5초');
+   // operating504 (평가 입력 = 결과의 입력) also reads the producer's independent reference anchor when staged (OPTIONAL: absent = 참조 입력 대조 안 됨).
+   const proof=S.input==='reference',reads=[...['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]),['classification',(proof?'dual_lineage/':'dual_reference_anchor/')+scope,'OPTIONAL']];
+   b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+S.label+' 목록표·요약·색인'+(proof?'·투영 증명 ':'·참조 기준 ')+reads.length+'개 · 서버 요청 간격 5초');
     let p;try{p=I.prices.kisRead(e,reads);}catch(err){p=Promise.reject(err);}
-    Promise.resolve(p).then(async([manifest,summary,index,lineage])=>{const r=await DQ.checkDelivery({manifest,summary,index,...(lineage?{lineage}:{})},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
-     if(!r.ok){set('ERROR',S.label+' 연구 결과를 쓰지 않음 · '+(r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':/^LINEAGE_/.test(r.code)?'평가 입력 투영 증명이 이 결과와 맞지 않습니다':'형식 오류')
+    Promise.resolve(p).then(async([manifest,summary,index,extra])=>{const r=await DQ.checkDelivery({manifest,summary,index,...(extra?(proof?{lineage:extra}:{reference_anchor:extra}):{})},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
+     if(!r.ok){set('ERROR',S.label+' 연구 결과를 쓰지 않음 · '+(r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':/^LINEAGE_/.test(r.code)?'평가 입력 투영 증명이 이 결과와 맞지 않습니다':/^REFERENCE_ANCHOR_/.test(r.code)?'참조 입력 독립 기준이 이 결과와 맞지 않습니다':'형식 오류')
       +' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');b.disabled=false;return;}
      DQ.ram.set(scope,r.value);b.hidden=true;paint();},
     err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?S.label+' 두 모형 결과가 전달 위치에 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');b.disabled=false;})
@@ -158,7 +159,7 @@ function block(anchor){
       h('p',{class:'reason',dataset:{dualTarget:scope+':'+k}},v.target),
       h('p',{class:'meta'},'결손 사유 · 겹칠 수 있음 · 더하지 않음'),list(v.causes,{dualCauses:k},'전달 안 됨'),
       h('p',{class:'meta'},v.incomplete),h('p',{class:'reason'},v.market));}),
-    finder(scope,d),leadersBlock(scope));}
+    finder(scope,d),leadersBlock(scope),distBlock(scope));}
   // 개별 요소 상위권 (Codex qgv-dual-factor-leaders/1, optional companion of this checked delivery): its own click and two reads
   // (manifest + index), then one shard read per 보기 when not cached. Kept with the delivery in RAM (dropped with it). Only the
   // stored ranks 1..min(N, 20) of one model × ranking scope × factor, as delivered; nothing re-sorted, merged or filled.
@@ -218,6 +219,69 @@ function block(anchor){
     area.replaceChildren(h('h5',null,'개별 요소 상위권'),h('p',{class:'meta',dataset:{dualLeadersState:'READY'}},'목록표·색인 검증됨',L.selection?' · 선택 계약 검증됨':' · 선택 계약 없음',' · 요소 묶음 ',String(L.value.groups.length),'개(유효 0인 요소 포함 · 기업 수 아님) · 저장된 순위의 앞부분만'),
      h('div',{class:'sort-row'},h('label',{for:mid},'모형'),mSel),h('div',{class:'sort-row'},h('label',{for:gid},'요소'),gSel),h('div',{class:'load-row'},show),out);
     const g=L.group&&L.shards.size?L.value.groups.find(x=>x.group_id===L.group):null;if(g&&L.shards.has(g.file))render(L.shards.get(g.file).get(g.group_id));};
+   draw();return area;}
+  // 요소 10분위 전체 조회 (owner 2026-11-12; Codex qgv-dual-factor-distribution/1, optional companion of this checked delivery):
+  // its own click and two reads (manifest + index), then the parts of the chosen group (once each, kept in RAM with the delivery).
+  // 모형 → 요소(비교 범위별) → 보기 → 분위 구간(10개 + 분위 없음) → 기업 목록(50개씩) → 기업 상세. Band, page and model only
+  // choose what is shown: every rank, band and N is the producer's. A part that fails to load is an error, never an empty band.
+  function distBlock(scope){const area=h('div',{class:'cc-wrap',dataset:{dualDist:scope}});
+   const draw=()=>{const held=DQ.ram.get(scope);if(!held)return;const S=DISTS.get(held);
+    if(!S){const b=h('button',{type:'button',class:'btn',dataset:{dualDistOpen:scope}},'요소 10분위 전체 불러오기 (목록표·색인)');
+     const st=h('p',{class:'reason',role:'status',dataset:{dualDistState:'IDLE'}},'요소마다 평가 기업 전체를 10개 구간으로 · 위 상위권은 상위 20개 미리보기');
+     b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualDistState='LOADING';st.textContent='불러오는 중 · 10분위 목록표·색인 2개 · 서버 요청 간격 5초';
+      let p;try{p=I.prices.kisRead(e,[['classification','dual_dist_manifest/'+scope],['classification','dual_dist_index/'+scope]]);}catch(err){p=Promise.reject(err);}
+      Promise.resolve(p).then(async([manifest,index])=>{const r=await DQ.checkDistribution({manifest,index},held.delivery,E().sha256);
+       if(!r.ok){st.dataset.dualDistState='ERROR';st.textContent='10분위 자료를 쓰지 않음 · '+(r.code==='DIST_BOARD_MISMATCH'||r.code==='COMPANIES_MISMATCH'?'이 연구 결과가 아닌 다른 결과의 분위입니다'
+        :r.code==='POLICY_NOT_CONFIRMED'?'오너 기준 확인 전의 표시 후보입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
+       DISTS.set(held,{value:r.value,parts:new Map(),board:null,group:null,band:null,page:0,view:null});draw();},
+      err=>{const c=codeOf(err);st.dataset.dualDistState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'10분위 전체 자료가 전달 위치에 없습니다(배치 전) · 위 상위 20개 미리보기만 있음 · 10분위 전체 조회 아님':say(c))+' · 위 결과는 그대로';b.disabled=false;})
+      .finally(()=>{busy=false;});});
+     area.replaceChildren(h('h5',null,'요소 10분위 전체'),b,st);return;}
+    const D=S.value,M=DQ.MODELS,mid='dual-db-'+scope,gid='dual-dg-'+scope;
+    const mSel=h('select',{id:mid,dataset:{dualDistModel:scope}},h('option',{value:''},'모형 선택'),...held.delivery.models.filter(k=>D.boards[k]).map(k=>h('option',{value:k,selected:S.board===k},M[k].label)));
+    mSel.addEventListener('change',()=>{S.board=mSel.value||null;S.group=null;S.view=null;S.band=null;S.page=0;draw();});
+    const groups=S.board?D.groups.filter(g=>g.board===S.board):[],byScope=new Map();for(const g of groups){if(!byScope.has(g.ranking_scope))byScope.set(g.ranking_scope,[]);byScope.get(g.ranking_scope).push(g);}
+    const gSel=h('select',{id:gid,disabled:!S.board,dataset:{dualDistGroup:scope}},h('option',{value:''},S.board?'요소 선택 · '+groups.length+'개':'모형을 먼저 고르세요'),
+     ...[...byScope].map(([rs,gs])=>h('optgroup',{label:rs==='COMMON'?'통합 비교집단':'섹터 · '+rs.split('|').slice(1).map((x,i)=>i===0?sectorName(x):x).join(' · ')},
+      ...gs.map(g=>h('option',{value:g.group_id,selected:S.group===g.group_id},g.variant_id+' · 유효 '+g.evaluation_valid_n+' / '+g.evaluation_rows_in_scope)))));
+    gSel.addEventListener('change',()=>{S.group=gSel.value||null;S.view=null;S.band=null;S.page=0;draw();});
+    const show=h('button',{type:'button',class:'btn',disabled:!S.group,dataset:{dualDistShow:scope}},'보기');
+    const out=h('div',{dataset:{dualDistOut:scope}}),cmpD=h('div',{dataset:{dualCompare:scope+':dist'}}),byId=new Map(held.delivery.rows.map(r=>[r.company_id,r]));
+    const render=()=>{const G=S.view;if(!G)return;const v=DQ.distributionView(D,G,{band:S.band,page:S.page,sectorName}),th=t=>h('th',{scope:'col'},t);
+     const pick=b=>{S.band=b;S.page=0;render();};
+     const bandBtn=(key,label,count,on)=>{const x=h('button',{type:'button',class:'chip','aria-pressed':String(on),dataset:{dualDistBand:String(key)}},label+' · '+count+'개');x.addEventListener('click',()=>pick(key));return x;};
+     const who=id=>{const row=byId.get(id);return row?h('button',{type:'button',class:'lk',dataset:{dualDistOpenCo:id},onclick:e=>compare(e,scope,row,cmpD)},id):id;};
+     const pager=v.pages>1?h('div',{class:'load-row',dataset:{dualDistPager:''}},
+       (()=>{const x=h('button',{type:'button',class:'btn',disabled:v.page===0,dataset:{dualDistPage:'prev'}},'이전 50개');x.addEventListener('click',()=>{S.page=v.page-1;render();});return x;})(),
+       h('span',{class:'meta',dataset:{dualDistRange:''}},v.range+' · '+(v.page+1)+' / '+v.pages+'쪽'),
+       (()=>{const x=h('button',{type:'button',class:'btn',disabled:v.page>=v.pages-1,dataset:{dualDistPage:'next'}},'다음 50개');x.addEventListener('click',()=>{S.page=v.page+1;render();});return x;})()):null;
+     out.replaceChildren(h('p',{class:'hand',dataset:{dualDistHead:G.group.group_id}},v.head),h('p',{class:'meta',dataset:{dualDistContext:''}},v.context),
+      h('p',{class:'meta'},v.members),h('p',{class:'reason',dataset:{dualDistPolicy:D.display_policy}},v.policy),
+      h('p',{class:'meta'},'구간을 고르면 그 구간의 기업만 보임 · 순위·분위·분모는 생산자 값 그대로'),
+      h('div',{class:'chips',role:'group','aria-label':'분위 구간',dataset:{dualDistBands:G.group.group_id}},...v.bands.map(b=>bandBtn(b.decile,b.label,b.count,b.selected)),
+       bandBtn('NONE','분위 없음',v.unavailable.count,v.unavailable.selected)),
+      v.unavailable.reasons.length?h('p',{class:'meta',dataset:{dualDistReasons:''}},'분위 없음 사유 · ',v.unavailable.reasons.join(' · ')):null,
+      v.selected?h('p',{class:'reason',role:'status',dataset:{dualDistSelected:String(S.band)}},v.selected):h('p',{class:'meta',dataset:{dualDistSelected:''}},'구간을 고르세요'),
+      v.rows.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{dualDistTable:G.group.group_id}},h('caption',null,'저장된 순위 그대로 · 같은 모형·비교집단·요소 안에서만 · 기업을 누르면 세 모형 상세'),
+       h('thead',null,h('tr',null,th('순위'),th('기업'),th('요소 점수'),th('분위 구간'),th('구분'))),
+       h('tbody',null,...v.rows.map(r=>h('tr',{dataset:{dualDistRow:r.company_id}},h('td',null,r.rank),h('td',null,who(r.company_id)),h('td',null,r.score),h('td',null,r.band),h('td',null,r.kind))))))
+      :v.selected?h('p',{class:'reason',dataset:{dualDistEmpty:''}},'이 구간의 기업 0개 · 확인된 빈 구간(불러오기 실패 아님)'):null,
+      pager,cmpD);};
+    show.addEventListener('click',e=>{const g=D.groups.find(x=>x.group_id===S.group);if(!g||busy)return;const need=g.files.filter(f=>!S.parts.has(f));
+     const finish=()=>{const G=DQ.distributionGroup(D,g.group_id,S.parts);
+      if(!G.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'이 요소의 분위를 쓰지 않음 · '+G.code+' · '+G.path+' · 기업 없음이 아님'));return;}
+      S.view=G.value;render();};
+     if(!need.length){finish();return;}
+     busy=true;show.disabled=true;out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'LOADING'}},'분위 파일 '+need.length+'개를 불러옵니다'));
+     let p;try{p=I.prices.kisRead(e,need.map(f=>['classification','dual_dist_detail/'+scope+'/'+f.slice(13,16)]));}catch(err){p=Promise.reject(err);}
+     Promise.resolve(p).then(async xs=>{for(let i=0;i<need.length;i++){const r=await DQ.checkDistributionPart(xs[i],need[i],D,E().sha256);
+       if(!r.ok){out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'이 분위 파일을 쓰지 않음 · '+r.code+' · '+r.path+' · 기업 없음이 아님'));return;}S.parts.set(need[i],r.value);}
+      if(S.group===g.group_id)finish();},
+     err=>{out.replaceChildren(h('p',{class:'reason',dataset:{dualDistState:'ERROR'}},'분위 파일을 불러오지 못함 · '+say(codeOf(err))+' · 기업 없음이 아님'));}).finally(()=>{busy=false;show.disabled=!S.group;});});
+    area.replaceChildren(h('h5',null,'요소 10분위 전체'),h('p',{class:'meta',dataset:{dualDistState:'READY'}},'목록표·색인 검증됨 · 요소 묶음 ',String(D.groups.length),'개(기업 수 아님) · ',
+      D.display_policy==='stored-evaluation-deciles/1'?'저장된 평가 순위 분위':'연구 표시 후보(합성)',' · 평가 기업 전체 · 분위 없음도 사유와 함께'),
+     h('div',{class:'sort-row'},h('label',{for:mid},'모형'),mSel),h('div',{class:'sort-row'},h('label',{for:gid},'요소 · 비교 범위'),gSel),h('div',{class:'load-row'},show),out);
+    if(S.view)render();};
    draw();return area;}
   function finder(scope,d){const id='dual-q-'+scope,q=h('input',{type:'search',id,class:'tbl',autocomplete:'off',spellcheck:'false',enterkeyhint:'search',placeholder:'기업 코드 · 발행사 ID',dataset:{dualQuery:scope}});
    const out=h('ul',{class:'news-lines',dataset:{dualResults:scope}}),cmp=h('div',{dataset:{dualCompare:scope}});

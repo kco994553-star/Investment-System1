@@ -88,4 +88,75 @@ function selection(L, edit) {
   const m = { schema_version: m0.schema_version, scope: index.scope, data_kind: index.data_kind, source_leaders_manifest_sha256: src, files: [{ path: 'factor-leaders-selection.json', size: b.length, sha256: sha(b) }] };
   return { files: { 'factor-leaders-selection-manifest.json': Buffer.from(JSON.stringify(m, null, 2) + '\n'), 'factor-leaders-selection.json': b } };
 }
-module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha };
+// Codex's synthetic full factor distributions (#529 430f89ca, dual-distribution-synthetic: cases.json pins each case's manifest).
+// distCase(id) gives a case's files as delivered and the ranking scope of each company per board (from the case's own source
+// result, as the reader needs it); edit(docs) changes the parsed index / parts first (test-made) and the manifest names the bytes.
+const XD = path.join(D, '..', 'dual-distribution-synthetic');
+const json = (x) => Buffer.from(JSON.stringify(x, null, 2) + '\n');
+function distCase(id, edit) {
+  const c = JSON.parse(fs.readFileSync(path.join(XD, 'cases.json'), 'utf8')).cases.find((x) => x.case_id === id), dir = path.join(XD, c.output);
+  const files = Object.fromEntries(fs.readdirSync(dir).map((f) => [f, fs.readFileSync(path.join(dir, f))]));
+  const src = JSON.parse(fs.readFileSync(path.join(XD, c.source), 'utf8')), scopes = {};
+  for (const [k, b] of Object.entries(src)) for (const r of b.rows) (scopes[r.company_id] ||= {})[k] = r.ranking_scope;
+  if (edit) remanifest(files, edit);
+  return { files, scopes, case: c };
+}
+function remanifest(files, edit) {
+  const names = Object.keys(files).filter((f) => f !== 'distribution-manifest.json'), docs = Object.fromEntries(names.map((f) => [f, JSON.parse(files[f].toString('utf8'))]));
+  const m = JSON.parse(files['distribution-manifest.json'].toString('utf8'));
+  edit(docs, m);
+  for (const f of Object.keys(docs)) files[f] = json(docs[f]);
+  m.files = Object.keys(docs).sort().map((f) => ({ path: f, size: files[f].length, sha256: sha(files[f]) }));
+  files['distribution-manifest.json'] = json(m);
+  return files;
+}
+// A distribution bound to one fixture delivery (test-made: the stored factor values of its detail rows regrouped per model ×
+// ranking scope × factor, the shape of Codex's stored-evaluation-deciles/1 projection; nothing scored). edit(docs, manifest) first.
+function distribution(d, edit) {
+  const summary = JSON.parse(d.files['summary.json'].toString('utf8')), index = JSON.parse(d.files['index.json'].toString('utf8'));
+  const detail = JSON.parse(d.files['detail-000.json'].toString('utf8')).rows, boards = {}, groups = [], parts = [];
+  for (const [k, b] of Object.entries(summary.boards)) {
+    boards[k] = { model_id: b.model_id, model_version: b.model_version, evaluation_population: b.evaluation_population, reference_population: b.reference_population,
+      bindings: b.bindings, result_hash: b.result_hash, normalization_version: b.normalization_version, engine_version: b.engine_version, adapter_version: b.adapter_version,
+      configuration_hash: b.configuration_hash, source_result_sha256: sha(Buffer.from(k + b.result_hash)) };
+    const by = new Map();
+    for (const r of detail) { const x = r.boards[k]; for (const [v, f] of Object.entries(x.factors)) {
+      const key = x.ranking_scope + '|' + v; if (!by.has(key)) by.set(key, { scope: x.ranking_scope, v, ref: f.valid_n, rows: [] });
+      by.get(key).rows.push({ company_id: r.company_id, score: f.score, rank: f.rank, rank_n: f.rank_n, stored_decile: f.decile, stored_decile_status: f.decile_status,
+        decile: f.decile, decile_status: f.score === null ? f.score_status : f.decile_status, score_status: f.score_status, raw_status: f.raw_status, kind: f.kind }); } }
+    for (const [, g] of [...by].sort()) {
+      const valid = g.rows.filter((r) => r.score !== null), reasons = {}, gid = k + '|' + g.scope + '|' + g.v;
+      for (const r of g.rows) if (r.decile === null) reasons[r.decile_status] = (reasons[r.decile_status] || 0) + 1;
+      groups.push({ group_id: gid, board: k, ranking_scope: g.scope, variant_id: g.v, raw_direction: 'HIGHER', score_direction: 'HIGHER_IS_BETTER',
+        evaluation_rows_in_scope: g.rows.length, evaluation_valid_n: valid.length, reference_valid_n: g.ref || 0,
+        comparison_group: { role: 'EVALUATION_VALID', unit: 'EVALUATION_CODE_ROW', n: valid.length, members_hash: sha(Buffer.from(valid.map((r) => r.company_id).sort().join(','))) },
+        reference_members_hash: null, reference_issuer_members_hash: null,
+        bins: Array.from({ length: 10 }, (_, j) => ({ decile: 10 - j, count: g.rows.filter((r) => r.decile === 10 - j).length })),
+        unavailable_count: Object.values(reasons).reduce((a, n) => a + n, 0), unavailable_reasons: reasons, legacy_tie_splits: [], files: ['distribution-000.json'] });
+      parts.push({ group_id: gid, rows: g.rows });
+    }
+  }
+  const docs = { 'distribution-index.json': { schema_version: 'qgv-dual-factor-distribution/1', scope: d.manifest.scope, data_kind: 'SYNTHETIC', display_policy: 'stored-evaluation-deciles/1',
+    policy_state: 'EXISTING_RULE', bands: Array.from({ length: 10 }, (_, j) => ({ decile: 10 - j, top_percent_from: j * 10, top_percent_to: j * 10 + 10, label: '상위 ' + j * 10 + '–' + (j * 10 + 10) + '%' })),
+    boards, companies: index.rows.map((r) => ({ company_id: r.company_id, issuer_id: r.issuer_id, security_id: r.security_id })), groups,
+    rank_policy: 'UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL', minimum_reference_score_n: 20, minimum_stored_evaluation_decile_n: 10, complete_evaluation_rows: true,
+    filter_changes_population: false, rank_recalculated: false, additional_factor_score_contribution: 0, new_score_calculations: 0, whole_market_denominator: null, whole_market_coverage: null },
+    'distribution-000.json': { schema_version: 'qgv-dual-factor-distribution-part/1', parts } };
+  const files = { 'distribution-manifest.json': json({ schema_version: 'qgv-dual-factor-distribution-manifest/1', scope: d.manifest.scope, data_kind: 'SYNTHETIC',
+    display_policy: 'stored-evaluation-deciles/1', source_results: Object.fromEntries(Object.entries(boards).map(([k, b]) => [k, { result_hash: b.result_hash, sha256: b.source_result_sha256 }])), files: [] }) };
+  for (const f of Object.keys(docs)) files[f] = json(docs[f]);
+  return remanifest(files, edit || (() => {}));
+}
+// A synthetic independent reference anchor (qgv-dual-reference-anchor/1, the shape of Codex's real operating-reference-anchor.json)
+// naming this synthetic delivery's reference binding, for the operating504 scope. Test-made: Codex's synthetic set has no anchor.
+function referenceAnchor(edit) {
+  const b = parse('summary.json').boards.U1, e = b.bindings.reference;
+  const x = { schema_version: 'qgv-dual-reference-anchor/1', scope: 'operating504', expected_reference: JSON.parse(JSON.stringify(e)),
+    source_snapshot_sha256: 'a'.repeat(64), source_reference_view_sha256: 'b'.repeat(64), source_reference_view_path: 'accepted/reference-view.json',
+    source_reference_view_input_hash_field: 'reference_population.input_hash', source_reference_view_members_not_interchangeable: true,
+    source_original_catalog_binding: { id: 'SYN-CATALOG', input_hash: 'c'.repeat(64) }, matches_all_dual_boards: true, eligible_members_are_not_candidate_members: true,
+    old_selected_reference_rows: b.reference_population.code_rows, candidate_rows: e.code_rows, generation_rule: 'synthetic', new_score_calculations: 0 };
+  if (edit) edit(x);
+  return Buffer.from(JSON.stringify(x, null, 2) + '\n');
+}
+module.exports = { D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor };
