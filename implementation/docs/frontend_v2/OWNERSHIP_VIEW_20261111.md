@@ -76,4 +76,17 @@ QGV(#530)와 별도 PR이다. 기반은 Codex #531 `986e02ba`(canonical `ab6a83c
   4. VERIFIED_ZERO_IN_SCOPE.
   5. 13F 운용 재량 보기.
   6. 수집 상태 값의 전체 목록. 지금 판독기는 5개만 받는다.
-- **RIG 가드 예외**(`test_no_other_package_depends_on_rig`): 가드 변경이라 오너 승인 사항이다. 바꾸지 않았다.
+- **RIG 가드** (오너 2026-11-12 「최소 변경으로 해결」, 이 Draft 가지에서만 · 병합은 별도 승인):
+  - 규칙: `research/company_ownership.py` 한 모듈만 `investment_system.rig.model`에서 `IdentityRef` · `Node` · `stable_id` 세 이름을 가져올 수 있다.
+  - 그 밖의 rig 모듈(adapter · gate · ledger)이나 다른 이름은 그 모듈에도 금지다. 다른 모든 모듈은 지금처럼 rig에 의존할 수 없다.
+  - rig 자신이 다른 패키지를 가져오지 않는다는 시험은 그대로다.
+  - 새 시험 `test_the_rig_model_exception_is_exactly_one_module_and_three_names`: 예외가 정확히 한 모듈·세 이름인지 고정한다.
+  - 가드를 지우거나 건너뛰지 않았다. research 전체를 허용하지 않았다.
+
+## 5. 보관 실자료 (로컬, 수만)
+
+- Codex 원자료 883893e4 `handoffs/company-ownership-20261111`의 `view.json`(sha 44f5a59e…, handoff manifest와 일치).
+- 판독기로 읽힌다(거부 없음): 확인된 관계 0개 · 전체 목록 미확인 · 목록에 없는 대상 1건. 목록 다섯 개 모두 0행이다.
+- **전달 경로는 아직 없다**: 이 PR의 기반(#531 → canonical ab6a83c3)에는 비공개 인증 층이 없다(`kis-private.js`, Worker `/kis/classification` 없음). 그 층은 #530 사슬에만 있다.
+  - 기존 인증·비공개 경계를 재사용하려면 이 화면을 그 사슬 위로 옮겨야 한다(새 가지 또는 병합 뒤 재기반). 오너 결정 사항으로 둔다.
+  - 그래서 공개 사이트와 이 개발 빌드는 실자료 관계 보기를 읽지 않는다. 「관계 자료 미연결」 그대로다.
