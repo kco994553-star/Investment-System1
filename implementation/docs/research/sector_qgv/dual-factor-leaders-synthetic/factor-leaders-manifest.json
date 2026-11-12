@@ -1,0 +1,18 @@
+{
+  "schema_version": "qgv-dual-factor-leaders-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_delivery_manifest_sha256": "b758176c698c834bb819abb1a6a187ffd701e07742276b1d1a04e3ce87b152bc",
+  "files": [
+    {
+      "path": "factor-leaders-000.json",
+      "size": 91553,
+      "sha256": "a56f853cb6713ce04c379933a16f407877f36ba89def86bb4370f86abe894716"
+    },
+    {
+      "path": "factor-leaders.json",
+      "size": 55781,
+      "sha256": "e8b9761e1718cf5709a53083754adf60d346971df84ac109e1e2792b1a2bf6a5"
+    }
+  ]
+}

@@ -1,0 +1,864 @@
+{
+  "S1": {
+    "schema_version": "qgv-dual-board/1",
+    "model_id": "sector-reduced-core/0.1.0",
+    "model_version": "0.1.0",
+    "evaluation_population": {
+      "id": "SYN-EVALUATION",
+      "version": "1",
+      "members_hash": "04d39ba4210e9193da07c7ff005c26785965a021e3e6874f536b1f11bdf3dfdd",
+      "valuation_date": "2026-11-04",
+      "as_of": "2026-11-04T20:00:00Z",
+      "code_rows": 40,
+      "issuers": 40,
+      "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "reference_population": {
+      "id": "SYN-REFERENCE",
+      "version": "1",
+      "input_hash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "members_hash": "5555555555555555555555555555555555555555555555555555555555555555",
+      "factor_members_hash": "580ea9712f60caa31f714c740fdce49f6ab57e4faa420b0660af4a7699eb4133"
+    },
+    "configuration": {
+      "minimum": 20
+    },
+    "normalization_version": "common-midrank-strict20/1",
+    "bindings": {
+      "evaluation": {
+        "id": "SYN-EVALUATION",
+        "version": "1",
+        "members_hash": "04d39ba4210e9193da07c7ff005c26785965a021e3e6874f536b1f11bdf3dfdd",
+        "valuation_date": "2026-11-04",
+        "as_of": "2026-11-04T20:00:00Z",
+        "code_rows": 40,
+        "issuers": 40,
+        "input_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "reference": {
+        "input_hash": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    },
+    "engine_version": "SYN-ENGINE",
+    "adapter_version": "SYN-ADAPTER",
+    "rows": [
+      {
+        "company_id": "SYN-000",
+        "issuer_id": "issuer:000",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 100,
+            "rank": 1,
+            "rank_n": 20,
+            "decile": 10,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-001",
+        "issuer_id": "issuer:001",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 95,
+            "rank": 2,
+            "rank_n": 20,
+            "decile": 10,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-002",
+        "issuer_id": "issuer:002",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 90,
+            "rank": 3,
+            "rank_n": 20,
+            "decile": 9,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-003",
+        "issuer_id": "issuer:003",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 85,
+            "rank": 4,
+            "rank_n": 20,
+            "decile": 9,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-004",
+        "issuer_id": "issuer:004",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 80,
+            "rank": 5,
+            "rank_n": 20,
+            "decile": 8,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-005",
+        "issuer_id": "issuer:005",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 75,
+            "rank": 6,
+            "rank_n": 20,
+            "decile": 8,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-006",
+        "issuer_id": "issuer:006",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 70,
+            "rank": 7,
+            "rank_n": 20,
+            "decile": 7,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-007",
+        "issuer_id": "issuer:007",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 65,
+            "rank": 8,
+            "rank_n": 20,
+            "decile": 7,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-008",
+        "issuer_id": "issuer:008",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 60,
+            "rank": 9,
+            "rank_n": 20,
+            "decile": 6,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-009",
+        "issuer_id": "issuer:009",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 55,
+            "rank": 10,
+            "rank_n": 20,
+            "decile": 6,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-010",
+        "issuer_id": "issuer:010",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 50,
+            "rank": 11,
+            "rank_n": 20,
+            "decile": 5,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-011",
+        "issuer_id": "issuer:011",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 45,
+            "rank": 12,
+            "rank_n": 20,
+            "decile": 5,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-012",
+        "issuer_id": "issuer:012",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 40,
+            "rank": 13,
+            "rank_n": 20,
+            "decile": 4,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-013",
+        "issuer_id": "issuer:013",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 35,
+            "rank": 14,
+            "rank_n": 20,
+            "decile": 4,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-014",
+        "issuer_id": "issuer:014",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 30,
+            "rank": 15,
+            "rank_n": 20,
+            "decile": 3,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-015",
+        "issuer_id": "issuer:015",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 25,
+            "rank": 16,
+            "rank_n": 20,
+            "decile": 3,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-016",
+        "issuer_id": "issuer:016",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 20,
+            "rank": 17,
+            "rank_n": 20,
+            "decile": 2,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-017",
+        "issuer_id": "issuer:017",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 15,
+            "rank": 18,
+            "rank_n": 20,
+            "decile": 2,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-018",
+        "issuer_id": "issuer:018",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 5,
+            "rank": 19,
+            "rank_n": 20,
+            "decile": 1,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "SYN-019",
+        "issuer_id": "issuer:019",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 0,
+            "rank": 20,
+            "rank_n": 20,
+            "decile": 1,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-000",
+        "issuer_id": "other:issuer:000",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 100,
+            "rank": 1,
+            "rank_n": 20,
+            "decile": 10,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-001",
+        "issuer_id": "other:issuer:001",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 95,
+            "rank": 2,
+            "rank_n": 20,
+            "decile": 10,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-002",
+        "issuer_id": "other:issuer:002",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 90,
+            "rank": 3,
+            "rank_n": 20,
+            "decile": 9,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-003",
+        "issuer_id": "other:issuer:003",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 85,
+            "rank": 4,
+            "rank_n": 20,
+            "decile": 9,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-004",
+        "issuer_id": "other:issuer:004",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 80,
+            "rank": 5,
+            "rank_n": 20,
+            "decile": 8,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-005",
+        "issuer_id": "other:issuer:005",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 75,
+            "rank": 6,
+            "rank_n": 20,
+            "decile": 8,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-006",
+        "issuer_id": "other:issuer:006",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 70,
+            "rank": 7,
+            "rank_n": 20,
+            "decile": 7,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-007",
+        "issuer_id": "other:issuer:007",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 65,
+            "rank": 8,
+            "rank_n": 20,
+            "decile": 7,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-008",
+        "issuer_id": "other:issuer:008",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 60,
+            "rank": 9,
+            "rank_n": 20,
+            "decile": 6,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-009",
+        "issuer_id": "other:issuer:009",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 55,
+            "rank": 10,
+            "rank_n": 20,
+            "decile": 6,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-010",
+        "issuer_id": "other:issuer:010",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 50,
+            "rank": 11,
+            "rank_n": 20,
+            "decile": 5,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-011",
+        "issuer_id": "other:issuer:011",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 45,
+            "rank": 12,
+            "rank_n": 20,
+            "decile": 5,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-012",
+        "issuer_id": "other:issuer:012",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 40,
+            "rank": 13,
+            "rank_n": 20,
+            "decile": 4,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-013",
+        "issuer_id": "other:issuer:013",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 35,
+            "rank": 14,
+            "rank_n": 20,
+            "decile": 4,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-014",
+        "issuer_id": "other:issuer:014",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 30,
+            "rank": 15,
+            "rank_n": 20,
+            "decile": 3,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-015",
+        "issuer_id": "other:issuer:015",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 25,
+            "rank": 16,
+            "rank_n": 20,
+            "decile": 3,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-016",
+        "issuer_id": "other:issuer:016",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 20,
+            "rank": 17,
+            "rank_n": 20,
+            "decile": 2,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-017",
+        "issuer_id": "other:issuer:017",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 15,
+            "rank": 18,
+            "rank_n": 20,
+            "decile": 2,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-018",
+        "issuer_id": "other:issuer:018",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 5,
+            "rank": 19,
+            "rank_n": 20,
+            "decile": 1,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      },
+      {
+        "company_id": "OTHER-SYN-019",
+        "issuer_id": "other:issuer:019",
+        "security_id": null,
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "total": null,
+        "factors": {
+          "debt_assets": {
+            "score": 0,
+            "rank": 20,
+            "rank_n": 20,
+            "decile": 1,
+            "decile_status": "VALID",
+            "valid_n": 20,
+            "score_status": "VALID",
+            "raw_status": "VALID",
+            "kind": "ADDITIONAL"
+          }
+        }
+      }
+    ],
+    "groups": [
+      {
+        "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+        "variant_id": "debt_assets",
+        "valid_n": 20,
+        "members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      {
+        "ranking_scope": "SECTOR|INDUSTRIALS|GENERAL",
+        "variant_id": "debt_assets",
+        "valid_n": 20,
+        "members_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "issuer_members_hash": "3333333333333333333333333333333333333333333333333333333333333333"
+      }
+    ],
+    "result_hash": "cd07cb88511bc0325a7058d91b2612303780f577e8e6887b21dcad7d2cf15278"
+  }
+}

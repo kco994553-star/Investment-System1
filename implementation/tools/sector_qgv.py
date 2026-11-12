@@ -24,6 +24,28 @@ def run(job,output,synthetic=False):
         raise ValueError('PRIVATE_OUTPUT_OUTSIDE_CHECKOUT_REQUIRED')
     if output.exists():raise ValueError('OUTPUT_ALREADY_EXISTS')
     mode=job.get('mode','normalized')
+    if mode=='dual-study':
+        from investment_system.research.dual_qgv import run_board,save_board,replay_board,delivery_artifacts,json_bytes
+        if any(k in job for k in ('config','main_request','saved_config','reference_plan','comparisons')):
+            raise ValueError('DUAL_JOB_CONFLICT')
+        evaluation,reference=[json.loads(checked_bytes(job[k])) for k in ('evaluation_snapshot','reference_snapshot')]
+        if job.get('dual_saved'):
+            if 'dual_config' in job:raise ValueError('DUAL_JOB_CONFLICT')
+            saved=json.loads(checked_bytes(job['dual_saved']));config=saved['configuration']
+            result=replay_board(saved,evaluation,reference,job['request_id'])
+        else:
+            config=json.loads(checked_bytes(job['dual_config']))
+            result=run_board(config,evaluation,reference,request_id=job['request_id'])
+            saved=save_board(config,result)
+        artifacts={'dual-result.json':result,'dual-saved.json':saved}
+        artifacts.update(delivery_artifacts({config['model_id']:result}))
+        output.mkdir(parents=True,mode=0o700)
+        manifest={'schema_version':'qgv-dual-run/1','data_kind':'SYNTHETIC' if synthetic else 'PRIVATE','input_job':job,'files':[]}
+        for name,data in artifacts.items():
+            body=json_bytes(data);p=output/name;p.write_bytes(body);p.chmod(0o600)
+            manifest['files'].append({'path':name,'size':len(body),'sha256':hashlib.sha256(body).hexdigest()})
+        (output/'manifest.json').write_bytes(json_bytes(manifest))
+        return {'schema_version':'qgv-dual-run-summary/1','model_id':config['model_id'],'coverage':result['coverage'],'performance':'NOT_MEASURED'}
     if mode=='reference-study':
         from investment_system.research.sector_qgv_reference import run_reference_study,save_reference_settings,replay_reference_study,reference_view
         if any(k in job for k in ('main_request','saved_config','retained_preview','comparisons','axis_comparison')):

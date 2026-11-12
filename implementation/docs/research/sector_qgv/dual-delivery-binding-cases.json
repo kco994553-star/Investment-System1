@@ -1,0 +1,208 @@
+{
+  "schema_version": "qgv-dual-binding-cases/1",
+  "data_kind": "SYNTHETIC",
+  "consumer_sha": "9d1129d223dcd7a73605d1e17736f3d334673cab",
+  "trust": "Expected identities derive from independently pinned retained input files. Never derive expectations from the delivered summary.",
+  "sources": [
+    {
+      "path": "dual-synthetic/evaluation.json",
+      "sha256": "333f438f6e95022ef52a62193ff700f0146d178f53280f148d33cc2e0c4e99ff"
+    },
+    {
+      "path": "dual-synthetic/reference.json",
+      "sha256": "b015573512f536ca8914de606d3745b8a931e222081871208e73fdd914117673"
+    },
+    {
+      "path": "dual-synthetic/summary.json",
+      "sha256": "985afb5266fdb7e3f73936c55071a11d669baa8b41196db154f91801cb69b80c"
+    },
+    {
+      "path": "dual-synthetic/index.json",
+      "sha256": "aebe321d7f2422e33cd03f470cf5fc3078783633e322705a168e20808185b76b"
+    },
+    {
+      "path": "dual-synthetic/delivery-manifest.json",
+      "sha256": "b758176c698c834bb819abb1a6a187ffd701e07742276b1d1a04e3ce87b152bc"
+    }
+  ],
+  "expected_evaluation": {
+    "id": "SYN-EVALUATION",
+    "version": "1",
+    "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "code_rows": 3,
+    "issuers": 3,
+    "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+    "snapshot_id": "synthetic-snapshot/1",
+    "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+    "classification_context": null
+  },
+  "expected_reference": {
+    "id": "SYN-REFERENCE",
+    "version": "1",
+    "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "code_rows": 20,
+    "issuers": 20,
+    "input_hash": "159f62e89835cc05f7874dece1418b6f7c274c45e22e0602650ed88292b31e11",
+    "snapshot_id": "synthetic-snapshot/1",
+    "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+    "classification_context": null
+  },
+  "cases": [
+    {
+      "id": "normal",
+      "patches": [],
+      "expected": "VERIFIED_BOTH_INPUT_BINDINGS"
+    },
+    {
+      "id": "evaluation_hash_mismatch",
+      "patches": [
+        [
+          "index",
+          "evaluation_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U1",
+          "evaluation_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U2",
+          "evaluation_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "S1",
+          "evaluation_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U1",
+          "bindings",
+          "evaluation",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U2",
+          "bindings",
+          "evaluation",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "S1",
+          "bindings",
+          "evaluation",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ]
+      ],
+      "expected": "EVALUATION_INPUT_BINDING"
+    },
+    {
+      "id": "reference_hash_mismatch",
+      "patches": [
+        [
+          "summary",
+          "boards",
+          "U1",
+          "reference_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U2",
+          "reference_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "S1",
+          "reference_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U1",
+          "reference_population",
+          "candidate_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U2",
+          "reference_population",
+          "candidate_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "S1",
+          "reference_population",
+          "candidate_population",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U1",
+          "bindings",
+          "reference",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "U2",
+          "bindings",
+          "reference",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "summary",
+          "boards",
+          "S1",
+          "bindings",
+          "reference",
+          "input_hash",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ]
+      ],
+      "expected": "REFERENCE_INPUT_BINDING"
+    }
+  ]
+}

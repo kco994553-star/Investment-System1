@@ -1,0 +1,159 @@
+{
+  "schema_version": "qgv-dual-index/1",
+  "evaluation_population": {
+    "id": "SYN-EVALUATION",
+    "version": "1",
+    "members_hash": "75684ecb8b962ce0ccc2dee26fc4368f36791e18dca434ac3e416f15b172d215",
+    "valuation_date": "2026-11-02",
+    "as_of": "2026-11-02T23:59:59Z",
+    "code_rows": 3,
+    "issuers": 3,
+    "input_hash": "bbc88b7bf0fbdbfede387a1a4e38207b0f0a1b97050458afd9a5fc7b17afd7ee",
+    "snapshot_id": "synthetic-snapshot/1",
+    "classification_records_hash": "10722f88b0773f2aad63e77f5820dd3652a1915bc058bedd0422b34daec71d8b",
+    "classification_context": null
+  },
+  "rows": [
+    {
+      "company_id": "company-000",
+      "issuer_id": "issuer-0",
+      "security_id": "security-0",
+      "boards": {
+        "U1": {
+          "axes": {
+            "Q": 0.0,
+            "G": 0.0,
+            "V": 0.0
+          },
+          "total": 0.0,
+          "rank": 3,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "U2": {
+          "axes": {
+            "Q": 0.0,
+            "G": 0.0,
+            "V": 0.0
+          },
+          "total": 0.0,
+          "rank": 3,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "S1": {
+          "axes": {
+            "Q": 30.0,
+            "G": 0.0,
+            "V": 0.0
+          },
+          "total": 9.0,
+          "rank": 3,
+          "rank_n": 3,
+          "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+          "status": "VALID",
+          "gate_status": "PASS"
+        }
+      },
+      "detail_file": "detail-000.json"
+    },
+    {
+      "company_id": "company-001",
+      "issuer_id": "issuer-1",
+      "security_id": "security-1",
+      "boards": {
+        "U1": {
+          "axes": {
+            "Q": 5.2631578947368425,
+            "G": 5.2631578947368425,
+            "V": 5.2631578947368425
+          },
+          "total": 5.2631578947368425,
+          "rank": 2,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "U2": {
+          "axes": {
+            "Q": 5.2631578947368425,
+            "G": 5.2631578947368425,
+            "V": 5.2631578947368425
+          },
+          "total": 5.2631578947368425,
+          "rank": 2,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "S1": {
+          "axes": {
+            "Q": 32.10526315789473,
+            "G": 5.2631578947368425,
+            "V": 23.307368421052633
+          },
+          "total": 21.435684210526315,
+          "rank": 2,
+          "rank_n": 3,
+          "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+          "status": "VALID",
+          "gate_status": "PASS"
+        }
+      },
+      "detail_file": "detail-000.json"
+    },
+    {
+      "company_id": "company-002",
+      "issuer_id": "issuer-2",
+      "security_id": "security-2",
+      "boards": {
+        "U1": {
+          "axes": {
+            "Q": 10.526315789473685,
+            "G": 10.526315789473685,
+            "V": 10.526315789473685
+          },
+          "total": 10.526315789473685,
+          "rank": 1,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "U2": {
+          "axes": {
+            "Q": 10.526315789473685,
+            "G": 10.526315789473685,
+            "V": 10.526315789473685
+          },
+          "total": 10.526315789473685,
+          "rank": 1,
+          "rank_n": 3,
+          "ranking_scope": "COMMON",
+          "status": "VALID",
+          "gate_status": "PASS"
+        },
+        "S1": {
+          "axes": {
+            "Q": 34.21052631578947,
+            "G": 10.526315789473685,
+            "V": 46.614736842105266
+          },
+          "total": 33.87136842105263,
+          "rank": 1,
+          "rank_n": 3,
+          "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+          "status": "VALID",
+          "gate_status": "PASS"
+        }
+      },
+      "detail_file": "detail-000.json"
+    }
+  ]
+}
