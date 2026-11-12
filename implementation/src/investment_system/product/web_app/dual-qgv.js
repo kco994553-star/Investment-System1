@@ -531,8 +531,10 @@ function distributionGroup(D,group_id,parts){
   const valid=rows.filter(r=>r.score!==null).sort((a,b)=>a.rank-b.rank);
   if(valid.length!==g.evaluation_valid_n||valid.some((r,i)=>r.rank!==i+1))refuse('RANK_INTEGRITY',at);
   for(let i=1;i<valid.length;i++){const a=valid[i-1],b=valid[i];if(a.score<b.score||(a.score===b.score&&a.company_id>b.company_id))refuse('STORED_ORDER',at+'.'+b.company_id);}
-  const counts=new Map(),reasons=new Map();for(const r of rows){if(r.decile!==null)counts.set(r.decile,(counts.get(r.decile)||0)+1);else reasons.set(r.decile_status,(reasons.get(r.decile_status)||0)+1);}
-  if(g.bins.some(b=>(counts.get(b.decile)||0)!==b.count))refuse('BINS_MISMATCH',at);
+  // Tallies of the delivered rows only (an absent key is a band or reason no row has; no count is filled in).
+  const counts=new Map(),reasons=new Map(),tally=(m,k)=>m.set(k,m.has(k)?m.get(k)+1:1);for(const r of rows){if(r.decile!==null)tally(counts,r.decile);else tally(reasons,r.decile_status);}
+  const stored=new Map(g.bins.filter(b=>b.count>0).map(b=>[b.decile,b.count]));
+  if(stored.size!==counts.size||[...counts].some(([d,n])=>stored.get(d)!==n))refuse('BINS_MISMATCH',at);
   if(reasons.size!==Object.keys(g.unavailable_reasons).length||[...reasons].some(([k,v])=>g.unavailable_reasons[k]!==v))refuse('BINS_MISMATCH',at+'.unavailable_reasons');
   const splits=valid.filter((r,i)=>i&&valid[i-1].score===r.score&&valid[i-1].stored_decile!==r.stored_decile).length;
   if(splits!==g.legacy_tie_splits.length)refuse('TIE_SPLITS_MISMATCH',at);
