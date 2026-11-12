@@ -132,7 +132,15 @@ test('words: each model on its own, ranks only in their scope, null is 미산출
   const c = DQ.compareView(det.get(v.rows[0].company_id), v, { sectorName: sn });
   assert.equal(c.note, '모형마다 핵심 요소·참조집단·순위 범위가 다름 · 점수 차이를 계산하지 않음');
   assert.deepEqual(c.boards.map((b) => b.key), ['U1', 'U2', 'S1']);
-  assert.equal(c.boards[2].core.length, 5); assert.match(c.boards[2].core[0], /^operating_margin_ttm · 점수 0\.0 · 요소 순위 3 \/ 3 · 십분위 없음\(10개 미만\) · 참조 N 20$/);
+  assert.equal(c.boards[2].core.length, 5); assert.match(c.boards[2].core[0], /^operating_margin_ttm · 점수 0\.0 · 분위 없음\(평가 유효 10개 미만\) · 요소 순위 3 \/ 평가 유효 3 · 참조 N 20 · 비교집단 정보기술 · GENERAL · 평가일 \d{4}-\d{2}-\d{2}$/);
+  assert.match(c.boards[0].core[0], / · 비교집단 평가 집단 전체 · /, 'U1 factors are ranked in the integrated group');
+  // A board without a total still shows each scored factor's band in its own group (test-made row: total null, decile 7).
+  const t = JSON.parse(JSON.stringify(det.get(v.rows[0].company_id))), tb = t.boards.S1, tv = tb.selected_variants[0];
+  tb.total = null; tb.rank = null; Object.assign(tb.factors[tv], { score: 61.5, rank: 40, rank_n: 130, decile: 7, decile_status: 'VALID' });
+  const tc = DQ.compareView(t, v, { sectorName: sn }).boards[2];
+  assert.equal(tc.rank, '총점 없음 · 순위 없음');
+  assert.match(tc.core[0], /^operating_margin_ttm · 점수 61\.5 · 상위 30–40%\(분위 7\) · 요소 순위 40 \/ 평가 유효 130 · /);
+  assert.ok(c.bandRule.some((x) => /^분위 숫자 10 = 상위 0–10% · 1 = 상위 90–100%/.test(x)) && c.bandRule.some((x) => /섹터 분위를 합친 통합 분위 없음/.test(x)));
   assert.ok(c.boards.every((b) => !/차이|평균|합계/.test(b.axes)), 'no difference, average or sum');
   assert.ok(DQ.RULES.some((r) => /총점이 없으면 총점 순위도 없음/.test(r)) && !DQ.RULES.join('').includes('TARGET'));
 });
@@ -192,7 +200,7 @@ test('factor leaders: Codex\'s synthetic companion reads for its own delivery on
   assert.equal(s.ok, true, JSON.stringify(s)); assert.equal(s.value.size, 153);
   const g = [...s.value.values()].find((x) => x.leaders.length > 1), v = DQ.leaderView(g);
   assert.deepEqual(v.rows.map((x) => x.rank), g.leaders.map((x, i) => (i + 1) + ' / ' + g.evaluation_valid_n), 'the stored order');
-  assert.match(v.d10, /^평가 유효 \d+개 < 10 · 십분위 계산 안 함$/); assert.match(v.counts, /참조 유효 \d+\(순위 분모 아님\)/);
+  assert.match(v.d10, /^평가 유효 \d+개 < 10 · 분위 계산 안 함$/); assert.deepEqual(v.bands, [], 'no bands below N 10'); assert.match(v.counts, /참조 유효 \d+\(순위 분모 아님\)/);
   assert.equal(DQ.leaderView([...s.value.values()].find((x) => x.evaluation_valid_n === 0)).d10, '유효 점수 없음 · 순위 없음');
   // Not this delivery: another delivery's manifest, another board identity, not a projection.
   const h = F.delivery('held1057');
@@ -217,9 +225,18 @@ test('factor leaders: Codex\'s synthetic companion reads for its own delivery on
   assert.equal(await shard((x) => { x['factor-leaders-000.json'].groups.pop(); }), 'GROUPS_MISMATCH');
   assert.equal((await DQ.checkLeaders({}, { scope: 'operating504' }, sha256)).code, 'DELIVERY_NOT_CHECKED');
   // The D10 line compares the stored D10 boundary with the list length (display only; checked against the real files locally).
+  // Test-made group (display only): N 250, ten stored boundaries of 25 ranks each, a top-20 preview.
   const valid = { board: 'S1', ranking_scope: 'SECTOR|X|GENERAL', variant_id: 'v', evaluation_valid_n: 250, evaluation_rows_in_scope: 260, reference_valid_n: 900, top_n: 20, decile_status: 'VALID',
-    decile_boundaries: [{ decile: 10, count: 25, first_rank: 1, last_rank: 25 }], leaders: Array.from({ length: 20 }, (_, i) => ({ company_id: 'c' + i, rank: i + 1, rank_n: 250, score: 99 - i, decile: 10, kind: 'CORE' })) };
-  assert.equal(DQ.leaderView(valid).d10, '저장된 D10 25개(순위 1–25) · 이 목록 20개 · D10 일부만(상위 20개 표시 한도)');
+    decile_boundaries: Array.from({ length: 10 }, (_, j) => ({ decile: 10 - j, count: 25, first_rank: 25 * j + 1, last_rank: 25 * j + 25, first_score: 100 - 10 * j, last_score: 91 - 10 * j })),
+    leaders: Array.from({ length: 20 }, (_, i) => ({ company_id: 'c' + i, rank: i + 1, rank_n: 250, score: 99 - i, decile: 10, kind: 'CORE' })) };
+  const vv = DQ.leaderView(valid);
+  assert.equal(vv.d10, '저장된 상위 0–10% 구간 25개(순위 1–25) · 이 목록 20개 · 이 구간 일부만(상위 20개 표시 한도)');
+  assert.match(vv.preview, /^상위 20개 미리보기 · 10분위 전체 조회가 아님/);
+  assert.deepEqual(vv.bands.map((b) => b.band), ['상위 0–10%', '상위 10–20%', '상위 20–30%', '상위 30–40%', '상위 40–50%', '상위 50–60%', '상위 60–70%', '상위 70–80%', '상위 80–90%', '상위 90–100%']);
+  assert.deepEqual([vv.bands[0].ranks, vv.bands[0].scores, vv.bands[0].members], ['순위 1–25 / 250', '요소 점수 100.0–91.0', '구성 기업 25개 중 이 미리보기에 20개 · 전체 구성 목록은 분할 전달 대기']);
+  assert.deepEqual([vv.bands[9].decile, vv.bands[9].ranks, vv.bands[9].shown, vv.bands[9].complete], [1, '순위 226–250 / 250', 0, false]);
+  assert.equal(vv.rows[0].decile, '상위 0–10%'); assert.equal(vv.rows[0].d, 10);
+  assert.equal(DQ.BAND[1], '상위 90–100%'); assert.equal(DQ.bandText({ decile: null, decile_status: 'SAMPLE_LT_10' }), '분위 없음(평가 유효 10개 미만)');
 });
 
 test('selection contract: Codex\'s synthetic chain checks; it pins these leaders; top N and the stored D10 stay apart', async () => {

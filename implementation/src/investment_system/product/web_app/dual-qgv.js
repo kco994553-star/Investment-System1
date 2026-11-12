@@ -225,6 +225,18 @@ async function checkDetail(file,name,delivery,sha256){
 const fmt=v=>v===null||v===undefined?'미산출':(Math.round(v*10)/10).toFixed(1);
 const scopeWord=(s,sectorName)=>{if(s==='COMMON')return'평가 집단 전체';const[,sec,tpl]=s.split('|');
  return(sectorName?sectorName(sec):sec)+' · '+(tpl==='None'||!tpl?'회계모형 미확정':tpl);};
+// Decile words (owner 2026-11-12). The producer's numeric decile 10 is the top band of the factor's own comparison group; the
+// factor score already carries the factor's direction (a lower-is-better factor is scored 100 - score), so 상위 is the good side.
+// The producer cuts bands by rank position (D10 and D1 hold floor(N/10) each, D9..D2 share the rest evenly, remainder to the
+// higher bands; equal scores take positions by company_id), so a band name is never shown as an exact share.
+const BAND=Object.freeze(Object.fromEntries(Array.from({length:10},(_,i)=>[10-i,'상위 '+i*10+'–'+(i+1)*10+'%'])));
+const DECILE_RULE=Object.freeze(['분위 숫자 10 = 상위 0–10% · 1 = 상위 90–100% · 낮을수록 좋은 요소도 기존 평가 방향대로 좋은 쪽이 상위',
+ '구간은 생산자가 순위 위치로 나눔 · 10·1 구간은 N/10(내림)개씩, 나머지 8구간이 남은 순위를 고르게 나눔 · 정확한 백분율 아님',
+ '같은 점수는 회사 ID 순으로 순위가 정해져 구간 경계 양쪽에 놓일 수 있음(지금 생산자 규칙 · 계약 확인 중)',
+ '평가 유효 10개 미만이면 순위만 있고 분위 없음 · 점수 없는 요소는 순위·분위 없음 · 총점이 없어도 요소 분위는 보임',
+ '통합(U1·U2)과 섹터(S1) 비교집단은 따로 · 섹터 분위를 합친 통합 분위 없음 · 추가 요소 분위는 핵심 점수에 더하지 않음',
+ '구간 선택·필터는 보이는 기업만 고름 · 분위·순위·분모를 바꾸지 않음']);
+const bandText=f=>f.decile!==null?BAND[f.decile]+'(분위 '+f.decile+')':'분위 없음('+(f.decile_status==='SAMPLE_LT_10'?'평가 유효 10개 미만':word(f.decile_status))+')';
 const rankText=(b,sectorName)=>b.total===null?'총점 없음 · 순위 없음':b.rank+' / '+b.rank_n+' ('+scopeWord(b.ranking_scope,sectorName)+')';
 const share=(c,d)=>String(c)+' / '+String(d);
 
@@ -363,12 +375,18 @@ function selectionMatchesShard(sel,g){if(!sel||!g)return false;const t=sel.top_1
 function leaderGroups(L,key){return L.groups.filter(g=>g.board===key);}
 function leaderView(g,{sectorName,selection}={}){const n=g.evaluation_valid_n,top=g.decile_boundaries[0];
  const scopeWord=g.ranking_scope==='COMMON'?'공통 순위':'섹터 순위 · '+g.ranking_scope.split('|').slice(1).map((x,i)=>i===0&&sectorName?sectorName(x):x).join(' · ');
- const d10=g.decile_status==='VALID'?'저장된 D10 '+top.count+'개(순위 1–'+top.last_rank+') · 이 목록 '+g.leaders.length+'개'+(g.leaders.length>=top.count?' · D10 전부 포함':' · D10 일부만(상위 '+g.top_n+'개 표시 한도)')
-  :g.decile_status==='SAMPLE_LT_10'?'평가 유효 '+n+'개 < 10 · 십분위 계산 안 함':'유효 점수 없음 · 순위 없음';
+ const d10=g.decile_status==='VALID'?'저장된 '+BAND[10]+' 구간 '+top.count+'개(순위 1–'+top.last_rank+') · 이 목록 '+g.leaders.length+'개'+(g.leaders.length>=top.count?' · 이 구간 전부 포함':' · 이 구간 일부만(상위 '+g.top_n+'개 표시 한도)')
+  :g.decile_status==='SAMPLE_LT_10'?'평가 유효 '+n+'개 < 10 · 분위 계산 안 함':'유효 점수 없음 · 순위 없음';
+ const inPreview=d=>g.leaders.filter(r=>r.decile===d).length;
+ // All ten bands from the stored boundaries (count, rank and score range); members only as far as this preview reaches.
+ const bands=g.decile_status==='VALID'?g.decile_boundaries.map(b=>{const k=inPreview(b.decile);return freeze({decile:b.decile,band:BAND[b.decile],count:b.count,
+  ranks:b.count?'순위 '+b.first_rank+'–'+b.last_rank+' / '+n:'해당 순위 없음',scores:b.count?'요소 점수 '+fmt(b.first_score)+'–'+fmt(b.last_score):'—',
+  shown:k,complete:k===b.count,members:!b.count?'빈 구간 · 평가 유효 N이 작아 이 구간에 놓인 순위 없음':k===b.count?'구성 기업 '+b.count+'개 전부 이 미리보기에 있음':'구성 기업 '+b.count+'개 중 이 미리보기에 '+k+'개 · 전체 구성 목록은 분할 전달 대기'});}):[];
  const sel=selection?(selectionMatchesShard(selection,g)?'생산자 선택 계약과 대조됨(D10 '+(selection.top_10_percent.complete_in_top_n?'전부 포함':selection.top_10_percent.status==='VALID'?'일부만':'해당 없음')+')':'생산자 선택 계약과 다름 · 이 목록 쓰지 않음'):'생산자 선택 계약 없음(저장된 경계로만 표시)';
  return freeze({head:g.variant_id+' · '+scopeWord,
-  counts:'평가 유효 코드 행 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 유효 '+g.reference_valid_n+'(순위 분모 아님)',d10,sel,selectionOk:!selection||selectionMatchesShard(selection,g),
-  rows:g.leaders.map(r=>freeze({rank:r.rank+' / '+r.rank_n,company_id:r.company_id,score:r.score.toFixed(1),decile:r.decile===null?'없음':'D'+r.decile,kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
+  counts:'평가 유효 코드 행 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 유효 '+g.reference_valid_n+'(순위 분모 아님)',d10,sel,bands,
+  preview:'상위 '+g.top_n+'개 미리보기 · 10분위 전체 조회가 아님 · 10개 구간의 개수·순위 범위는 저장된 경계 그대로',selectionOk:!selection||selectionMatchesShard(selection,g),
+  rows:g.leaders.map(r=>freeze({d:r.decile,rank:r.rank+' / '+r.rank_n,company_id:r.company_id,score:r.score.toFixed(1),decile:r.decile===null?'분위 없음':BAND[r.decile],kind:r.kind==='CORE'?'핵심':'추가(점수 기여 0)'}))});}
 
 const RULES=Object.freeze(['U1·U2·S1 점수는 같은 척도가 아님 · 평균·합산·차이를 만들지 않음',
  '총점이 없으면 총점 순위도 없음 · 섹터 순위를 이어 붙인 통합 순위 없음',
@@ -379,18 +397,22 @@ function rowsView(d,key,{sectorName,limit=50}={}){return d.rows.slice(0,limit).m
  return freeze({company_id:r.company_id,issuer_id:r.issuer_id,Q:fmt(b.axes.Q),G:fmt(b.axes.G),V:fmt(b.axes.V),total:fmt(b.total),rank:rankText(b,sectorName),
   scope:scopeWord(b.ranking_scope,sectorName),status:word(b.status),gate:word(b.gate_status)});});}
 
-const factorText=(v,f)=>v+' · '+(f.score===null?'점수 미산출 · '+word(f.score_status):'점수 '+fmt(f.score)+' · 요소 순위 '+f.rank+' / '+f.rank_n
- +(f.decile!==null?' · 십분위 D'+f.decile:' · 십분위 없음('+(f.decile_status==='SAMPLE_LT_10'?'10개 미만':word(f.decile_status))+')'))+' · 참조 N '+(f.valid_n===null?'—':f.valid_n);
+// One factor of one company in one model: its band in its own comparison group (the board's ranking scope), the evaluation valid N
+// (the rank denominator), the reference N and the valuation date; shown whether or not the board has a total.
+const factorText=(v,f,{group,date}={})=>v+' · '+(f.score===null?'점수 미산출 · '+word(f.score_status):'점수 '+fmt(f.score)+' · '+bandText(f)+' · 요소 순위 '+f.rank+' / 평가 유효 '+f.rank_n)
+ +' · 참조 N '+(f.valid_n===null?'—':f.valid_n)+(group?' · 비교집단 '+group:'')+(date?' · 평가일 '+date:'');
 
 // One company in every model, side by side: each model's own words, never a difference or an average.
 function compareView(row,d,{sectorName}={}){return freeze({company_id:row.company_id,
  note:'모형마다 핵심 요소·참조집단·순위 범위가 다름 · 점수 차이를 계산하지 않음',
+ bandRule:DECILE_RULE,
  boards:d.models.map(k=>{const b=row.boards[k],M=MODELS[k],add=Object.entries(b.factors).filter(([,f])=>f.kind==='ADDITIONAL');
+  const ctx={group:scopeWord(b.ranking_scope,sectorName),date:d.summary.boards[k].evaluation_population.valuation_date};
   return freeze({key:k,label:M.label,
    axes:'Q '+fmt(b.axes.Q)+' · G '+fmt(b.axes.G)+' · V '+fmt(b.axes.V)+' · 총점 '+fmt(b.total),
    rank:rankText(b,sectorName),scope:scopeWord(b.ranking_scope,sectorName),status:word(b.status)+' · '+word(b.gate_status),
-   core:b.selected_variants.map(v=>factorText(v,b.factors[v])),
-   additional:add.filter(([,f])=>f.score!==null).map(([v,f])=>factorText(v,f)),
+   core:b.selected_variants.map(v=>factorText(v,b.factors[v],ctx)),
+   additional:add.filter(([,f])=>f.score!==null).map(([v,f])=>factorText(v,f,ctx)),
    additionalMissing:add.filter(([,f])=>f.score===null).length});})});}
 
 /* ---- the research engine route (owner 2026-11-11 §3; development bridge, tools/sector_qgv_engine_bridge.py): requests name the
@@ -430,5 +452,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

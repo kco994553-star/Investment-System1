@@ -187,15 +187,26 @@ function block(anchor){
       ...gs.map(g=>h('option',{value:g.group_id,selected:L.group===g.group_id},g.variant_id+' · 유효 '+g.evaluation_valid_n)))));
     gSel.addEventListener('change',()=>{L.group=gSel.value||null;draw();});
     const show=h('button',{type:'button',class:'btn',disabled:!L.group,dataset:{dualLeadersShow:scope}},'보기');
-    const out=h('div',{dataset:{dualLeadersOut:scope}});
+    const out=h('div',{dataset:{dualLeadersOut:scope}}),cmpL=h('div',{dataset:{dualCompare:scope+':leaders'}});
     const render=g=>{const v=DQ.leaderView(g,{sectorName,selection:L.selection?L.selection.groups.get(g.group_id):null});const th=t=>h('th',{scope:'col'},t);
      const selLine=h('p',{class:v.selectionOk?'meta':'hand err',dataset:{dualLeadersSelection:v.selectionOk?(L.selection?'MATCHED':'NONE'):'MISMATCH'}},v.sel);
      if(!v.selectionOk){out.replaceChildren(selLine);return;}
-     out.replaceChildren(h('p',{class:'hand',dataset:{dualLeadersHead:g.group_id}},M[g.board].label,' · ',v.head),h('p',{class:'meta'},v.counts),h('p',{class:'reason',dataset:{dualLeadersD10:''}},v.d10),selLine,
-      v.rows.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{dualLeadersTable:g.group_id}},h('caption',null,'저장된 순위 그대로 · 같은 모형·범위·요소 안에서만 비교'),
-       h('thead',null,h('tr',null,th('순위'),th('기업'),th('요소 점수'),th('십분위'),th('구분'))),
-       h('tbody',null,...v.rows.map(r=>h('tr',{dataset:{dualLeader:r.company_id}},h('td',null,r.rank),h('td',null,r.company_id),h('td',null,r.score),h('td',null,r.decile),h('td',null,r.kind))))))
-      :h('p',{class:'reason',dataset:{dualLeadersEmpty:''}},'이 요소에 저장된 순위가 없음'));};
+     // 분위 구간 (owner 2026-11-12): all ten bands of this group from the stored boundaries; choosing one only narrows the rows shown.
+     const cur=v.bands.find(b=>b.decile===L.band)||null,bid='dual-band-'+scope;
+     const bSel=v.bands.length?h('select',{id:bid,dataset:{dualLeadersBand:scope}},h('option',{value:''},'전체 구간(미리보기 순서)'),
+      ...v.bands.map(b=>h('option',{value:String(b.decile),selected:L.band===b.decile},b.band+' · 분위 '+b.decile+' · '+b.count+'개'))):null;
+     if(bSel)bSel.addEventListener('change',()=>{L.band=bSel.value?Number(bSel.value):null;render(g);});
+     const shown=cur?v.rows.filter(r=>r.d===cur.decile):v.rows,byId=new Map(held.delivery.rows.map(r=>[r.company_id,r]));
+     const who=id=>{const row=byId.get(id);return row?h('button',{type:'button',class:'lk',dataset:{dualLeaderOpen:id},onclick:e=>compare(e,scope,row,cmpL)},id):id;};
+     out.replaceChildren(h('p',{class:'hand',dataset:{dualLeadersHead:g.group_id}},M[g.board].label,' · ',v.head),h('p',{class:'meta'},v.counts),h('p',{class:'reason',dataset:{dualLeadersPreview:''}},v.preview),
+      h('p',{class:'reason',dataset:{dualLeadersD10:''}},v.d10),selLine,
+      bSel?h('div',{class:'sort-row'},h('label',{for:bid},'분위 구간'),bSel):h('p',{class:'meta',dataset:{dualBandsNone:''}},'분위 구간 없음 · ',v.d10),
+      cur?h('p',{class:'reason',dataset:{dualBand:String(cur.decile),dualBandComplete:String(cur.complete)}},cur.band,' · 분위 ',String(cur.decile),' · ',String(cur.count),'개 · ',cur.ranks,' · ',cur.scores,' · ',cur.members):null,
+      h('details',{class:'why',dataset:{dualBandRule:''}},h('summary',null,'분위 읽는 법 ▸'),list(DQ.DECILE_RULE,{dualBandRules:''},'')),
+      shown.length?h('div',{class:'tbl-wrap'},h('table',{class:'tbl',dataset:{dualLeadersTable:g.group_id}},h('caption',null,'저장된 순위 그대로 · 같은 모형·범위·요소 안에서만 비교 · 기업을 누르면 세 모형 상세'),
+       h('thead',null,h('tr',null,th('순위'),th('기업'),th('요소 점수'),th('분위 구간'),th('구분'))),
+       h('tbody',null,...shown.map(r=>h('tr',{dataset:{dualLeader:r.company_id}},h('td',null,r.rank),h('td',null,who(r.company_id)),h('td',null,r.score),h('td',null,r.decile),h('td',null,r.kind))))))
+      :h('p',{class:'reason',dataset:{dualLeadersEmpty:''}},cur?'이 구간의 기업은 이 미리보기에 없음 · 전체 구성 목록은 분할 전달 대기':'이 요소에 저장된 순위가 없음'),cmpL);};
     show.addEventListener('click',e=>{const g=L.value.groups.find(x=>x.group_id===L.group);if(!g||busy)return;const cached=L.shards.get(g.file);
      if(cached){render(cached.get(g.group_id));return;}
      busy=true;show.disabled=true;out.replaceChildren(h('p',{class:'reason',dataset:{dualLeadersState:'LOADING'}},'요소 순위 파일 1개를 불러옵니다'));
@@ -218,6 +229,7 @@ function block(anchor){
    const show=rows=>{const r=rows.get(row.company_id);const v=DQ.compareView(r,held.delivery,{sectorName});
     // Not a card inside the card: at 390 px nested padding leaves too little room, and long factor ids must wrap (cc-wrap).
     slotC.replaceChildren(h('div',{class:'cc-wrap',dataset:{dualCompareFor:row.company_id}},h('p',{class:'hand'},row.company_id,' · ',v.note),
+     h('details',{class:'why'},h('summary',null,'요소 분위 읽는 법 ▸'),list(v.bandRule,{dualCompareBandRule:''},'')),
      ...v.boards.map(b=>h('div',{class:'cc-wrap',dataset:{dualCompareBoard:b.key}},h('h5',null,b.label),h('p',{dataset:{dualCompareAxes:b.key}},b.axes),
       h('p',{class:'meta',dataset:{dualCompareRank:b.key}},b.rank,' · ',b.status),
       h('p',{class:'meta'},'핵심 요소 ',String(b.core.length)),list(b.core,{dualCompareCore:b.key},'핵심 요소 없음'),
