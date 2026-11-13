@@ -86,7 +86,18 @@ def test_preview_is_run_board_on_two_inputs_and_equals_codex_synthetic_delivery(
     a = ask(b, op='preview', model=model, model_id=model_id, input_id='DUAL_BOTH_VALID')
     assert a['ok'] and a['kind'] == 'SYNTHETIC_RECALCULATION' and a['board']['model_id'] == model_id
     delivered = json.loads((ROOT / 'docs/research/sector_qgv/dual-synthetic/summary.json').read_text())['boards'][key]
-    assert a['board']['result_hash'] == delivered['result_hash'], 'a synthetic recalculation equals the retained synthetic board'
+    # The retained synthetic board was made at #529's code. The recalculation binds the same configuration and both input identities,
+    # and every row's axes, total, rank and status are the retained ones; its code binding is the current code's, and the result hash
+    # moves exactly with it (#534 changed dual_qgv.py for config/2; an exact old replay is at its original commit, QGV_333.md).
+    bd = a['board']
+    for k in ('model_hash', 'evaluation', 'reference', 'engine_version', 'adapter_version'):
+        assert bd['bindings'][k] == delivered['bindings'][k], k
+    assert (bd['result_hash'] == delivered['result_hash']) == (bd['bindings']['code_hash'] == delivered['bindings']['code_hash'])
+    index = {r['company_id']: r['boards'][key] for r in json.loads((ROOT / 'docs/research/sector_qgv/dual-synthetic/index.json').read_text())['rows']}
+    assert len(bd['rows']) == len(index)
+    for r in bd['rows']:
+        for k in ('axes', 'total', 'rank', 'rank_n', 'ranking_scope', 'status', 'gate_status'):
+            assert r[k] == index[r['company_id']][k], r['company_id'] + '.' + k
     ev, ref = a['board']['evaluation_population'], a['board']['reference_population']
     assert ev['code_rows'] == 3 and ref['issuers'] == 20 and ev['id'] != ref['id'], 'two populations, never one input'
 
@@ -111,8 +122,19 @@ def test_save_and_exact_replay_use_the_retained_original_inputs(b):
     assert ask(b, op='replay', model='INTEGRATED', model_id=U1, saved={'schema_version': 'sector-qgv-saved/1'})['code'] == 'SAVED_SCHEMA_MISMATCH'
     assert ask(b, op='save', model='INTEGRATED', model_id=U2, result_hash=h)['code'] == 'MODEL_RESPONSE_MISMATCH'
     assert ask(b, op='save', model='INTEGRATED', model_id=U1, result_hash='0' * 64)['code'] == 'PREVIEW_NOT_FOUND'
-    # a fresh process holds no original input: never "exact" on the latest input
-    assert ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=s['saved'])['code'] == 'RETAINED_INPUT_NOT_FOUND'
+    assert r['input_source'] == 'RETAINED_IN_PROCESS'
+    # owner 2026-11-13 「재시작 후 저장·복원」: a fresh process (restart / memory dropped) reads the pinned inputs again from their
+    # fixed manifest and replays exactly on the pair the saved bindings name; the Q/G-only input is never taken for it.
+    f = ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=s['saved'])
+    assert f['ok'] and f['kind'] == 'EXACT_REPLAY' and f['input_source'] == 'PINNED_INPUT_REREAD' and f['input_id'] == 'DUAL_BOTH_VALID'
+    assert f['board']['result_hash'] == h and f['retained_result_hash'] == h
+    q = ask(b, op='preview', model='SECTOR', model_id=S1, input_id='DUAL_QG_ONLY')
+    sq = ask(b, op='save', model='SECTOR', model_id=S1, result_hash=q['board']['result_hash'])['saved']
+    fq = ask(bridge.Bridge(env={}), op='replay', model='SECTOR', model_id=S1, saved=sq)
+    assert fq['ok'] and fq['input_id'] == 'DUAL_QG_ONLY' and fq['board']['result_hash'] == q['board']['result_hash']
+    # a record whose original input is not pinned here: kept by the caller, never "exact" on the latest input
+    lost = json.loads(json.dumps(s['saved'])); lost['bindings']['evaluation']['input_hash'] = 'e' * 64
+    assert ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=lost)['code'] == 'RETAINED_INPUT_NOT_FOUND'
 
 
 def test_a_changed_saved_record_is_refused_by_codex_replay(b):

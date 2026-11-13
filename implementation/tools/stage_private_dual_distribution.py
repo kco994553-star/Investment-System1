@@ -26,6 +26,9 @@ Checks, all before anything is written:
 classification/dual/<scope>/distribution/ is replaced whole or not at all; on any failure the existing copy stays. Restaging the
 delivery (stage_private_dual_qgv.py) replaces classification/dual/<scope>/ whole and drops this companion with it; it is staged again
 after its delivery. Output: one line with counts, sizes and hashes (no content).
+
+The 3/3/3 candidates (owner 2026-11-13; Codex #534) are staged with --set 333 under classification/dual-333/<scope>/ (the Worker's
+&set=333), never over the reduced U1 / U2 / S1 delivery under classification/dual/<scope>/; the same checks, the same 2 MiB limit.
 """
 from __future__ import annotations
 
@@ -40,6 +43,7 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 2 * 1024 * 1024
 SCOPES = ('operating504', 'held1057')
+SETS = {'reduced': 'dual', '333': 'dual-333'}
 MANIFEST = 'distribution-manifest.json'
 INDEX = 'distribution-index.json'
 PART = re.compile(r'^distribution-\d{3}\.json$')
@@ -75,7 +79,9 @@ def _has_raw(o) -> bool:
     return False
 
 
-def check(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
+def check(source: Path, scope: str, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
+    if set_ not in SETS:
+        raise StageError('SET_UNKNOWN')
     if scope not in SCOPES:
         raise StageError('SCOPE_UNKNOWN')
     if not isinstance(pin, str) or not re.fullmatch(r'[0-9a-f]{64}', pin):
@@ -94,7 +100,7 @@ def check(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
         raise StageError('MANIFEST_MISSING')
     if hashlib.sha256(files[MANIFEST]).hexdigest() != pin:
         raise StageError('MANIFEST_PIN_MISMATCH')
-    delivery_dir = data_dir / 'classification' / 'dual' / scope
+    delivery_dir = data_dir / 'classification' / SETS[set_] / scope
     for name in ('manifest.json', 'summary.json', 'index.json'):
         if not (delivery_dir / name).is_file():
             raise StageError('DELIVERY_NOT_STAGED')
@@ -158,11 +164,11 @@ def check(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
     return files, m, index
 
 
-def stage(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
+def stage(source: Path, scope: str, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
-    files, manifest, index = check(source, scope, pin, data_dir)
-    target = data_dir / 'classification' / 'dual' / scope / 'distribution'
+    files, manifest, index = check(source, scope, pin, data_dir, set_)
+    target = data_dir / 'classification' / SETS[set_] / scope / 'distribution'
     fresh, old = target.with_name('distribution.staging'), target.with_name('distribution.previous')
     for leftover in (fresh, old):
         if leftover.exists():
@@ -194,9 +200,10 @@ def main(argv=None) -> int:
     parser.add_argument('--scope', required=True, choices=SCOPES)
     parser.add_argument('--manifest-sha256', required=True)
     parser.add_argument('--data-dir', required=True, type=Path)
+    parser.add_argument('--set', dest='set_', default='reduced', choices=sorted(SETS))
     args = parser.parse_args(argv)
     try:
-        files, manifest, index = stage(args.distribution, args.scope, args.manifest_sha256, args.data_dir)
+        files, manifest, index = stage(args.distribution, args.scope, args.manifest_sha256, args.data_dir, args.set_)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_DISTRIBUTION refused=' + str(error))
         return 1

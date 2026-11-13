@@ -271,24 +271,35 @@ function leaderboard(route,refs){
   // A READY page with a reason (V2_SCORES_NOT_AVAILABLE …): the reason above the table, the rows still draw.
   const why=pg.reason?h('p',{class:'reason',dataset:{na:pg.reason,pageReason:''}},say(pg.reason,'QGV 점수를 모두 계산하지 못했습니다')):null;
   return[scope,models,count,why,h('div',{class:'lb-grid'},table(v))];}
- // The research boards in RAM (operating504 only: the leaderboard's population), or none.
- function researchReady(){const D=I.dualQgv,x=D&&D.ram.get('operating504');return x?x.delivery.models:[];}
+ // The research boards in RAM (operating504 only: the leaderboard's population), or none: the reduced U1 / U2 / S1 delivery and the
+ // 3/3/3 one (U2-333 / U1-333 / S1-333) are separate slots, each checked on its own; a model is ready only when its own checked
+ // delivery carries it (IS2.dualQgv.SLOTS).
+ const LB_SLOTS=['operating504','operating504@333'];
+ const slotOf=key=>{const D=I.dualQgv;return D?LB_SLOTS.find(k=>{const x=D.ram.get(k);return!!x&&x.delivery.models.includes(key);})||null:null;};
+ function researchReady(){const D=I.dualQgv;return D?LB_SLOTS.flatMap(k=>{const x=D.ram.get(k);return x?x.delivery.models:[];}):[];}
  // One research model's retained board, as delivered: the producer's row order (code order), never re-sorted by a score; a null total
  // has no rank; Q / G / V and the status for every row; counts and the 95% line from the producer's coverage.
- function researchBoard(key){const D=I.dualQgv,d=D.ram.get('operating504').delivery,b=D.boardView(d,key),sn=id=>I.taxonomy?I.taxonomy.sectorName(id):id;
+ function researchBoard(key){const D=I.dualQgv,slot=slotOf(key),d=D.ram.get(slot).delivery,b=D.boardView(d,key),sn=id=>I.taxonomy?I.taxonomy.sectorName(id):id;
+  // 기업 상세: a company opens its detail (every model of this delivery, factors, exact weights, missing core factors, evidence) through
+  // the same checked path as 0. 기업 검색 (IS2.dualDetail, one detail file read inside the click, kept with the delivery).
+  const cmp=h('div',{dataset:{lbResearchDetail:key}}),byId=new Map(d.rows.map(r=>[r.company_id,r]));
+  const who=id=>I.dualDetail&&byId.has(id)?h('button',{type:'button',class:'lk',dataset:{lbResearchOpen:id},onclick:e=>{I.dualDetail.open(e,slot,byId.get(id),cmp);}},id):id;
   const rows=D.rowsView(d,key,{sectorName:sn,limit:V.rShown}),rest=d.rows.length-rows.length;
   const th=(t,sub)=>h('th',{scope:'col'},t,sub?h('small',{class:'sub'},sub):null);
   const caption=h('caption',{tabindex:'-1'},b.label,' · 연구 후보 · 생산자 행 순서(코드 순) · 점수로 다시 정렬하지 않음 · 표시 ',String(rows.length),'개');
   return h('div',{dataset:{lbResearch:key}},h('p',{class:'hand',dataset:{lbResearchHead:''}},b.head),
    h('dl',{class:'card-body',dataset:{lbResearchStates:''}},b.states.map(([k,v])=>[h('dt',null,h('b',null,k)),h('dd',null,v)])),
    h('p',{class:'reason',dataset:{lbResearchPopulation:''}},b.population),h('p',{class:'meta'},b.kind),
+   b.config?h('p',{class:'reason',dataset:{lbResearchConfig:''}},b.config):null,
    h('ol',{class:'news-lines',dataset:{lbResearchStages:''}},b.stages.map(x=>h('li',{dataset:{lbResearchStage:x.key}},x.label,' ',h('b',null,x.text)))),
    h('p',{class:'reason',dataset:{lbResearchTarget:''}},b.target),
+   b.upper?h('p',{class:'reason',dataset:{lbResearchUpper:''}},b.upper):null,
    h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{lbResearchTable:key}},caption,
-    h('thead',null,h('tr',null,th('기업'),th('Q'),th('G'),th('V'),th('총점'),th('총점 순위',key==='S1'?'섹터×회계모형 안에서만':'평가 집단 안에서만'),th('상태'))),
-    h('tbody',null,...rows.map(r=>h('tr',{dataset:{lbResearchRow:r.company_id}},h('td',null,r.company_id),h('td',null,r.Q),h('td',null,r.G),h('td',null,r.V),h('td',null,r.total),
+    h('thead',null,h('tr',null,th('기업'),th('Q'),th('G'),th('V'),th('총점'),th('총점 순위',D.MODELS[key].kind==='SECTOR'?'섹터×회계모형 안에서만':'평가 집단 안에서만'),th('상태'))),
+    h('tbody',null,...rows.map(r=>h('tr',{dataset:{lbResearchRow:r.company_id}},h('td',null,who(r.company_id)),h('td',null,r.Q),h('td',null,r.G),h('td',null,r.V),h('td',null,r.total),
      h('td',{dataset:{lbResearchRank:''}},r.rank),h('td',null,r.status,' · ',r.gate)))))),
    rest>0?h('button',{type:'button',class:'btn',dataset:{k:'research-more'},onclick:set(()=>{V.rShown+=STEP;})},'더 보기 · 50개 (남은 ',String(rest),'개)'):null,
+   h('p',{class:'meta',dataset:{lbResearchDetailHint:''}},'기업을 누르면 상세(요소 점수·분위·정확한 비중·결손 요소·근거) · 요소 10분위 전체는 0. 기업 검색 → 비공개 분류 묶음 → 이 결과 카드 · 계산·저장·복원은 아래 1.2의 2.2.7'),cmp,
    h('p',{class:'reason'},b.market));}
  const LIST_NAME=id=>id==='QG_REFERENCE'?(QS()?QS().QG_REFERENCE_LABEL[0]:'QG 참고 목록'):(LISTS.find(l=>l[0]===id)||LISTS[0])[1];
  function rankHead(v){if(!v.pv)return Q.rankLabel(v.pg);const S=QS(),o=v.pv.out;return Q.rankLabel(o)+' · '+(o.v_weight_zero?S.PERSONAL_V0_LABEL[0]:S.PERSONAL_LABEL[0]);}

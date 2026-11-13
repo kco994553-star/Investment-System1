@@ -1,0 +1,132 @@
+{
+  "data_kind": "SYNTHETIC",
+  "cases": {
+    "unknown-gate": {
+      "U2-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": 0.0,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "UNKNOWN",
+        "missing_factors": {
+          "Q": [],
+          "G": [],
+          "V": []
+        }
+      },
+      "U1-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": 0.0,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "UNKNOWN",
+        "missing_factors": {
+          "Q": [],
+          "G": [],
+          "V": []
+        }
+      },
+      "S1-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": 0.0,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "UNKNOWN",
+        "missing_factors": {
+          "Q": [],
+          "G": [],
+          "V": []
+        }
+      }
+    },
+    "core-missing": {
+      "U2-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": null,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "PASS",
+        "missing_factors": {
+          "Q": [],
+          "G": [
+            "eps_diluted_cagr_3y"
+          ],
+          "V": []
+        }
+      },
+      "U1-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": null,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "PASS",
+        "missing_factors": {
+          "Q": [],
+          "G": [
+            "revenue_growth_consistency_3y"
+          ],
+          "V": []
+        }
+      },
+      "S1-333": {
+        "company_id": "company-000",
+        "axes": {
+          "Q": 66.66666666666666,
+          "G": null,
+          "V": 0.0
+        },
+        "total": null,
+        "gate_status": "PASS",
+        "missing_factors": {
+          "Q": [],
+          "G": [
+            "eps_diluted_cagr_3y"
+          ],
+          "V": []
+        }
+      }
+    }
+  },
+  "rejected_config_versions": [
+    {
+      "candidate": "U2-333",
+      "base_configuration_hash": "8f102656cb5680e188f5551464f3ee685d21bee2506b9e95173a0eb07a96f3ab",
+      "mutation": {
+        "version": "999.0.0"
+      },
+      "expected_error": "QGV333_FIXED_CONFIG_MISMATCH"
+    },
+    {
+      "candidate": "U1-333",
+      "base_configuration_hash": "8d57491b52c0c406558793d41b5d50b8cc6b6e98fd90766500b74baaa103fa15",
+      "mutation": {
+        "version": "999.0.0"
+      },
+      "expected_error": "QGV333_FIXED_CONFIG_MISMATCH"
+    },
+    {
+      "candidate": "S1-333",
+      "base_configuration_hash": "9efb87060cb095b817c56652966ae4ec6c67bf23ad7f959e00f173da43be5864",
+      "mutation": {
+        "version": "999.0.0"
+      },
+      "expected_error": "QGV333_FIXED_CONFIG_MISMATCH"
+    }
+  ],
+  "consumer_must_reject_result_version_different_from_bound_configuration": true
+}

@@ -1,0 +1,953 @@
+{
+  "schema_version": "qgv-dual-factor-bins/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_distribution_manifest": {
+    "path": "distribution-manifest.json",
+    "size": 1117,
+    "sha256": "9e7caff081836a6c4d10c4779b545c820773b8fc6e8b8d8d3f8812d8327924a7"
+  },
+  "source_index": {
+    "path": "distribution-index.json",
+    "size": 258975,
+    "sha256": "aace96685a2fb4d94dc7e37f9df19fcdcd6658e8a02850c0d304df4d111d8aaf"
+  },
+  "display_policy": "stored-evaluation-deciles/1",
+  "boards": {
+    "U2-333": {
+      "model_id": "unified-333-eps/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN333-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN333-REFERENCE:COMMON_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "a0555fe11dad5b756c0e8dc408289d3bfbefcc926d213c4e872f6e2e95a01b13",
+        "candidate_population": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "8f102656cb5680e188f5551464f3ee685d21bee2506b9e95173a0eb07a96f3ab",
+        "evaluation": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "65af979ee613d583740422baf0640fd6dec75a6914d2c3f53c014739d177e9b8",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.2.0"
+      },
+      "result_hash": "7e07f8b13d2158612bca499937199cf1ec8dbeccb6b0ae85f1cefa41bbcc972d",
+      "normalization_version": "common-midrank-strict20/1",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.2.0",
+      "configuration_hash": "8f102656cb5680e188f5551464f3ee685d21bee2506b9e95173a0eb07a96f3ab",
+      "source_result_sha256": "1145d450be18092cc1dda112843555f83c3072e12ab466fa09ccbf8a09ab3528"
+    },
+    "U1-333": {
+      "model_id": "unified-333-persistence/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN333-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN333-REFERENCE:COMMON_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "a0555fe11dad5b756c0e8dc408289d3bfbefcc926d213c4e872f6e2e95a01b13",
+        "candidate_population": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "8d57491b52c0c406558793d41b5d50b8cc6b6e98fd90766500b74baaa103fa15",
+        "evaluation": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "65af979ee613d583740422baf0640fd6dec75a6914d2c3f53c014739d177e9b8",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.2.0"
+      },
+      "result_hash": "7dc5b1828739dccffe1d81e53a50337cc1901c170390f687754d44e937166c48",
+      "normalization_version": "common-midrank-strict20/1",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.2.0",
+      "configuration_hash": "8d57491b52c0c406558793d41b5d50b8cc6b6e98fd90766500b74baaa103fa15",
+      "source_result_sha256": "bfd57c6373e539ec866edccedcfd345c822d671781276a0986742342163f1e74"
+    },
+    "S1-333": {
+      "model_id": "sector-333/0.1.0",
+      "model_version": "0.1.0",
+      "evaluation_population": {
+        "id": "SYN333-REFERENCE",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null
+      },
+      "reference_population": {
+        "id": "SYN333-REFERENCE:SECTOR_FACTOR_REFERENCES",
+        "version": "1",
+        "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+        "valuation_date": "2026-11-02",
+        "as_of": "2026-11-02T23:59:59Z",
+        "code_rows": 20,
+        "issuers": 20,
+        "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+        "snapshot_id": "synthetic-snapshot/1",
+        "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+        "classification_context": null,
+        "factor_members_hash": "21f923d21540a0fd71de05e3e5536377d54f73ff203a12ec23ec8298f80edcc4",
+        "candidate_population": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "scope": "FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY"
+      },
+      "bindings": {
+        "model_hash": "9efb87060cb095b817c56652966ae4ec6c67bf23ad7f959e00f173da43be5864",
+        "evaluation": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "reference": {
+          "id": "SYN333-REFERENCE",
+          "version": "1",
+          "members_hash": "659c05d45733e0d3cb9ab8924fd288aadf837c9b577f43cd01b17e9c2a9e50a6",
+          "valuation_date": "2026-11-02",
+          "as_of": "2026-11-02T23:59:59Z",
+          "code_rows": 20,
+          "issuers": 20,
+          "input_hash": "f35e4dd3e381d37c3aeb341925d3d3f93cc8525a6f5cb34730c5f049f845fd12",
+          "snapshot_id": "synthetic-snapshot/1",
+          "classification_records_hash": "b4c0182fa640a7a6dd96c754acd9133e456b2e76e19eceec09494f6b54eb1a69",
+          "classification_context": null
+        },
+        "code_hash": "65af979ee613d583740422baf0640fd6dec75a6914d2c3f53c014739d177e9b8",
+        "engine_version": "sector-qgv-engine/0.1.0",
+        "adapter_version": "dual-qgv-research/0.2.0"
+      },
+      "result_hash": "758a4932703bffe250b9a8cf7d2f1ff1c11fb6ead1dfdd5748ab51969ccd876f",
+      "normalization_version": "sector-midrank-strict20/1",
+      "engine_version": "sector-qgv-engine/0.1.0",
+      "adapter_version": "dual-qgv-research/0.2.0",
+      "configuration_hash": "9efb87060cb095b817c56652966ae4ec6c67bf23ad7f959e00f173da43be5864",
+      "source_result_sha256": "50efe527f6299710fca01f48bded7edafa13d21ce0b8dd5a604fcbb9be0b4ce6"
+    }
+  },
+  "bands": [
+    {
+      "decile": 10,
+      "top_percent_from": 0,
+      "top_percent_to": 10,
+      "label": "상위 0–10%"
+    },
+    {
+      "decile": 9,
+      "top_percent_from": 10,
+      "top_percent_to": 20,
+      "label": "상위 10–20%"
+    },
+    {
+      "decile": 8,
+      "top_percent_from": 20,
+      "top_percent_to": 30,
+      "label": "상위 20–30%"
+    },
+    {
+      "decile": 7,
+      "top_percent_from": 30,
+      "top_percent_to": 40,
+      "label": "상위 30–40%"
+    },
+    {
+      "decile": 6,
+      "top_percent_from": 40,
+      "top_percent_to": 50,
+      "label": "상위 40–50%"
+    },
+    {
+      "decile": 5,
+      "top_percent_from": 50,
+      "top_percent_to": 60,
+      "label": "상위 50–60%"
+    },
+    {
+      "decile": 4,
+      "top_percent_from": 60,
+      "top_percent_to": 70,
+      "label": "상위 60–70%"
+    },
+    {
+      "decile": 3,
+      "top_percent_from": 70,
+      "top_percent_to": 80,
+      "label": "상위 70–80%"
+    },
+    {
+      "decile": 2,
+      "top_percent_from": 80,
+      "top_percent_to": 90,
+      "label": "상위 80–90%"
+    },
+    {
+      "decile": 1,
+      "top_percent_from": 90,
+      "top_percent_to": 100,
+      "label": "상위 90–100%"
+    }
+  ],
+  "groups": [
+    {
+      "group_id": "U2-333|COMMON|accruals_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|affo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|cfo_assets_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|cfo_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|cfo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|cfo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|common_bp",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|common_bps_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|common_equity_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|consensus_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|depreciation_capex",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|dividend_yield_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ebit_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ebitda_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ep_fy1",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ep_fy_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ep_ntm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ep_ttm_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|eps_diluted_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|fcf_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|fcf_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|fcf_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|fcff_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ffo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|gross_profit_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|interest_coverage_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|nareit_ffo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|net_debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|net_income_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|net_share_reduction",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|ni_da_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|noa_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|operating_income_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|operating_margin_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|peg_forecast",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|peg_historical",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|profit_stability_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|revenue_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|revenue_cagr_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|revenue_growth_1y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|revenue_growth_consistency_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|roa_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|roa_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|roe_common_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|roic_explicit",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|sales_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|sales_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|shareholder_yield",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|tangible_bps_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U2-333|COMMON|tangible_common_bp",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|accruals_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|affo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|cfo_assets_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|cfo_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|cfo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|cfo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|common_bp",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|common_bps_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|common_equity_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|consensus_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|depreciation_capex",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|dividend_yield_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ebit_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ebitda_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ep_fy1",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ep_fy_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ep_ntm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ep_ttm_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|eps_diluted_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|fcf_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|fcf_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|fcf_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|fcff_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ffo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|gross_profit_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|interest_coverage_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|nareit_ffo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|net_debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|net_income_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|net_share_reduction",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|ni_da_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|noa_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|operating_income_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|operating_margin_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|peg_forecast",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|peg_historical",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|profit_stability_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|revenue_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|revenue_cagr_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|revenue_growth_1y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|revenue_growth_consistency_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|roa_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|roa_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|roe_common_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|roic_explicit",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|sales_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|sales_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|shareholder_yield",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|tangible_bps_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "U1-333|COMMON|tangible_common_bp",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|accruals_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|affo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bp",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bps_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_equity_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|consensus_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|depreciation_capex",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|dividend_yield_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebit_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebitda_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy1",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ntm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ttm_diluted",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|eps_diluted_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcff_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ffo_per_share_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|gross_profit_assets_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|interest_coverage_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|nareit_ffo_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_debt_assets",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_income_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_share_reduction",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ni_da_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|noa_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_income_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_margin_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_forecast",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_historical",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|profit_stability_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_5y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_1y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_consistency_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_improvement_3y",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roe_common_ttm",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roic_explicit",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_ev",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_mcap",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|shareholder_yield",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_bps_growth",
+      "path": "bins-000.json"
+    },
+    {
+      "group_id": "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_common_bp",
+      "path": "bins-000.json"
+    }
+  ],
+  "rank_policy": "UNROUNDED_FACTOR_SCORE_DESC_COMPANY_ID_ASC_ORDINAL",
+  "minimum_reference_score_n": 20,
+  "minimum_stored_evaluation_decile_n": 10,
+  "tie_policy": "PRESERVE_STORED_ORDINAL_COMPANY_ID_BOUNDARIES",
+  "remainder_policy": "D10_D1_FLOOR_N_OVER_10;MIDDLE_REMAINDER_D9_TO_D2",
+  "new_score_calculations": 0,
+  "additional_factor_score_contribution": 0,
+  "filter_changes_population": false,
+  "whole_market_denominator": null,
+  "whole_market_coverage": null
+}

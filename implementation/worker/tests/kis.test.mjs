@@ -377,6 +377,52 @@ test('classification dual distribution: the full factor distribution reads class
   }
 });
 
+test('classification dual set=333: the 3/3/3 delivery reads classification/dual-333/<scope>/ with the same schemas and scope check; the reduced one is untouched', async () => {
+  for (const [part, file, schema] of [['dual_manifest', 'manifest', 'qgv-dual-delivery-manifest/1'], ['dual_summary', 'summary', 'qgv-dual-delivery/1'], ['dual_index', 'index', 'qgv-dual-index/1'],
+    ['dual_lineage', 'input-lineage', 'qgv-dual-input-projection-proof/1'], ['dual_reference_anchor', 'reference-anchor', 'qgv-dual-reference-anchor/1'],
+    ['dual_dist_manifest', 'distribution/distribution-manifest', 'qgv-dual-factor-distribution-manifest/1'], ['dual_bins_index', 'bins/bin-index', 'qgv-dual-factor-bins/1']]) {
+    for (const scope of ['operating504', 'held1057']) {
+      const s = setup({ github: () => new Response(JSON.stringify({ schema_version: schema, scope }), { status: 200 }) });
+      assert.equal((await s.run('/kis/classification?part=' + part + '&scope=' + scope + '&set=333')).status, 200, part + ' ' + scope);
+      assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual-333/' + scope + '/' + file + '.json?ref=data');
+      const o = setup({ github: () => new Response(JSON.stringify({ schema_version: schema, scope }), { status: 200 }) });
+      assert.equal((await o.run('/kis/classification?part=' + part + '&scope=' + scope)).status, 200);
+      assert.equal(githubCalls(o)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual/' + scope + '/' + file + '.json?ref=data', 'without set: the reduced delivery');
+    }
+  }
+  assert.equal((await setup({ github: () => new Response(JSON.stringify({ schema_version: 'qgv-dual-delivery-manifest/1', scope: 'held1057' }), { status: 200 }) }).run('/kis/classification?part=dual_manifest&scope=operating504&set=333')).status, 502, 'another scope');
+  for (const [part, file, schema] of [['dual_detail', 'detail-', 'qgv-dual-detail/1'], ['dual_dist_detail', 'distribution/distribution-', 'qgv-dual-factor-distribution-part/1'], ['dual_bins_detail', 'bins/bins-', 'qgv-dual-factor-bins-part/1']]) {
+    const s = setup({ github: () => new Response(JSON.stringify({ schema_version: schema }), { status: 200 }) });
+    assert.equal((await s.run('/kis/classification?part=' + part + '&scope=held1057&shard=024&set=333')).status, 200, part);
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual-333/held1057/' + file + '024.json?ref=data');
+  }
+  const big = await setup({ github: () => new Response('{"schema_version":"qgv-dual-detail/1","rows":[]}', { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=dual_detail&scope=operating504&shard=000&set=333');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  for (const route of ['/kis/classification?part=dual_manifest&scope=operating504&set=334', '/kis/classification?part=dual_manifest&scope=operating504&set=', '/kis/classification?part=dual_manifest&set=333&scope=operating504',
+    '/kis/classification?part=dual_detail&scope=operating504&set=333&shard=000', '/kis/classification?part=dual_manifest&scope=operating504&set=333&set=333', '/kis/classification?part=dual_manifest&scope=market&set=333',
+    '/kis/classification?part=view&set=333', '/kis/classification?part=ownership_view&entity=SYN-A&set=333', '/kis/classification?part=dual_manifest&scope=operating504%26set%3D333']) {
+    const t = setup({ github: () => new Response('{}', { status: 200 }) }), r = await t.run(route);
+    assert.equal(r.status, 400, route); assert.equal(githubCalls(t).length, 0, route);
+  }
+});
+
+test('classification 3/3/3 EPS follow-up: the four staged files at classification/dual-333/eps/, each with its own shape', async () => {
+  for (const [part, file, body] of [['dual_eps_index', 'eps-index', { schema_version: 'qgv-333-eps-delivery/1' }], ['dual_eps_diag', 'diagnostic-summary', { operating: {}, held: {} }],
+    ['dual_eps_compare', 'run-comparison', { operating504: {}, held1057: {} }], ['dual_eps_inputs', 'continuation-inputs', { schema_version: 'qgv-333-eps-continuation/1' }]]) {
+    const s = setup({ github: () => new Response(JSON.stringify(body), { status: 200 }) });
+    const r0 = await s.run('/kis/classification?part=' + part); assert.equal(r0.status, 200, part + ' ' + await r0.clone().text());
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual-333/eps/' + file + '.json?ref=data');
+    assert.equal((await setup({ github: () => new Response(JSON.stringify({ other: 1 }), { status: 200 }) }).run('/kis/classification?part=' + part)).status, 502, part + ': another shape');
+  }
+  assert.equal((await setup({ github: () => new Response('{"operating":{},"held":{},"x":1}', { status: 200 }) }).run('/kis/classification?part=dual_eps_diag')).status, 502, 'no extra scope');
+  const big = await setup({ github: () => new Response('{"operating":{},"held":{}}', { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=dual_eps_diag');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  for (const route of ['/kis/classification?part=dual_eps_index&scope=operating504', '/kis/classification?part=dual_eps_index&set=333', '/kis/classification?part=dual_eps_continuation', '/kis/classification?part=dual_eps']) {
+    const t = setup({ github: () => new Response('{}', { status: 200 }) }), r = await t.run(route);
+    assert.equal(r.status, 400, route); assert.equal(githubCalls(t).length, 0, route);
+  }
+});
+
 test('classification ownership: the index, one view per entity (its centre the entity asked) and its optional receipt (the producer\'s five keys)', async () => {
   const idx = setup({ github: () => new Response(JSON.stringify({ schema_version: 'company-ownership-delivery/1', views: [] }), { status: 200 }) });
   assert.equal((await idx.run('/kis/classification?part=ownership_index')).status, 200);

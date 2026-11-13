@@ -36,9 +36,14 @@ sector-reduced-core/0.1.0 (S1). No candidate is chosen for the caller (no defaul
 missing or mismatched model_id, or a config other than that candidate is refused. context / view answer Codex's
 candidate_configs() and evidence_catalog(); preview calls run_board(config, evaluation, reference, request_id) on Codex's pinned
 dual synthetic evaluation and reference snapshots (two inputs, never one); save calls save_board; replay calls replay_board with the
-retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted). Every answer names
+retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted); after a restart
+(nothing retained) it reads the pinned inputs again from their fixed manifest and replays only on the pair the saved bindings name. Every answer names
 the requested model and model_id, and the engine result must carry the same model_id and configuration hash, otherwise
 MODEL_RESPONSE_MISMATCH. A request without `model` keeps the sector default behaviour below unchanged.
+The 3/3/3 candidates (owner 2026-11-13; Codex #534 `research.qgv_333`, QGV_333.md) are named the same way: INTEGRATED →
+unified-333-eps/0.1.0 (U2-333) or unified-333-persistence/0.1.0 (U1-333), SECTOR → sector-333/0.1.0 (S1-333); their config is
+qgv_333.candidate_configs()[key] (qgv-dual-config/2), run, saved and replayed by the same dual_qgv calls (config/2 dispatches to
+Codex's fixed validator); view answers the S1-333 recipe of the asked sector × accounting model as the contract states it.
 
 Transport: one JSON object per line on stdin -> one JSON object per line on stdout (tools/web_app_sector_qgv_engine.js runs it
 behind the development site's POST route `sector-qgv-engine`). Errors are fixed codes; no input value, company result or
@@ -60,6 +65,7 @@ from investment_system.research import sector_qgv as engine  # noqa: E402
 from investment_system.research import sector_qgv_main as main_bridge  # noqa: E402
 from investment_system.research import sector_qgv_partial as partial  # noqa: E402
 from investment_system.research import dual_qgv  # noqa: E402
+from investment_system.research import qgv_333  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
@@ -91,8 +97,11 @@ MAIN_SYNTHETIC_I1 = ('MAIN_SYNTHETIC_I1', ROOT / 'tests' / 'fixtures' / 'sector_
 MAX_COMPARISON_BYTES = 8 << 20
 
 # Research models (Codex #529): request model → the candidates it may name explicitly (candidate_configs() keys).
-DUAL_MODELS = {'INTEGRATED': {'unified-roa-core/0.1.0': 'U1', 'unified-sales-core/0.1.0': 'U2'},
-               'SECTOR': {'sector-reduced-core/0.1.0': 'S1'}}
+DUAL_MODELS = {'INTEGRATED': {'unified-roa-core/0.1.0': 'U1', 'unified-sales-core/0.1.0': 'U2',
+                              'unified-333-eps/0.1.0': 'U2-333', 'unified-333-persistence/0.1.0': 'U1-333'},
+               'SECTOR': {'sector-reduced-core/0.1.0': 'S1', 'sector-333/0.1.0': 'S1-333'}}
+# The 3/3/3 candidates' configs come from Codex's qgv_333 (config/2), the reduced ones from dual_qgv (config/1); never one for the other.
+Q333 = ('U2-333', 'U1-333', 'S1-333')
 DUAL_OPS = ('context', 'view', 'preview', 'save', 'replay')
 DUAL_FIXTURES = FIXTURES / 'dual-synthetic'
 # Codex's dual synthetic manifest (6766962236 §1); each input file's bytes must be the ones it pins.
@@ -274,7 +283,7 @@ def _dual_candidate(req):
     if model_id not in DUAL_MODELS[model]:
         raise Refused('MODEL_ID_UNKNOWN')
     key = DUAL_MODELS[model][model_id]
-    config = dual_qgv.candidate_configs()[key]
+    config = (qgv_333.candidate_configs() if key in Q333 else dual_qgv.candidate_configs())[key]
     if config['model_id'] != model_id:
         raise Refused('MODEL_RESPONSE_MISMATCH')
     if 'config' in req and req['config'] != config:
@@ -312,7 +321,7 @@ class Bridge:
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):
-        return {'versions': {'model_id': config['model_id'], 'model_version': config['version'], 'adapter_version': dual_qgv.VERSION,
+        return {'versions': {'model_id': config['model_id'], 'model_version': config['version'], 'adapter_version': config['execution_version'],
                              'config_schema': config['schema_version'], 'board_schema': dual_qgv.SCHEMA},
                 'candidate': key, 'config': config, 'config_hash': dual_qgv.digest(config),
                 'evidence': dual_qgv.evidence_catalog(),
@@ -322,6 +331,12 @@ class Bridge:
         if config['kind'] == 'COMMON':
             return {'candidate': key, 'kind': 'COMMON', 'preset': config['uniform_preset'], 'config_hash': dual_qgv.digest(config)}
         sector, template = _scope(req)
+        if key in Q333:
+            current = config['scoped_presets'].get(sector + '|' + template)
+            if current is None:
+                raise Refused('SCOPE_UNKNOWN')
+            return {'candidate': key, 'kind': 'SECTOR', 'sector_id': sector, 'accounting_template': template, 'preset': current,
+                    'config_hash': dual_qgv.digest(config)}
         try:
             current = engine.preset(config['sector_config'], sector, template)
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
@@ -366,16 +381,33 @@ class Bridge:
             raise Refused('SAVED_SCHEMA_MISMATCH')
         if (saved.get('configuration') or {}).get('model_id') != config['model_id']:
             raise Refused('MODEL_RESPONSE_MISMATCH')
-        if saved.get('result_hash') not in self.kept_dual:
-            raise Refused('RETAINED_INPUT_NOT_FOUND')
-        _, retained, evaluation, reference, original_rid, input_id = self.kept_dual[saved['result_hash']]
-        try:
-            out = dual_qgv.replay_board(copy.deepcopy(saved), copy.deepcopy(evaluation), copy.deepcopy(reference), original_rid)
-        except (ValueError, KeyError, TypeError, AttributeError) as exc:
-            raise Refused(_code(exc)) from None
-        _dual_result_check(out, config['model_id'], config)
-        return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY',
-                'retained_result_hash': retained['result_hash'], 'board': out}
+        if saved.get('result_hash') in self.kept_dual:
+            _, retained, evaluation, reference, original_rid, input_id = self.kept_dual[saved['result_hash']]
+            try:
+                out = dual_qgv.replay_board(copy.deepcopy(saved), copy.deepcopy(evaluation), copy.deepcopy(reference), original_rid)
+            except (ValueError, KeyError, TypeError, AttributeError) as exc:
+                raise Refused(_code(exc)) from None
+            _dual_result_check(out, config['model_id'], config)
+            return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY', 'input_source': 'RETAINED_IN_PROCESS',
+                    'retained_result_hash': retained['result_hash'], 'board': out}
+        # Not held in this process (a restarted bridge, or memory dropped): the pinned inputs are read again from their fixed
+        # manifest (dual_inputs re-checks every byte) and Codex's replay_board is tried on each; it accepts only the pair whose
+        # identities are the saved bindings and whose result is the saved result. The request id is not part of the result hash.
+        # Nothing matching → RETAINED_INPUT_NOT_FOUND: the record stays as it is, nothing is recomputed on another input.
+        for input_id in DUAL_INPUTS:
+            evaluation, reference = dual_inputs(input_id)
+            try:
+                out = dual_qgv.replay_board(copy.deepcopy(saved), evaluation, reference, rid)
+            except ValueError as exc:
+                if str(exc) == 'DUAL_REPLAY_INPUT_MISMATCH':
+                    continue
+                raise Refused(_code(exc)) from None
+            except (KeyError, TypeError, AttributeError) as exc:
+                raise Refused(_code(exc)) from None
+            _dual_result_check(out, config['model_id'], config)
+            return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY', 'input_source': 'PINNED_INPUT_REREAD',
+                    'retained_result_hash': saved['result_hash'], 'board': out}
+        raise Refused('RETAINED_INPUT_NOT_FOUND')
 
     def _context(self, req, rid):
         return {'versions': {'model_version': MODEL, 'engine_version': ENGINE, 'normalization_version': NORMALIZATION,

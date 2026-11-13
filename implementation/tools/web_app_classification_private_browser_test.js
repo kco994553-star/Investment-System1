@@ -79,6 +79,16 @@ const LEADER_FILE = { dual_leaders_manifest: 'factor-leaders-manifest.json', dua
 // qgv-dual-factor-distribution/1 shape; Codex's own synthetic cases are read in web_app_dual_distribution_node_test.js).
 const DIST = { ...DF.distribution(DUAL) };
 Object.assign(DIST, DF.bins(DIST)); // its all-bin routing (test-made, Codex's qgv-dual-factor-bins/1 shape)
+// The 3/3/3 deliveries (owner 2026-11-13; Codex #534 boundary-delivery core-missing, pinned, re-pointed test-made): held1057 at
+// this synthetic population with its projection proof and a full distribution + bins bound to it; operating504 at the coverage's
+// operating evaluation (the reference study's) without a reference anchor. Served only for &set=333.
+const Q333 = { held1057: DF.q333('held1057'), operating504: DF.q333(null, 'core-missing', null, { evaluation: REFVIEW.evaluation_population }) };
+Q333.held1057.files['input-lineage.json'] = DF.lineage();
+const Q333_DIST = { ...DF.distribution(Q333.held1057) };
+// The 3/3/3 EPS input connection follow-up (test-made counts, Codex #534's file shapes) bound to these two deliveries.
+const Q333_EPS = DF.eps({ operating504: Q333.operating504, held1057: Q333.held1057 });
+const EPS_FILE = { dual_eps_index: 'eps-index.json', dual_eps_diag: 'diagnostic-summary.json', dual_eps_compare: 'run-comparison.json', dual_eps_inputs: 'continuation-inputs.json' };
+Object.assign(Q333_DIST, DF.bins(Q333_DIST));
 const DIST_FILE = { dual_dist_manifest: 'distribution-manifest.json', dual_dist_index: 'distribution-index.json', dual_bins_manifest: 'bin-manifest.json', dual_bins_index: 'bin-index.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
   coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
@@ -119,6 +129,18 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
         const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
+        if (EPS_FILE[part]) {
+          const d = (w.answers[part] || (() => ({ status: 200, text: Q333_EPS.files[EPS_FILE[part]].toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
+        if (url.searchParams.get('set') === '333') {
+          const slot = scope + '@333', qkey = /_detail$/.test(part) ? part + '/' + slot + '/' + shard : part + '/' + slot;
+          const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : part === 'dual_bins_detail' ? 'bins-' + shard + '.json'
+            : part === 'dual_lineage' ? 'input-lineage.json' : DUAL_FILE[part] || DIST_FILE[part];
+          const src = DIST_FILE[part] || part === 'dual_dist_detail' || part === 'dual_bins_detail' ? (scope === 'held1057' ? Q333_DIST : {}) : (Q333[scope] || { files: {} }).files, b = name ? src[name] : undefined;
+          const d = (w.answers[qkey] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
         const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] || part === 'dual_lineage' ? part + '/' + scope : part;
         if (DIST_FILE[part] || part === 'dual_dist_detail' || part === 'dual_bins_detail') {
           const dkey = /_detail$/.test(part) ? part + '/' + scope + '/' + shard : part + '/' + scope;
@@ -385,7 +407,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         const d0 = w.log.length; await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
         assert.deepEqual(w.log.slice(d0).map((x) => x.path), ['manifest', 'summary', 'index', 'lineage'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': four reads (the proof optional), in order');
-        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 지금 받은 결과와 다른 평가 집단·입력의 연구입니다 · DUAL_POPULATION_MISMATCH .* 위 묶음은 그대로$/);
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 두 모형 연구 결과를 쓰지 않음 · 지금 받은 결과와 다른 평가 집단·입력의 연구입니다 · DUAL_POPULATION_MISMATCH .* 위 묶음은 그대로$/);
         assert.equal(await count(page, '[data-reference-axis]'), 5, phase + ': the reference block stays');
         for (const k of Object.keys(DUAL_FILE)) delete w.answers[k + '/held1057'];
         // A proof for another evaluation input is refused by name; the bundle stays.
@@ -393,12 +415,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.waitForTimeout(5200);
         await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
-        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 평가 입력 투영 증명이 이 결과와 맞지 않습니다 · LINEAGE_INVALID /);
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 두 모형 연구 결과를 쓰지 않음 · 평가 입력 투영 증명이 이 결과와 맞지 않습니다 · LINEAGE_INVALID /);
         delete w.answers['dual_lineage/held1057'];
         await page.waitForTimeout(5200);
         await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-state=READY]').waitFor({ timeout: 30000 });
-        assert.match(await text(page, '[data-dual-state]'), /^두 모형 연구 결과 · 보유1057 · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음$/);
+        assert.match(await text(page, '[data-dual-state]'), /^연구 후보 결과 · 보유1057 두 모형 · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음$/);
         assert.deepEqual(await page.locator('[data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['held1057:U1', 'held1057:U2', 'held1057:S1']);
         for (const k of ['S1', 'U1']) await page.locator('[data-dual-board="held1057:' + k + '"] > summary').click();
         assert.match(await text(page, '[data-dual-states="held1057:U1"]'), /평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨\(화면이 다시 계산한 것 아님\)/, phase + ': the proof attests the evaluation input');
@@ -544,6 +566,83 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       }
       ok(tag + ' held browse: index (3 reads) checked against the summary; search → one shard per issuer; a cached shard is not read again; a changed shard is that detail only');
 
+      // QGV 3/3/3 (owner 2026-11-13 「3/3/3 인계 수령 정정 및 #535 연결 재개」; Codex #534): each scope's 3/3/3 delivery is its own
+      // click and its own slot beside the reduced one (&set=333 on every read); its boards carry the registered config/2, the 3/3/3
+      // stages and the applicability upper bound; a company's detail shows the producer's exact fractions, the missing core factors
+      // and the evidence, no total rank without a total; the full ten-band path reads its own distribution and bins.
+      phase = tag + ' 3/3/3';
+      {
+        const Q = (p) => '/kis/classification?part=' + p;
+        await page.waitForTimeout(5200);
+        const q0 = w.log.length; await page.locator('[data-dual-open="held1057@333"]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-scope="held1057@333"]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(q0).map((x) => x.path), ['manifest', 'summary', 'index', 'lineage'].map((p) => Q('dual_' + p + '&scope=held1057&set=333')), phase + ': four reads with set=333');
+        assert.match(await text(page, '[data-dual-state]'), /^연구 후보 결과 · 보유1057 두 모형 · 보유1057 3\/3\/3 · 목록표·요약·색인 검증됨/);
+        assert.equal(await count(page, '[data-dual-scope=held1057]'), 1, phase + ': the reduced delivery stays beside it');
+        assert.deepEqual(await page.locator('[data-dual-scope="held1057@333"] [data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['U2-333', 'U1-333', 'S1-333'].map((k) => 'held1057@333:' + k));
+        assert.match(await text(page, '[data-dual-scope="held1057@333"] [data-dual-generation]'), /^3\/3\/3 U2-333·U1-333·S1-333\(Q3·G3·V3\)$/);
+        await page.locator('[data-dual-board="held1057@333:U2-333"] > summary').click();
+        assert.match(await text(page, '[data-dual-config="held1057@333:U2-333"]'), /^설정 qgv-dual-config\/2 · 모형 unified-333-eps\/0\.1\.0 · 적용 dual-qgv-research\/0\.2\.0 · 등록된 정확한 설정과 일치/);
+        assert.match(await text(page, '[data-dual-states="held1057@333:U2-333"]'), /생산자 투영 증명과 대조됨/, phase + ': the pinned proof attests the 3/3/3 evaluation input');
+        assert.deepEqual((await page.locator('[data-dual-stages="held1057@333:U2-333"] [data-dual-stage]').evaluateAll((e) => e.map((x) => x.dataset.dualStage))).slice(-3), ['total', 'nine_core_scores', 'gate_known']);
+        assert.match(await text(page, '[data-dual-upper="held1057@333:U2-333"]'), /^적용 범위만 본 상한\(.+예측 아님\) 발행사 3 \/ 3 · /);
+        assert.equal(await count(page, '[data-dual-leaders="held1057@333"]'), 0, phase + ': no leaders companion for 3/3/3 (the full-bin path)');
+        await page.locator('[data-dual-query="held1057@333"]').fill('company-00');
+        await page.waitForTimeout(5200);
+        const c0 = w.log.length; await page.locator('[data-dual-results="held1057@333"] [data-dual-result="company-000"] button').click();
+        const cmp = '[data-dual-compare="held1057@333"] ';
+        await page.locator(cmp + '[data-dual-compare-for="company-000"]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(c0).map((x) => x.path), [Q('dual_detail&scope=held1057&shard=000&set=333')], phase + ': one detail read');
+        assert.equal(await text(page, cmp + '[data-dual-compare-weights=U2-333]'), '축 비중(관문 전) Q 1/3 · G 1/3 · V 1/3 · 관문 뒤 Q 1/3 · G 1/3 · V 1/3 · 축 안 세 요소는 각 1/3');
+        assert.equal(await text(page, cmp + '[data-dual-compare-weights=S1-333]'), '축 비중(관문 전) Q 3/10 · G 1/4 · V 9/20 · 관문 뒤 Q 3/10 · G 1/4 · V 9/20 · 축 안 세 요소는 각 1/3');
+        assert.match(await text(page, cmp + '[data-dual-compare-missing=U2-333]'), /G 결손 eps_diluted_cagr_3y/);
+        assert.match(await text(page, cmp + '[data-dual-compare-axes=U2-333]'), /^Q 66\.7 · G 미산출 · V 0\.0 · 총점 미산출$/, phase + ': Q / V without a total');
+        assert.match(await text(page, cmp + '[data-dual-compare-rank=U2-333]'), /^총점 없음 · 순위 없음/);
+        assert.match(await text(page, cmp + '[data-dual-compare-recipe=S1-333]'), /^구성 상태 · 정의된 연구 구성$/);
+        assert.equal(await count(page, cmp + '[data-dual-compare-core=U2-333] li'), 9); assert.equal(await count(page, cmp + '[data-dual-compare-evidence=U2-333] li'), 9);
+        assert.match(await page.locator(cmp + '[data-dual-compare-core=U2-333] li').first().evaluate((e) => e.textContent), / · 총점 비중 1\/9$/);
+        await page.waitForTimeout(5200);
+        const z0 = w.log.length; await page.locator('[data-dual-dist-open="held1057@333"]').click();
+        await page.locator('[data-dual-dist-model="held1057@333"]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(z0).map((x) => x.path), ['dual_dist_manifest', 'dual_dist_index', 'dual_bins_manifest', 'dual_bins_index'].map((p) => Q(p + '&scope=held1057&set=333')));
+        await page.locator('[data-dual-dist-model="held1057@333"]').selectOption('U2-333');
+        const gid = await page.locator('[data-dual-dist-group="held1057@333"] option:not([value=""])').first().getAttribute('value');
+        await page.locator('[data-dual-dist-group="held1057@333"]').selectOption(gid);
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-dist-show="held1057@333"]').click();
+        await page.locator('[data-dual-dist-bands="' + gid + '"]').waitFor({ timeout: 40000 });
+        assert.deepEqual(await page.locator('[data-dual-dist="held1057@333"] [data-dual-dist-band]').evaluateAll((e) => e.map((x) => x.dataset.dualDistBand)), ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'NONE']);
+        assert.match(await text(page, '[data-dual-dist="held1057@333"] [data-dual-dist-routed=true]'), /^전체 구성원 · 구간 색인과 대조됨/);
+        await page.waitForTimeout(5200);
+        const o0 = w.log.length; await page.locator('[data-dual-open="operating504@333"]').click();
+        await page.locator('[data-dual-scope="operating504@333"]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(o0).map((x) => x.path), ['manifest', 'summary', 'index', 'reference_anchor'].map((p) => Q('dual_' + p + '&scope=operating504&set=333')), phase + ': the anchor optional (404 here)');
+        assert.match(await text(page, '[data-dual-scope="operating504@333"] [data-dual-leaderboard]'), /U2-333·U1-333·S1-333을 고를 수 있음/);
+        // EPS 입력 연결 단계 (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3): its own click, four reads; a progress record, not results.
+        await page.waitForTimeout(5200);
+        const e0 = w.log.length; await page.locator('[data-dual-eps-open]').click();
+        await page.locator('[data-dual-eps] [data-dual-eps-state=READY]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(e0).map((x) => x.path), ['dual_eps_index', 'dual_eps_diag', 'dual_eps_compare', 'dual_eps_inputs'].map((p) => Q(p)), phase + ': four reads');
+        for (const sc of ['operating504', 'held1057']) {
+          assert.equal(await page.locator('[data-dual-eps-scope=' + sc + '] [data-dual-eps-screen]').getAttribute('data-dual-eps-screen'), 'BEFORE', phase + ': the screen\'s 3/3/3 results are the comparison\'s previous input version');
+          assert.equal(await count(page, '[data-dual-eps-stages=' + sc + '] li'), 5);
+        }
+        const et = await text(page, '[data-dual-eps]');
+        assert.match(et, /역사 보통주 귀속 근거 미확인」 3 발행사 · 가격 대기 아님/); assert.ok(!/가격만 대기/.test(et), phase + ': never 「가격만 대기」');
+        assert.match(et, /수치 진단 후보 2 발행사 · 미채택 · 적격 EPS·채택 수가 아님/);
+        assert.match(et, /같은 평가일이라도 입력 버전이 다르면 다른 결과 · 섞지 않음/);
+        assert.match(et, /새 입력 버전의 결과 묶음\(요약·상세·분위·구간 색인\) 전달 전/);
+        assert.match(et, /Q 결손\s*생산자 계약 전달 뒤 별도 줄로 연결/);
+        if (tag === '390') {
+          await page.setViewportSize({ width: 320, height: 720 });
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': 320 px, the page with the 3/3/3 cards open');
+          await page.setViewportSize({ width: 390, height: 844 });
+        }
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow');
+        await page.waitForTimeout(5200);
+      }
+      ok(tag + ' 3/3/3: own slots and reads (set=333), config/2 and stages, exact fractions, missing core factors and evidence, no rank without a total, full bins, the reduced delivery kept');
+
       // 공통 산업 → 매크로 근거 (owner 2026-11-09, Codex #525): one click, one read; refused when made from another classification.
       phase = tag + ' industry macro';
       {
@@ -590,7 +689,20 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-cc-filter]:not([data-cc-filter=NONE])').first().waitFor({ timeout: 20000 });
       assert.equal(w.log.length, before, phase + ': the QGV filter and another company read the same RAM bundle, no new read');
       assert.deepEqual(await page.locator('[data-lb-models] button[data-lb-model]').evaluateAll((e) => e.map((b) => [b.dataset.lbModel, b.disabled])),
-        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true]], phase + ': held1057 alone never makes 2.1 research models selectable');
+        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true], ['U2-333', false], ['U1-333', false], ['S1-333', false]], phase + ': only the checked operating504 3/3/3 delivery makes its own models selectable (held1057 never; U1 / U2 / S1 not read)');
+      // 2.1 → 3/3/3 board → company detail (the same checked path as 0. 기업 검색, one detail read) → exact weights.
+      await page.locator('[data-lb-model="U2-333"]').click(); await page.locator('[data-lb-research="U2-333"]').waitFor();
+      assert.match(await text(page, '[data-lb-research-config]'), /^설정 qgv-dual-config\/2 · 모형 unified-333-eps\/0\.1\.0/);
+      assert.match(await text(page, '[data-lb-research-upper]'), /^적용 범위만 본 상한/);
+      assert.ok((await page.locator('[data-lb-research-stage]').evaluateAll((e) => e.map((x) => x.dataset.lbResearchStage))).includes('gate_known'));
+      assert.match(await page.locator('[data-lb-research-row="company-000"] [data-lb-research-rank]').evaluate((e) => e.textContent), /^총점 없음 · 순위 없음/);
+      const lb0 = w.log.length; await page.locator('[data-lb-research-open="company-000"]').click();
+      await page.locator('[data-lb-research-detail="U2-333"] [data-dual-compare-for="company-000"]').waitFor({ timeout: 30000 });
+      assert.deepEqual(w.log.slice(lb0).map((x) => x.path), ['/kis/classification?part=dual_detail&scope=operating504&shard=000&set=333'], phase + ': one detail read from the leaderboard');
+      assert.equal(await text(page, '[data-lb-research-detail="U2-333"] [data-dual-compare-weights=U1-333]'), '축 비중(관문 전) Q 1/3 · G 1/3 · V 1/3 · 관문 뒤 Q 1/3 · G 1/3 · V 1/3 · 축 안 세 요소는 각 1/3');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow on 2.1');
+      await page.locator('[data-lb-model="OFFICIAL"]').click();
+      await page.waitForTimeout(5200);
       ok(tag + ' the same RAM bundle on another company (accounting line apart) and the QGV filter, no new read');
 
       phase = tag + ' fold';

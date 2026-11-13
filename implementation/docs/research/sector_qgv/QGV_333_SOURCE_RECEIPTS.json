@@ -1,0 +1,76 @@
+[
+  {
+    "file": "sp-quality.pdf",
+    "url": "https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-quality-indices.pdf",
+    "retrieved_at": "2026-11-13T09:38:57.946681+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "error": "HTTPError",
+    "status": 403
+  },
+  {
+    "file": "msci-quality-202205.pdf",
+    "url": "https://www.msci.com/eqb/methodology/meth_docs/MSCI_Quality_Indexes_Methodology_May2022.pdf",
+    "retrieved_at": "2026-11-13T09:38:57.947382+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://www.msci.com/eqb/methodology/meth_docs/MSCI_Quality_Indexes_Methodology_May2022.pdf",
+    "bytes": 654479,
+    "content_type": "application/pdf",
+    "sha256": "8bae6dbc09908689cbdc41ce6d110d1923b6200a522e291e381e9152752b156c"
+  },
+  {
+    "file": "msci-growth-202305.pdf",
+    "url": "https://app2.msci.com/eqb/methodology/meth_docs/MSCI_GIMIVGMethod_May2023.pdf",
+    "retrieved_at": "2026-11-13T09:38:57.948135+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://app2.msci.com/eqb/methodology/meth_docs/MSCI_GIMIVGMethod_May2023.pdf",
+    "bytes": 585384,
+    "content_type": "application/pdf",
+    "sha256": "32bc2f9ee7c8b5c39cd0c2ef1c2994a72c7bbd1976505c200214b38fb5d694ee"
+  },
+  {
+    "file": "buffett-1977.html",
+    "url": "https://www.berkshirehathaway.com/letters/1977.html",
+    "retrieved_at": "2026-11-13T09:38:57.948641+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://www.berkshirehathaway.com/letters/1977.html",
+    "bytes": 21781,
+    "content_type": "text/html",
+    "sha256": "ef4c39cbca16040bb824764eca719cd934ec62380e1b9c61396e2f483d07d9e0"
+  },
+  {
+    "file": "buffett-1986.html",
+    "url": "https://www.berkshirehathaway.com/letters/1986.html",
+    "retrieved_at": "2026-11-13T09:38:57.949134+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://www.berkshirehathaway.com/letters/1986.html",
+    "bytes": 112247,
+    "content_type": "text/html",
+    "sha256": "7a1c77d00cd18b0ce312eae72c95bf45c8da7d0169451f4ed67924dbff2562e8"
+  },
+  {
+    "file": "buffett-1992.html",
+    "url": "https://www.berkshirehathaway.com/letters/1992.html",
+    "retrieved_at": "2026-11-13T09:38:57.949520+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://www.berkshirehathaway.com/letters/1992.html",
+    "bytes": 76201,
+    "content_type": "text/html",
+    "sha256": "281218259801b95b4fad83f3e92a3e7bfbc15389b8f308b4f5992730f19cdde8"
+  },
+  {
+    "file": "buffett-2007.pdf",
+    "url": "https://www.berkshirehathaway.com/letters/2007ltr.pdf",
+    "retrieved_at": "2026-11-13T09:38:57.950050+00:00",
+    "purpose": "OWNER_LISTED_OFFICIAL_METHODOLOGY_READING",
+    "status": 200,
+    "final_url": "https://www.berkshirehathaway.com/letters/2007ltr.pdf",
+    "bytes": 476332,
+    "content_type": "application/pdf",
+    "sha256": "8288aa8a17b677ca1215c31ef0afb887d3f95dbb0e2241f77b54b51f0c3f7cfa"
+  }
+]
