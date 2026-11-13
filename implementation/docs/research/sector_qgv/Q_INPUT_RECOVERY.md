@@ -80,8 +80,9 @@ was not relaxed to accept future facts. Calculation execution is pinned separate
 
 Operating3 issuers are included in held10; the scopes/candidates are not summed.
 One operating recovered debt issuer remains unified-accounting-incompatible.
-Four held new raw ratios are still mapping-unresolved, and another scored issuer
-has another required Q factor missing. No accounting restriction was removed.
+Four held new raw ratios are still mapping-unresolved. The sixth newly scored
+debt issuer is the same accounting-incompatible REIT; its other unified Q
+factors remain NOT_APPLICABLE. No accounting restriction was removed.
 ROA/accrual raw recoveries0. No explicit zero was used by these10 real recoveries.
 
 Debt's valid unified reference pool grew358→361 and615→621. This changed existing
