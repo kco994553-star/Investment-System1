@@ -160,3 +160,52 @@ test('refresh receipts: bound to the retained view bytes and times; shown beside
   assert.throws(() => O.ram.put(v, { ...c.refresh }), /OWNERSHIP_RECEIPT_NOT_CHECKED/);
   const r = (await O.checkReceipt(c.refresh, v, sha256)).value; O.ram.put(v, r); assert.equal(O.ram.receiptFor(v), r); O.ram.clear();
 });
+
+// The authenticated delivery (owner 2026-11-13): Main's index (company-ownership-delivery/1, stage_private_ownership_view.py) names each
+// staged view's and receipt's size and SHA-256; a view is taken only with exactly those bytes, for that centre, company ids and dataset.
+test('authenticated delivery: index → view bytes → receipt; damaged, missing, unlisted or another centre\'s files refused', async () => {
+  const enc = (x) => new Uint8Array(Buffer.from(canon(x) + '\n')), file = (x, bytes) => ({ bytes: bytes || enc(x), body: x });
+  const shaHex = (b) => crypto.createHash('sha256').update(b).digest('hex');
+  const a = cx.refresh_failed, b = cx.incoming_holder, av = enc(a.expected_view), bv = enc(b.expected_view), rb = new Uint8Array(Buffer.from(JSON.stringify(a.refresh, null, 2) + '\n'));
+  const entry = (c, v, r) => ({ entity_id: c.expected_view.entity_context.entity_id, company_ids: c.expected_view.entities.find((e) => e.entity_id === c.expected_view.entity_context.entity_id).company_ids,
+    dataset_hash: c.expected_view.dataset_hash, view: { size: v.length, sha256: shaHex(v) }, receipt: r ? { size: r.length, sha256: shaHex(r) } : null });
+  const idx = { schema_version: 'company-ownership-delivery/1', data_kind: 'SYNTHETIC', sources: [{ handoff_path: 'handoffs/x', handoff_manifest_sha256: 'a'.repeat(64) }], new_external_requests: 0,
+    views: [entry(a, av, rb), entry(b, bv, null)] };
+  const I = O.checkDeliveryIndex({ body: idx }); assert.equal(I.ok, true, JSON.stringify(I));
+  assert.equal(shaHex(av), a.expected_view_sha256, 'the producer\'s view bytes');
+  const ea = O.entryFor(I.value, 'SYN:A2'), eb = O.entryFor(I.value, 'SYN:B');
+  assert.equal(ea.entity_id, 'SYN-A'); assert.equal(eb.entity_id, 'SYN-B'); assert.equal(O.entryFor(I.value, 'NYSE:MMM'), null, 'a company the index does not list');
+  const ok = await O.checkDelivered(I.value, ea, file(a.expected_view, av), file(a.refresh, rb), sha256);
+  assert.equal(ok.ok, true, JSON.stringify(ok)); assert.equal(ok.value.receiptRefused, null); assert.equal(ok.value.dataKind, 'SYNTHETIC');
+  assert.match(O.view(ok.value.view, { receipt: ok.value.receipt }).refresh, /^마지막 갱신 시도 실패 · 시도 /, 'the refresh failure beside the retained view');
+  assert.equal(ok.value.view.generated_at, a.refresh.unchanged_generated_at, 'the view\'s own time unchanged');
+  const nb = await O.checkDelivered(I.value, eb, file(b.expected_view, bv), null, sha256); assert.equal(nb.ok, true); assert.equal(nb.value.receipt, null);
+  const dmg = av.slice(); dmg[20] ^= 1;
+  assert.equal((await O.checkDelivered(I.value, ea, file(a.expected_view, dmg), file(a.refresh, rb), sha256)).code, 'FILE_MISMATCH', 'damaged view bytes');
+  assert.equal((await O.checkDelivered(I.value, ea, null, file(a.refresh, rb), sha256)).code, 'VIEW_MISSING');
+  assert.equal((await O.checkDelivered(I.value, ea, file(a.expected_view, av), null, sha256)).code, 'RECEIPT_MISSING', 'a listed receipt missing');
+  assert.equal((await O.checkDelivered(I.value, eb, file(b.expected_view, bv), file(a.refresh, rb), sha256)).code, 'RECEIPT_UNLISTED');
+  const rd = rb.slice(); rd[5] ^= 1; assert.equal((await O.checkDelivered(I.value, ea, file(a.expected_view, av), file(a.refresh, rd), sha256)).code, 'FILE_MISMATCH', 'damaged receipt bytes');
+  assert.equal((await O.checkDelivered(I.value, ea, file(b.expected_view, bv), file(a.refresh, rb), sha256)).code, 'FILE_MISMATCH', 'another view\'s file under this entity');
+  // An index entry whose bytes match but whose company ids / dataset are not the view's.
+  const alt = { ...idx, views: [{ ...entry(a, av, rb), company_ids: ['SYN:A'] }] }, I2 = O.checkDeliveryIndex({ body: alt }).value;
+  assert.equal((await O.checkDelivered(I2, I2.views[0], file(a.expected_view, av), file(a.refresh, rb), sha256)).code, 'INDEX_COMPANY_MISMATCH');
+  const alt2 = { ...idx, views: [{ ...entry(a, av, rb), dataset_hash: 'f'.repeat(64) }] }, I3 = O.checkDeliveryIndex({ body: alt2 }).value;
+  assert.equal((await O.checkDelivered(I3, I3.views[0], file(a.expected_view, av), file(a.refresh, rb), sha256)).code, 'INDEX_DATASET_MISMATCH');
+  // A receipt that is listed and intact but not bound to this view's times: the view is kept, without a refresh line, and says why.
+  const badR = { ...a.refresh, attempt: { ...a.refresh.attempt, attempted_at: '2000-01-01T00:00:00Z' } }, br = new Uint8Array(Buffer.from(JSON.stringify(badR)));
+  const alt3 = { ...idx, views: [entry(a, av, br)] }, I4 = O.checkDeliveryIndex({ body: alt3 }).value;
+  const kept = await O.checkDelivered(I4, I4.views[0], file(a.expected_view, av), file(badR, br), sha256);
+  assert.equal(kept.ok, true); assert.equal(kept.value.receipt, null); assert.equal(kept.value.receiptRefused, 'RECEIPT_TIME');
+  // Index refusals.
+  const bad = (edit) => { const x = JSON.parse(JSON.stringify(idx)); edit(x); return O.checkDeliveryIndex({ body: x }).code; };
+  assert.equal(bad((x) => { x.schema_version = 'company-ownership-delivery/2'; }), 'SCHEMA');
+  assert.equal(bad((x) => { x.data_kind = 'PUBLIC'; }), 'DATA_KIND');
+  assert.equal(bad((x) => { x.new_external_requests = 1; }), 'NOT_PROJECTION');
+  assert.equal(bad((x) => { x.views[1].entity_id = 'SYN-A'; }), 'INDEX_DUPLICATE', 'two views for one centre');
+  assert.equal(bad((x) => { x.views[1].company_ids = ['SYN:A']; }), 'INDEX_DUPLICATE', 'one company in two views');
+  assert.equal(bad((x) => { x.views[0].view.sha256 = 'XYZ'; }), 'TYPE');
+  assert.equal(bad((x) => { x.views[0].note = 1; }), 'KEY_UNEXPECTED');
+  assert.equal(bad((x) => { x.views = []; }), 'TYPE');
+  assert.equal((await O.checkDelivered(idx, ea, file(a.expected_view, av), null, sha256)).code, 'INDEX_NOT_CHECKED', 'an index the reader did not check');
+});

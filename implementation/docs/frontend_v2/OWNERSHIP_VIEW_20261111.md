@@ -76,12 +76,13 @@ QGV(#530)와 별도 PR이다. 기반은 Codex #531 `986e02ba`(canonical `ab6a83c
   4. VERIFIED_ZERO_IN_SCOPE.
   5. 13F 운용 재량 보기.
   6. 수집 상태 값의 전체 목록. 지금 판독기는 5개만 받는다.
-- **RIG 가드** (오너 2026-11-12 「최소 변경으로 해결」, 이 Draft 가지에서만 · 병합은 별도 승인):
+- **RIG 가드** (오너 2026-11-12 「최소 변경으로 해결」; **오너 2026-11-13 이 재사용 범위 승인** — 병합·배포 승인은 아님):
   - 규칙: `research/company_ownership.py` 한 모듈만 `investment_system.rig.model`에서 `IdentityRef` · `Node` · `stable_id` 세 이름을 가져올 수 있다.
   - 그 밖의 rig 모듈(adapter · gate · ledger)이나 다른 이름은 그 모듈에도 금지다. 다른 모든 모듈은 지금처럼 rig에 의존할 수 없다.
   - rig 자신이 다른 패키지를 가져오지 않는다는 시험은 그대로다.
   - 새 시험 `test_the_rig_model_exception_is_exactly_one_module_and_three_names`: 예외가 정확히 한 모듈·세 이름인지 고정한다.
   - 가드를 지우거나 건너뛰지 않았다. research 전체를 허용하지 않았다.
+  - 승인 범위: `research/company_ownership.py` → `investment_system.rig.model`의 `IdentityRef` · `Node` · `stable_id`. 다른 파일·이름·운영 처리 모듈로 넓히지 않는다. 범위 고정 시험을 유지한다.
 
 ## 5. 보관 실자료 (로컬, 수만)
 
@@ -114,3 +115,24 @@ QGV(#530)와 별도 PR이다. 기반은 Codex #531 `986e02ba`(canonical `ab6a83c
   - 브라우저: 검토 전 + INCOMING의 두 줄, REVIEWED_SCOPE, 실패 receipt 줄을 확인한다.
     - 가운데 기업 코드를 시험 목록 기업으로 바꿨기 때문에, receipt의 보존 해시는 바뀐 보기 바이트로 다시 맞췄다(시험용).
 - **실자료 전달 경로**는 §5대로 아직 없다. 이 기반에는 비공개 인증 층이 없다.
+
+## 7. 인증 전달 (오너 2026-11-13 「후속 통합과 실자료 전달」 §4, 통합 Draft `claude/qgv-ownership-integration`)
+
+#530 사슬 위에서 #532를 합쳤다(merge 146ddc19). 인증층은 복제하지 않고 기존 비공개 Worker `/kis/classification`·Google 로그인·RAM 규칙을 그대로 쓴다.
+
+- **전달 형식** (Main): 비공개 data 가지 `classification/ownership/`
+  - `ownership-index.json` — `company-ownership-delivery/1`: `data_kind`(PRIVATE | SYNTHETIC), `sources`(handoff 경로·handoff-manifest SHA-256), `new_external_requests: 0`, `views[]`(실체 ID, 기업 ID들, dataset_hash, 보기 파일 크기·SHA-256, receipt 크기·SHA-256 또는 null).
+  - `views/<실체 ID>.json` — Codex 보기 바이트 그대로(생산자 정규 바이트).
+  - `receipts/<실체 ID>.json` — 갱신 시도 receipt(있을 때만, 생산자 다섯 키).
+- **배치 도구** `implementation/tools/stage_private_ownership_view.py`: handoff-manifest 고정 SHA, view.json이 목록에 있고 크기·SHA 일치, 스키마, `publication` PRIVATE(합성은 `--synthetic`에서 PUBLIC_APPROVED), 정규 바이트, 중심 실체·기업 ID, 중심·기업 중복 없음, receipt는 배치되는 보기 바이트 SHA·변하지 않은 시각·시도 시각이 뒤인지. 공개 저장소 안 경로 거부. `classification/ownership/` 통째 교체, 실패 시 기존 그대로.
+- **Worker part** (배포 안 함): `?part=ownership_index`, `?part=ownership_view&entity=<ID>`(보기 중심 = 요청 실체), `?part=ownership_receipt&entity=<ID>`(정확히 다섯 키). 실체 ID `^[A-Z0-9][A-Z0-9-]{0,31}$`. 2 MiB 한도·소유자 인증 동일.
+- **판독** (`ownership-view.js`): `checkDeliveryIndex`, `entryFor(index, code)`, `checkDelivered(index, entry, view, receipt, sha256)`.
+  - 보기 바이트가 목록표의 크기·SHA와 다르면 `FILE_MISMATCH`. 중심·기업 ID·dataset이 목록표와 다르면 거부.
+  - 목록표에 있는 receipt가 없으면 `RECEIPT_MISSING`, 없는 receipt가 오면 `RECEIPT_UNLISTED`.
+  - receipt가 `checkReceipt`를 통과하지 못하면 보기는 그대로 보이고 갱신 줄 없이 「갱신 기록을 쓰지 않음 · 코드 · 보관된 관계 자료만 보임」.
+- **화면** (`screen-ownership-live.js` `privateLoader`): 로그인한 오너에게만 기업 화면 관계 칸과 5.1에 「관계 자료 목록 불러오기 (비공개 · 1개 읽기)」 → 목록에 있는 기업이면 「이 기업 관계 불러오기 (2개 읽기 · 갱신 기록은 없으면 없음)」. 로그아웃이면 아무것도 더하지 않는다. 로그아웃하면 목록표와 전달된 보기를 RAM에서 지운다.
+  - 상태 문구(모두 「관계가 없다는 뜻이 아님」으로 끝남): 배치 전(404) · 로그인 필요/권한 없음 · 파일 손상 · 목록표와 다른 기업·자료 · 목록에 없는 기업 · 형식 거부.
+- **실자료 배치 (비공개 원격)**: Codex 원자료 883893e4 `handoffs/company-ownership-20261111`(handoff-manifest a2a0b820…, view 44f5a59e…, 중심 0000002488 = NASDAQ:AMD)를 도구로 배치, 목록표 d2a335c7…, data 가지 058df8c(원격 push 확인). receipt는 Codex가 실자료로 전달한 것이 없어 배치하지 않았다.
+- **실제 소비 경로 대조 (로컬)**: 배치된 목록표 → NASDAQ:AMD 항목 → 보기 바이트 SHA·중심·기업 ID·dataset 일치, 판독 통과(일부 검토 · 확인된 관계 0 · 목록에 없는 대상 1 · 조회 기준일 2017-12-30). 1바이트 손상 → `FILE_MISMATCH`, 목록에 없는 receipt → `RECEIPT_UNLISTED`. NYSE:MMM은 목록에 없음.
+- **시험**: Worker(경로·스키마·중심 불일치·다섯 키·404·2 MiB·잘못된 형식 9가지), staging pytest 17, node(목록표·바이트·receipt·거부 15가지), 브라우저 `web_app_ownership_private_browser_test.js`(1440: 로그아웃 무표시, 배치 전, 401, 목록, 손상, 보기+receipt 5초 간격, 5.1 같은 RAM, 목록에 없는 기업, 로그아웃 삭제 · 390/320: 묶이지 않은 receipt 거부·블록 폭·44 px).
+- **남은 것**: Worker 배포(별도 승인). 실 receipt는 Codex가 갱신 시도를 실제로 했을 때 생긴다.

@@ -179,6 +179,48 @@ async function checkReceipt(r,v,sha256){
   if(typeof r.attempt.attempted_at!=='string'||!(Date.parse(r.attempt.attempted_at)>Date.parse(v.generated_at)))refuse('RECEIPT_TIME','$receipt.attempt.attempted_at');
   const value=freeze(JSON.parse(JSON.stringify(r)));RECEIPTS.add(value);return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+// The authenticated delivery (owner 2026-11-13): Main's index of the staged views (company-ownership-delivery/1, written by
+// stage_private_ownership_view.py) names, per centre entity, its company ids, the view file's size and SHA-256 and the dataset hash,
+// and the optional refresh receipt's size and SHA-256. The reader takes a view only when its own bytes are the ones the index names,
+// it validates for that centre and names the same company ids and dataset; a listed receipt must be there and match, an unlisted
+// one is refused. A receipt that fails checkReceipt leaves the view shown without a refresh line (receiptRefused names why).
+const DELIVERY='company-ownership-delivery/1';
+const HEX64=/^[0-9a-f]{64}$/,ENTITY_ID=/^[A-Z0-9][A-Z0-9-]{0,31}$/;
+const fileRef=(f,at)=>{exact(f,['sha256','size'],at);if(!HEX64.test(f.sha256)||!Number.isInteger(f.size)||f.size<1)refuse('TYPE',at);return freeze({sha256:f.sha256,size:f.size});};
+const INDEXES=new WeakSet();
+function checkDeliveryIndex(file){
+ try{const x=file&&file.body;exact(x,['schema_version','data_kind','sources','views','new_external_requests'],'$index');
+  if(x.schema_version!==DELIVERY)refuse('SCHEMA','$index.schema_version');if(x.data_kind!=='PRIVATE'&&x.data_kind!=='SYNTHETIC')refuse('DATA_KIND','$index.data_kind');
+  if(x.new_external_requests!==0)refuse('NOT_PROJECTION','$index.new_external_requests');
+  if(!Array.isArray(x.sources)||!x.sources.length)refuse('TYPE','$index.sources');
+  x.sources.forEach((s,i)=>{exact(s,['handoff_path','handoff_manifest_sha256'],'$index.sources['+i+']');if(typeof s.handoff_path!=='string'||!HEX64.test(s.handoff_manifest_sha256))refuse('TYPE','$index.sources['+i+']');});
+  if(!Array.isArray(x.views)||!x.views.length)refuse('TYPE','$index.views');
+  const ids=new Set(),codes=new Set();
+  const views=x.views.map((v,i)=>{const at='$index.views['+i+']';exact(v,['entity_id','company_ids','dataset_hash','view','receipt'],at);
+   if(typeof v.entity_id!=='string'||!ENTITY_ID.test(v.entity_id))refuse('TYPE',at+'.entity_id');if(ids.has(v.entity_id))refuse('INDEX_DUPLICATE',at+'.entity_id');ids.add(v.entity_id);
+   if(!Array.isArray(v.company_ids)||v.company_ids.some(c=>typeof c!=='string'||!c))refuse('TYPE',at+'.company_ids');
+   for(const c of v.company_ids){if(codes.has(c))refuse('INDEX_DUPLICATE',at+'.company_ids');codes.add(c);}
+   if(!HEX64.test(v.dataset_hash))refuse('TYPE',at+'.dataset_hash');
+   return freeze({entity_id:v.entity_id,company_ids:freeze([...v.company_ids]),dataset_hash:v.dataset_hash,view:fileRef(v.view,at+'.view'),receipt:v.receipt===null?null:fileRef(v.receipt,at+'.receipt')});});
+  const value=freeze({data_kind:x.data_kind,views:freeze(views),sources:freeze(x.sources.map(s=>freeze({...s})))});INDEXES.add(value);return{ok:true,value};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+const entryFor=(index,code)=>INDEXES.has(index)&&code?index.views.find(v=>v.company_ids.includes(code))||null:null;
+const hex=async(sha256,bytes)=>sha256(bytes);
+async function checkDelivered(index,entry,viewFile,receiptFile,sha256){
+ try{if(!INDEXES.has(index)||!index.views.includes(entry))refuse('INDEX_NOT_CHECKED','$');if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  if(!viewFile||!(viewFile.bytes instanceof Uint8Array))refuse('VIEW_MISSING','$view');
+  if(viewFile.bytes.length!==entry.view.size||(await hex(sha256,viewFile.bytes))!==entry.view.sha256)refuse('FILE_MISMATCH','$view');
+  const r=validate(viewFile.body,{entityId:entry.entity_id});if(!r.ok)return r;const v=r.value;
+  const centre=v.entities.find(e=>e.entity_id===entry.entity_id);
+  if(!centre||centre.company_ids.join('\u0000')!==entry.company_ids.join('\u0000'))refuse('INDEX_COMPANY_MISMATCH','$view.entities');
+  if(v.dataset_hash!==entry.dataset_hash)refuse('INDEX_DATASET_MISMATCH','$view.dataset_hash');
+  if(entry.receipt===null&&receiptFile)refuse('RECEIPT_UNLISTED','$receipt');
+  if(entry.receipt!==null&&!receiptFile)refuse('RECEIPT_MISSING','$receipt');
+  let receipt=null,receiptRefused=null;
+  if(receiptFile){if(!(receiptFile.bytes instanceof Uint8Array)||receiptFile.bytes.length!==entry.receipt.size||(await hex(sha256,receiptFile.bytes))!==entry.receipt.sha256)refuse('FILE_MISMATCH','$receipt');
+   const q=await checkReceipt(receiptFile.body,v,sha256);if(q.ok)receipt=q.value;else receiptRefused=q.code;}
+  return{ok:true,value:freeze({view:v,receipt,receiptRefused,dataKind:index.data_kind})};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 // A relationship read from both sides is one fact: the same relationship_id, opposite relative directions (5.1.2 연결 근거).
 function sameFact(a,b){const x=new Map(a.relationships.map(r=>[r.relationship_id,r]));return b.relationships.filter(r=>x.has(r.relationship_id))
  .map(r=>{const o=x.get(r.relationship_id);return freeze({relationship_id:r.relationship_id,consistent:o.source_entity_id===r.source_entity_id&&o.target_entity_id===r.target_entity_id&&o.type===r.type&&o.relative_direction!==r.relative_direction});});}
@@ -190,5 +232,5 @@ const ram=(()=>{const views=new Map(),subs=new Set();const tell=()=>{for(const f
    views.set(v.entity_context.entity_id,v);if(receipt)receipts.set(v,receipt);tell();},receiptFor(v){return receipts.get(v)||null;},
   forCompany(code){for(const v of views.values()){const e=v.entities.find(x=>x.entity_id===v.entity_context.entity_id);if(e&&e.company_ids.includes(code))return v;}return null;},
   get(id){return views.get(id)||null;},all(){return[...views.values()];},clear(){views.clear();tell();},subscribe(f){subs.add(f);return()=>subs.delete(f);}});})();
-return Object.freeze({ram,SCHEMA,TYPE,DIRECTNESS,CAPACITY,STATE,METRIC,QUALIFIER,COLLECTION,LISTS,ATTEMPT,validate,view,sameFact,checkReceipt});
+return Object.freeze({ram,SCHEMA,DELIVERY,TYPE,DIRECTNESS,CAPACITY,STATE,METRIC,QUALIFIER,COLLECTION,LISTS,ATTEMPT,validate,view,sameFact,checkReceipt,checkDeliveryIndex,entryFor,checkDelivered});
 });

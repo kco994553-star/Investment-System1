@@ -219,7 +219,8 @@ function screen(route,{legend,band,slots}){
   // A checked relationship view for this centre (Codex #531 company-ownership-view/1, RAM only) replaces 「관계 자료 미연결」;
   // without one the screen stays as it was (REL-SOURCE).
   const ov=I.ownershipView&&I.ownershipScreen?I.ownershipView.ram.forCompany(c.code):null;
-  const relPart=ov?I.ownershipScreen.block(ov,{href,companies:I.companies}):rel;
+  // Without one, the owner (signed in) can read the authenticated delivery here (IS2.ownershipScreen.privateLoader); signed out it adds nothing.
+  const relPart=ov?I.ownershipScreen.block(ov,{href,companies:I.companies}):I.ownershipScreen&&I.ownershipScreen.privateLoader?h('div',null,rel,I.ownershipScreen.privateLoader(c.code,{signal})):rel;
   put(centerBody,h('h4',{dataset:{centerCode:c.code}},c.ticker,name?' · '+name:''),
    h('p',{class:'reason'},c.code,' · Universe504',ended?h('span',{dataset:{listingEnded:ended}},' · 상장 종료 ',ended,' · 점수 없음'):null),
    h('div',{class:'links'},starButton(c.id),h('a',{class:'lk',href:href('company',c.id),dataset:{centerCompany:''}},'기업 화면 →'),

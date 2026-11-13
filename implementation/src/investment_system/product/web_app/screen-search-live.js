@@ -186,7 +186,9 @@ function newsCard(body,e,cid,signal){
 // (IS2.ownershipView.ram); otherwise nothing is added. Its own slot, so the news rows are never replaced by it.
 function relationLines(newsBody,code,signal){if(!I.ownershipView||!I.ownershipScreen||!code)return;
  const slot=h('div',{class:'card-body',dataset:{ownSlot:code}});newsBody.after(slot);
- const draw=()=>{if(signal.aborted)return;const v=I.ownershipView.ram.forCompany(code);slot.replaceChildren(v?I.ownershipScreen.block(v,{compact:true,href,companies:I.companies}):'');};
+ // No view yet: the owner's authenticated delivery loader (nothing when signed out).
+ const loader=I.ownershipScreen.privateLoader?I.ownershipScreen.privateLoader(code,{signal}):'';
+ const draw=()=>{if(signal.aborted)return;const v=I.ownershipView.ram.forCompany(code);slot.replaceChildren(v?I.ownershipScreen.block(v,{compact:true,href,companies:I.companies}):loader);};
  draw();const off=I.ownershipView.ram.subscribe(draw);signal.addEventListener('abort',off);}
 function portfolioCard(body,e,idx,signal){
  const Q=I.qgv,weight=h('p',{class:'reason'},'비중은 포트폴리오 화면에서(가격을 불러온 뒤 이 기기에서 계산)');
