@@ -18,7 +18,9 @@ def boundary_delivery_examples(factory,configs):
             e,r=factory['snapshots']()
             for source in (e,r):
                 if case=='unknown-gate':source['rows'][0]['gate']=None
-                else:source['rows'][0]['observations'].pop('revenue_growth_consistency_3y' if key=='U1-333' else 'eps_diluted_cagr_3y')
+                else:
+                    for variant in ('revenue_growth_consistency_3y','eps_diluted_cagr_3y'):
+                        source['rows'][0]['observations'].pop(variant)
             boards[key]=dual.run_board(config,e,r,request_id='SYN333:delivery:'+case+':'+key)
         parts=dual.delivery_artifacts(boards)
         parts['manifest.json']=delivery_manifest({k:dual.json_bytes(v) for k,v in parts.items()},scope='operating504',data_kind='SYNTHETIC')
