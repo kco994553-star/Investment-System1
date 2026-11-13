@@ -293,6 +293,72 @@ This run: synthetic1 title/1 news link; private retained3 official titles/0 news
 links. No new policy/exposure/hypothesis or source3 case review. The private sidecar
 is preserved separately and requires Main reader integration. No public posting.
 
+### Numeric view delivery: opt-in navigation /2
+
+Main #511 `af0fe8f3ee8b25ab0a36a5ab3c26d6fa1e95e86c` accepts numeric
+`ratio.value` in the public view, but its navigation/1 canonicalizer rejects every
+number with `NAV_HASH_NUMBER`. This was reproduced with the unchanged reader and
+six generated view/navigation pairs (0, 1, 0.125, 1e-7, 0.0, 1.0). Each view is
+valid; each legacy sidecar is rejected. Python/JavaScript also spell some finite
+numbers differently. Casting ratios to strings would break the existing contract.
+
+Opt-in `policy-impact-navigation-input/2` and `policy-impact-navigation/2` add
+`hash_algorithm: SHA256_VIEW_UTF8_BYTES_V1`. Their `base_view_hash` is SHA-256 of
+the **exact delivered view file bytes**, as lowercase 64-character hex. It is not
+a semantic JSON digest. The producer uses the existing CLI format: UTF-8 without
+BOM, indent 2, LF and one final LF; `allow_nan=False`. Numbers stay numeric. No
+cross-language number serializer is required. Changing whitespace, key order or
+`1e-07` to `0.0000001` invalidates the existing byte binding even if parsed values
+compare equal. Regenerate the sidecar explicitly from the new approved view file.
+
+The existing CLI adds `view_source: {path, sha256}` for /2. It checks that file hash,
+checks navigation's base hash, then parses the same bytes. Duplicate JSON keys,
+NaN/Infinity, overflow to infinity, invalid UTF-8 and non-object input are rejected.
+Supplying both embedded `view` and `view_source` is `VIEW_INPUT_AMBIGUOUS`.
+Hash/type/version failure leaves the previous output bytes intact. Diagnostics
+contain fixed codes/paths only. `project_bytes` and legacy `project` share all
+title extraction, evidence, review/PIT and publication-permission checks.
+
+Compatibility is explicit:
+
+- navigation/1, `build.digest`, prior fixtures and private sidecars remain unchanged.
+  Embedded-view jobs still produce /1. Never relabel a /1 hash as /2.
+- View schemas remain private `policy-impact-view/1`, public `policy-impact-view/2`;
+  bundle, ratio, news metadata revision hash and source hash meanings do not change.
+- Main retains /1 handling and adds /2 byte verification. The browser must retain
+  `Response.arrayBuffer()`, verify SHA-256 over those bytes, decode UTF-8 strictly
+  and validate that same parsed view before joining. Never parse then reserialize
+  for this hash. The sidecar schema, algorithm and existing content/permission
+  checks remain mandatory; unknown versions/algorithms fail closed.
+- The byte hash binds files; it does not establish authenticity or grant permission.
+  Delivery authorization and the existing public/private boundary remain separate.
+- Transport compression may be decoded by HTTP normally; these are the uncompressed
+  view file bytes delivered to the JSON reader. Intermediaries must not reformat JSON.
+  Mismatch rejects the sidecar, retaining the base view's existing safe fallback.
+
+Main handoff is `policy_impact/numeric-navigation-v2/manifest.json`: six public
+synthetic view/job/navigation sets, exact byte counts/hashes and expected one
+official-title override plus one reviewed news reference per pair. Node's standard
+SHA-256 independently matches all six byte hashes. The unchanged Main `navIndex`
+also joins one title/one reference once the byte binding is independently checked.
+This is an adapter/contract check, **not** a completed Main browser /2 integration.
+News still has evidence_effect=NONE; no policy applicability or QGV effect is added.
+
+From the repository root:
+
+```sh
+python implementation/tools/policy_impact.py --job implementation/docs/research/policy_impact/numeric-navigation-v2/small-exponent-job.json --output /tmp/policy-navigation-v2.json
+PYTHONPATH=implementation/src python -m pytest -q implementation/tests/research/test_policy_navigation_bytes.py implementation/tests/research/test_policy_navigation.py
+```
+
+The new test is discovered by the existing full `tests` CI command. No dependency,
+CI list, workflow, browser, guard or operating macro module changes are requested
+from Codex. Main owns /2 reader dispatch, exact-byte delivery and browser tests,
+including stale/mismatched pairs, legacy compatibility and permission failures.
+Main contract acceptance is tracked on #437; no live artifact migration or public
+posting is implied. This change uses synthetic data only and does not re-run the
+three policy cases, macro failure probes, WRB or Federal Register acquisition.
+
 ### Minimum actual API compatibility acquisition proposal (not executed)
 
 No retained API response is present in the identified handoff; only the already
