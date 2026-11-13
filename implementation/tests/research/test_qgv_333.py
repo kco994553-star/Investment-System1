@@ -186,3 +186,18 @@ def test_absent_observation_is_not_confused_with_accounting_or_definition_block(
         b=dual.run_board(candidates()[key],e,r,request_id='missing-scope')
         assert b['rows'][0]['factors'][variant]['raw_status']==reason
         if template=='BANK':assert b['coverage']['applicability_only_upper_bound']['optimistic_issuers']==0
+
+def test_nine_scores_do_not_bypass_unknown_official_gate_or_missing_debt():
+    e,r=snapshots()
+    for s in (e,r):s['rows'][0]['gate']=None
+    b=dual.run_board(candidates()['U2-333'],e,r,request_id='all-scores-no-gate')
+    row=b['rows'][0]
+    assert all(row['axes'][a] is not None for a in 'QGV')
+    assert row['pre_gate_total'] is not None and row['total'] is None and row['gate_status']=='UNKNOWN'
+    ctx=dict(as_of='2026-11-04T23:59:59Z',valuation_date='2026-11-04',issuer_id='SYN-issuer',accounting_template='GENERAL')
+    def stock(value):
+        return dict(value=value,unit='USD',currency='USD',period_kind='INSTANT',period_end='2026-09-30',issuer_id='SYN-issuer',scope='CONSOLIDATED',available_at='2026-10-20T00:00:00Z',retrieved_at='2026-10-21T00:00:00Z',provenance=['SYN'])
+    assert sector.calculate_factor('debt_assets',dict(debt=stock(0),assets_end=stock(100)),ctx)['status']=='VALID_ZERO'
+    assert sector.calculate_factor('debt_assets',dict(total_liabilities=stock(50),assets_end=stock(100)),ctx)['status']=='MISSING_INPUT'
+    bad=stock(5);bad['status']='LATEST_FILING_CONFLICT'
+    assert sector.calculate_factor('debt_assets',dict(debt=bad,assets_end=stock(100)),ctx)['status']=='LATEST_FILING_CONFLICT'
