@@ -1,0 +1,5884 @@
+{
+  "schema_version": "qgv-333-contract/1",
+  "candidates": {
+    "U2-333": {
+      "schema_version": "qgv-dual-config/2",
+      "version": "0.1.0",
+      "minimum": 20,
+      "missing_policy": "strict/1",
+      "gate_policy": "official-q-percentile-required/1",
+      "research_knowledge_cutoff": "2026-11-13T09:38:00Z",
+      "execution_version": "dual-qgv-research/0.2.0",
+      "study_id": "QGV-333-20261113-01",
+      "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",
+      "core_policy": "FIXED_333",
+      "model_id": "unified-333-eps/0.1.0",
+      "kind": "COMMON",
+      "uniform_preset": {
+        "preset_id": "unified-333-eps/0.1.0",
+        "version": "0.1.0",
+        "sector_id": null,
+        "accounting_template": null,
+        "sector_mapping_version": "book-sector-map/1",
+        "weight_policy": "positive-integer-ratios/1",
+        "axis_weights": {
+          "Q": 1,
+          "G": 1,
+          "V": 1
+        },
+        "axes": {
+          "Q": {
+            "profitability": {
+              "weight": 1,
+              "factors": {
+                "roa_ttm": 1
+              }
+            },
+            "accounting_quality": {
+              "weight": 1,
+              "factors": {
+                "accruals_assets_ttm": 1
+              }
+            },
+            "financial_capacity": {
+              "weight": 1,
+              "factors": {
+                "debt_assets": 1
+              }
+            }
+          },
+          "G": {
+            "growth": {
+              "weight": 2,
+              "factors": {
+                "revenue_cagr_3y": 1,
+                "eps_diluted_cagr_3y": 1
+              }
+            },
+            "profitability_change": {
+              "weight": 1,
+              "factors": {
+                "roa_improvement_3y": 1
+              }
+            }
+          },
+          "V": {
+            "earnings": {
+              "weight": 1,
+              "factors": {
+                "ep_ttm_diluted": 1
+              }
+            },
+            "other_value": {
+              "weight": 1,
+              "factors": {
+                "common_bp": 1
+              }
+            },
+            "cash": {
+              "weight": 1,
+              "factors": {
+                "cfo_mcap": 1
+              }
+            }
+          }
+        },
+        "pending_axes": [],
+        "recipe_state": "DEFINED_RESEARCH"
+      }
+    },
+    "U1-333": {
+      "schema_version": "qgv-dual-config/2",
+      "version": "0.1.0",
+      "minimum": 20,
+      "missing_policy": "strict/1",
+      "gate_policy": "official-q-percentile-required/1",
+      "research_knowledge_cutoff": "2026-11-13T09:38:00Z",
+      "execution_version": "dual-qgv-research/0.2.0",
+      "study_id": "QGV-333-20261113-01",
+      "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",
+      "core_policy": "FIXED_333",
+      "model_id": "unified-333-persistence/0.1.0",
+      "kind": "COMMON",
+      "uniform_preset": {
+        "preset_id": "unified-333-persistence/0.1.0",
+        "version": "0.1.0",
+        "sector_id": null,
+        "accounting_template": null,
+        "sector_mapping_version": "book-sector-map/1",
+        "weight_policy": "positive-integer-ratios/1",
+        "axis_weights": {
+          "Q": 1,
+          "G": 1,
+          "V": 1
+        },
+        "axes": {
+          "Q": {
+            "profitability": {
+              "weight": 1,
+              "factors": {
+                "roa_ttm": 1
+              }
+            },
+            "accounting_quality": {
+              "weight": 1,
+              "factors": {
+                "accruals_assets_ttm": 1
+              }
+            },
+            "financial_capacity": {
+              "weight": 1,
+              "factors": {
+                "debt_assets": 1
+              }
+            }
+          },
+          "G": {
+            "growth": {
+              "weight": 2,
+              "factors": {
+                "revenue_cagr_3y": 1,
+                "revenue_growth_consistency_3y": 1
+              }
+            },
+            "profitability_change": {
+              "weight": 1,
+              "factors": {
+                "roa_improvement_3y": 1
+              }
+            }
+          },
+          "V": {
+            "earnings": {
+              "weight": 1,
+              "factors": {
+                "ep_ttm_diluted": 1
+              }
+            },
+            "other_value": {
+              "weight": 1,
+              "factors": {
+                "common_bp": 1
+              }
+            },
+            "cash": {
+              "weight": 1,
+              "factors": {
+                "cfo_mcap": 1
+              }
+            }
+          }
+        },
+        "pending_axes": [],
+        "recipe_state": "DEFINED_RESEARCH"
+      }
+    },
+    "S1-333": {
+      "schema_version": "qgv-dual-config/2",
+      "version": "0.1.0",
+      "minimum": 20,
+      "missing_policy": "strict/1",
+      "gate_policy": "official-q-percentile-required/1",
+      "research_knowledge_cutoff": "2026-11-13T09:38:00Z",
+      "execution_version": "dual-qgv-research/0.2.0",
+      "study_id": "QGV-333-20261113-01",
+      "additional_policy": "CATALOG_ZERO_CORE_WEIGHT",
+      "core_policy": "FIXED_333",
+      "model_id": "sector-333/0.1.0",
+      "kind": "SECTOR",
+      "sector_config": {
+        "schema_version": "sector-qgv-config/1",
+        "config_id": "default",
+        "base_preset_id": "sector-qgv-default/0.1.0",
+        "scoped_overrides": {},
+        "display_preferences": {},
+        "owner_scope": "RESEARCH",
+        "normalization_policy": "sector-midrank-strict20/1",
+        "missing_policy": "strict/1",
+        "gate_policy": "official-q-percentile-required/1",
+        "sector_mapping_version": "book-sector-map/1"
+      },
+      "scoped_presets": {
+        "CONSUMER_DISCRETIONARY|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "fcf_mcap": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_DISCRETIONARY|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_DISCRETIONARY",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "CONSUMER_STAPLES|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "CONSUMER_STAPLES|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "CONSUMER_STAPLES",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "ENERGY|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "ebitda_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "ENERGY|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "ENERGY",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "FINANCIALS|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [
+            "V"
+          ],
+          "recipe_state": "PREPARING"
+        },
+        "FINANCIALS|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "FINANCIALS|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "FINANCIALS|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "FINANCIALS|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "FINANCIALS|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "FINANCIALS|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "FINANCIALS",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "HEALTH_CARE|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "sales_mcap": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "HEALTH_CARE|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "HEALTH_CARE",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 25,
+            "V": 40
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "INDUSTRIALS|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "ebitda_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INDUSTRIALS|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INDUSTRIALS",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 20,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "INFORMATION_TECHNOLOGY|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "sales_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "INFORMATION_TECHNOLOGY|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "INFORMATION_TECHNOLOGY",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 30,
+            "G": 25,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "MATERIALS|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "ebitda_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "MATERIALS|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "MATERIALS",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 35,
+            "G": 15,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "TELECOMMUNICATIONS|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "ebitda_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "TELECOMMUNICATIONS|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "TELECOMMUNICATIONS",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 15,
+            "V": 45
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        },
+        "UTILITIES|GENERAL": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "GENERAL",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "ebitda_ev": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|BANK": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "BANK",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|INSURANCE": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "INSURANCE",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|BROKER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "BROKER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|MORTGAGE_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "MORTGAGE_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 2,
+                "factors": {
+                  "roa_ttm": 1,
+                  "roe_common_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "common_equity_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "common_bps_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|ASSET_MANAGER": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "ASSET_MANAGER",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "operating_margin_ttm": 1
+                }
+              },
+              "accounting_quality": {
+                "weight": 1,
+                "factors": {
+                  "accruals_assets_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "eps_diluted_cagr_3y": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "roa_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "ep_ttm_diluted": 1
+                }
+              },
+              "other_value": {
+                "weight": 2,
+                "factors": {
+                  "common_bp": 1,
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "DEFINED_RESEARCH"
+        },
+        "UTILITIES|EQUITY_REIT": {
+          "preset_id": "sector-333/0.1.0",
+          "version": "0.1.0",
+          "sector_id": "UTILITIES",
+          "accounting_template": "EQUITY_REIT",
+          "sector_mapping_version": "book-sector-map/1",
+          "weight_policy": "positive-integer-ratios/1",
+          "axis_weights": {
+            "Q": 40,
+            "G": 10,
+            "V": 50
+          },
+          "axes": {
+            "Q": {
+              "profitability": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_ttm": 1
+                }
+              },
+              "interest_capacity": {
+                "weight": 1,
+                "factors": {
+                  "interest_coverage_ttm": 1
+                }
+              },
+              "financial_capacity": {
+                "weight": 1,
+                "factors": {
+                  "debt_assets": 1
+                }
+              }
+            },
+            "G": {
+              "growth": {
+                "weight": 2,
+                "factors": {
+                  "revenue_cagr_3y": 1,
+                  "ffo_per_share_growth": 1
+                }
+              },
+              "profitability_change": {
+                "weight": 1,
+                "factors": {
+                  "cfo_assets_improvement_3y": 1
+                }
+              }
+            },
+            "V": {
+              "earnings": {
+                "weight": 1,
+                "factors": {
+                  "nareit_ffo_mcap": 1
+                }
+              },
+              "cash": {
+                "weight": 1,
+                "factors": {
+                  "cfo_mcap": 1
+                }
+              },
+              "other_value": {
+                "weight": 1,
+                "factors": {
+                  "dividend_yield_ttm": 1
+                }
+              }
+            }
+          },
+          "pending_axes": [],
+          "recipe_state": "PREPARING"
+        }
+      }
+    }
+  },
+  "factors": {
+    "accruals_assets_ttm": {
+      "factor_id": "Q05",
+      "variant_id": "accruals_assets_ttm",
+      "axis": "Q",
+      "role": "accounting_quality",
+      "display_name": "발생액/평균자산",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "difference_average",
+      "inputs": [
+        {
+          "field": "net_income",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "cfo",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_begin",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "LOWER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "accruals_assets_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "cfo_assets_improvement_3y": {
+      "factor_id": "G14",
+      "variant_id": "cfo_assets_improvement_3y",
+      "axis": "G",
+      "role": "profitability_change",
+      "display_name": "CFO/자산 3년 개선",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "difference",
+      "inputs": [
+        {
+          "field": "cfo_assets_fy",
+          "period": "FY",
+          "unit": "decimal"
+        },
+        {
+          "field": "cfo_assets_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "decimal"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "cfo_assets_improvement_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "cfo_assets_ttm": {
+      "factor_id": "Q04",
+      "variant_id": "cfo_assets_ttm",
+      "axis": "Q",
+      "role": "profitability",
+      "display_name": "CFO/평균자산",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio_average",
+      "inputs": [
+        {
+          "field": "cfo",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_begin",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "cfo_assets_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "cfo_mcap": {
+      "factor_id": "V02",
+      "variant_id": "cfo_mcap",
+      "axis": "V",
+      "role": "cash",
+      "display_name": "PCR / CFO 수익률",
+      "aliases": [
+        "PCR_CFO_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "cfo",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "issuer_mcap",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "cfo_mcap",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "common_bp": {
+      "factor_id": "V08",
+      "variant_id": "common_bp",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "PBR / 보통주 B/P",
+      "aliases": [
+        "PBR_COMMON"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "common_bps",
+          "period": "INSTANT",
+          "unit": "currency/share"
+        },
+        {
+          "field": "price",
+          "period": "PRICE",
+          "unit": "currency/share"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "LATEST_QUARTER",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "Common-equity attributable scope and current class shares, not total equity. Negative and zero valid with capital impairment label.",
+      "overlap_group": "common_bp",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "common_bps_cagr_3y": {
+      "factor_id": "G13",
+      "variant_id": "common_bps_cagr_3y",
+      "axis": "G",
+      "role": "growth",
+      "display_name": "보통주 BPS 3년 CAGR",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "cagr3",
+      "inputs": [
+        {
+          "field": "common_bps_fy",
+          "period": "FY",
+          "unit": "currency/share"
+        },
+        {
+          "field": "common_bps_fy1",
+          "period": "FY_MINUS_1",
+          "unit": "currency/share"
+        },
+        {
+          "field": "common_bps_fy2",
+          "period": "FY_MINUS_2",
+          "unit": "currency/share"
+        },
+        {
+          "field": "common_bps_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "currency/share"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "common_bps_cagr_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "common_equity_assets": {
+      "factor_id": "Q14",
+      "variant_id": "common_equity_assets",
+      "axis": "Q",
+      "role": "financial_capacity",
+      "display_name": "보통주자본/자산",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "common_equity_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "LATEST_QUARTER",
+      "scope": [
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "common_equity_assets",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "debt_assets": {
+      "factor_id": "Q06",
+      "variant_id": "debt_assets",
+      "axis": "Q",
+      "role": "financial_capacity",
+      "display_name": "차입금/자산",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "debt",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "LOWER",
+      "period": "LATEST_QUARTER",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "debt_assets",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "dividend_yield_ttm": {
+      "factor_id": "V10",
+      "variant_id": "dividend_yield_ttm",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "배당수익률",
+      "aliases": [
+        "DIVIDEND_YIELD_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "common_dps_ttm",
+          "period": "TTM",
+          "unit": "currency/share"
+        },
+        {
+          "field": "price",
+          "period": "PRICE",
+          "unit": "currency/share"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "Confirmed no common dividend is explicit 0; missing is null.",
+      "overlap_group": "dividend_yield_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "ebitda_ev": {
+      "factor_id": "V05",
+      "variant_id": "ebitda_ev",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "EV/EBITDA",
+      "aliases": [
+        "EV_EBITDA_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "sum_ratio",
+      "inputs": [
+        {
+          "field": "ebit",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "da",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "enterprise_value",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "Unadjusted EBIT + D&A; excludes company adjusted EBITDA; same period. EV strictly positive.",
+      "overlap_group": "ebitda_ev",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "ep_ttm_diluted": {
+      "factor_id": "V01",
+      "variant_id": "ep_ttm_diluted",
+      "axis": "V",
+      "role": "earnings",
+      "display_name": "PER / E/P (TTM 희석)",
+      "aliases": [
+        "PER_TTM_DILUTED",
+        "EP_TTM_DILUTED"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "eps_ttm_diluted",
+          "period": "TTM",
+          "unit": "currency/share"
+        },
+        {
+          "field": "price",
+          "period": "PRICE",
+          "unit": "currency/share"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "Explicit verified TTM diluted EPS; no NI/current-shares or undefined FY/YTD EPS arithmetic. Negative and zero E/P valid; PER display only for positive EPS.",
+      "overlap_group": "ep_ttm_diluted",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "eps_diluted_cagr_3y": {
+      "factor_id": "G05",
+      "variant_id": "eps_diluted_cagr_3y",
+      "axis": "G",
+      "role": "growth",
+      "display_name": "희석 EPS 3년 CAGR",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "cagr3",
+      "inputs": [
+        {
+          "field": "eps_diluted_fy",
+          "period": "FY",
+          "unit": "currency/share"
+        },
+        {
+          "field": "eps_diluted_fy1",
+          "period": "FY_MINUS_1",
+          "unit": "currency/share"
+        },
+        {
+          "field": "eps_diluted_fy2",
+          "period": "FY_MINUS_2",
+          "unit": "currency/share"
+        },
+        {
+          "field": "eps_diluted_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "currency/share"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "eps_diluted_cagr_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "fcf_mcap": {
+      "factor_id": "V06",
+      "variant_id": "fcf_mcap",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "P/FCF (CFO−CAPEX)",
+      "aliases": [
+        "P_FCF_CFO_CAPEX_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "difference_ratio",
+      "inputs": [
+        {
+          "field": "cfo",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "capex",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "issuer_mcap",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "CFO minus positive cash CAPEX outflow; not labelled FCFE.",
+      "overlap_group": "fcf_mcap",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "ffo_per_share_growth": {
+      "factor_id": "G11",
+      "variant_id": "ffo_per_share_growth",
+      "axis": "G",
+      "role": "growth",
+      "display_name": "FFO/주 성장",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "pending",
+      "inputs": [],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "UNRESOLVED",
+      "scope": [
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "Growth horizon and dilution basis unspecified.",
+      "overlap_group": "ffo_per_share_growth",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "PENDING_DEFINITION",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "interest_coverage_ttm": {
+      "factor_id": "Q08",
+      "variant_id": "interest_coverage_ttm",
+      "axis": "Q",
+      "role": "interest_capacity",
+      "display_name": "이자보상배율",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "ebit",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "interest_expense",
+          "period": "TTM",
+          "unit": "currency"
+        }
+      ],
+      "unit": "multiple",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "interest_coverage_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "nareit_ffo_mcap": {
+      "factor_id": "V13",
+      "variant_id": "nareit_ffo_mcap",
+      "axis": "V",
+      "role": "earnings",
+      "display_name": "P/FFO (Nareit)",
+      "aliases": [
+        "P_FFO_NAREIT_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "nareit_ffo",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "issuer_mcap",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "nareit_ffo_mcap",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "operating_margin_ttm": {
+      "factor_id": "Q01",
+      "variant_id": "operating_margin_ttm",
+      "axis": "Q",
+      "role": "profitability",
+      "display_name": "영업이익률",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "operating_income",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue",
+          "period": "TTM",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "operating_margin_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "revenue_cagr_3y": {
+      "factor_id": "G02",
+      "variant_id": "revenue_cagr_3y",
+      "axis": "G",
+      "role": "growth",
+      "display_name": "매출 3년 CAGR",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "cagr3",
+      "inputs": [
+        {
+          "field": "revenue_fy",
+          "period": "FY",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy1",
+          "period": "FY_MINUS_1",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy2",
+          "period": "FY_MINUS_2",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "revenue_cagr_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "revenue_growth_consistency_3y": {
+      "factor_id": "G07",
+      "variant_id": "revenue_growth_consistency_3y",
+      "axis": "G",
+      "role": "growth",
+      "display_name": "매출 성장 지속성",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "positive_growth_share",
+      "inputs": [
+        {
+          "field": "revenue_fy",
+          "period": "FY",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy1",
+          "period": "FY_MINUS_1",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy2",
+          "period": "FY_MINUS_2",
+          "unit": "currency"
+        },
+        {
+          "field": "revenue_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "GENERAL",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "revenue_growth_consistency_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "roa_improvement_3y": {
+      "factor_id": "G06",
+      "variant_id": "roa_improvement_3y",
+      "axis": "G",
+      "role": "profitability_change",
+      "display_name": "3년 ROA 개선",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "difference",
+      "inputs": [
+        {
+          "field": "roa_fy",
+          "period": "FY",
+          "unit": "decimal"
+        },
+        {
+          "field": "roa_fy3",
+          "period": "FY_MINUS_3",
+          "unit": "decimal"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "FY_3Y",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "ROA FY net income / mean(begin,end assets); t−3 requires t−4 assets. Signed difference.",
+      "overlap_group": "roa_improvement_3y",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "roa_ttm": {
+      "factor_id": "Q02",
+      "variant_id": "roa_ttm",
+      "axis": "Q",
+      "role": "profitability",
+      "display_name": "ROA",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio_average",
+      "inputs": [
+        {
+          "field": "net_income",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_begin",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "assets_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "GENERAL",
+        "ASSET_MANAGER"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "roa_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "roe_common_ttm": {
+      "factor_id": "Q09",
+      "variant_id": "roe_common_ttm",
+      "axis": "Q",
+      "role": "profitability",
+      "display_name": "보통주 ROE",
+      "aliases": [],
+      "formula_version": "1",
+      "formula": "ratio_average",
+      "inputs": [
+        {
+          "field": "net_income_common",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "common_equity_begin",
+          "period": "INSTANT",
+          "unit": "currency"
+        },
+        {
+          "field": "common_equity_end",
+          "period": "INSTANT",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "roe_common_ttm",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "sales_ev": {
+      "factor_id": "V04",
+      "variant_id": "sales_ev",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "EV/Sales",
+      "aliases": [
+        "EV_SALES_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "revenue",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "enterprise_value",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "sales_ev",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    },
+    "sales_mcap": {
+      "factor_id": "V03",
+      "variant_id": "sales_mcap",
+      "axis": "V",
+      "role": "other_value",
+      "display_name": "PSR / 매출수익률",
+      "aliases": [
+        "PSR_TTM"
+      ],
+      "formula_version": "1",
+      "formula": "ratio",
+      "inputs": [
+        {
+          "field": "revenue",
+          "period": "TTM",
+          "unit": "currency"
+        },
+        {
+          "field": "issuer_mcap",
+          "period": "PRICE",
+          "unit": "currency"
+        }
+      ],
+      "unit": "decimal",
+      "direction": "HIGHER",
+      "period": "TTM",
+      "scope": [
+        "GENERAL",
+        "BANK",
+        "INSURANCE",
+        "BROKER",
+        "MORTGAGE_REIT",
+        "ASSET_MANAGER",
+        "EQUITY_REIT"
+      ],
+      "domain_rules": "All named inputs required; positive denominator; signed numerator preserved.",
+      "overlap_group": "sales_mcap",
+      "evidence_refs": [
+        "owner:Sector_QGV_Custom_Factors_Implementation_20261106.md",
+        "owner:Sector_QGV_Factor_Catalog_20261106.md"
+      ],
+      "calculator_status": "IMPLEMENTED",
+      "duplicate_policy": "SAME_VARIANT_ALIAS_REJECTED; related variants share a fixed role budget",
+      "substitution_policy": "NONE; choose a new versioned configuration, never per-company fallback",
+      "source_definition": "Explicit field/period/scope contract; retained source reference required"
+    }
+  },
+  "normalization": "EXISTING_COMMON_OR_SECTOR_MIDRANK",
+  "deciles": "stored-evaluation-deciles/1",
+  "unavailable_is_zero": false,
+  "additional_core_weight": 0,
+  "formula_evidence": "QGV_333_EVIDENCE.md",
+  "financial_V_third": "RESEARCH_EXTENSION_DEFINED_DIVIDEND_YIELD;NOT_PRIOR_OPERATING_DEFAULT",
+  "original_models_replaced": false,
+  "performance": "NOT_MEASURED",
+  "deployment": "NOT_STARTED"
+}

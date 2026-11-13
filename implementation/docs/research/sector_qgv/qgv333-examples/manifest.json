@@ -1,0 +1,36 @@
+{
+  "schema_version": "qgv-333-examples/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "qgv-333-contract.json",
+      "size": 169064,
+      "sha256": "8db31eebed8611ca9d045cd2f804559ee8e2b0d1b56ad552c237cd0e9a183ec3"
+    },
+    {
+      "path": "synthetic-cases.json",
+      "size": 1554500,
+      "sha256": "0aa2e0c46313d81b1dd10703de472c978d600d0d9d82ea7b5ccc74e1077f811a"
+    },
+    {
+      "path": "expected.json",
+      "size": 97113,
+      "sha256": "705220b7a49926375ef9a98b240be3866d6b69c7491a7ef65360bfa40eb097b1"
+    },
+    {
+      "path": "bins/distribution-000.json",
+      "size": 1195285,
+      "sha256": "d7be9a697ca66c125dd4cd0304ab145813c4fc852c87a87fa5addaa9d237df93"
+    },
+    {
+      "path": "bins/distribution-index.json",
+      "size": 258975,
+      "sha256": "aace96685a2fb4d94dc7e37f9df19fcdcd6658e8a02850c0d304df4d111d8aaf"
+    },
+    {
+      "path": "bins/distribution-manifest.json",
+      "size": 1117,
+      "sha256": "9e7caff081836a6c4d10c4779b545c820773b8fc6e8b8d8d3f8812d8327924a7"
+    }
+  ]
+}
