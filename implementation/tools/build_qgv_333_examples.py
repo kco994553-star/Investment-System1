@@ -30,6 +30,10 @@ def main():
     files={'qgv-333-contract.json':configuration_contract(),'synthetic-cases.json':dict(data_kind='SYNTHETIC',cases=cases),
         'expected.json':dict(data_kind='SYNTHETIC',cases=expected,all_bins={g['group_id']:g['bins'] for g in artifacts['distribution-index.json']['groups']})}
     files.update({'bins/'+k:v for k,v in artifacts.items()})
+    from investment_system.research.dual_qgv_distribution_index import bin_index_artifacts
+    raw={k:dual.json_bytes(v) for k,v in artifacts.items()}
+    routes=bin_index_artifacts(raw,expected_manifest_sha256=hashlib.sha256(raw['distribution-manifest.json']).hexdigest())
+    files.update({'bin-routing/'+k:v for k,v in routes.items()})
     entries=[]
     for name,value in files.items():
         data=dual.json_bytes(value);assert len(data)<2_000_000

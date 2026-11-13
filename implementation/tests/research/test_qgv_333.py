@@ -124,6 +124,11 @@ def test_three_candidates_distribution_reuses_all_bins_without_relabeling():
     assert set(idx['boards'])==set(candidates()) and len(idx['bands'])==10
     assert all(g['ranking_scope'].startswith('SECTOR|') for g in idx['groups'] if g['board']=='S1-333')
     assert all(sum(b['count'] for b in g['bins'])==g['evaluation_valid_n'] for g in idx['groups'])
+    from investment_system.research.dual_qgv_distribution_index import bin_index_artifacts
+    import hashlib
+    files={k:dual.json_bytes(v) for k,v in out.items()}
+    bins=bin_index_artifacts(files,expected_manifest_sha256=hashlib.sha256(files['distribution-manifest.json']).hexdigest())
+    assert len(bins['bin-index.json']['groups'])==len(idx['groups'])
 
 def test_new_distribution_key_and_model_cannot_be_mixed_or_relabelled():
     from investment_system.research.dual_qgv_distribution import distribution_artifacts,STORED

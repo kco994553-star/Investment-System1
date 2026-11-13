@@ -31,6 +31,21 @@
       "path": "bins/distribution-manifest.json",
       "size": 1117,
       "sha256": "9e7caff081836a6c4d10c4779b545c820773b8fc6e8b8d8d3f8812d8327924a7"
+    },
+    {
+      "path": "bin-routing/bins-000.json",
+      "size": 740721,
+      "sha256": "c32a24662ebdf8fe36c8036edc19f1415f36d47b15ba17f579592089a18405d8"
+    },
+    {
+      "path": "bin-routing/bin-index.json",
+      "size": 30611,
+      "sha256": "986abd397d18c59642601510681da6b920b50216fbae87eb73a70ab389273547"
+    },
+    {
+      "path": "bin-routing/bin-manifest.json",
+      "size": 524,
+      "sha256": "cb8796016622fd50978e98312fb4d361b9995ccedf5a52b77452739a160699fa"
     }
   ]
 }
