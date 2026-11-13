@@ -11,11 +11,93 @@ import tarfile
 from datetime import date, timedelta
 from pathlib import Path
 from investment_system.qgv import v2_factors as vf
-from .sector_qgv import calculate_factor
+from .sector_qgv import calculate_factor, digest
 from .sector_qgv_registry import CATALOG, MAPPING
 from .financial_v import _balance_observations
 
 ADAPTER_VERSION = 'held-sec-sector-adapter/2'
+EPS_ADAPTER_VERSION = 'held-sec-annual-eps/1'
+
+
+def held_eps_observation(payload, record, reference, *, as_of, valuation_date,
+                         accounting_template=None):
+    """Connect reported annual diluted EPS, never synthesize TTM EPS or identity.
+
+    The existing fiscal picker/split engine supplies numeric observations. Its
+    issuer-level normalization is a diagnostic until a separately reviewed
+    class/attribution/history proof is supplied. No valuation-date price needed.
+    """
+    acquired = record['acquired_at']; cutoff = date.fromisoformat(acquired[:10])
+    taxonomy, currency = vf._taxonomy_and_currency(payload, cutoff)
+    fields = {}; annual = {}; diagnostic = {'annual': annual, 'adapter_version': EPS_ADAPTER_VERSION}
+    endpoint = dict(status='PERIOD_INPUT_MISSING', value=None, adopted=False,
+                    scope='ISSUER_REPORTED_ENDPOINTS_NOT_CLASS_VERIFIED')
+    if taxonomy and record.get('fiscal_year_end'):
+        facts = vf._Facts(payload, taxonomy, currency, cutoff)
+        company = vf._Company(facts, date.fromisoformat(record['fiscal_year_end']),
+                              sic=record.get('sic'), profile=record.get('profile'))
+        tax = payload['facts'][taxonomy]
+        diagnostic['eps_concept_present'] = any(c in tax for c in facts.concepts['eps_diluted'])
+        for k in range(4):
+            field = 'eps_diluted_fy' + (str(k) if k else '')
+            target = company.end(k); conflict = False
+            # _Facts drops same-filed conflicts. Do not let a secondary concept
+            # or an older annual span hide the latest primary conflict.
+            for concept in facts.concepts['eps_diluted']:
+                candidates = []
+                for x in tax.get(concept, {}).get('units', {}).get(currency+'/shares', []):
+                    start, end, filed = (vf._day(x.get(n)) for n in ('start', 'end', 'filed'))
+                    if (None in (start, end, filed) or filed > cutoff or
+                        x.get('form') not in vf.ANNUAL_FORMS or not vf._finite(x.get('val')) or
+                        not vf.ANNUAL_DAYS[0] <= (end-start).days <= vf.ANNUAL_DAYS[1] or
+                        abs((end-target).days) > vf.YEAR_TOLERANCE_DAYS):
+                        continue
+                    candidates.append(x)
+                if not candidates: continue
+                newest = max(x['filed'] for x in candidates)
+                latest = [x for x in candidates if x['filed'] == newest]
+                conflict = len({(x['start'], x['end'], x['val']) for x in latest}) != 1
+                break
+            if conflict:
+                annual[field] = dict(status='LATEST_FILING_CONFLICT', target_end=str(target)); continue
+            hit = facts.annual('eps_diluted', target)
+            if not hit:
+                annual[field] = dict(status='ANNUAL_DILUTED_EPS_NOT_EXTRACTED', target_end=str(target)); continue
+            filing = facts.annual_filing('eps_diluted', target)
+            factor = company.share_factor(filing)
+            value = company.eps(k)
+            if value is None or factor is None:
+                annual[field] = dict(status='SHARE_NORMALIZATION_UNCONFIRMED', target_end=str(target),
+                                     accession=filing[0] if filing else None); continue
+            concept = next(c for c, table in zip(facts.concepts['eps_diluted'], facts.items['eps_diluted'])
+                           if (hit[1], hit[2]) in table)
+            state = 'STALE' if record.get('state') == 'STALE' or 'STALE_INPUT' in record.get('reason_codes', []) else (
+                'SOURCE_NOT_AVAILABLE' if record.get('state') == 'NOT_AVAILABLE' else 'VALID')
+            fields[field] = dict(value=value, period_kind='FY' if k == 0 else 'FY_MINUS_'+str(k),
+                period_start=str(hit[1]), period_end=str(hit[2]), unit=currency+'/share', currency=currency,
+                issuer_id=record['cik'], security_id=None, share_basis=None, corporate_action_basis=None,
+                scope='CONSOLIDATED', available_at=acquired, retrieved_at=acquired,
+                availability_basis='OBSERVED_BY_ACQUISITION_NOT_FIRST_RELEASE', provenance=[reference], status=state,
+                source_detail=dict(taxonomy=taxonomy, concept=concept, accession=filing[0],
+                    filed=str(filing[1]), filed_precision='DATE', raw_value=hit[0], normalization_factor=factor,
+                    normalization_basis='EXISTING_CALC_23_1_FY0_RESTATEMENT_NOT_CLASS_VERIFICATION',
+                    basis_accession=company._basis()[0] if company._basis() else None))
+            annual[field] = dict(status='EXTRACTED', target_end=str(target), accession=filing[0])
+        ends = [fields.get(f) for f in ('eps_diluted_fy', 'eps_diluted_fy3')]
+        if all(ends):
+            if any(x['value'] <= 0 for x in ends): endpoint['status'] = 'NONPOSITIVE_ENDPOINT'
+            else: endpoint.update(status='NUMERIC_CANDIDATE', value=vf._cagr(ends[0]['value'], ends[1]['value'], 3))
+    else:
+        diagnostic['eps_concept_present'] = None
+        diagnostic['source_reason'] = 'TAXONOMY_OR_FISCAL_ANCHOR_UNCONFIRMED'
+    diagnostic['endpoint_diagnostic'] = endpoint
+    ctx = dict(as_of=as_of, valuation_date=valuation_date, issuer_id=record['cik'], security_id=None,
+               accounting_template=accounting_template, raw_only_accounting_unconfirmed=accounting_template is None,
+               historical_share_basis=record.get('historical_share_basis'))
+    observation = calculate_factor('eps_diluted_cagr_3y', fields, ctx)
+    diagnostic['normalized_components_hash'] = digest(fields)
+    diagnostic['missing_fields'] = [s['field'] for s in CATALOG['eps_diluted_cagr_3y']['inputs'] if s['field'] not in fields]
+    return observation, diagnostic, fields
 
 
 def _common_components(payload, record, reference, facts, company, fields, reasons, put):
@@ -175,6 +257,11 @@ def held_observations(payload, record, reference, *, as_of, valuation_date, acco
         'revenue_growth_consistency_3y','roa_improvement_3y',
         'roe_common_ttm','common_equity_assets','common_bps_cagr_3y','cfo_assets_improvement_3y'}
     result={v:calculate_factor(v,fields,ctx) for v in sorted(allowed)}
+    eps, eps_diagnostics, eps_fields = held_eps_observation(payload, record, reference, as_of=as_of,
+        valuation_date=valuation_date, accounting_template=accounting_template)
+    result['eps_diluted_cagr_3y'] = eps
+    reasons['eps_diluted_cagr_3y'] = eps_diagnostics
+    fields.update(eps_fields)
     return (result,reasons,fields) if include_components else (result,reasons)
 
 

@@ -6,7 +6,8 @@ import json
 import tarfile
 import zipfile
 from .sector_qgv import digest, timestamp, VALID
-from .sector_qgv_held import checked_bytes, held_observations, ADAPTER_VERSION
+from .sector_qgv_held import (checked_bytes, held_observations, held_eps_observation,
+                              ADAPTER_VERSION, EPS_ADAPTER_VERSION)
 
 
 def source_code_hash():
@@ -18,10 +19,12 @@ def source_code_hash():
 def repair(snapshot, plan):
     if plan.get('schema_version')!='sector-qgv-held-repair/1':raise ValueError('REPAIR_PLAN_SCHEMA')
     if plan.get('snapshot_hash')!=digest(snapshot):raise ValueError('REPAIR_SNAPSHOT_MISMATCH')
+    projection=plan.get('projection','ALL_QG')
+    if projection not in ('ALL_QG','EPS_HISTORY_ONLY'):raise ValueError('REPAIR_PROJECTION_UNKNOWN')
     out=deepcopy(snapshot);rows={r['company_id']:r for r in out['rows']};seen=set();audit=[];cache={};reused=0
     if plan.get('retained_repair'):
         prior=json.loads(checked_bytes(plan['retained_repair']))
-        if prior.get('source_code_hash')!=source_code_hash() or prior['valuation_date']!=snapshot['valuation_date'] or prior['as_of']!=snapshot['as_of']:
+        if prior.get('source_code_hash')!=source_code_hash() or prior.get('projection','ALL_QG')!=projection or prior['valuation_date']!=snapshot['valuation_date'] or prior['as_of']!=snapshot['as_of']:
             raise ValueError('REPAIR_CACHE_CONTEXT_MISMATCH')
         for r in prior['rows']:
             cache[(r['source']['sha256'],r['record_context_hash'],r['accounting_template'])]=(r['observations'],r['diagnostics'],r['components'])
@@ -48,22 +51,27 @@ def repair(snapshot, plan):
                     if hashlib.sha256(body).hexdigest()!=sha:raise ValueError('REPAIR_MEMBER_HASH')
                     payload=json.loads(body)
                     if str(payload['cik']).zfill(10)!=row['issuer_id']:raise ValueError('REPAIR_ISSUER_MISMATCH')
-                    obs,diag,components=held_observations(payload,record,item['reference'],as_of=snapshot['as_of'],
-                        valuation_date=snapshot['valuation_date'],accounting_template=row.get('accounting_template'),include_components=True)
+                    if projection=='EPS_HISTORY_ONLY':
+                        o,d,components=held_eps_observation(payload,record,item['reference'],as_of=snapshot['as_of'],
+                            valuation_date=snapshot['valuation_date'],accounting_template=row.get('accounting_template'))
+                        obs={'eps_diluted_cagr_3y':o};diag={'eps_diluted_cagr_3y':d}
+                    else:
+                        obs,diag,components=held_observations(payload,record,item['reference'],as_of=snapshot['as_of'],
+                            valuation_date=snapshot['valuation_date'],accounting_template=row.get('accounting_template'),include_components=True)
                     cache[key]=(obs,diag,components)
                 else:reused+=1
                 obs,diag,components=deepcopy(cache[key]);old=deepcopy(row['observations'])
                 # Only Q/G bridge outputs; existing V and independent observations survive.
-                row['observations'].update(obs);row['input_diagnostics']['held_input_repair']=diag
+                row['observations'].update(obs);row.setdefault('input_diagnostics',{})['eps_history_repair' if projection=='EPS_HISTORY_ONLY' else 'held_input_repair']=diag
                 changes=[{'variant_id':v,'before':old.get(v),'after':o}
                          for v,o in obs.items() if old.get(v)!=o]
                 audit.append({'company_id':row['company_id'],'issuer_id':row['issuer_id'],
                     'accounting_template':row.get('accounting_template'),'source':{k:item[k] for k in ('archive_id','member','sha256','reference')},
                     'record_context_hash':digest(record),'components':components,'observations':obs,'diagnostics':diag,'changes':changes})
-    out['input_version']=snapshot['input_version']+'+'+ADAPTER_VERSION
+    out['input_version']=snapshot['input_version']+'+'+(EPS_ADAPTER_VERSION if projection=='EPS_HISTORY_ONLY' else ADAPTER_VERSION)
     out['snapshot_id']=snapshot['snapshot_id']+':input-repair:'+digest(plan)[:16]
     report={'schema_version':'sector-qgv-held-repair-audit/1','treatment':'INPUT_CONNECTION_REPAIR',
-        'original_snapshot_hash':digest(snapshot),'new_snapshot_hash':digest(out),'plan_hash':digest(plan),
+        'original_snapshot_hash':digest(snapshot),'new_snapshot_hash':digest(out),'plan_hash':digest(plan),'projection':projection,
         'valuation_date':snapshot['valuation_date'],'as_of':snapshot['as_of'],'source_code_hash':source_code_hash(),
         'original_denominator':len(snapshot['members']),
         'reviewed_rows':len(audit),'reused_source_contexts':reused,'new_source_contexts':len(audit)-reused,'rows':audit,
