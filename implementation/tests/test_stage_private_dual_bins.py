@@ -65,6 +65,8 @@ def test_codex_routing_is_staged_beside_its_distribution(tmp_path, capsys, case)
     ('routes', 'ROUTES_INVALID'),
     ('part_group', 'PART_GROUP_MISMATCH:bins-000.json'),
     ('member_file', 'MEMBER_FILE_MISMATCH:bins-000.json'),
+    ('member_file_duplicate', 'MEMBER_FILE_MISMATCH:bins-000.json'),
+    ('member_file_missing', 'MEMBER_FILE_MISMATCH:bins-000.json'),
     ('raw', 'RAW_VALUE_PRESENT:bins-000.json'),
 ])
 def test_refusals_keep_the_existing_copy(tmp_path, kind, code):
@@ -90,6 +92,13 @@ def test_refusals_keep_the_existing_copy(tmp_path, kind, code):
     elif kind == 'member_file':
         def edit(d, m):
             d['bins-000.json']['groups'][0]['bins'][0]['member_files'][0]['sha256'] = 'c' * 64
+    elif kind == 'member_file_duplicate':
+        def edit(d, m):
+            b = next(x for x in d['bins-000.json']['groups'][0]['bins'] if x['member_files'])
+            b['member_files'].append(dict(b['member_files'][0]))
+    elif kind == 'member_file_missing':
+        def edit(d, m):
+            next(x for x in d['bins-000.json']['groups'][0]['bins'] if x['member_files'])['member_files'] = []
     elif kind == 'raw':
         def edit(d, m):
             d['bins-000.json']['groups'][0]['raw_value'] = 0.1
