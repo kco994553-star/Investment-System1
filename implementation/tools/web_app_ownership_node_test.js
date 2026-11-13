@@ -208,6 +208,7 @@ test('authenticated delivery: index → view bytes → receipt; damaged, missing
   assert.equal(bad((x) => { x.views[0].note = 1; }), 'KEY_UNEXPECTED');
   assert.equal(bad((x) => { x.views = []; }), 'TYPE');
   assert.equal((await O.checkDelivered(idx, ea, file(a.expected_view, av), null, sha256)).code, 'INDEX_NOT_CHECKED', 'an index the reader did not check');
+});
 
 // Codex #437 6848164775 counterexamples (raw 77f9d153 handoffs/main-final-acceptance-20261113/receipt-boundaries.js), ported: a
 // receipt names its retained dataset (= the view's dataset_hash), is bound to the one view it was checked against (RAM and display),

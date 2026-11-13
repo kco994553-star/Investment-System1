@@ -74,6 +74,9 @@ def test_codex_views_and_receipt_are_staged_with_the_index(tmp_path, capsys):
     ('receipt_pin', 'RECEIPT_PIN_MISMATCH'),
     ('receipt_other_view', 'RECEIPT_VIEW_MISMATCH'),
     ('receipt_time', 'RECEIPT_TIME'),
+    ('receipt_date_only', 'RECEIPT_TIME:attempted_at'),
+    ('receipt_no_zone', 'RECEIPT_TIME:attempted_at'),
+    ('receipt_dataset', 'RECEIPT_DATASET_MISMATCH'),
     ('receipt_changed_time', 'RECEIPT_VIEW_MISMATCH'),
     ('receipt_extra_key', 'RECEIPT_SCHEMA'),
     ('receipt_outcome', 'RECEIPT_SCHEMA'),
@@ -106,6 +109,12 @@ def test_refusals_keep_the_existing_copy(tmp_path, kind, code):
             receipt['retained_view_sha256'] = 'd' * 64
         elif kind == 'receipt_time':
             receipt['attempt']['attempted_at'] = '2000-01-01T00:00:00Z'
+        elif kind == 'receipt_date_only':
+            receipt['attempt']['attempted_at'] = '2026-01-06'
+        elif kind == 'receipt_no_zone':
+            receipt['attempt']['attempted_at'] = '2026-01-06T12:00:00'
+        elif kind == 'receipt_dataset':
+            receipt['retained_dataset_sha256'] = '0' * 64
         elif kind == 'receipt_changed_time':
             receipt['unchanged_generated_at'] = '2026-01-06T00:00:00Z'
         elif kind == 'receipt_extra_key':

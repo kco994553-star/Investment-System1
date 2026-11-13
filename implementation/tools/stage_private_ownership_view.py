@@ -78,8 +78,12 @@ def _sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+INSTANT = re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?(Z|[+-]\d{2}:\d{2})$')
+
+
 def _time(value, name):
-    if not isinstance(value, str):
+    # A time and an explicit zone (the producer's _instant); a date alone or a zoneless time is refused (Codex #437 6848164775).
+    if not isinstance(value, str) or not INSTANT.match(value):
         raise StageError('RECEIPT_TIME:' + name)
     try:
         return datetime.fromisoformat(value.replace('Z', '+00:00'))
@@ -135,6 +139,8 @@ def check_receipt(path: Path, pin: str, views: list) -> tuple:
     collection = view['view'].get('collection') or {}
     if r['unchanged_generated_at'] != view['view'].get('generated_at') or r['unchanged_last_success_at'] != collection.get('last_success_at'):
         raise StageError('RECEIPT_VIEW_MISMATCH')
+    if r['retained_dataset_sha256'] != view['dataset_hash']:
+        raise StageError('RECEIPT_DATASET_MISMATCH')
     if not _time(r['attempt']['attempted_at'], 'attempted_at') > _time(view['view'].get('generated_at'), 'generated_at'):
         raise StageError('RECEIPT_TIME')
     return view['entity_id'], data
