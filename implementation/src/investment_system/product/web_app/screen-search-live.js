@@ -182,6 +182,12 @@ function newsCard(body,e,cid,signal){
    h('b',null,'[',r.channel==='DISCLOSURE'?'공시 · '+r.source:'뉴스','] '),text(r),' · ',h('span',{class:'nobr'},String(r.time||'').slice(0,10))))));}),
  ()=>{if(!signal.aborted)body.replaceChildren(na('공개 소식 파일을 읽지 못했습니다','LIST_FAILED'));});
 }
+// 관계 lines under 4. 이 기업 소식 (5.1, Codex #531 company-ownership-view/1): only when a checked view for this company is in RAM
+// (IS2.ownershipView.ram); otherwise nothing is added. Its own slot, so the news rows are never replaced by it.
+function relationLines(newsBody,code,signal){if(!I.ownershipView||!I.ownershipScreen||!code)return;
+ const slot=h('div',{class:'card-body',dataset:{ownSlot:code}});newsBody.after(slot);
+ const draw=()=>{if(signal.aborted)return;const v=I.ownershipView.ram.forCompany(code);slot.replaceChildren(v?I.ownershipScreen.block(v,{compact:true,href,companies:I.companies}):'');};
+ draw();const off=I.ownershipView.ram.subscribe(draw);signal.addEventListener('abort',off);}
 function portfolioCard(body,e,idx,signal){
  const Q=I.qgv,weight=h('p',{class:'reason'},'비중은 포트폴리오 화면에서(가격을 불러온 뒤 이 기기에서 계산)');
  if(e.scope!=='TARGET'){body.replaceChildren(na('TARGET 밖 기업이라 이 기기 보유 기록과 맞춰 보지 않습니다','OUTSIDE_TARGET'),weight);return;}
@@ -224,7 +230,8 @@ function company(route,{box,given,name,facts,star,bodies}){
   facts.replaceChildren(h('p',{class:'facts-line'},...bits.flatMap((b,i)=>[i?' · ':'',h('span',{class:'nobr'},b)]),extra),
    ended?h('p',{class:'reason',dataset:{listingEnded:ended}},'상장 종료 ',ended,' · 점수 없음'):'');star.replaceWith(starButton(cid));
   I.data.ready().then(settled(signal,()=>{const add=classOf(cid);if(add.length)extra.append(...add.map(t=>' · '+t));}),()=>{});
-  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);}),
+  qgvCard(bodies.qgv,cid,signal);macroCard(bodies.macro,signal);newsCard(bodies.news,e,cid,signal);portfolioCard(bodies.portfolio,e,idx,signal);
+  relationLines(bodies.news,idx.code(e),signal);}),
  ()=>{if(!signal.aborted)facts.replaceChildren(na('기업 목록을 불러오지 못했습니다','INDEX_FAILED'));});
 }
 // SIC group and investment type, only from the published files (company-classification.json, company-types-pricefree.json).
