@@ -32,9 +32,10 @@ def distribution_artifacts(boards,*,scope,data_kind,display_policy,source_hashes
     require(display_policy in (STORED,REFERENCE),'DISPLAY_POLICY')
     require(scope in ('operating504','held1057') and data_kind in ('SYNTHETIC','PRIVATE'),'SCOPE')
     require(type(max_bytes) is int and 0<max_bytes<=MAX_BYTES,'SIZE_LIMIT')
-    require(bool(boards) and set(boards)<={'U1','U2','S1'},'BOARD_KEYS')
+    from .qgv_333 import IDS
+    legacy={'U1','U2','S1'}
+    require(bool(boards) and (set(boards)<=legacy or set(boards)<=set(IDS)),'BOARD_KEYS')
     expected=next(iter(boards.values()))['evaluation_population']
-    local_code_hash=_code_hash() if data_kind=='PRIVATE' else None
     original_ids=None;meta={};entries=[];out={};parts=[];seq=0;registry={}
     def payload(items):return dict(schema_version='qgv-dual-factor-distribution-part/1',parts=items)
     def flush():
@@ -49,7 +50,8 @@ def distribution_artifacts(boards,*,scope,data_kind,display_policy,source_hashes
         name=f'distribution-{seq:03}.json';parts.append(part);return [name]
     for key,b in boards.items():
         require(b.get('schema_version')=='qgv-dual-board/1','SOURCE_SCHEMA')
-        if local_code_hash:require(b['bindings'].get('code_hash')==local_code_hash,'SOURCE_CODE_VERSION')
+        if key in IDS:require(b.get('model_id')==IDS[key],'BOARD_MODEL_ID')
+        if data_kind=='PRIVATE':require(b['bindings'].get('code_hash')==_code_hash(b['configuration']),'SOURCE_CODE_VERSION')
         require(b['result_hash']==digest({k:v for k,v in b.items() if k not in ('request_id','result_hash')}),'RESULT_HASH')
         require(b['evaluation_population']==expected,'EVALUATION_MISMATCH')
         require(b['configuration']['minimum']==20,'REFERENCE_MINIMUM')
@@ -69,7 +71,7 @@ def distribution_artifacts(boards,*,scope,data_kind,display_policy,source_hashes
             require(row['company_id'] not in registry or registry[row['company_id']]==identity,'IDENTITY_MISMATCH')
             registry[row['company_id']]=identity
             rscope=row['ranking_scope']
-            require(rscope=='COMMON' if key!='S1' else rscope.startswith('SECTOR|'),'RANK_SCOPE')
+            require(rscope=='COMMON' if key not in ('S1','S1-333') else rscope.startswith('SECTOR|'),'RANK_SCOPE')
             for variant,f in row['factors'].items():
                 require(variant in CATALOG,'UNKNOWN_VARIANT')
                 decile,status=_display(f,display_policy)

@@ -1,0 +1,14 @@
+{
+  "schema_version": "qgv-dual-delivery-clocks/1",
+  "execution_sha": "cccccccccccccccccccccccccccccccccccccccc",
+  "calculated_at": null,
+  "calculated_at_reason": "EXECUTION_TIMESTAMP_NOT_RECORDED",
+  "inspected_execution_records": [
+    {
+      "path": "SYN:run.log",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "delivery_generated_at": "2026-11-13T14:00:00Z",
+  "new_score_calculations": 0
+}

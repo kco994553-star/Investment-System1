@@ -1,0 +1,72 @@
+{
+  "schema_version": "qgv-dual-input-anchors/1",
+  "scope": "held1057",
+  "expected_evaluation": {
+    "id": "SYN:evaluation",
+    "version": "2",
+    "members_hash": "d2a4b37cac0a57e42b1fe002a68c2449a7e41646eec1a92a0f0acd39fae589ce",
+    "valuation_date": "2026-11-04",
+    "as_of": "2026-11-13T11:00:00Z",
+    "code_rows": 1,
+    "issuers": 1,
+    "input_hash": "c05eb64744ce68319eeb0a9d1223df16fe8cdf5ffb071e5d7b6bf5524a042d86",
+    "snapshot_id": "SYN:ev",
+    "classification_records_hash": "4fe7981b055eca85bb2e220c84ac64f1e4c82e7774ede8cbeac7a4fa3fae2ae6",
+    "classification_context": null
+  },
+  "expected_reference": {
+    "id": "SYN:reference",
+    "version": "1",
+    "members_hash": "b64e3448a83a5b86466465080361c1a7e1157a27ddccd4b68069cb18caffb74a",
+    "valuation_date": "2026-11-04",
+    "as_of": "2026-11-13T11:00:00Z",
+    "code_rows": 2,
+    "issuers": 2,
+    "input_hash": "8652211f21859fd6b7440e5867bfedf8c5cfc69370b71665655843c7e749a27b",
+    "snapshot_id": "SYN:ref",
+    "classification_records_hash": "249fe07df165e980de4fb61d436e7558efbdc26d045abdc5b7902ca4ec1035eb",
+    "classification_context": null
+  },
+  "preservation": {
+    "repo": "SYN:private",
+    "ref": "SYN:retained",
+    "path": "SYN:run",
+    "commit": "dddddddddddddddddddddddddddddddddddddddd",
+    "handoff_manifest_sha256": "38f7b24c35d15946734d87f1790a27364b0f026740064993e6e1db9897b11d4a",
+    "bundle_manifest": {
+      "path": "bundle-manifest.json",
+      "size": 416,
+      "sha256": "48c1dab178f50dd4c13e53b38e6720ec395b21ede18faf9637ba0c7064acb45e"
+    }
+  },
+  "source_files": {
+    "evaluation": {
+      "path": "ev.json",
+      "size": 523,
+      "sha256": "3814b849d969fc9359a15acc2c230b3e09e3bea3a8c43f44d03b090bc047df40"
+    },
+    "reference": {
+      "path": "ref.json",
+      "size": 619,
+      "sha256": "71dec9a108e0bb9bb4f4280efa197dbd0f1001214307c213092ec18633e9e72f"
+    }
+  },
+  "execution_sha": "cccccccccccccccccccccccccccccccccccccccc",
+  "projection": {
+    "rows_equal_source_projection": true,
+    "changed_top_level_fields": [
+      "members",
+      "review_context",
+      "rows",
+      "snapshot_id",
+      "universe_id",
+      "universe_version"
+    ],
+    "review_context_equal": false,
+    "claim": "ROW_PROJECTION_ONLY;INPUT_IDENTITIES_INDEPENDENTLY_BOUND"
+  },
+  "generation_rule": "PINNED_RETAINED_SNAPSHOT_BYTES_TO_EXISTING_IDENTITY_FUNCTION",
+  "runtime_lineage_used_as_proof": false,
+  "new_score_calculations": 0,
+  "whole_market_denominator": null
+}

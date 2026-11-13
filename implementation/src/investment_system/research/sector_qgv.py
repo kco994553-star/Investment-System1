@@ -4,6 +4,7 @@ The operating calc23.1 constants, formulas, publication, type weights and missin
 policy are not modified. Inputs are evidence-bearing observations, not public totals.
 """
 from __future__ import annotations
+from fractions import Fraction
 import copy
 import hashlib
 import json
@@ -135,7 +136,7 @@ def effective_weights(p):
     for axis,roles in p['axes'].items():
         for r in roles.values():
             for variant,w in r['factors'].items():
-                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
+                out[canonical(variant)]=float(Fraction(p['axis_weights'][axis]*r['weight']*w, sum(p['axis_weights'].values())*sum(x['weight'] for x in roles.values())*sum(r['factors'].values()))) if p.get('weight_policy')=='positive-integer-ratios/1' else p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
     return out
 
 
@@ -146,7 +147,7 @@ def _result(variant,ctx,status,value=None,components=None):
         values=[x[k] for x in components if x.get(k)]
         try:return max(values,key=timestamp) if values else None
         except (ValueError,TypeError,AttributeError):return None
-    return dict(variant_id=variant,formula_version=f['formula_version'],value=value,status=status,unit=f['unit'],
+    result = dict(variant_id=variant,formula_version=f['formula_version'],value=value,status=status,unit=f['unit'],
         fiscal_period={'kind':f['period'],'end':max(ends) if ends else None},
         price_asof=ctx['valuation_date'] if f['axis']=='V' else None,issuer_id=ctx.get('issuer_id'),
         security_id=ctx.get('security_id'),source_available_at=latest('available_at'),retrieved_at=latest('retrieved_at'),
@@ -154,6 +155,35 @@ def _result(variant,ctx,status,value=None,components=None):
         corporate_action_basis=next((x.get('corporate_action_basis') for x in components if x.get('corporate_action_basis')),None),
         provenance=sorted({p for x in components for p in x.get('provenance',[])}),
         validation_basis='VERIFIED_COMPONENTS',raw_components_available=bool(components),display_multiple=None)
+    if variant == 'eps_diluted_cagr_3y' and ctx.get('historical_share_basis'):
+        result['historical_share_basis'] = copy.deepcopy(ctx['historical_share_basis'])
+        result['historical_components_hash'] = digest({s['field']:x for s,x in zip(f['inputs'],components)}) if len(components)==len(f['inputs']) else None
+        result['historical_period_start'] = min((x.get('period_start') or x['period_end'] for x in components),default=None)
+        result['price_join_eligible'] = False
+    return result
+
+
+def _history_basis_valid(proof, *, issuer_id, component_hash, start, end, as_of):
+    """Reviewed historical class/attribution proof, not a listed security ID."""
+    try:
+        return (proof['schema_version']=='historical-common-share-basis/1' and proof['status']=='VERIFIED'
+            and bool(issuer_id) and proof['issuer_id']==issuer_id
+            and proof['attribution']=='COMMON_DILUTED' and bool(proof['class_basis'])
+            and bool(proof['adjustment_basis']) and bool(proof['provenance'])
+            and bool(component_hash) and proof['normalized_components_hash']==component_hash
+            and day(proof['valid_from'])<=day(start)<=day(end)<=day(proof['valid_to'])
+            and timestamp(proof['source_available_at'])<=timestamp(as_of)
+            and timestamp(proof['retrieved_at'])<=timestamp(as_of)
+            and (not proof.get('reviewed_at') or
+                 timestamp(proof['retrieved_at'])<=timestamp(proof['reviewed_at'])<=timestamp(as_of)))
+    except (KeyError,TypeError,ValueError,AttributeError):
+        return False
+
+
+def _history_observation_valid(obs, row, snapshot):
+    return _history_basis_valid(obs.get('historical_share_basis'),issuer_id=row.get('issuer_id'),
+        component_hash=obs.get('historical_components_hash'),start=obs.get('historical_period_start'),
+        end=obs.get('fiscal_period',{}).get('end'),as_of=snapshot['as_of'])
 
 
 def calculate_factor(variant,inputs,ctx):
@@ -169,6 +199,10 @@ def calculate_factor(variant,inputs,ctx):
     if ctx.get('accounting_template') not in f['scope'] and not raw_only: return fail('NOT_APPLICABLE')
     if any(not isinstance(x,dict) or x.get('value') is None for x in parts): return fail('MISSING_INPUT')
     try:
+        historical = variant=='eps_diluted_cagr_3y' and _history_basis_valid(ctx.get('historical_share_basis'),
+            issuer_id=ctx.get('issuer_id'), component_hash=digest({s['field']:x for s,x in zip(specs,parts)}),
+            start=min(x.get('period_start') or x['period_end'] for x in parts),
+            end=max(x['period_end'] for x in parts),as_of=ctx['as_of'])
         cutoff=timestamp(ctx['as_of']);valuation=day(ctx['valuation_date'])
         if valuation>cutoff.astimezone(timezone.utc).date():return fail('VALUATION_AFTER_AS_OF')
         for s,x in zip(specs,parts):
@@ -188,8 +222,8 @@ def calculate_factor(variant,inputs,ctx):
             if x.get('unit')!=expected: return fail('UNIT_MISMATCH')
             if not x.get('scope') or x['scope']!='CONSOLIDATED': return fail('SCOPE_MISMATCH')
             if s['unit'] in ('currency/share','shares') or (f['axis']=='V' and s['unit']=='decimal'):
-                if not ctx.get('security_id') or x.get('security_id')!=ctx['security_id'] or not x.get('share_basis') or not x.get('corporate_action_basis'):
-                    return fail('SCOPE_MISMATCH')
+                if not historical and (not ctx.get('security_id') or x.get('security_id')!=ctx['security_id'] or not x.get('share_basis') or not x.get('corporate_action_basis')):
+                    return fail('HISTORICAL_SHARE_BASIS_UNCONFIRMED' if variant=='eps_diluted_cagr_3y' and not ctx.get('security_id') else 'SCOPE_MISMATCH')
             if variant=='shareholder_yield' and x.get('evaluation_date')!=ctx['valuation_date']:return fail('PERIOD_MISMATCH')
             if s['field'] in ('issuer_mcap','enterprise_value') and (not x.get('capital_scope_evidence') or not x.get('corporate_action_basis')):
                 return fail('SCOPE_MISMATCH')
@@ -273,6 +307,8 @@ def _validated_observation(row,variant,snapshot):
         if f['axis']=='V':
             if obs.get('price_asof')!=snapshot['valuation_date']:raise ValueError('PERIOD_MISMATCH')
             if not row.get('security_id') or obs.get('security_id')!=row['security_id'] or not obs.get('corporate_action_basis'):raise ValueError('SCOPE_MISMATCH')
+        if variant=='eps_diluted_cagr_3y' and obs.get('historical_share_basis') is not None:
+            if not _history_observation_valid(obs,row,snapshot):raise ValueError('HISTORICAL_SHARE_BASIS_UNCONFIRMED')
         value=obs['value'];return value,'VALID_NEGATIVE' if value<0 else 'VALID_ZERO' if value==0 else 'VALID',raw,external
     except (ValueError,KeyError,TypeError) as exc:
         reason=str(exc) if isinstance(exc,ValueError) else 'EVIDENCE_MISSING'
@@ -290,13 +326,14 @@ def _mapped(row,s):
 
 def _axis_score(p,scores,axis):
     total=0.0;missing=[]
+    if axis in p.get('pending_axes',[]):return None,[v for r in p['axes'][axis].values() for v in r['factors']]
     for r in p['axes'][axis].values():
         if not r['weight']:continue
         for v,w in r['factors'].items():
             if not w:continue
             key=canonical(v);value=scores[key]['score']
             if value is None:missing.append(key)
-            else:total+=r['weight']*w*value/1e8
+            else:total+=float(Fraction(r['weight']*w, sum(x['weight'] for x in p['axes'][axis].values())*sum(r['factors'].values())))*value if p.get('weight_policy')=='positive-integer-ratios/1' else r['weight']*w*value/1e8
     return (None if missing else total),missing
 
 
@@ -313,7 +350,7 @@ def aggregate(p,scores,gate,valuation_date):
             post={a:w/remaining if remaining else 0.0 for a,w in post.items()}
         if pre is not None and sum(post.values())>0:total=sum(axes[a]*w for a,w in post.items() if w)
     nominal=effective_weights(p)
-    effective={canonical(v):post[a]*r['weight']*w/1e8 for a,rs in p['axes'].items() for r in rs.values() for v,w in r['factors'].items()}
+    effective={canonical(v):post[a]*float(Fraction(r['weight']*w,sum(x['weight'] for x in rs.values())*sum(r['factors'].values()))) if p.get('weight_policy')=='positive-integer-ratios/1' else post[a]*r['weight']*w/1e8 for a,rs in p['axes'].items() for r in rs.values() for v,w in r['factors'].items()}
     return dict(axes=axes,missing_factors=missing,pre_gate_total=pre,total=total,gate_status=gate_status,
                 nominal_effective_weights=nominal,post_gate_effective_weights=effective,
                 nominal_axis_weights=p['axis_weights'],post_gate_axis_weights=post)
@@ -369,9 +406,23 @@ def _preview_core(config,snapshot,request_id,*,execution=None):
     peers,issuer_rows=scoring_representatives(records)
     for key,row in records.items():
         mapped=_mapped(row,s)
-        if mapped:presets[key]=copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else preset(config,row['sector_id'],row['accounting_template'])
+        if mapped:
+            presets[key]=(copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else
+                          copy.deepcopy(execution['scoped_presets'][row['sector_id']+'|'+row['accounting_template']]) if execution and execution.get('scoped_presets') else
+                          preset(config,row['sector_id'],row['accounting_template']))
         # Availability covers registered variants, even when mapping prevents scoring.
         matrix[key]={v:_validated_observation(row,v,s) for v in CATALOG}
+        if execution and execution.get('core_policy')=='FIXED_333':
+            for v,(value,status,raw,external) in matrix[key].items():
+                if CATALOG[v]['calculator_status']!='IMPLEMENTED':
+                    matrix[key][v]=(None,'CALCULATOR_PENDING',raw,external)
+                elif row.get('accounting_template') in TEMPLATES and row['accounting_template'] not in CATALOG[v]['scope']:
+                    matrix[key][v]=(None,'NOT_APPLICABLE',raw,external)
+                elif value is not None and any(i['unit']=='currency/share' for i in CATALOG[v]['inputs']):
+                    obs=row['observations'][v]
+                    history_ok=v=='eps_diluted_cagr_3y' and _history_observation_valid(obs,row,s)
+                    if not history_ok and (not row.get('security_id') or obs.get('security_id')!=row['security_id'] or not obs.get('corporate_action_basis')):
+                        matrix[key][v]=(None,'SCOPE_MISMATCH',raw,external)
         if not mapped:continue
         group=() if execution and execution['kind']=='COMMON' else (row['sector_id'],row['accounting_template'])
         for v,(value,status,_,_) in matrix[key].items():

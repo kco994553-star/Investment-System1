@@ -1,0 +1,10 @@
+{
+  "data_kind": "SYNTHETIC",
+  "scope": "INPUT_BINDINGS_ONLY_NOT_FULL_BOARD",
+  "valid": "VERIFIED_BOTH_INPUT_BINDINGS",
+  "changed_evaluation": "EVALUATION_INPUT_BINDING",
+  "changed_reference": "REFERENCE_INPUT_BINDING",
+  "runtime_lineage": "INPUT_ANCHOR_SCHEMA",
+  "missing_calculation_clock": "NULL_WITH_REASON",
+  "new_score_calculations": 0
+}
