@@ -344,6 +344,14 @@ const DUAL_PARTS = Object.freeze({ dual_manifest: ['manifest', 'qgv-dual-deliver
   dual_bins_detail: [null, 'qgv-dual-factor-bins-part/1'] });
 const DUAL_SCOPED = Object.freeze(['dual_manifest', 'dual_reference_anchor', 'dual_leaders_manifest', 'dual_leaders_index', 'dual_leaders_selection_manifest', 'dual_leaders_selection',
   'dual_dist_manifest', 'dual_dist_index', 'dual_bins_manifest', 'dual_bins_index']);
+// …?part=dual_eps_index|dual_eps_diag|dual_eps_compare|dual_eps_inputs (owner 2026-11-13): Codex #534's 3/3/3 EPS input connection
+// follow-up staged byte for byte at classification/dual-333/eps/ (stage_private_qgv333_eps.py): Main's index and the producer's
+// diagnostic summary, run comparison and continuation inputs. Each file must carry its own shape; the same 2 MiB limit.
+const EPS_FILES = Object.freeze({
+  dual_eps_index: ['eps-index.json', (o) => o.schema_version === 'qgv-333-eps-delivery/1'],
+  dual_eps_diag: ['diagnostic-summary.json', (o) => Object.keys(o).sort().join(',') === 'held,operating'],
+  dual_eps_compare: ['run-comparison.json', (o) => Object.keys(o).sort().join(',') === 'held1057,operating504'],
+  dual_eps_inputs: ['continuation-inputs.json', (o) => o.schema_version === 'qgv-333-eps-continuation/1'] });
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
   input_repair: 'input-repair-comparison.json', reference_view: 'reference-view.json' });
 // …?part=ownership_index, and ?part=ownership_view|ownership_receipt&entity=<entity id> (owner 2026-11-13): one view (Codex #531
@@ -366,10 +374,12 @@ export function kisClassificationPart(url) {
   if (own) { if (!OWNERSHIP_ENTITY.test(own[2])) throw new Failure('REQUEST_INVALID', 400); return own[1] + '/' + own[2]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
+  if (Object.hasOwn(EPS_FILES, part)) return part;
   if (!Object.hasOwn(CLASSIFICATION_PARTS, part) || part === 'expanded_detail') throw new Failure('REQUEST_INVALID', 400);
   return part;
 }
 function classificationPath(part) {
+  if (Object.hasOwn(EPS_FILES, part)) return 'classification/dual-333/eps/' + EPS_FILES[part][0];
   if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
   if (part.startsWith('dual_')) { const [name, slot, shard] = part.split('/'), [scope, set] = slot.split('@');
     return 'classification/' + (set === '333' ? 'dual-333/' : 'dual/') + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
@@ -381,6 +391,7 @@ function classificationPath(part) {
 }
 // The file must carry its part's schema; a detail shard must also name the shard asked for.
 function classificationSchema(o, part) {
+  if (Object.hasOwn(EPS_FILES, part)) return EPS_FILES[part][1](o);
   if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
   // A dual file carries its part's schema; a manifest (and the leaders index) also names the scope asked for.
   if (part.startsWith('dual_')) { const [name, slot] = part.split('/'), scope = slot.split('@')[0];

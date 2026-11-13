@@ -406,6 +406,23 @@ test('classification dual set=333: the 3/3/3 delivery reads classification/dual-
   }
 });
 
+test('classification 3/3/3 EPS follow-up: the four staged files at classification/dual-333/eps/, each with its own shape', async () => {
+  for (const [part, file, body] of [['dual_eps_index', 'eps-index', { schema_version: 'qgv-333-eps-delivery/1' }], ['dual_eps_diag', 'diagnostic-summary', { operating: {}, held: {} }],
+    ['dual_eps_compare', 'run-comparison', { operating504: {}, held1057: {} }], ['dual_eps_inputs', 'continuation-inputs', { schema_version: 'qgv-333-eps-continuation/1' }]]) {
+    const s = setup({ github: () => new Response(JSON.stringify(body), { status: 200 }) });
+    const r0 = await s.run('/kis/classification?part=' + part); assert.equal(r0.status, 200, part + ' ' + await r0.clone().text());
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual-333/eps/' + file + '.json?ref=data');
+    assert.equal((await setup({ github: () => new Response(JSON.stringify({ other: 1 }), { status: 200 }) }).run('/kis/classification?part=' + part)).status, 502, part + ': another shape');
+  }
+  assert.equal((await setup({ github: () => new Response('{"operating":{},"held":{},"x":1}', { status: 200 }) }).run('/kis/classification?part=dual_eps_diag')).status, 502, 'no extra scope');
+  const big = await setup({ github: () => new Response('{"operating":{},"held":{}}', { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=dual_eps_diag');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  for (const route of ['/kis/classification?part=dual_eps_index&scope=operating504', '/kis/classification?part=dual_eps_index&set=333', '/kis/classification?part=dual_eps_continuation', '/kis/classification?part=dual_eps']) {
+    const t = setup({ github: () => new Response('{}', { status: 200 }) }), r = await t.run(route);
+    assert.equal(r.status, 400, route); assert.equal(githubCalls(t).length, 0, route);
+  }
+});
+
 test('classification ownership: the index, one view per entity (its centre the entity asked) and its optional receipt (the producer\'s five keys)', async () => {
   const idx = setup({ github: () => new Response(JSON.stringify({ schema_version: 'company-ownership-delivery/1', views: [] }), { status: 200 }) });
   assert.equal((await idx.run('/kis/classification?part=ownership_index')).status, 200);

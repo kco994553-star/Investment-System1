@@ -45,8 +45,11 @@ const dualPart=x=>typeof x==='string'&&(DUAL_PART.test(x)||DUAL_DETAIL.test(x));
 // (one entity at a time), each with its bytes (the reader checks them against the index Main staged).
 const OWN_PART=/^(ownership_view|ownership_receipt)\/([A-Z0-9][A-Z0-9-]{0,31})$/;
 const ownPart=x=>typeof x==='string'&&(x==='ownership_index'||OWN_PART.test(x));
+// The 3/3/3 EPS input connection follow-up (owner 2026-11-13, Codex #534): Main's index and the producer's three files, each with
+// its bytes (the reader checks them against the index Main staged).
+const EPS_PARTS=Object.freeze(['dual_eps_index','dual_eps_diag','dual_eps_compare','dual_eps_inputs']);
 // The expanded summary also comes with its bytes: their SHA-256 is what the held issuer delivery names.
-const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x)||dualPart(x)||ownPart(x));
+const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x)||dualPart(x)||ownPart(x)||EPS_PARTS.includes(x));
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;

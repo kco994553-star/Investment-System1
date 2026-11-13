@@ -13,10 +13,12 @@
 const I=window.IS2,{h}=I;
 // Checked factor leaders per checked dual delivery in RAM (key = that RAM entry, so they go when it goes).
 const LEAD=new WeakMap(),DISTS=new WeakMap();
+// The checked 3/3/3 EPS input connection record (IS2.dualQgv.checkEps), held while the classification bundle is.
+const EPS_HELD={value:null};
 const E=()=>I.expandedIssuers;
 // The dual research deliveries in RAM are dropped with the classification bundle (접기 / 연결 끊기 / a dropped token).
 try{if(I.classification&&typeof I.classification.subscribe==='function'&&I.dualQgv)I.classification.subscribe(()=>{const s=I.classification.state();
- if(!(s&&s.state==='OK'&&s.delivery==='PRIVATE'))I.dualQgv.ram.drop();});}catch(_){}
+ if(!(s&&s.state==='OK'&&s.delivery==='PRIVATE')){I.dualQgv.ram.drop();EPS_HELD.value=null;}});}catch(_){}
 const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
 const codeOf=e=>{const m=e&&typeof e.message==='string'?e.message:'';return CODE.test(m)?m:'PRIVATE_READ_FAILED';};
 const WORD=Object.freeze({KIS_SERIES_NOT_FOUND:'전달 위치에 확장 발행사 묶음이 없습니다',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다(Worker 배포 전)',
@@ -145,7 +147,7 @@ function block(anchor){
     err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?slotWord(scope)+' 결과가 전달 위치에 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');b.disabled=false;})
     .finally(()=>{busy=false;});});return b;});
   const sectorName=id=>I.taxonomy?I.taxonomy.sectorName(id):id;
-  function paint(){const held=Object.keys(DQ.SLOTS).filter(k=>DQ.ram.get(k));if(!held.length)return;
+  function paint(){epsDraw();const held=Object.keys(DQ.SLOTS).filter(k=>DQ.ram.get(k));if(!held.length)return;
    set('READY','연구 후보 결과 · '+held.map(slotWord).join(' · ')+' · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음');
    slot.replaceChildren(h('p',{class:'hand',dataset:{dualKinds:''}},'새 후보 결과(U1·U2·S1 / 3/3/3 U2-333·U1-333·S1-333, 세대마다 따로 · 섞지 않음) · 연구 기준선(#527 보관 기본값 · #528 참조집단 확대)과 공식 QGV 게시 결과는 따로 · 지금 받은 묶음과 같은 평가일·모집단의 결과만 엶'),
     h('ul',{class:'news-lines',dataset:{dualRules:''}},DQ.RULES.map(t=>h('li',{class:'reason'},t))),...held.map(scopeCard));}
@@ -310,7 +312,29 @@ function block(anchor){
    q.addEventListener('input',run);
    return h('div',{class:'cc-wrap'},h('label',{for:id,class:'meta'},'기업 상세 · 세 모형 나란히 보기'),q,out,cmp);}
   function compare(e,scope,row,slotC){if(busy)return;openDetail(e,scope,row,slotC);}
-  const wrap=h('div',{class:'sk card',dataset:{dualBlock:''}},h('h4',null,'연구 후보 결과 (U1 · U2 · S1 / 3/3/3 · 연구 · 운영 채택 안 됨)'),h('div',{class:'load-row'},...btns),rs,slot);
+  // 3/3/3 EPS 입력 연결 단계 (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3; Codex #534): its own click, four reads checked against
+  // Main's staged index. A progress record of the new input version, not results: no score, rank or band from it; each scope says
+  // which input version the 3/3/3 results on screen are (their result hashes against this comparison's before / after).
+  const epsArea=h('div',{class:'cc-wrap',dataset:{dualEps:''}});
+  function epsDraw(){const R=EPS_HELD.value,title=h('h5',null,'3/3/3 EPS 입력 연결 단계 (진행 기록 · 결과 묶음 아님)');
+   if(!R){const b=h('button',{type:'button',class:'btn',dataset:{dualEpsOpen:''}},'3/3/3 EPS 입력 연결 단계 불러오기');
+    const st=h('p',{class:'reason',role:'status',dataset:{dualEpsState:'IDLE'}},'새 입력 버전의 단계별 집계 · 점수·순위·분위를 바꾸지 않음');
+    b.addEventListener('click',e=>{if(busy)return;busy=true;b.disabled=true;st.dataset.dualEpsState='LOADING';st.textContent='불러오는 중 · 목록·진단 요약·실행 비교·다음 입력 4개 · 서버 요청 간격 5초';
+     let p;try{p=I.prices.kisRead(e,[['classification','dual_eps_index'],['classification','dual_eps_diag'],['classification','dual_eps_compare'],['classification','dual_eps_inputs']]);}catch(err){p=Promise.reject(err);}
+     Promise.resolve(p).then(async([index,diagnostic,comparison,continuation])=>{const r=await DQ.checkEps({index,diagnostic,comparison,continuation},E().sha256);
+      if(!r.ok){st.dataset.dualEpsState='ERROR';st.textContent='EPS 단계 자료를 쓰지 않음 · '+(r.code==='BYTES_MISMATCH'?'파일이 목록의 해시와 다릅니다':r.code==='CONFIG_VERSION_MISMATCH'?'등록된 모형 설정과 다른 실행입니다':r.code==='EPS_RESULT_DELIVERY'?'결과 묶음은 이 칸으로 읽지 않습니다':'형식 오류')+' · '+r.code+' · '+r.path;b.disabled=false;return;}
+      EPS_HELD.value=r.value;epsDraw();},
+     err=>{const c=codeOf(err);st.dataset.dualEpsState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'EPS 단계 자료가 전달 위치에 없습니다(배치 전)':say(c));b.disabled=false;}).finally(()=>{busy=false;});});
+    epsArea.replaceChildren(title,b,st);return;}
+   epsArea.replaceChildren(title,h('p',{class:'meta',dataset:{dualEpsState:'READY'}},'목록·파일 해시 검증됨 · 실행 코드 ',R.index.source.execution_sha.slice(0,12),' · 생산자 ',R.index.source.producer_sha.slice(0,12)),
+    ...['operating504','held1057'].map(scope=>{const held=DQ.ram.get(scope+'@333'),v=DQ.epsView(R,scope,held?held.delivery:null);
+     return h('div',{class:'cc-wrap',dataset:{dualEpsScope:scope}},h('h5',null,v.label),
+      h('p',{class:'reason',dataset:{dualEpsScreen:v.onScreen}},v.screen),h('p',{class:'reason',dataset:{dualEpsDelivery:''}},v.delivery),
+      dl(v.times,{dualEpsTimes:scope}),h('p',{class:'meta',dataset:{dualEpsVersion:scope}},v.version),
+      h('ol',{class:'news-lines',dataset:{dualEpsStages:scope}},v.stages.map(([a,b])=>h('li',null,h('b',null,a),' · ',b))),
+      dl(v.separate,{dualEpsSeparate:scope}),h('p',{class:'reason',dataset:{dualEpsBounds:scope}},v.bounds),
+      h('details',{class:'why'},h('summary',null,'끝값 진단 분류 ▸'),list(v.endpoints,{dualEpsEndpoints:scope},'')));}));}
+  const wrap=h('div',{class:'sk card',dataset:{dualBlock:''}},h('h4',null,'연구 후보 결과 (U1 · U2 · S1 / 3/3/3 · 연구 · 운영 채택 안 됨)'),h('div',{class:'load-row'},...btns),rs,slot,epsArea);
   for(const[k,b]of btns.map((b,i)=>[Object.keys(DQ.SLOTS)[i],b]))if(DQ.ram.get(k))b.hidden=true;
   paint();return wrap;}
 

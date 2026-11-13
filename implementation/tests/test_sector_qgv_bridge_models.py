@@ -122,8 +122,19 @@ def test_save_and_exact_replay_use_the_retained_original_inputs(b):
     assert ask(b, op='replay', model='INTEGRATED', model_id=U1, saved={'schema_version': 'sector-qgv-saved/1'})['code'] == 'SAVED_SCHEMA_MISMATCH'
     assert ask(b, op='save', model='INTEGRATED', model_id=U2, result_hash=h)['code'] == 'MODEL_RESPONSE_MISMATCH'
     assert ask(b, op='save', model='INTEGRATED', model_id=U1, result_hash='0' * 64)['code'] == 'PREVIEW_NOT_FOUND'
-    # a fresh process holds no original input: never "exact" on the latest input
-    assert ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=s['saved'])['code'] == 'RETAINED_INPUT_NOT_FOUND'
+    assert r['input_source'] == 'RETAINED_IN_PROCESS'
+    # owner 2026-11-13 「재시작 후 저장·복원」: a fresh process (restart / memory dropped) reads the pinned inputs again from their
+    # fixed manifest and replays exactly on the pair the saved bindings name; the Q/G-only input is never taken for it.
+    f = ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=s['saved'])
+    assert f['ok'] and f['kind'] == 'EXACT_REPLAY' and f['input_source'] == 'PINNED_INPUT_REREAD' and f['input_id'] == 'DUAL_BOTH_VALID'
+    assert f['board']['result_hash'] == h and f['retained_result_hash'] == h
+    q = ask(b, op='preview', model='SECTOR', model_id=S1, input_id='DUAL_QG_ONLY')
+    sq = ask(b, op='save', model='SECTOR', model_id=S1, result_hash=q['board']['result_hash'])['saved']
+    fq = ask(bridge.Bridge(env={}), op='replay', model='SECTOR', model_id=S1, saved=sq)
+    assert fq['ok'] and fq['input_id'] == 'DUAL_QG_ONLY' and fq['board']['result_hash'] == q['board']['result_hash']
+    # a record whose original input is not pinned here: kept by the caller, never "exact" on the latest input
+    lost = json.loads(json.dumps(s['saved'])); lost['bindings']['evaluation']['input_hash'] = 'e' * 64
+    assert ask(bridge.Bridge(env={}), op='replay', model='INTEGRATED', model_id=U1, saved=lost)['code'] == 'RETAINED_INPUT_NOT_FOUND'
 
 
 def test_a_changed_saved_record_is_refused_by_codex_replay(b):
