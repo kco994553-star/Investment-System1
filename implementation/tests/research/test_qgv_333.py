@@ -201,3 +201,8 @@ def test_nine_scores_do_not_bypass_unknown_official_gate_or_missing_debt():
     assert sector.calculate_factor('debt_assets',dict(total_liabilities=stock(50),assets_end=stock(100)),ctx)['status']=='MISSING_INPUT'
     bad=stock(5);bad['status']='LATEST_FILING_CONFLICT'
     assert sector.calculate_factor('debt_assets',dict(debt=bad,assets_end=stock(100)),ctx)['status']=='LATEST_FILING_CONFLICT'
+
+@pytest.mark.parametrize('weight',[True,1.0])
+def test_fixed_integer_ratio_config_rejects_json_boolean_and_float(weight):
+    c=candidates()['U2-333'];c['uniform_preset']['axis_weights']['Q']=weight
+    with pytest.raises(ValueError,match='QGV333_FIXED_CONFIG_MISMATCH'):dual.validate_model(c)

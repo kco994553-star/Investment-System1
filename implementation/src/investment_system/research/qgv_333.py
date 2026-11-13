@@ -3,7 +3,7 @@ from collections import defaultdict
 from copy import deepcopy
 from fractions import Fraction
 from .sector_qgv_registry import CATALOG, SECTORS, TEMPLATES, FINANCIAL, MAPPING
-from .sector_qgv import default_config, V_DEFAULTS
+from .sector_qgv import default_config, V_DEFAULTS, digest
 
 VERSION='dual-qgv-research/0.2.0'
 POLICY='positive-integer-ratios/1'
@@ -65,7 +65,10 @@ def candidate_configs():
 
 def validate_candidate(config):
     expected=next((v for v in candidate_configs().values() if v['model_id']==config.get('model_id')),None)
-    if expected is None or config!=expected:raise ValueError('QGV333_FIXED_CONFIG_MISMATCH')
+    # Python considers True == 1 == 1.0; fixed integer-ratio JSON does not.
+    try:matches=expected is not None and digest(config)==digest(expected)
+    except (TypeError,ValueError):matches=False
+    if not matches:raise ValueError('QGV333_FIXED_CONFIG_MISMATCH')
     for p in ([config['uniform_preset']] if config['kind']=='COMMON' else config['scoped_presets'].values()):
         seen=set()
         for a,rs in p['axes'].items():
