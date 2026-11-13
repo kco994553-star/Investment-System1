@@ -362,9 +362,39 @@ def test_rig_does_not_import_track_b_or_other_tracks():
             assert "personal" not in m and "qgv" not in m and "validation" not in m, (f.name, m)
 
 
+# The one exception (owner 2026-11-12, Codex #531): research/company_ownership.py may reuse the pure identity model, i.e. import
+# exactly these names from investment_system.rig.model and nothing else of rig (no adapter, gate or ledger). Every other module
+# still may not depend on rig, and rig itself still imports no other package (test_rig_does_not_import_track_b_or_other_tracks).
+RIG_MODEL_CONSUMERS = {Path("research") / "company_ownership.py": frozenset({"IdentityRef", "Node", "stable_id"})}
+
+
+def _rig_names(path):
+    out = []
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.ImportFrom) and "rig" in ("." * node.level + (node.module or "")).split("."):
+            out.append((node.level, node.module, frozenset(a.name for a in node.names)))
+        elif isinstance(node, ast.Import):
+            out.extend((0, a.name, None) for a in node.names if "rig" in a.name.split("."))
+    return out
+
+
 def test_no_other_package_depends_on_rig():
     src = RIG_PKG.parent
     for f in src.rglob("*.py"):
         if RIG_PKG in f.parents:
             continue
-        assert not any("rig" in m.split(".") for m in _imports(f)), f
+        uses = _rig_names(f)
+        allowed = RIG_MODEL_CONSUMERS.get(f.relative_to(src))
+        if allowed is None:
+            assert not uses, f
+            continue
+        for level, module, names in uses:
+            assert (level, module) == (0, "investment_system.rig.model") and names is not None and names <= allowed, (f, module, names)
+
+
+def test_the_rig_model_exception_is_exactly_one_module_and_three_names():
+    src = RIG_PKG.parent
+    assert set(RIG_MODEL_CONSUMERS) == {Path("research") / "company_ownership.py"}
+    users = sorted(str(f.relative_to(src)) for f in src.rglob("*.py") if RIG_PKG not in f.parents and _rig_names(f))
+    assert users == ["research/company_ownership.py"], users
+    assert _rig_names(src / "research" / "company_ownership.py") == [(0, "investment_system.rig.model", frozenset({"IdentityRef", "Node", "stable_id"}))]

@@ -60,7 +60,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','qgv-models.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
+ 'screen-technical-live.js','ownership-view.js','screen-ownership-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
  'discovery.js','screen-discovery-live.js',
  'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-dual-engine-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
