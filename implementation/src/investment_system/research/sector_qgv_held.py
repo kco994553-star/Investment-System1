@@ -17,6 +17,60 @@ from .financial_v import _balance_observations
 
 ADAPTER_VERSION = 'held-sec-sector-adapter/2'
 EPS_ADAPTER_VERSION = 'held-sec-annual-eps/1'
+Q_ADAPTER_VERSION = 'held-sec-q-inputs/1'
+Q_VARIANTS = ('roa_ttm', 'accruals_assets_ttm', 'debt_assets')
+EXPLICIT_DEBT_TOTALS = ('DebtLongtermAndShorttermCombinedAmount', 'DebtAndCapitalLeaseObligations')
+
+
+def _connect_explicit_debt(payload, fields, reasons, cutoff):
+    """Connect a reported carrying-value total; never sum overlapping totals.
+
+    These existing debt-evidence concepts describe combined borrowings, not
+    total liabilities, fair value, an individual instrument or future maturities.
+    Missing current/noncurrent lines are not evidence of zero.
+    """
+    if 'debt' in fields or 'assets_end' not in fields:
+        return
+    anchor = fields['assets_end']; end = date.fromisoformat(anchor['period_end'])
+    currency = anchor['currency']; tax = payload.get('facts', {}).get('us-gaap', {})
+    accepted, rejected, present = _balance_observations(payload, EXPLICIT_DEBT_TOTALS, currency, cutoff)
+    # Include invalid/latest records in the frontier: a conflict/wrong unit must
+    # not expose an older accepted total after the balance parser rejects it.
+    frontier = []
+    for tag in EXPLICIT_DEBT_TOTALS:
+        for unit, rows in tax.get(tag, {}).get('units', {}).items():
+            for r in rows:
+                filed = vf._day(r.get('filed'))
+                if r.get('end') == str(end) and filed and filed <= cutoff:
+                    frontier.append((filed, r.get('accn'), unit, r.get('start')))
+    latest = max((r[0] for r in frontier), default=None)
+    keys = {k for k in accepted if k[0] == end and k[1] == latest}
+    current = [r for r in frontier if r[0] == latest]
+    selected = accepted[next(iter(keys))] if len(keys) == 1 else None
+    coherent = (selected is not None and current and
+                all(r[1] == next(iter(keys))[2] and r[2] == currency and r[3] is None for r in current))
+    if not coherent or selected['value'] < 0:
+        reasons['debt'] = dict(cause='VALIDATION_FAILED' if present else 'VALUE_ABSENT_IN_EXAMINED_SOURCE',
+            detail='EXACT_EXPLICIT_TOTAL_REQUIRED_NO_LIABILITIES_OR_ZERO_FILL',
+            period_end=str(end), rejected=rejected)
+        return
+    key = next(iter(keys))
+    fields['debt'] = {**anchor, 'value': selected['value'],
+        'source_detail': dict(definition='REPORTED_INTEREST_BEARING_DEBT_TOTAL',
+            accession=key[2], filed=str(key[1]), filed_precision='DATE',
+            json_pointers=selected['json_pointers'], adapter_version=Q_ADAPTER_VERSION)}
+    reasons['debt'] = dict(cause='HELD_EXPLICIT_TOTAL_CONNECTED', period_end=str(end))
+
+
+def held_q_observations(payload, record, reference, *, as_of, valuation_date, accounting_template=None):
+    """Only the three unified Q variants, using the shared extraction/kernel."""
+    if str(payload.get('cik')).zfill(10) != record.get('cik'):
+        raise ValueError('Q_SOURCE_ISSUER_MISMATCH')
+    fields, reasons = _components(payload, record, reference)
+    ctx = dict(as_of=as_of, valuation_date=valuation_date, issuer_id=record['cik'], security_id=None,
+        accounting_template=accounting_template, raw_only_accounting_unconfirmed=accounting_template is None)
+    observations = {v: calculate_factor(v, fields, ctx) for v in Q_VARIANTS}
+    return observations, dict(component_reasons=reasons, adapter_version=Q_ADAPTER_VERSION), fields
 
 
 def held_eps_observation(payload, record, reference, *, as_of, valuation_date,
@@ -238,6 +292,7 @@ def _components(payload,record,reference):
                 put(name+'_fy'+(str(k) if k else ''),hit[0]/((a+b)/2),'FY' if k==0 else 'FY_MINUS_'+str(k),hit[2],unit='decimal',start=hit[1])
     reasons['eps_ttm_diluted']='VERIFIED_TTM_EPS_COMPOSITION_NOT_CONNECTED; generic monetary-flow YTD arithmetic not used for EPS'
     _common_components(payload,record,reference,facts,c,fields,reasons,put)
+    _connect_explicit_debt(payload, fields, reasons, cutoff)
     return fields,reasons
 
 

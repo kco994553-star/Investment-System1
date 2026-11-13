@@ -91,17 +91,18 @@ def run(job,output,synthetic=False):
         plan=json.loads(checked_bytes(job['repair_plan']))
         snapshot,audit=repair(original,plan)
         if job.get('transform_only') is True:
-            if plan.get('projection')!='EPS_HISTORY_ONLY' or any(k in job for k in ('config','main_request','comparisons','before_preview')):
+            if plan.get('projection') not in ('EPS_HISTORY_ONLY','UNIFIED_Q_ONLY') or any(k in job for k in ('config','main_request','comparisons','before_preview')):
                 raise ValueError('EPS_TRANSFORM_JOB_CONFLICT')
             from investment_system.research.dual_qgv import json_bytes
             output.mkdir(parents=True,mode=0o700)
-            manifest=dict(schema_version='sector-qgv-held-eps-run/1',data_kind=job.get('data_kind'),
+            kind='q-input' if plan.get('projection')=='UNIFIED_Q_ONLY' else 'eps'
+            manifest=dict(schema_version='sector-qgv-held-'+kind+'-run/1',data_kind=job.get('data_kind'),
                           input_job=job,source_code_hash=audit['source_code_hash'],files=[])
             for name,data in {'snapshot.json':snapshot,'connection-audit.json':audit}.items():
                 body=json_bytes(data);p=output/name;p.write_bytes(body);p.chmod(0o600)
                 manifest['files'].append(dict(path=name,size=len(body),sha256=hashlib.sha256(body).hexdigest()))
             (output/'manifest.json').write_bytes(json_bytes(manifest))
-            return dict(schema_version='sector-qgv-held-eps-summary/1',scoring_executed=False,
+            return dict(schema_version='sector-qgv-held-'+kind+'-summary/1',scoring_executed=False,
                         reviewed_rows=audit['reviewed_rows'],original_denominator=len(original['members']))
     elif mode=='held-sec-classification':
         from investment_system.research.sector_qgv_classification import connect_held_classification

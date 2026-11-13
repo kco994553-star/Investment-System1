@@ -173,7 +173,9 @@ def _history_basis_valid(proof, *, issuer_id, component_hash, start, end, as_of)
             and bool(component_hash) and proof['normalized_components_hash']==component_hash
             and day(proof['valid_from'])<=day(start)<=day(end)<=day(proof['valid_to'])
             and timestamp(proof['source_available_at'])<=timestamp(as_of)
-            and timestamp(proof['retrieved_at'])<=timestamp(as_of))
+            and timestamp(proof['retrieved_at'])<=timestamp(as_of)
+            and (not proof.get('reviewed_at') or
+                 timestamp(proof['retrieved_at'])<=timestamp(proof['reviewed_at'])<=timestamp(as_of)))
     except (KeyError,TypeError,ValueError,AttributeError):
         return False
 
