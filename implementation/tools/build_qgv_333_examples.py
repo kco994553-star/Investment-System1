@@ -9,6 +9,33 @@ from investment_system.research.qgv_333 import candidate_configs,configuration_c
 from investment_system.research.dual_qgv_distribution import distribution_artifacts,STORED
 
 
+def boundary_delivery_examples(factory,configs):
+    from investment_system.research.dual_qgv_delivery import delivery_manifest
+    output={};expected={}
+    for case in ('unknown-gate','core-missing'):
+        boards={}
+        for key,config in configs.items():
+            e,r=factory['snapshots']()
+            for source in (e,r):
+                if case=='unknown-gate':source['rows'][0]['gate']=None
+                else:source['rows'][0]['observations'].pop('revenue_growth_consistency_3y' if key=='U1-333' else 'eps_diluted_cagr_3y')
+            boards[key]=dual.run_board(config,e,r,request_id='SYN333:delivery:'+case+':'+key)
+        parts=dual.delivery_artifacts(boards)
+        parts['manifest.json']=delivery_manifest({k:dual.json_bytes(v) for k,v in parts.items()},scope='operating504',data_kind='SYNTHETIC')
+        for name,value in parts.items():output['boundary-delivery/'+case+'/'+name]=value
+        expected[case]={key:dict(company_id=b['rows'][0]['company_id'],axes=b['rows'][0]['axes'],total=b['rows'][0]['total'],gate_status=b['rows'][0]['gate_status'],missing_factors=b['rows'][0]['missing_factors']) for key,b in boards.items()}
+    rejected=[]
+    from copy import deepcopy
+    for key,config in configs.items():
+        bad=deepcopy(config);bad['version']='999.0.0'
+        try:dual.validate_model(bad)
+        except ValueError as exc:rejected.append(dict(candidate=key,base_configuration_hash=dual.digest(config),mutation={'version':'999.0.0'},expected_error=str(exc)))
+        else:raise AssertionError('different version accepted')
+    output['boundary-delivery/expected.json']=dict(data_kind='SYNTHETIC',cases=expected,rejected_config_versions=rejected,
+        consumer_must_reject_result_version_different_from_bound_configuration=True)
+    return output
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     a.output.mkdir(parents=True,exist_ok=False)
@@ -34,6 +61,7 @@ def main():
     raw={k:dual.json_bytes(v) for k,v in artifacts.items()}
     routes=bin_index_artifacts(raw,expected_manifest_sha256=hashlib.sha256(raw['distribution-manifest.json']).hexdigest())
     files.update({'bin-routing/'+k:v for k,v in routes.items()})
+    files.update(boundary_delivery_examples(factory,configs))
     entries=[]
     for name,value in files.items():
         data=dual.json_bytes(value);assert len(data)<2_000_000
