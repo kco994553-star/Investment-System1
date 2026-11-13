@@ -85,6 +85,11 @@ Object.assign(DIST, DF.bins(DIST)); // its all-bin routing (test-made, Codex's q
 const Q333 = { held1057: DF.q333('held1057'), operating504: DF.q333(null, 'core-missing', null, { evaluation: REFVIEW.evaluation_population }) };
 Q333.held1057.files['input-lineage.json'] = DF.lineage();
 const Q333_DIST = { ...DF.distribution(Q333.held1057) };
+// The 3/3/3 EPS input connection follow-up (test-made counts, Codex #534's file shapes) bound to these two deliveries.
+const Q333_EPS = DF.eps({ operating504: Q333.operating504, held1057: Q333.held1057 });
+const EPS_FILE = { dual_eps_index: 'eps-index.json', dual_eps_diag: 'diagnostic-summary.json', dual_eps_compare: 'run-comparison.json', dual_eps_inputs: 'continuation-inputs.json' };
+const Q333_QIN = DF.qinput(Q333_EPS);
+const QIN_FILE = { dual_q_index: 'q-index.json', dual_q_diag: 'diagnostic-summary.json', dual_q_compare: 'comparison.json' };
 Object.assign(Q333_DIST, DF.bins(Q333_DIST));
 const DIST_FILE = { dual_dist_manifest: 'distribution-manifest.json', dual_dist_index: 'distribution-index.json', dual_bins_manifest: 'bin-manifest.json', dual_bins_index: 'bin-index.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
@@ -126,6 +131,10 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
         const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
+        if (EPS_FILE[part] || QIN_FILE[part]) {
+          const d = (w.answers[part] || (() => ({ status: 200, text: (EPS_FILE[part] ? Q333_EPS.files[EPS_FILE[part]] : Q333_QIN.files[QIN_FILE[part]]).toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
         if (url.searchParams.get('set') === '333') {
           const slot = scope + '@333', qkey = /_detail$/.test(part) ? part + '/' + slot + '/' + shard : part + '/' + slot;
           const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : part === 'dual_bins_detail' ? 'bins-' + shard + '.json'
@@ -611,6 +620,37 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.locator('[data-dual-scope="operating504@333"]').waitFor({ timeout: 40000 });
         assert.deepEqual(w.log.slice(o0).map((x) => x.path), ['manifest', 'summary', 'index', 'reference_anchor'].map((p) => Q('dual_' + p + '&scope=operating504&set=333')), phase + ': the anchor optional (404 here)');
         assert.match(await text(page, '[data-dual-scope="operating504@333"] [data-dual-leaderboard]'), /U2-333·U1-333·S1-333을 고를 수 있음/);
+        // EPS 입력 연결 단계 (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3): its own click, four reads; a progress record, not results.
+        await page.waitForTimeout(5200);
+        const e0 = w.log.length; await page.locator('[data-dual-eps-open]').click();
+        await page.locator('[data-dual-eps] [data-dual-eps-state=READY]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(e0).map((x) => x.path), ['dual_eps_index', 'dual_eps_diag', 'dual_eps_compare', 'dual_eps_inputs'].map((p) => Q(p)), phase + ': four reads');
+        for (const sc of ['operating504', 'held1057']) {
+          assert.equal(await page.locator('[data-dual-eps-scope=' + sc + '] [data-dual-eps-screen]').getAttribute('data-dual-eps-screen'), 'BEFORE', phase + ': the screen\'s 3/3/3 results are the comparison\'s previous input version');
+          assert.equal(await count(page, '[data-dual-eps-stages=' + sc + '] li'), 5);
+        }
+        const et = await text(page, '[data-dual-eps]');
+        assert.match(et, /역사 보통주 귀속 근거 미확인」 3 발행사 · 가격 대기 아님/); assert.ok(!/가격만 대기/.test(et), phase + ': never 「가격만 대기」');
+        assert.match(et, /수치 진단 후보 2 발행사 · 미채택 · 적격 EPS·채택 수가 아님/);
+        assert.match(et, /같은 평가일이라도 입력 버전이 다르면 다른 결과 · 섞지 않음/);
+        assert.match(et, /새 입력 버전의 결과 묶음\(요약·상세·분위·구간 색인\) 전달 전/);
+        assert.match(et, /Q 결손\s*다음 입력 버전\(Q 입력 복구\) 칸에서 별도 줄로 표시/);
+        // Q 입력 복구 (owner 2026-11-13 §1 Q 결손·공식 관문 결손 별도 줄, §3 시각; Codex #534 4352c8ec): its own click, three reads.
+        await page.waitForTimeout(5200);
+        const qi0 = w.log.length; await page.locator('[data-dual-q-open]').click();
+        await page.locator('[data-dual-q] [data-dual-q-state=READY]').waitFor({ timeout: 40000 });
+        assert.deepEqual(w.log.slice(qi0).map((x) => x.path), ['dual_q_index', 'dual_q_diag', 'dual_q_compare'].map((p) => Q(p)), phase + ': three reads');
+        for (const sc of ['operating504', 'held1057']) {
+          assert.equal(await page.locator('[data-dual-q-scope=' + sc + '] [data-dual-q-screen]').getAttribute('data-dual-q-screen'), 'ORIGINAL', phase + ': the screen is the original input version');
+          assert.equal(await page.locator('[data-dual-q-scope=' + sc + '] [data-dual-q-chain]').getAttribute('data-dual-q-chain'), 'CHAINED', phase + ': three versions chained');
+          assert.equal(await count(page, '[data-dual-q-primary=' + sc + '] dt'), 2); assert.equal(await count(page, '[data-dual-q-gate=' + sc + '] dt'), 2);
+          assert.equal(await count(page, '[data-dual-q-times=' + sc + '] dt'), 7);
+        }
+        const qt = await text(page, '[data-dual-q]');
+        assert.match(qt, /서로 겹치지 않음 · 합계 3 = 3 발행사/); assert.match(qt, /공식 입력 연결 수 · 판정 가능 수·통과 수가 아님/);
+        assert.match(qt, /원래 입력 마감\(재무\)\s*2026-02-02T12:00:00Z/); assert.match(qt, /새 입력 마감\(검토 반영\)\s*2026-02-04T12:00:00Z/);
+        assert.match(qt, /계산 시각\s*전달 안 됨/); assert.match(qt, /historical PIT\) 아님/);
+        assert.ok(!/가격만 대기/.test(qt));
         if (tag === '390') {
           await page.setViewportSize({ width: 320, height: 720 });
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': 320 px, the page with the 3/3/3 cards open');

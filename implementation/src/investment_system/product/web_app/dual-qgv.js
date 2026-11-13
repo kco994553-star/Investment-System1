@@ -349,6 +349,173 @@ async function checkDetail(file,name,delivery,sha256){
   return{ok:true,value:freeze(out)};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
+/* ---- the 3/3/3 EPS input connection follow-up (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3; Codex #534 bfadb012, #437
+   6851482941; staged by stage_private_qgv333_eps.py as qgv-333-eps-delivery/1 with the producer's three files byte for byte).
+   It is a progress record of the new input version, NOT a result delivery: its bounded results (summary / index / details),
+   distribution and bins are not delivered (result_delivery null), so no new score, rank or band is shown from it, and the 3/3/3
+   results on screen stay the previous input version (their result hashes are this comparison's "before" ones, checked below).
+   Every count is the producer's own; nothing is summed, filled or derived here. */
+const EPS=Object.freeze({INDEX:'qgv-333-eps-delivery/1',INPUTS:'qgv-333-eps-continuation/1'});
+const EPS_SCOPES=Object.freeze({operating504:'operating',held1057:'held'});
+const Q333_KEYS=Object.freeze(['U2-333','U1-333','S1-333']);
+const EPS_STAGE_KEYS=Object.freeze(['Q','G','V','joint','total']);
+const SHA40=/^[0-9a-f]{40}$/;
+const nonNeg=v=>int(v)&&v>=0;
+function epsFile(f,entry,sha256,at){return bytesMatch(f,at,new Map([[at,entry]]),sha256,at);}
+async function checkEps(parts,sha256){
+ try{const p=parts||{};if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  if(!isObj(p.index)||!isObj(p.index.body)||!(p.index.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','eps_index');const x=p.index.body;
+  exact(x,['schema_version','data_kind','source','valuation_date','input_as_of','files','result_delivery','new_external_requests'],'eps_index');
+  if(x.schema_version!==EPS.INDEX)refuse('SCHEMA','eps_index.schema_version');if(!['PRIVATE','SYNTHETIC'].includes(x.data_kind))refuse('DATA_KIND','eps_index.data_kind');
+  exact(x.source,['handoff_path','handoff_manifest_sha256','producer_sha','execution_sha'],'eps_index.source');
+  if(typeof x.source.handoff_path!=='string'||!HEX.test(x.source.handoff_manifest_sha256)||!SHA40.test(x.source.producer_sha)||!SHA40.test(x.source.execution_sha))refuse('EPS_SOURCE','eps_index.source');
+  if(!DAY.test(x.valuation_date)||typeof x.input_as_of!=='string'||x.new_external_requests!==0)refuse('EPS_INDEX','eps_index');
+  if(x.result_delivery!==null)refuse('EPS_RESULT_DELIVERY','eps_index.result_delivery');
+  exact(x.files,['diagnostic','comparison','continuation'],'eps_index.files');
+  for(const[k,e]of Object.entries(x.files)){exact(e,['size','sha256'],'eps_index.files.'+k);if(!int(e.size)||e.size<1||e.size>MAX_BYTES||!HEX.test(e.sha256))refuse('FILES_INVALID','eps_index.files.'+k);}
+  const diag=await epsFile(p.diagnostic,x.files.diagnostic,sha256,'eps_diagnostic'),cmp=await epsFile(p.comparison,x.files.comparison,sha256,'eps_comparison'),
+   inp=await epsFile(p.continuation,x.files.continuation,sha256,'eps_continuation');
+  if(!isObj(diag)||!same(Object.keys(diag).sort(),['held','operating']))refuse('EPS_DIAGNOSTIC','eps_diagnostic');
+  for(const[scope,dk]of Object.entries(EPS_SCOPES)){const d=diag[dk],at='eps_diagnostic.'+dk;if(!isObj(d))refuse('EPS_DIAGNOSTIC',at);
+   if(d.valuation_date!==x.valuation_date||d.as_of!==x.input_as_of)refuse('EPS_DATE_MISMATCH',at);
+   for(const k of['denominator_issuers','code_rows','target95','components_any','full_four_year_components','numeric_candidates','adopted_raw'])if(!nonNeg(d[k]))refuse('EPS_DIAGNOSTIC',at+'.'+k);
+   if(d.full_four_year_components>d.components_any||d.components_any>d.denominator_issuers||d.adopted_raw>d.denominator_issuers||d.whole_market_denominator!==null)refuse('EPS_DIAGNOSTIC',at);
+   if(!isObj(d.endpoint_categories)||Object.values(d.endpoint_categories).some(v=>!nonNeg(v)))refuse('EPS_DIAGNOSTIC',at+'.endpoint_categories');
+   const b=d.structural_bounds;if(!isObj(b)||['accounting_only','accounting_incompatible','eps_nonpositive','intersection','union','combined_upper'].some(k=>!nonNeg(b[k]))
+    ||b.union!==b.accounting_incompatible+b.eps_nonpositive-b.intersection||b.combined_upper!==d.denominator_issuers-b.union||typeof b.qualifier!=='string'||!/^CONDITIONAL_UPPER_NOT_COVERAGE/.test(b.qualifier))
+    refuse('EPS_BOUNDS',at+'.structural_bounds');
+   const c=isObj(cmp)?cmp[scope]:null;if(!isObj(c)||!same(Object.keys(c).sort(),[...Q333_KEYS].sort()))refuse('EPS_COMPARISON','eps_comparison.'+scope);
+   for(const k of Q333_KEYS){const m=c[k],mt='eps_comparison.'+scope+'.'+k;
+    for(const f of['stages','factors','before_result_hash','after_result_hash','before_bindings','after_bindings','overlapping_cause_counts'])if(!own(m,f))refuse('KEY_MISSING',mt+'.'+f);
+    exact(m.stages,EPS_STAGE_KEYS,mt+'.stages');for(const a of EPS_STAGE_KEYS){const st=m.stages[a];exact(st,['before','after','new','lost','common_changed'],mt+'.stages.'+a);if(Object.values(st).some(v=>!nonNeg(v)))refuse('TYPE',mt+'.stages.'+a);}
+    if(!HEX.test(m.before_result_hash)||!HEX.test(m.after_result_hash))refuse('HASH_INVALID',mt);
+    for(const side of['before_bindings','after_bindings']){const bb=m[side];if(!isObj(bb)||!isObj(bb.evaluation)||!isObj(bb.reference)||!HEX.test(bb.evaluation.input_hash)||!HEX.test(bb.reference.input_hash))refuse('EPS_BINDINGS',mt+'.'+side);
+     if(bb.model_hash!==MODELS[k].configuration_hash)refuse('CONFIG_VERSION_MISMATCH',mt+'.'+side+'.model_hash');
+     if(bb.evaluation.valuation_date!==x.valuation_date||bb.evaluation.as_of!==x.input_as_of)refuse('EPS_DATE_MISMATCH',mt+'.'+side);}
+    if(!isObj(m.overlapping_cause_counts)||Object.values(m.overlapping_cause_counts).some(v=>!nonNeg(v)))refuse('TYPE',mt+'.overlapping_cause_counts');
+    if(!isObj(m.factors))refuse('TYPE',mt+'.factors');}}
+  if(!isObj(cmp)||!same(Object.keys(cmp).sort(),Object.keys(EPS_SCOPES).sort()))refuse('EPS_COMPARISON','eps_comparison');
+  if(!isObj(inp)||inp.schema_version!==EPS.INPUTS||inp.valuation_date!==x.valuation_date||inp.retained_as_of!==x.input_as_of||!nonNeg(inp.new_external_data_requests))refuse('EPS_INPUTS','eps_continuation');
+  return{ok:true,value:freeze({index:x,diag,cmp,inp})};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+const ENDPOINT_WORD=Object.freeze({NUMERIC_ENDPOINT_CANDIDATE:'양 끝값 수치 진단 후보(미채택)',NONPOSITIVE_ENDPOINT:'끝값이 0 이하(CAGR 불가)',SHARE_NORMALIZATION_UNCONFIRMED:'주식 정규화 미확인',
+ EPS_CONCEPT_ABSENT:'EPS 항목 없음',ENDPOINT_NOT_EXTRACTED:'끝값 추출 안 됨',SOURCE_NOT_CONNECTED:'원천 연결 안 됨'});
+const sh12=h=>h.slice(0,12)+'…';
+// One scope's EPS progress, line by line, as the producer counted it. delivery: the checked 3/3/3 delivery of that scope in RAM
+// (or null); its boards' result hashes say which side of this comparison the screen's results are.
+function epsView(E,scope,delivery){const x=E.index,d=E.diag[EPS_SCOPES[scope]],c=E.cmp[scope],den=d.denominator_issuers,u2=c['U2-333'];
+ const occ=u2.overlapping_cause_counts,cause=k=>own(occ,k)?String(occ[k])+' 발행사':'생산자 집계 칸 없음';
+ const ef=u2.factors.eps_diluted_cagr_3y,eb=u2.before_bindings,ea=u2.after_bindings;
+ const side=k=>{if(!delivery||!own(delivery.summary.boards,k))return'NOT_LOADED';const h=delivery.summary.boards[k].result_hash;return h===c[k].before_result_hash?'BEFORE':h===c[k].after_result_hash?'AFTER':'OTHER';};
+ const sides=Q333_KEYS.map(side),onScreen=sides.every(v=>v==='BEFORE')?'BEFORE':sides.every(v=>v==='NOT_LOADED')?'NOT_LOADED':sides.includes('OTHER')?'OTHER':'MIXED';
+ const kn=ea.evaluation.classification_context&&ea.evaluation.classification_context.knowledge_as_of;
+ return freeze({scope,label:SCOPES[scope].label,onScreen,
+  screen:{BEFORE:'지금 화면의 3/3/3 결과 = 이 비교의 「이전」 결과(이전 입력 버전) · 새 입력 버전 결과는 화면에 없음',NOT_LOADED:'이 범위의 3/3/3 결과를 아직 불러오지 않음 · 불러오면 어느 입력 버전인지 대조함',
+   OTHER:'지금 화면의 3/3/3 결과는 이 비교의 이전·새 결과 어느 쪽도 아님 · 서로 다른 결과이니 함께 읽지 않음',MIXED:'후보마다 다른 입력 버전 · 함께 읽지 않음'}[onScreen],
+  times:[['평가일',x.valuation_date],['입력 마감(재무 스냅숏)',x.input_as_of],
+   ['분류 지식 시점',(kn||'칸 없음')+' · 평가일 뒤 지식으로 회고 재구성 · 당시 시스템 보유 증명 아님'],
+   ['역사 주식 기준 검토 시각','검토된 근거가 있어야 생기는 칸 · 이번 전달에 검토 시각 칸 없음'],
+   ['새 원천 취득',E.inp.new_external_data_requests===0?'요청 0건 · 기존 보관 원문만 다시 읽음':'요청 '+E.inp.new_external_data_requests+'건'],
+   ['계산','실행 코드 '+x.source.execution_sha.slice(0,12)+' · 생산자 '+x.source.producer_sha.slice(0,12)+' · 계산 시각 칸 없음(전달 안 됨)']],
+  version:'입력 버전 · 평가 입력 '+sh12(eb.evaluation.input_hash)+' → '+sh12(ea.evaluation.input_hash)+' · 참조 입력 '+sh12(eb.reference.input_hash)+' → '+sh12(ea.reference.input_hash)
+   +' · 같은 평가일이라도 입력 버전이 다르면 다른 결과 · 섞지 않음',
+  stages:[['4개년 숫자 연결',d.full_four_year_components+' / '+den+' 발행사(구성값 하나라도 '+d.components_any+') · 숫자를 이은 것일 뿐 채택·점수 아님'],
+   ['역사 보통주 기준 검토','U2-333 결손 사유 「역사 보통주 귀속 근거 미확인」 '+cause('input_or_definition_HISTORICAL_SHARE_BASIS_UNCONFIRMED')+' · 가격 대기 아님 · 검토 완료 건수는 따로 집계된 칸이 없음(0으로 채우지 않음)'],
+   ['적격 원지표 채택',d.adopted_raw+' / '+den+' 발행사 · 수치 진단 후보 '+d.numeric_candidates+' 발행사 · 미채택 · 적격 EPS·채택 수가 아님'],
+   ['요소 점수(희석 EPS 3년 성장)',ef&&isObj(ef.score)?'U2-333 요소 점수 산출 '+ef.score.before+' → '+ef.score.after+' · 원지표 산출 '+(isObj(ef.raw_value)?ef.raw_value.before+' → '+ef.raw_value.after:'칸 없음')+' (이전 → 새 입력 · 생산자 집계)':'U2-333 요소 집계 칸 없음'],
+   ['G축 · 총점',Q333_KEYS.map(k=>k+' G 산출 '+c[k].stages.G.before+' → '+c[k].stages.G.after+' · 총점 산출 '+c[k].stages.total.before+' → '+c[k].stages.total.after).join(' / ')+' (이전 → 새 입력 · 산출 건수이지 점수가 아님)']],
+  separate:[['공식 관문 판정 불가(U2-333)',cause('gate_unknown')+' · 다른 결손과 겹칠 수 있음 · 더하지 않음'],['회계모형 미확정(U2-333)',cause('accounting_unknown')],
+   ['Q 결손','다음 입력 버전(Q 입력 복구) 칸에서 별도 줄로 표시 · 이 EPS 단계의 수와 섞지 않음']],
+  endpoints:Object.entries(d.endpoint_categories).map(([k,v])=>(ENDPOINT_WORD[k]||k)+' · '+v+' 발행사'),
+  bounds:'조건부 상한(실제 회복 아님 · 다른 결손이 모두 풀린다는 가정) U2 '+d.structural_bounds.combined_upper+' / '+den+' · 회계 부적합 '+d.structural_bounds.accounting_incompatible
+   +' · EPS 비양수 '+d.structural_bounds.eps_nonpositive+' · 합집합 '+d.structural_bounds.union+'(교집합 '+d.structural_bounds.intersection+') · 회계만 반영한 상한 '+d.structural_bounds.accounting_only+' · 95% 목표 '+d.target95,
+  delivery:'새 입력 버전의 결과 묶음(요약·상세·분위·구간 색인) 전달 전 · 이 표는 진행 기록이며 점수·순위·분위를 보이지 않음'});}
+
+/* ---- the 3/3/3 Q input recovery (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1 Q 결손·공식 관문 결손 별도 줄, §3 시각; Codex #534
+   4352c8ec, execution 93a699ed, #437 6852432156; staged by stage_private_qgv333_qinput.py as qgv-333-q-input-delivery/1 with the
+   producer's diagnostic summary and comparison byte for byte). The next input version after the EPS step (its "before" results are
+   the EPS step's "after" ones): a RETROSPECTIVE_REVIEW of already-held inputs, not historical system PIT. Like the EPS step it is a
+   progress record, not a result delivery (result_delivery null): no new score, rank or band is shown from it. The primary Q causes,
+   the gate decomposition and the official input linkage are the producer's own counts; each adds up to the scope's issuers (checked),
+   overlapping causes are shown apart and never added. Official percentile linkage is not a gate PASS count. */
+const QIN=Object.freeze({INDEX:'qgv-333-q-input-delivery/1'});
+const QIN_STAGE_KEYS=Object.freeze(['Q','G','V','joint','total']);
+const QIN_CLOCKS=Object.freeze(['valuation_date','original_input_cutoff','input_cutoff','reviewed_at','producer_verified_at','calculated_at']);
+const QIN_SNAPSHOTS=Object.freeze(['operating','held','operating_reference','catalog_reference']);
+const sumOf=o=>Object.values(o).reduce((a,v)=>a+v,0);
+const countMap=(o,at)=>{if(!isObj(o)||!Object.keys(o).length||Object.values(o).some(v=>!nonNeg(v)))refuse('TYPE',at);return o;};
+async function checkQinput(parts,sha256){
+ try{const p=parts||{};if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  if(!isObj(p.index)||!isObj(p.index.body)||!(p.index.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','q_index');const x=p.index.body;
+  exact(x,['schema_version','data_kind','source','clocks','result_kind','historical_system_pit_complete','review_records','source_snapshots_reused','producer_verification_passed','continues','files','result_delivery'],'q_index');
+  if(x.schema_version!==QIN.INDEX)refuse('SCHEMA','q_index.schema_version');if(!['PRIVATE','SYNTHETIC'].includes(x.data_kind))refuse('DATA_KIND','q_index.data_kind');
+  exact(x.source,['handoff_path','handoff_manifest_sha256','producer_sha','execution_sha'],'q_index.source');
+  if(typeof x.source.handoff_path!=='string'||!HEX.test(x.source.handoff_manifest_sha256)||!SHA40.test(x.source.producer_sha)||!SHA40.test(x.source.execution_sha))refuse('Q_SOURCE','q_index.source');
+  exact(x.clocks,QIN_CLOCKS,'q_index.clocks');const t=x.clocks;
+  if(!DAY.test(t.valuation_date)||['original_input_cutoff','input_cutoff','reviewed_at','producer_verified_at'].some(k=>typeof t[k]!=='string'||!t[k])||(t.calculated_at!==null&&typeof t.calculated_at!=='string'))refuse('Q_CLOCKS','q_index.clocks');
+  if(x.result_kind!=='RETROSPECTIVE_REVIEW'||x.historical_system_pit_complete!==false)refuse('Q_RESULT_KIND','q_index.result_kind');
+  exact(x.review_records,QIN_SNAPSHOTS,'q_index.review_records');countMap(x.review_records,'q_index.review_records');
+  if(typeof x.source_snapshots_reused!=='boolean'||typeof x.producer_verification_passed!=='boolean')refuse('TYPE','q_index');
+  exact(x.continues,['step','eps_comparison_sha256','boards'],'q_index.continues');if(x.continues.step!==EPS.INDEX||!HEX.test(x.continues.eps_comparison_sha256)||x.continues.boards!==6)refuse('Q_CONTINUES','q_index.continues');
+  if(x.result_delivery!==null)refuse('Q_RESULT_DELIVERY','q_index.result_delivery');
+  exact(x.files,['diagnostic','comparison'],'q_index.files');
+  for(const[k,e]of Object.entries(x.files)){exact(e,['size','sha256'],'q_index.files.'+k);if(!int(e.size)||e.size<1||e.size>MAX_BYTES||!HEX.test(e.sha256))refuse('FILES_INVALID','q_index.files.'+k);}
+  const diag=await epsFile(p.diagnostic,x.files.diagnostic,sha256,'q_diagnostic'),cmp=await epsFile(p.comparison,x.files.comparison,sha256,'q_comparison');
+  if(!isObj(diag)||!same(Object.keys(diag).sort(),Object.keys(EPS_SCOPES).sort()))refuse('Q_DIAGNOSTIC','q_diagnostic');
+  if(!isObj(cmp)||!same(Object.keys(cmp).sort(),Object.keys(EPS_SCOPES).sort()))refuse('Q_COMPARISON','q_comparison');
+  for(const scope of Object.keys(EPS_SCOPES)){const d=diag[scope],at='q_diagnostic.'+scope;if(!isObj(d)||!nonNeg(d.denominator_issuers)||!nonNeg(d.code_rows)||d.whole_market_denominator!==null)refuse('Q_DIAGNOSTIC',at);
+   const den=d.denominator_issuers;
+   for(const k of['primary_q_causes','gate_diagnostic','official_input_linkage'])if(sumOf(countMap(d[k],at+'.'+k))!==den)refuse('Q_SUM',at+'.'+k);
+   countMap(d.overlapping_q_causes,at+'.overlapping_q_causes');if(!nonNeg(d.primary_q_causes.Q_AVAILABLE))refuse('Q_DIAGNOSTIC',at+'.primary_q_causes.Q_AVAILABLE');
+   const c=cmp[scope];if(!isObj(c)||!same(Object.keys(c).sort(),[...Q333_KEYS].sort()))refuse('Q_COMPARISON','q_comparison.'+scope);
+   for(const k of Q333_KEYS){const m=c[k],mt='q_comparison.'+scope+'.'+k;
+    for(const f of['stages','factors','before_result_hash','after_result_hash','before_bindings','after_bindings'])if(!own(m,f))refuse('KEY_MISSING',mt+'.'+f);
+    exact(m.stages,QIN_STAGE_KEYS,mt+'.stages');for(const a of QIN_STAGE_KEYS){const st=m.stages[a];exact(st,['before','after','gained','lost','common_score_changed'],mt+'.stages.'+a);if(Object.values(st).some(v=>!nonNeg(v)))refuse('TYPE',mt+'.stages.'+a);}
+    if(!HEX.test(m.before_result_hash)||!HEX.test(m.after_result_hash))refuse('HASH_INVALID',mt);
+    for(const side of['before_bindings','after_bindings']){const bb=m[side];if(!isObj(bb)||!isObj(bb.evaluation)||!isObj(bb.reference)||!HEX.test(bb.evaluation.members_hash)||!HEX.test(bb.reference.members_hash))refuse('Q_BINDINGS',mt+'.'+side);
+     if(bb.model_hash!==MODELS[k].configuration_hash)refuse('CONFIG_VERSION_MISMATCH',mt+'.'+side+'.model_hash');
+     if(bb.evaluation.valuation_date!==t.valuation_date)refuse('Q_DATE_MISMATCH',mt+'.'+side);}
+    if(m.after_bindings.evaluation.as_of!==t.input_cutoff)refuse('Q_DATE_MISMATCH',mt+'.after_bindings');
+    if(!isObj(m.factors))refuse('TYPE',mt+'.factors');
+    if(k!=='S1-333'&&m.stages.Q.after!==d.primary_q_causes.Q_AVAILABLE)refuse('Q_COUNT_DISAGREE',mt+'.stages.Q');}}
+  return{ok:true,value:freeze({index:x,diag,cmp})};}
+ catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+const Q_CAUSE_WORD=Object.freeze({Q_AVAILABLE:'Q 산출 가능',ACCOUNTING_NOT_APPLICABLE:'통합 회계모형 부적합(해당 없음)',CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED:'분류·회계모형 미확정',
+ ELIGIBLE_FINANCIAL_COMPONENT_MISSING:'적격 재무 구성값 없음(모든 공시에 없다는 뜻 아님)',FLOW_OR_AVERAGE_ASSET_PERIOD_MISMATCH:'흐름·평균자산 기간 불일치',SOURCE_NOT_CONNECTED_OR_NOT_REVIEWED:'원천 연결·검토 안 됨'});
+const GATE_DIAG_WORD=Object.freeze({DECISION_KNOWN_NOT_NECESSARILY_PASS:'공식 관문 판정 가능(통과 수 아님)',OFFICIAL_INPUT_PRESENT_RECIPE_UNRESOLVED:'판정 불가 · 공식 백분위는 연결됐으나 산식 미확정',
+ OFFICIAL_Q_AXIS_COVERAGE_BELOW_50:'판정 불가 · 공식 Q축 가용 비중 50% 미만',OFFICIAL_SOURCE_ROW_UNAVAILABLE:'판정 불가 · 공식 원천 행 없음',OUTSIDE_FROZEN_OFFICIAL_REFERENCE_POPULATION:'판정 불가 · 고정된 공식 참조 모집단 밖'});
+const LINK_WORD=Object.freeze({PERCENTILE_LINKED:'공식 Q 백분위 입력 연결',PERCENTILE_NOT_LINKED:'공식 Q 백분위 입력 연결 안 됨'});
+const wordOr=(w,k)=>w[k]||(k+'(사전에 없는 분류)');
+// One scope's Q input recovery, line by line, as the producer counted it. eps: the checked EPS step (or null) for the chain;
+// delivery: the checked 3/3/3 delivery of that scope in RAM (or null) — its boards' result hashes say which input version is on screen.
+function qinputView(Q,scope,eps,delivery){const x=Q.index,t=x.clocks,d=Q.diag[scope],c=Q.cmp[scope],den=d.denominator_issuers,e=eps?eps.cmp[scope]:null;
+ const chain=e?(Q333_KEYS.every(k=>c[k].before_result_hash===e[k].after_result_hash)?'CHAINED':'BROKEN'):'NOT_CHECKED';
+ const side=k=>{if(!delivery||!own(delivery.summary.boards,k))return'NOT_LOADED';const h=delivery.summary.boards[k].result_hash;
+  return h===c[k].after_result_hash?'Q_STEP':h===c[k].before_result_hash?'EPS_STEP':e&&h===e[k].before_result_hash?'ORIGINAL':'OTHER';};
+ const ld=Q333_KEYS.map(side).filter(v=>v!=='NOT_LOADED'),onScreen=!ld.length?'NOT_LOADED':ld.every(v=>v===ld[0])?ld[0]:'MIXED';
+ const lines=(o,w)=>Object.entries(o).map(([k,v])=>[wordOr(w,k),v+' / '+den+' 발행사']);
+ return freeze({scope,label:SCOPES[scope].label,onScreen,chain,
+  screen:{ORIGINAL:'지금 화면의 3/3/3 결과 = 원래 입력 버전(EPS 연결·Q 복구 이전) · 이 복구 결과는 화면에 없음 · 함께 읽지 않음',
+   EPS_STEP:'지금 화면의 3/3/3 결과 = EPS 연결 단계 결과(이 복구의 「이전」) · 이 복구 결과는 화면에 없음',Q_STEP:'지금 화면의 3/3/3 결과 = 이 Q 입력 복구 결과',
+   OTHER:'지금 화면의 3/3/3 결과는 세 입력 버전 어느 것과도 다름'+(e?'':'(EPS 단계 기록을 불러오면 원래 버전인지 대조함)')+' · 함께 읽지 않음',
+   NOT_LOADED:'이 범위의 3/3/3 결과를 아직 불러오지 않음 · 불러오면 어느 입력 버전인지 대조함',MIXED:'후보마다 다른 입력 버전 · 함께 읽지 않음'}[onScreen],
+  chainText:{CHAINED:'입력 버전 사슬 · 원래 3/3/3 → EPS 연결 → Q 입력 복구 · 세 후보 모두 앞 단계의 새 결과에서 이어짐(해시 대조)',
+   BROKEN:'입력 버전 사슬 불일치 · 이 복구의 「이전」 결과가 EPS 단계의 새 결과와 다름 · 함께 읽지 않음',NOT_CHECKED:'EPS 단계 기록을 불러오지 않아 앞 단계와의 사슬은 대조 전'}[chain],
+  kind:'회고 검토(RETROSPECTIVE_REVIEW) · 이미 보관한 입력을 나중에 검토한 결과 · 당시 시스템 보유 증명(historical PIT) 아님',
+  times:[['평가일',t.valuation_date+' (그대로)'],['원래 입력 마감(재무)',t.original_input_cutoff],['새 입력 마감(검토 반영)',t.input_cutoff],['근거 검토 시각',t.reviewed_at],
+   ['원천 취득',x.source_snapshots_reused?'원래 입력의 원천 스냅숏 재사용 · 공시일·취득 시각 그대로 · 새 문서·가격 취득 없음':'원천 스냅숏 재사용 아님(생산자 기록)'],
+   ['생산자 검증 시각',t.producer_verified_at+' · '+(x.producer_verification_passed?'통과':'실패')+' · 계산 시각 아님'],
+   ['계산 시각',t.calculated_at||('전달 안 됨 · 실행 코드 '+x.source.execution_sha.slice(0,12)+'로만 고정')]],
+  version:Q333_KEYS.map(k=>k+' 결과 '+sh12(c[k].before_result_hash)+' → '+sh12(c[k].after_result_hash)).join(' · ')+' · 같은 평가일·같은 구성원이라도 입력 버전이 다르면 다른 결과 · 섞지 않음',
+  stages:Q333_KEYS.map(k=>{const s=c[k].stages;return[k,'Q 산출 '+s.Q.before+' → '+s.Q.after+'(+'+s.Q.gained+' · 잃음 '+s.Q.lost+' · 기존 점수 바뀜 '+s.Q.common_score_changed+') · G '+s.G.before+' → '+s.G.after
+   +' · V '+s.V.before+' → '+s.V.after+' · 동시 '+s.joint.before+' → '+s.joint.after+' · 총점 '+s.total.before+' → '+s.total.after];}),
+  relative:'기존 점수 변화는 비교집단 구성 변화에 따른 상대 점수 효과 · 재무 개선이 아님',
+  qPrimary:lines(d.primary_q_causes,Q_CAUSE_WORD),qPrimaryNote:'Q 대표 원인 · 서로 겹치지 않음 · 합계 '+sumOf(d.primary_q_causes)+' = '+den+' 발행사',
+  qOverlap:Object.entries(d.overlapping_q_causes).map(([k,v])=>wordOr(Q_CAUSE_WORD,k)+' · '+v+' 발행사'),qOverlapNote:'겹치는 원인 집계 · 한 발행사가 여러 줄에 들어감 · 더하지 않음',
+  gate:lines(d.gate_diagnostic,GATE_DIAG_WORD),gateNote:'공식 관문 판정 상태 · 서로 겹치지 않음 · 합계 '+sumOf(d.gate_diagnostic)+' = '+den+' 발행사 · 이 Q 복구로 바뀐 관문 판정 없음 · 연구 Q로 대신하지 않음',
+  link:lines(d.official_input_linkage,LINK_WORD),linkNote:'공식 입력 연결 수 · 판정 가능 수·통과 수가 아님',
+  delivery:'새 입력 버전의 결과 묶음(범위별 전달 목록·분포·구간 색인·새 입력 고정 근거) 전달 전 · 이 표는 진단·건수만 · 점수·순위·분위를 보이지 않음'});}
+
 /* ---- words (counts and values as delivered; display rounding only) */
 const fmt=v=>v===null||v===undefined?'미산출':(Math.round(v*10)/10).toFixed(1);
 // An exact weight as the producer wrote it (numerator / denominator); never a rounded or re-derived share.
@@ -829,5 +996,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({QIN,checkQinput,qinputView,EPS,checkEps,epsView,SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

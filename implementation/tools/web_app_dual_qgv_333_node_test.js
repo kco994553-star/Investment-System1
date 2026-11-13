@@ -150,3 +150,90 @@ test('views and RAM: the 3/3/3 stages, configuration and upper bound words; one 
     assert.equal(G.ok, true, g.group_id); assert.equal((await DQ.binsMatchGroup(bp.value.get(g.group_id), G.value, sha256)).ok, true, g.group_id); n++; }
   assert.ok(n > 0);
 });
+
+// The 3/3/3 EPS input connection follow-up (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3; Codex #534 bfadb012): a progress record
+// checked against Main's index (test-made counts here, the producer's shape); the stages kept apart; HISTORICAL_SHARE_BASIS_UNCONFIRMED
+// never 「가격만 대기」; the numeric endpoint candidates never an adopted or eligible count; the input version shown and never mixed;
+// the screen's results named by which side of the comparison they are; a result delivery is never read through it.
+test('EPS stages: checked against the index; five stages, separate lines, times and input version; which side the screen is', async () => {
+  const op = DF.q333(null, 'core-missing'), he = DF.q333('held1057');
+  const parts = (e) => ({ index: P(e.files, 'eps-index.json'), diagnostic: P(e.files, 'diagnostic-summary.json'), comparison: P(e.files, 'run-comparison.json'), continuation: P(e.files, 'continuation-inputs.json') });
+  const run = (edit) => DQ.checkEps(parts(DF.eps({ operating504: op, held1057: he }, edit)), sha256);
+  const r = await run(); assert.equal(r.ok, true, JSON.stringify(r));
+  const d = (await check(op)).value, v = DQ.epsView(r.value, 'operating504', d);
+  assert.equal(v.onScreen, 'BEFORE'); assert.match(v.screen, /이전 입력 버전/);
+  assert.deepEqual(v.stages.map((x) => x[0]), ['4개년 숫자 연결', '역사 보통주 기준 검토', '적격 원지표 채택', '요소 점수(희석 EPS 3년 성장)', 'G축 · 총점']);
+  assert.match(v.stages[0][1], /^3 \/ 3 발행사\(구성값 하나라도 3\) · 숫자를 이은 것일 뿐 채택·점수 아님$/);
+  assert.match(v.stages[1][1], /역사 보통주 귀속 근거 미확인」 3 발행사 · 가격 대기 아님 · .*0으로 채우지 않음/);
+  assert.ok(!/가격만 대기/.test(JSON.stringify(v)), 'never 「가격만 대기」');
+  assert.match(v.stages[2][1], /^0 \/ 3 발행사 · 수치 진단 후보 2 발행사 · 미채택 · 적격 EPS·채택 수가 아님$/);
+  assert.match(v.stages[4][1], /산출 건수이지 점수가 아님/);
+  assert.deepEqual(v.separate.map((x) => x[0]), ['공식 관문 판정 불가(U2-333)', '회계모형 미확정(U2-333)', 'Q 결손']);
+  assert.match(v.version, /평가 입력 .+… → aaaaaaaaaaaa… · 참조 입력 .+… → bbbbbbbbbbbb… · 같은 평가일이라도 입력 버전이 다르면 다른 결과 · 섞지 않음$/);
+  assert.deepEqual(v.times.map((x) => x[0]), ['평가일', '입력 마감(재무 스냅숏)', '분류 지식 시점', '역사 주식 기준 검토 시각', '새 원천 취득', '계산']);
+  assert.match(v.times[5][1], /계산 시각 칸 없음\(전달 안 됨\)$/); assert.match(v.delivery, /결과 묶음.*전달 전/);
+  assert.match(v.bounds, /^조건부 상한\(실제 회복 아님.*\) U2 2 \/ 3 · 회계 부적합 0 · EPS 비양수 1 · 합집합 1\(교집합 0\)/);
+  assert.equal(DQ.epsView(r.value, 'operating504', null).onScreen, 'NOT_LOADED');
+  const other = (await check(DF.q333(null, 'unknown-gate'))).value;
+  assert.equal(DQ.epsView(r.value, 'operating504', other).onScreen, 'OTHER', 'other results are not this comparison\'s; never read together');
+  const cases = [
+    ['EPS_RESULT_DELIVERY', (x) => { x.index = { result_delivery: { manifest_sha256: 'e'.repeat(64) } }; }],
+    ['EPS_BOUNDS', (x) => { x.diag.operating.structural_bounds.combined_upper = 3; }],
+    ['EPS_DIAGNOSTIC', (x) => { x.diag.held.adopted_raw = 4; }],
+    ['EPS_DATE_MISMATCH', (x) => { x.diag.held.as_of = '2026-11-03T00:00:00Z'; }],
+    ['CONFIG_VERSION_MISMATCH', (x) => { x.comparison.operating504['S1-333'].after_bindings.model_hash = 'f'.repeat(64); }],
+    ['EPS_COMPARISON', (x) => { delete x.comparison.held1057['U1-333']; }],
+    ['EPS_INPUTS', (x) => { x.inputs.schema_version = 'qgv-333-eps-continuation/2'; }],
+  ];
+  for (const [code, edit] of cases) assert.equal((await run(edit)).code, code, code);
+  const p = parts(DF.eps({ operating504: op, held1057: he })); p.comparison = { bytes: new Uint8Array([...p.comparison.bytes, 10]), body: p.comparison.body };
+  assert.equal((await DQ.checkEps(p, sha256)).code, 'BYTES_MISMATCH', 'each file is the index\'s bytes');
+});
+
+// The 3/3/3 Q input recovery (owner 2026-11-13 §1 Q 결손·공식 관문 결손 별도 줄, §3 시각; Codex #534 4352c8ec): the next input
+// version after the EPS step, checked against Main's index; primary Q causes, gate states and official input linkage each add up to
+// the issuers and are shown apart (overlaps never added; linkage never a PASS count); the clocks kept apart (calculation time absent
+// stays absent); the three input versions chained by hash; the screen's results named by version; a result delivery never read through it.
+test('Q input recovery: separate Q-missing / gate / linkage lines, clocks, version chain and which version the screen is', async () => {
+  const op = DF.q333(null, 'core-missing'), he = DF.q333('held1057'), E = DF.eps({ operating504: op, held1057: he });
+  const eparts = { index: P(E.files, 'eps-index.json'), diagnostic: P(E.files, 'diagnostic-summary.json'), comparison: P(E.files, 'run-comparison.json'), continuation: P(E.files, 'continuation-inputs.json') };
+  const ev = (await DQ.checkEps(eparts, sha256)).value;
+  const parts = (q) => ({ index: P(q.files, 'q-index.json'), diagnostic: P(q.files, 'diagnostic-summary.json'), comparison: P(q.files, 'comparison.json') });
+  const run = (edit) => DQ.checkQinput(parts(DF.qinput(E, edit)), sha256);
+  const r = await run(); assert.equal(r.ok, true, JSON.stringify(r));
+  const d = (await check(op)).value, v = DQ.qinputView(r.value, 'operating504', ev, d);
+  assert.equal(v.onScreen, 'ORIGINAL'); assert.match(v.screen, /원래 입력 버전.*함께 읽지 않음/);
+  assert.equal(v.chain, 'CHAINED'); assert.match(v.chainText, /원래 3\/3\/3 → EPS 연결 → Q 입력 복구/);
+  assert.equal(DQ.qinputView(r.value, 'operating504', null, d).onScreen, 'OTHER', 'without the EPS step the original cannot be named');
+  assert.equal(DQ.qinputView(r.value, 'operating504', null, d).chain, 'NOT_CHECKED');
+  assert.equal(DQ.qinputView(r.value, 'operating504', ev, null).onScreen, 'NOT_LOADED');
+  assert.deepEqual(v.times.map((x) => x[0]), ['평가일', '원래 입력 마감(재무)', '새 입력 마감(검토 반영)', '근거 검토 시각', '원천 취득', '생산자 검증 시각', '계산 시각']);
+  assert.match(v.times[5][1], /계산 시각 아님$/); assert.match(v.times[6][1], /^전달 안 됨 · 실행 코드 444444444444로만 고정$/);
+  assert.match(v.kind, /RETROSPECTIVE_REVIEW.*historical PIT\) 아님/);
+  assert.deepEqual(v.qPrimary, [['Q 산출 가능', '2 / 3 발행사'], ['분류·회계모형 미확정', '1 / 3 발행사']]); assert.match(v.qPrimaryNote, /겹치지 않음 · 합계 3 = 3 발행사/);
+  assert.match(v.qOverlapNote, /더하지 않음/); assert.equal(v.qOverlap.length, 2);
+  assert.deepEqual(v.gate.map((x) => x[0]), ['공식 관문 판정 가능(통과 수 아님)', '판정 불가 · 공식 백분위는 연결됐으나 산식 미확정']);
+  assert.deepEqual(v.link, [['공식 Q 백분위 입력 연결', '3 / 3 발행사']]); assert.match(v.linkNote, /판정 가능 수·통과 수가 아님/);
+  assert.match(v.stages[0][1], /^Q 산출 1 → 2\(\+1 · 잃음 0 · 기존 점수 바뀜 1\)/); assert.match(v.relative, /재무 개선이 아님/);
+  assert.match(v.delivery, /결과 묶음.*전달 전.*점수·순위·분위를 보이지 않음/);
+  assert.ok(!/가격만 대기/.test(JSON.stringify(v)));
+  // a different EPS step: the chain is broken and said so
+  const E2 = DF.eps({ operating504: op, held1057: he }, (x) => { for (const k of ['U2-333', 'U1-333', 'S1-333']) x.comparison.operating504[k].after_result_hash = '9'.repeat(64); });
+  const ev2 = (await DQ.checkEps({ index: P(E2.files, 'eps-index.json'), diagnostic: P(E2.files, 'diagnostic-summary.json'), comparison: P(E2.files, 'run-comparison.json'), continuation: P(E2.files, 'continuation-inputs.json') }, sha256)).value;
+  assert.equal(DQ.qinputView(r.value, 'operating504', ev2, d).chain, 'BROKEN');
+  const cases = [
+    ['Q_RESULT_DELIVERY', (x) => { x.index = { result_delivery: { manifest_sha256: 'e'.repeat(64) } }; }],
+    ['Q_RESULT_KIND', (x) => { x.index = { historical_system_pit_complete: true }; }],
+    ['Q_CLOCKS', (x) => { x.index = { clocks: { valuation_date: '2026-02-02', original_input_cutoff: '', input_cutoff: 'x', reviewed_at: 'x', producer_verified_at: 'x', calculated_at: null } }; }],
+    ['Q_SUM', (x) => { x.diag.held1057.gate_diagnostic.DECISION_KNOWN_NOT_NECESSARILY_PASS = 3; }],
+    ['Q_SUM', (x) => { x.diag.operating504.official_input_linkage = { PERCENTILE_LINKED: 2 }; }],
+    ['Q_COUNT_DISAGREE', (x) => { x.comparison.held1057['U1-333'].stages.Q.after = 1; }],
+    ['Q_DATE_MISMATCH', (x) => { x.comparison.operating504['U2-333'].after_bindings.evaluation.as_of = '2026-02-03T00:00:00Z'; }],
+    ['CONFIG_VERSION_MISMATCH', (x) => { x.comparison.operating504['S1-333'].after_bindings.model_hash = 'f'.repeat(64); }],
+    ['Q_COMPARISON', (x) => { delete x.comparison.held1057['S1-333']; }],
+    ['Q_DIAGNOSTIC', (x) => { x.diag.operating504.whole_market_denominator = 501; }],
+  ];
+  for (const [code, edit] of cases) assert.equal((await run(edit)).code, code, code);
+  const p = parts(DF.qinput(E)); p.diagnostic = { bytes: new Uint8Array([...p.diagnostic.bytes, 10]), body: p.diagnostic.body };
+  assert.equal((await DQ.checkQinput(p, sha256)).code, 'BYTES_MISMATCH', 'each file is the index\'s bytes');
+});

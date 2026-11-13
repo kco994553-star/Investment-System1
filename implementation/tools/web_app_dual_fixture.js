@@ -218,4 +218,82 @@ function q333(scope, caseId = 'core-missing', edit, { evaluation } = {}) {
   files['manifest.json'] = made ? Buffer.from(JSON.stringify(manifest, null, 2) + '\n') : fs.readFileSync(path.join(QD, caseId, 'manifest.json'));
   return { files, manifest, docs };
 }
-module.exports = { q333, D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor, bins };
+// The 3/3/3 EPS input connection follow-up (test-made, the shape of Codex #534's qgv-333-eps handoff files with made-up counts):
+// diagnostic summary / run comparison / continuation inputs and Main's qgv-333-eps-delivery/1 index naming their bytes. deliveries:
+// {operating504, held1057} fixture deliveries whose boards' result hashes become each comparison's "before" side. edit(docs) first.
+function eps(deliveries, edit) {
+  const docs = { diag: {}, comparison: {}, inputs: { schema_version: 'qgv-333-eps-continuation/1', valuation_date: null, retained_as_of: null, new_external_data_requests: 0 } };
+  const models = { 'U2-333': 'unified-333-eps/0.1.0', 'U1-333': 'unified-333-persistence/0.1.0', 'S1-333': 'sector-333/0.1.0' };
+  let day = null, asOf = null;
+  for (const [scope, dk] of [['operating504', 'operating'], ['held1057', 'held']]) {
+    const sum = JSON.parse(deliveries[scope].files['summary.json'].toString('utf8')).boards, ev = sum['U2-333'].evaluation_population;
+    day = ev.valuation_date; asOf = ev.as_of;
+    docs.diag[dk] = { valuation_date: day, as_of: asOf, denominator_issuers: 3, code_rows: 3, target95: 3, security_id_rows: 0,
+      endpoint_categories: { NUMERIC_ENDPOINT_CANDIDATE: 2, NONPOSITIVE_ENDPOINT: 1 }, components_any: 3, full_four_year_components: 3, numeric_candidates: 2, adopted_raw: 0,
+      structural_bounds: { accounting_only: 3, accounting_incompatible: 0, eps_nonpositive: 1, intersection: 0, union: 1, combined_upper: 2, qualifier: 'CONDITIONAL_UPPER_NOT_COVERAGE; test-made' },
+      whole_market_denominator: null };
+    docs.comparison[scope] = {};
+    for (const k of Object.keys(models)) {
+      const b = sum[k], after = { ...b.bindings, evaluation: { ...b.bindings.evaluation, input_hash: 'a'.repeat(64) }, reference: { ...b.bindings.reference, input_hash: 'b'.repeat(64) } };
+      const st = (n) => ({ before: n, after: n, new: 0, lost: 0, common_changed: 0 });
+      docs.comparison[scope][k] = { stages: { Q: st(b.coverage.stages.Q.issuers), G: st(b.coverage.stages.G.issuers), V: st(0), joint: st(0), total: st(0) },
+        factors: { eps_diluted_cagr_3y: { raw_value: { before: 0, after: 0, new: 0, lost: 0 }, score: { before: 0, after: 0, new: 0, lost: 0 } } },
+        coverage: {}, before_result_hash: b.result_hash, after_result_hash: 'c'.repeat(64), before_bindings: b.bindings, after_bindings: after,
+        overlapping_cause_counts: { input_or_definition_HISTORICAL_SHARE_BASIS_UNCONFIRMED: 3, gate_unknown: 1, accounting_unknown: 0 } };
+      if (!models[k]) throw Error('model');
+    }
+  }
+  docs.inputs.valuation_date = day; docs.inputs.retained_as_of = asOf;
+  if (edit) edit(docs);
+  const files = { 'diagnostic-summary.json': json(docs.diag), 'run-comparison.json': json(docs.comparison), 'continuation-inputs.json': json(docs.inputs) };
+  const index = { schema_version: 'qgv-333-eps-delivery/1', data_kind: 'SYNTHETIC',
+    source: { handoff_path: 'handoffs/test-made', handoff_manifest_sha256: 'd'.repeat(64), producer_sha: '1'.repeat(40), execution_sha: '2'.repeat(40) },
+    valuation_date: day, input_as_of: asOf,
+    files: { diagnostic: { size: files['diagnostic-summary.json'].length, sha256: sha(files['diagnostic-summary.json']) },
+      comparison: { size: files['run-comparison.json'].length, sha256: sha(files['run-comparison.json']) },
+      continuation: { size: files['continuation-inputs.json'].length, sha256: sha(files['continuation-inputs.json']) } },
+    result_delivery: null, new_external_requests: 0 };
+  if (docs.index) Object.assign(index, docs.index);
+  files['eps-index.json'] = json(index);
+  return { files, docs, index };
+}
+// The 3/3/3 Q input recovery (test-made, the shape of Codex #534 4352c8ec's qgv-q-input handoff files with made-up counts): its
+// diagnostic summary / comparison chained to an eps() case (each "before" result = that case's "after" result) and Main's
+// qgv-333-q-input-delivery/1 index naming their bytes. edit(docs) changes docs.diag / docs.comparison / docs.index before hashing.
+function qinput(epsCase, edit) {
+  const docs = { diag: {}, comparison: {} }, cutoff = '2026-02-04T12:00:00Z';
+  let day = null;
+  for (const scope of ['operating504', 'held1057']) {
+    const prev = epsCase.docs.comparison[scope];
+    day = prev['U2-333'].after_bindings.evaluation.valuation_date;
+    docs.diag[scope] = { denominator_issuers: 3, code_rows: 3,
+      primary_q_causes: { Q_AVAILABLE: 2, CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED: 1 },
+      overlapping_q_causes: { CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED: 1, ELIGIBLE_FINANCIAL_COMPONENT_MISSING: 1 },
+      gate_diagnostic: { DECISION_KNOWN_NOT_NECESSARILY_PASS: 2, OFFICIAL_INPUT_PRESENT_RECIPE_UNRESOLVED: 1 },
+      official_input_linkage: { PERCENTILE_LINKED: 3 }, raw_validator_is_fail_fast: true, whole_market_denominator: null };
+    docs.comparison[scope] = {};
+    for (const k of ['U2-333', 'U1-333', 'S1-333']) {
+      const p = prev[k], st = (b, a) => ({ before: b, after: a, gained: a - b, lost: 0, common_score_changed: 1 }), same = (n) => st(n, n);
+      const bind = (b, asOf) => ({ ...b, evaluation: { ...b.evaluation, members_hash: '7'.repeat(64), as_of: asOf }, reference: { ...b.reference, members_hash: '8'.repeat(64) } });
+      docs.comparison[scope][k] = { stages: { Q: st(1, 2), G: same(0), V: same(0), joint: same(0), total: same(0) },
+        factors: { debt_assets: { raw_value: st(1, 2), score: st(1, 2) } },
+        before_result_hash: p.after_result_hash, after_result_hash: 'e'.repeat(64),
+        before_bindings: bind(p.after_bindings, p.after_bindings.evaluation.as_of), after_bindings: bind(p.after_bindings, cutoff) };
+    }
+  }
+  if (edit) edit(docs);
+  const files = { 'diagnostic-summary.json': json(docs.diag), 'comparison.json': json(docs.comparison) };
+  const index = { schema_version: 'qgv-333-q-input-delivery/1', data_kind: 'SYNTHETIC',
+    source: { handoff_path: 'handoffs/test-made', handoff_manifest_sha256: 'f'.repeat(64), producer_sha: '3'.repeat(40), execution_sha: '4'.repeat(40) },
+    clocks: { valuation_date: day, original_input_cutoff: '2026-02-02T12:00:00Z', input_cutoff: cutoff, reviewed_at: '2026-02-04T11:00:00Z', producer_verified_at: '2026-02-04T12:05:00Z', calculated_at: null },
+    result_kind: 'RETROSPECTIVE_REVIEW', historical_system_pit_complete: false,
+    review_records: { operating: 1, held: 2, operating_reference: 1, catalog_reference: 2 }, source_snapshots_reused: true, producer_verification_passed: true,
+    continues: { step: 'qgv-333-eps-delivery/1', eps_comparison_sha256: sha(epsCase.files['run-comparison.json']), boards: 6 },
+    files: { diagnostic: { size: files['diagnostic-summary.json'].length, sha256: sha(files['diagnostic-summary.json']) },
+      comparison: { size: files['comparison.json'].length, sha256: sha(files['comparison.json']) } },
+    result_delivery: null };
+  if (docs.index) Object.assign(index, docs.index);
+  files['q-index.json'] = json(index);
+  return { files, docs, index };
+}
+module.exports = { qinput, eps, q333, D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor, bins };

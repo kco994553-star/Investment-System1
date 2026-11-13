@@ -36,7 +36,8 @@ sector-reduced-core/0.1.0 (S1). No candidate is chosen for the caller (no defaul
 missing or mismatched model_id, or a config other than that candidate is refused. context / view answer Codex's
 candidate_configs() and evidence_catalog(); preview calls run_board(config, evaluation, reference, request_id) on Codex's pinned
 dual synthetic evaluation and reference snapshots (two inputs, never one); save calls save_board; replay calls replay_board with the
-retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted). Every answer names
+retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted); after a restart
+(nothing retained) it reads the pinned inputs again from their fixed manifest and replays only on the pair the saved bindings name. Every answer names
 the requested model and model_id, and the engine result must carry the same model_id and configuration hash, otherwise
 MODEL_RESPONSE_MISMATCH. A request without `model` keeps the sector default behaviour below unchanged.
 The 3/3/3 candidates (owner 2026-11-13; Codex #534 `research.qgv_333`, QGV_333.md) are named the same way: INTEGRATED →
@@ -380,16 +381,33 @@ class Bridge:
             raise Refused('SAVED_SCHEMA_MISMATCH')
         if (saved.get('configuration') or {}).get('model_id') != config['model_id']:
             raise Refused('MODEL_RESPONSE_MISMATCH')
-        if saved.get('result_hash') not in self.kept_dual:
-            raise Refused('RETAINED_INPUT_NOT_FOUND')
-        _, retained, evaluation, reference, original_rid, input_id = self.kept_dual[saved['result_hash']]
-        try:
-            out = dual_qgv.replay_board(copy.deepcopy(saved), copy.deepcopy(evaluation), copy.deepcopy(reference), original_rid)
-        except (ValueError, KeyError, TypeError, AttributeError) as exc:
-            raise Refused(_code(exc)) from None
-        _dual_result_check(out, config['model_id'], config)
-        return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY',
-                'retained_result_hash': retained['result_hash'], 'board': out}
+        if saved.get('result_hash') in self.kept_dual:
+            _, retained, evaluation, reference, original_rid, input_id = self.kept_dual[saved['result_hash']]
+            try:
+                out = dual_qgv.replay_board(copy.deepcopy(saved), copy.deepcopy(evaluation), copy.deepcopy(reference), original_rid)
+            except (ValueError, KeyError, TypeError, AttributeError) as exc:
+                raise Refused(_code(exc)) from None
+            _dual_result_check(out, config['model_id'], config)
+            return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY', 'input_source': 'RETAINED_IN_PROCESS',
+                    'retained_result_hash': retained['result_hash'], 'board': out}
+        # Not held in this process (a restarted bridge, or memory dropped): the pinned inputs are read again from their fixed
+        # manifest (dual_inputs re-checks every byte) and Codex's replay_board is tried on each; it accepts only the pair whose
+        # identities are the saved bindings and whose result is the saved result. The request id is not part of the result hash.
+        # Nothing matching → RETAINED_INPUT_NOT_FOUND: the record stays as it is, nothing is recomputed on another input.
+        for input_id in DUAL_INPUTS:
+            evaluation, reference = dual_inputs(input_id)
+            try:
+                out = dual_qgv.replay_board(copy.deepcopy(saved), evaluation, reference, rid)
+            except ValueError as exc:
+                if str(exc) == 'DUAL_REPLAY_INPUT_MISMATCH':
+                    continue
+                raise Refused(_code(exc)) from None
+            except (KeyError, TypeError, AttributeError) as exc:
+                raise Refused(_code(exc)) from None
+            _dual_result_check(out, config['model_id'], config)
+            return {'candidate': key, 'input_id': input_id, 'data_kind': 'SYNTHETIC', 'kind': 'EXACT_REPLAY', 'input_source': 'PINNED_INPUT_REREAD',
+                    'retained_result_hash': saved['result_hash'], 'board': out}
+        raise Refused('RETAINED_INPUT_NOT_FOUND')
 
     def _context(self, req, rid):
         return {'versions': {'model_version': MODEL, 'engine_version': ENGINE, 'normalization_version': NORMALIZATION,

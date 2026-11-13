@@ -1,0 +1,275 @@
+{
+  "schema_version": "main-handoff-registry/1",
+  "note": "Main's record of producer handoffs it consumes (owner 2026-11-13 「3/3/3 화면 연결 우선, 전달·재현 병렬 작업 추가」 §2). Hashes, paths and comment ids only; no content. tools/handoff_status.py checks each stage against the files themselves. A stage with nothing to check is NOT_APPLICABLE, never assumed done.",
+  "entries": [
+    {
+      "id": "qgv333-contract",
+      "title": "QGV 3/3/3 contract, synthetic and boundary examples",
+      "comments": [
+        6849630620,
+        6849892120,
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "f79e9776929144e12bd3001e2ba57ef89e8b2cf8"
+      },
+      "public": {
+        "manifest": "implementation/docs/research/sector_qgv/qgv333-examples/manifest.json",
+        "sha256": "18516bbb9cf8795c9caef4d55b9198b00eab34b98cb9a6fd20b96b07bfb2e622"
+      },
+      "reader": {
+        "contract": "implementation/docs/research/sector_qgv/qgv333-examples/qgv-333-contract.json",
+        "models": [
+          "U2-333",
+          "U1-333",
+          "S1-333"
+        ]
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": []
+    },
+    {
+      "id": "qgv333-results",
+      "title": "QGV 3/3/3 private results (real run cda233a4)",
+      "comments": [
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fa9b96d3b3ee995378dde025df41701e4218a2c9"
+      },
+      "raw": {
+        "commit": "6b4a5162db2e95b4dfdeb8ca2f801f82ca1cc6d9",
+        "path": "handoffs/qgv-333-20261113/handoff-manifest.json",
+        "sha256": "f024e121a082e78dd90457fa5b85d4b5c2f7c3cf6524c2878258d03db16467ad"
+      },
+      "reader": {
+        "slots": [
+          "operating504@333",
+          "held1057@333"
+        ]
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/operating504/manifest.json",
+          "sha256": "9ba52310600318b239c785c9f2982fff89a59d524c0417da96bd8da841dc5fac"
+        },
+        {
+          "path": "classification/dual-333/operating504/reference-anchor.json",
+          "sha256": "3f911c10f046a5d794bd2c08507ceef3df8036ead657acaa319602998d0e013c"
+        },
+        {
+          "path": "classification/dual-333/operating504/distribution/distribution-manifest.json",
+          "sha256": "9bee936d8c875a0cf438fa79c84a0085d0d7e80ed800128b29d4d876b7c6919f"
+        },
+        {
+          "path": "classification/dual-333/operating504/bins/bin-manifest.json",
+          "sha256": "36f777fdd6a701589436fd7b98553e7ee70c99283e0350e6ab37e901a15dff8b"
+        },
+        {
+          "path": "classification/dual-333/held1057/manifest.json",
+          "sha256": "d4ce02f767da939a50a0b368cda28f6cd199268f8190873667de1fc0dcf1a6b8"
+        },
+        {
+          "path": "classification/dual-333/held1057/input-lineage.json",
+          "sha256": "fc7a3a0f5dba3e76f79a3a6153dbb7958557d16d3c9367b8d68dd99fe52b9a8f"
+        },
+        {
+          "path": "classification/dual-333/held1057/distribution/distribution-manifest.json",
+          "sha256": "323c741e2daa176529fbfea217443b6c0935bb3c16a761eedea873bd8b8c84d5"
+        },
+        {
+          "path": "classification/dual-333/held1057/bins/bin-manifest.json",
+          "sha256": "b32ea361018296eb252ad8fe1a97ebefd74f63c3a0ebe77c8396853d8c15e18a"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_manifest&scope=operating504&set=333",
+        "?part=dual_detail&scope=held1057&shard=000&set=333",
+        "?part=dual_dist_index&scope=operating504&set=333",
+        "?part=dual_bins_detail&scope=held1057&shard=000&set=333",
+        "?part=dual_reference_anchor&scope=operating504&set=333",
+        "?part=dual_lineage&scope=held1057&set=333"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker &set=333 not deployed (owner approval)"
+      },
+      "missing": []
+    },
+    {
+      "id": "qgv333-validator",
+      "title": "QGV 3/3/3 validator type fix (no data regeneration)",
+      "comments": [
+        6850174335
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "f79e9776929144e12bd3001e2ba57ef89e8b2cf8"
+      },
+      "raw": {
+        "commit": "a1c549fd13d9694aa61c2acf2bee08c695d7a1ee",
+        "path": "handoffs/qgv-333-20261113/validator-update.json",
+        "sha256": "d31a09b3edabbdcaa1d111747a66fe348d1a04de07a7cb69e6c37d4802b3fbd3"
+      },
+      "reader": {
+        "contract": "implementation/docs/research/sector_qgv/qgv333-examples/qgv-333-contract.json",
+        "models": [
+          "U2-333",
+          "U1-333",
+          "S1-333"
+        ]
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": []
+    },
+    {
+      "id": "main533-recheck",
+      "title": "Codex recheck of #533 2dc1202c boundaries (accepted)",
+      "comments": [
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fa9b96d3b3ee995378dde025df41701e4218a2c9"
+      },
+      "raw": {
+        "commit": "682f5c02b1fe79e2894a5ea6fd6953e76f343630",
+        "path": "handoffs/qgv-333-20261113/main533-recheck-2dc1202c.json",
+        "sha256": "833cb917caad282711970d72608b637d7a31ab418b5a39745f538471f03889cd"
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": []
+    },
+    {
+      "id": "qgv333-eps",
+      "title": "QGV 3/3/3 annual EPS input connection follow-up (execution 8e9e5baf)",
+      "comments": [
+        6851188500,
+        6851482941
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "bfadb0127a7afc0dc2721f322bdcd08b3a55f67d"
+      },
+      "raw": {
+        "commit": "f8f693ad8cb4a23fa051f6cdf2eae6293763ce02",
+        "path": "handoffs/qgv-333-eps-20261113/handoff-manifest.json",
+        "sha256": "3dd6dcaa556a76150e6e7cf103349820740c68106ccda884c548c534c4dc3ddf"
+      },
+      "reader": {
+        "eps": true
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/eps/eps-index.json",
+          "sha256": "cabd99ddb99a8f45e205a11dc5c838ff5b7d2910beefa51056fccda020b8d3cf"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_eps_index",
+        "?part=dual_eps_diag",
+        "?part=dual_eps_compare",
+        "?part=dual_eps_inputs"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker dual_eps_* not deployed (owner approval)"
+      },
+      "missing": [
+        "new input version bounded result delivery: delivery/<scope>/ manifest (qgv-dual-delivery-manifest/1) + summary + index + details for the three boards",
+        "its full distribution and bins bound to the new result hashes",
+        "an anchor for the new evaluation input (operating 29514f1d…, held 3a422521…): the staged classification bundle names the previous input",
+        "a calculation time field (still absent in qgv333-qinput)",
+        "a reviewed historical common share basis: no adopted proof yet (0); its review clock field is now defined (sector-qgv-review-context/1, delivered with qgv333-qinput)"
+      ]
+    },
+    {
+      "id": "qgv333-qinput",
+      "title": "QGV 3/3/3 Q input recovery, retrospective review (execution 93a699ed)",
+      "comments": [
+        6852162939,
+        6852432156
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "4352c8ec206d41c40b29a4bd723b1fbb61d740a4"
+      },
+      "raw": {
+        "commit": "8cccae5e8f8aabf5967bfed7115367aca72fa80f",
+        "path": "handoffs/qgv-q-input-recovery-20261113/handoff-manifest.json",
+        "sha256": "c894737d4e09c9e5bc39c672d6628b273dcbff65e6423c80a30cbda5e831731b"
+      },
+      "reader": {
+        "qinput": true
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/qinput/q-index.json",
+          "sha256": "1be27c1e109eb927d88f986062e02cb2f737dbacce3836fe78c2c423805304ff"
+        },
+        {
+          "path": "classification/dual-333/qinput/diagnostic-summary.json",
+          "sha256": "562a495a5ca2e431c519452fb8b8c82052f1be8cfa915e2143ef7e0e59516ef5"
+        },
+        {
+          "path": "classification/dual-333/qinput/comparison.json",
+          "sha256": "dfb6ec361a98325fc55b3aaccf74e25ea6e59371108bd1721bf709a372d36d22"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_q_index",
+        "?part=dual_q_diag",
+        "?part=dual_q_compare"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker dual_q_* not deployed (owner approval)"
+      },
+      "missing": [
+        "a scope delivery manifest (qgv-dual-delivery-manifest/1) for each of operating504 / held1057 combining the three new runs: the per-candidate runs (archive runs/<scope>-<candidate>/, qgv-dual-delivery/1 summary + index + details) are delivered, the scope manifest is not, and Main does not assemble it",
+        "the new results' full distribution and bins",
+        "an anchor for the new evaluation input (the staged classification bundle names the original input)",
+        "a calculation time field (calculation is pinned only by execution 93a699ed)"
+      ]
+    },
+    {
+      "id": "ownership-531",
+      "title": "Company relationship view (Codex #531)",
+      "comments": [],
+      "producer": {
+        "pr": 531,
+        "sha": null
+      },
+      "raw": {
+        "commit": "883893e4",
+        "path": "handoffs/company-ownership-20261111/handoff-manifest.json",
+        "sha256": "a2a0b820537c9be3ee55d342ac0468bec2edfc804d40d77135fecd6097815180"
+      },
+      "staged": [
+        {
+          "path": "classification/ownership/ownership-index.json",
+          "sha256": "d2a335c7c7d7e8f21622661a55cfcc9e552d4fde9446f642b794ee7806462a20"
+        }
+      ],
+      "screen_parts": [
+        "?part=ownership_index",
+        "?part=ownership_view&entity=0000002488"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker ownership_* not deployed (owner approval)"
+      },
+      "missing": [
+        "refresh receipt (none delivered)"
+      ]
+    }
+  ]
+}
