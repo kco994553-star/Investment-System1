@@ -208,4 +208,20 @@ test('authenticated delivery: index → view bytes → receipt; damaged, missing
   assert.equal(bad((x) => { x.views[0].note = 1; }), 'KEY_UNEXPECTED');
   assert.equal(bad((x) => { x.views = []; }), 'TYPE');
   assert.equal((await O.checkDelivered(idx, ea, file(a.expected_view, av), null, sha256)).code, 'INDEX_NOT_CHECKED', 'an index the reader did not check');
+
+// Codex #437 6848164775 counterexamples (raw 77f9d153 handoffs/main-final-acceptance-20261113/receipt-boundaries.js), ported: a
+// receipt names its retained dataset (= the view's dataset_hash), is bound to the one view it was checked against (RAM and display),
+// and its attempt is an instant with a time and an explicit zone.
+test('receipt boundaries: dataset hash, binding to its own view (RAM and display), instant with time and zone', async () => {
+  const c = cx.refresh_failed, v = O.validate(c.expected_view).value, other = O.validate(cx.reviewed_scope.expected_view).value;
+  const normal = await O.checkReceipt(c.refresh, v, sha256); assert.equal(normal.ok, true); assert.equal(c.refresh.retained_dataset_sha256, v.dataset_hash);
+  assert.equal((await O.checkReceipt({ ...c.refresh, retained_dataset_sha256: '0'.repeat(64) }, v, sha256)).code, 'RECEIPT_DATASET_MISMATCH');
+  assert.throws(() => O.ram.put(other, normal.value), /OWNERSHIP_RECEIPT_NOT_BOUND/, 'a receipt checked for one view is not kept with another');
+  assert.equal(O.view(other, { receipt: normal.value }).refresh, null, 'nor shown beside another view');
+  assert.match(O.view(v, { receipt: normal.value }).refresh, /^마지막 갱신 시도 실패/, 'shown beside its own view');
+  for (const at of ['2026-01-06', '2026-01-06T12:00:00', '2026-01-06 12:00:00Z', '2026-01-06T12Z'])
+    assert.equal((await O.checkReceipt({ ...c.refresh, attempt: { ...c.refresh.attempt, attempted_at: at } }, v, sha256)).code, 'RECEIPT_TIME', at);
+  for (const at of ['2026-01-06T12:00:00Z', '2026-01-06T12:00:00.5+09:00', '2026-01-06T12:00Z'])
+    assert.equal((await O.checkReceipt({ ...c.refresh, attempt: { ...c.refresh.attempt, attempted_at: at } }, v, sha256)).ok, true, at);
+  O.ram.put(v, normal.value); assert.equal(O.ram.receiptFor(v), normal.value); O.ram.clear();
 });

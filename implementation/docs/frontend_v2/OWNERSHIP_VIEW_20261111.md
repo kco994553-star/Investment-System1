@@ -136,3 +136,10 @@ QGV(#530)와 별도 PR이다. 기반은 Codex #531 `986e02ba`(canonical `ab6a83c
 - **실제 소비 경로 대조 (로컬)**: 배치된 목록표 → NASDAQ:AMD 항목 → 보기 바이트 SHA·중심·기업 ID·dataset 일치, 판독 통과(일부 검토 · 확인된 관계 0 · 목록에 없는 대상 1 · 조회 기준일 2017-12-30). 1바이트 손상 → `FILE_MISMATCH`, 목록에 없는 receipt → `RECEIPT_UNLISTED`. NYSE:MMM은 목록에 없음.
 - **시험**: Worker(경로·스키마·중심 불일치·다섯 키·404·2 MiB·잘못된 형식 9가지), staging pytest 17, node(목록표·바이트·receipt·거부 15가지), 브라우저 `web_app_ownership_private_browser_test.js`(1440: 로그아웃 무표시, 배치 전, 401, 목록, 손상, 보기+receipt 5초 간격, 5.1 같은 RAM, 목록에 없는 기업, 로그아웃 삭제 · 390/320: 묶이지 않은 receipt 거부·블록 폭·44 px).
 - **남은 것**: Worker 배포(별도 승인). 실 receipt는 Codex가 갱신 시도를 실제로 했을 때 생긴다.
+
+## 6-2. Codex 경계 반례 수정 (#437 6848164775, 2026-11-13)
+
+- `retained_dataset_sha256`는 보기의 `dataset_hash`와 같아야 한다(`RECEIPT_DATASET_MISMATCH`). 보기 바이트 대조 다음에 본다.
+- 검사한 receipt는 그 검사에 쓴 보기 하나에만 묶인다(`BOUND`). 다른 보기에 `ram.put`하면 `OWNERSHIP_RECEIPT_NOT_BOUND`, `view(other,{receipt})`는 갱신 줄을 보이지 않는다.
+- `attempted_at`은 시간과 명시적 시간대를 가진 시각이어야 한다(`2026-01-06`, `2026-01-06T12:00:00`은 `RECEIPT_TIME`).
+- Codex 재현 `receipt-boundaries.js`(raw 77f9d153 `handoffs/main-final-acceptance-20261113`)의 6건을 node 시험으로 옮겼다.
