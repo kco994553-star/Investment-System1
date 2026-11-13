@@ -113,3 +113,35 @@ test('refused: another distribution, routes, counts, ranks, members hash, member
   const r = read(path.resolve(BD, c.output));
   assert.equal((await DQ.checkBins({ manifest: file(r, 'bin-manifest.json'), index: file(r, 'bin-index.json') }, {}, sha256)).code, 'DISTRIBUTION_NOT_CHECKED');
 });
+
+// Codex #437 6848164775 counterexample (raw 77f9d153 handoffs/main-final-acceptance-20261113/bin-file-boundaries.js), ported: the
+// stored rows of all_ten-stored split over two part files (ranks 1–10 / 11–20, nothing rescored); a bin must name exactly the
+// distinct part files that hold its rows — another file, or the same file twice, is refused.
+test('a bin\'s member_files are exactly the distinct part files holding its rows (two-file group: wrong file, duplicate refused)', async () => {
+  const bytes = (x) => Buffer.from(JSON.stringify(x, null, 2) + '\n');
+  const descriptor = (files, n) => ({ path: n, size: files[n].length, sha256: sha(files[n]) });
+  const c = F.distCase('all_ten-stored', (docs) => {
+    const p = docs['distribution-000.json'].parts[0]; p.rows.sort((a, b) => a.rank - b.rank);
+    docs['distribution-001.json'] = { schema_version: 'qgv-dual-factor-distribution-part/1', parts: [{ group_id: p.group_id, rows: p.rows.splice(10) }] };
+    docs['distribution-index.json'].groups[0].files.push('distribution-001.json');
+  });
+  const dist = (await DQ.checkDistributionSynthetic({ manifest: file(c.files, 'distribution-manifest.json'), index: file(c.files, 'distribution-index.json') }, sha256, { scopes: c.scopes })).value;
+  const parts = new Map(); for (const n of ['distribution-000.json', 'distribution-001.json']) parts.set(n, (await DQ.checkDistributionPart(file(c.files, n), n, dist, sha256)).value);
+  const g = dist.groups[0], G = DQ.distributionGroup(dist, g.group_id, parts).value;
+  const dir = path.join(BD, 'all_ten-stored'), original = read(dir);
+  async function check(mode) {
+    const docs = Object.fromEntries(Object.entries(original).map(([n, b]) => [n, JSON.parse(b.toString('utf8'))])), bi = docs['bin-index.json'], r = docs['bins-000.json'].groups[0];
+    bi.source_distribution_manifest = descriptor(c.files, 'distribution-manifest.json'); bi.source_index = descriptor(c.files, 'distribution-index.json'); r.files = g.files;
+    for (const b of r.bins) b.member_files = b.count ? [descriptor(c.files, b.first_rank <= 10 ? 'distribution-000.json' : 'distribution-001.json')] : [];
+    if (mode === 'wrong_file') r.bins[0].member_files = [descriptor(c.files, 'distribution-001.json')];
+    if (mode === 'duplicate') r.bins[0].member_files.push({ ...r.bins[0].member_files[0] });
+    if (mode === 'extra_file') r.bins[0].member_files.push(descriptor(c.files, 'distribution-001.json'));
+    const files = Object.fromEntries(Object.entries(docs).filter(([n]) => n !== 'bin-manifest.json').map(([n, d]) => [n, bytes(d)]));
+    const m = docs['bin-manifest.json']; m.source_manifest_sha256 = sha(c.files['distribution-manifest.json']); m.files = Object.keys(files).sort().map((n) => descriptor(files, n)); files['bin-manifest.json'] = bytes(m);
+    const B = await DQ.checkBins({ manifest: file(files, 'bin-manifest.json'), index: file(files, 'bin-index.json') }, dist, sha256); if (!B.ok) return B;
+    const P = await DQ.checkBinsPart(file(files, 'bins-000.json'), 'bins-000.json', B.value, sha256); if (!P.ok) return P;
+    return DQ.binsMatchGroup(P.value.get(g.group_id), G, sha256);
+  }
+  assert.equal((await check('normal')).ok, true, 'the two-file group with each bin naming its own file');
+  for (const mode of ['wrong_file', 'duplicate', 'extra_file']) { const r = await check(mode); assert.equal(r.ok, false, mode); assert.equal(r.code, 'BIN_FILES', mode); }
+});

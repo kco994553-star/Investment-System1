@@ -17,7 +17,8 @@ Checks, all before anything is written:
   the staged distribution's boards, adds no score, does not change the population and claims no whole market; it routes every staged
   distribution group exactly once to a listed bins file, and every listed bins file holds a routed group;
 - every bins file (qgv-dual-factor-bins-part/1) holds exactly the groups routed there, with ten bins whose member files are
-  descriptors of the staged distribution files; no raw value;
+  descriptors of the staged distribution files and exactly the distinct files that hold that bin's rows (none missing or extra,
+  no duplicate); no raw value;
 - --data-dir is outside this public repository.
 classification/dual/<scope>/bins/ is replaced whole or not at all; on any failure the existing copy stays. Restaging the
 distribution leaves this routing pointing at the old manifest; the reader then refuses it until the routing is staged again.
@@ -129,6 +130,17 @@ def check(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
             or any(r.get('path') not in listed or not PART.match(str(r.get('path'))) for r in routes)):
         raise StageError('ROUTES_INVALID')
     where = {r['group_id']: r['path'] for r in routes}
+    # The staged distribution's part files: which files hold each (group, decile)'s rows (Codex #437 6848164775 — a bin's
+    # member_files must be exactly those distinct files, none missing, none extra, no duplicate).
+    holds = {}
+    for f in dist_files:
+        if f == 'distribution-index.json' or not (dist_dir / f).is_file():
+            continue
+        dpart = _json((dist_dir / f).read_bytes(), f)
+        for q in dpart.get('parts') or [] if isinstance(dpart, dict) else []:
+            for row in (q.get('rows') or []) if isinstance(q, dict) else []:
+                if isinstance(row, dict) and row.get('decile') is not None:
+                    holds.setdefault((q.get('group_id'), row.get('decile')), set()).add(f)
     if set(where.values()) != {n for n in listed if PART.match(n)}:
         raise StageError('PART_UNREFERENCED')
     for name in listed:
@@ -140,7 +152,11 @@ def check(source: Path, scope: str, pin: str, data_dir: Path) -> tuple:
                 raise StageError('PART_GROUP_MISMATCH:' + name)
             for g in part['groups']:
                 for b in g.get('bins') or []:
-                    if any(not isinstance(f, dict) or dist_files.get(f.get('path')) != f for f in b.get('member_files') or []):
+                    mf = b.get('member_files') or []
+                    if any(not isinstance(f, dict) or dist_files.get(f.get('path')) != f for f in mf):
+                        raise StageError('MEMBER_FILE_MISMATCH:' + name)
+                    paths = [f['path'] for f in mf]
+                    if len(set(paths)) != len(paths) or set(paths) != holds.get((g.get('group_id'), b.get('decile')), set()):
                         raise StageError('MEMBER_FILE_MISMATCH:' + name)
             if _has_raw(part):
                 raise StageError('RAW_VALUE_PRESENT:' + name)

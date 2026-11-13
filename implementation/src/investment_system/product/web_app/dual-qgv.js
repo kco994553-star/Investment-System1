@@ -524,7 +524,7 @@ async function checkDistributionPart(file,name,D,sha256){
 // counts, unavailable reasons, tie splits). Any disagreement refuses the group; nothing is repaired.
 function distributionGroup(D,group_id,parts){
  try{if(!D||!DIST_CHECKED.has(D))refuse('NOT_CHECKED','$');const g=D.groups.find(x=>x.group_id===group_id);if(!g)refuse('GROUP_UNKNOWN',group_id);
-  const rows=[];for(const f of g.files){const p=parts&&parts.get(f);if(!p)refuse('PART_NOT_LOADED',f);rows.push(...(p.get(group_id)||[]));}
+  const rows=[],fileOf=new Map();for(const f of g.files){const p=parts&&parts.get(f);if(!p)refuse('PART_NOT_LOADED',f);for(const r of p.get(group_id)||[]){rows.push(r);fileOf.set(r,f);}}
   const at=group_id,ids=new Set(),scopeOf=new Map(Object.entries(D.scopeOf).map(([k,v])=>[k,v[g.board]]));
   if(rows.length!==g.evaluation_rows_in_scope)refuse('GROUP_ROWS',at);
   for(const r of rows){if(ids.has(r.company_id))refuse('GROUP_ROWS',at+'.'+r.company_id);ids.add(r.company_id);
@@ -544,8 +544,10 @@ function distributionGroup(D,group_id,parts){
   if(reasons.size!==Object.keys(g.unavailable_reasons).length||[...reasons].some(([k,v])=>g.unavailable_reasons[k]!==v))refuse('BINS_MISMATCH',at+'.unavailable_reasons');
   const splits=valid.filter((r,i)=>i&&valid[i-1].score===r.score&&valid[i-1].stored_decile!==r.stored_decile).length;
   if(splits!==g.legacy_tie_splits.length)refuse('TIE_SPLITS_MISMATCH',at);
-  return{ok:true,value:freeze({group:g,rows})};}
+  // The part file each row was read from (Codex #437 6848164775: a bin's member_files must be exactly the files holding its rows).
+  const value=freeze({group:g,rows});GROUP_FILES.set(value,fileOf);return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+const GROUP_FILES=new WeakMap();
 
 // What the screen shows for one checked group: its context once, the ten bands with their stored counts and the unavailable rows apart,
 // and for a chosen band (a decile, or 'NONE') one page of its rows in the stored rank order (unavailable rows as delivered). Choosing
@@ -627,7 +629,8 @@ async function checkBinsPart(file,name,B,sha256){
    r.bins.forEach((b,j)=>{const bt=at+'.bins['+j+']';exact(b,BIN_KEYS,bt);if(b.decile!==10-j||b.count!==g.bins[j].count)refuse('BIN_COUNT',bt);sum+=b.count;
     if(b.count?(!int(b.first_rank)||!int(b.last_rank)||b.first_rank<1||b.last_rank<b.first_rank||b.last_rank>n):(b.first_rank!==null||b.last_rank!==null))refuse('BIN_RANKS',bt);
     if(!HEX.test(b.members_hash)||!Array.isArray(b.member_files)||(b.count?!b.member_files.length:b.member_files.length))refuse('BIN_FILES',bt);
-    b.member_files.forEach(f=>{if(!isObj(f)||!g.files.includes(f.path)||!same(f,D.entries[f.path]))refuse('BIN_FILES',bt+'.member_files');});});
+    b.member_files.forEach(f=>{if(!isObj(f)||!g.files.includes(f.path)||!same(f,D.entries[f.path]))refuse('BIN_FILES',bt+'.member_files');});
+    if(new Set(b.member_files.map(f=>f.path)).size!==b.member_files.length)refuse('BIN_FILES',bt+'.member_files');});
    if(r.binned_evaluation_n!==sum||r.partition_status!==status||(n>=10?sum!==n:sum!==0))refuse('BIN_PARTITION',at);out.set(g.group_id,r);});
   return{ok:true,value:freeze(out)};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
@@ -639,7 +642,11 @@ async function binsMatchGroup(record,G,sha256){
   for(const b of record.bins){const rows=G.rows.filter(r=>r.decile===b.decile).sort((a,c)=>a.rank-c.rank),at=record.group_id+'.D'+b.decile;
    if(rows.length!==b.count)refuse('BIN_MEMBERS',at+'.count');
    if(b.count&&(rows[0].rank!==b.first_rank||rows[rows.length-1].rank!==b.last_rank))refuse('BIN_MEMBERS',at+'.ranks');
-   if((await sha256(new TextEncoder().encode(canonical(rows.map(r=>r.company_id)))))!==b.members_hash)refuse('BIN_MEMBERS',at+'.members_hash');}
+   if((await sha256(new TextEncoder().encode(canonical(rows.map(r=>r.company_id)))))!==b.members_hash)refuse('BIN_MEMBERS',at+'.members_hash');
+   // The bin names exactly the distinct part files its rows were read from: none missing, none extra (no duplicate by checkBinsPart).
+   const fileOf=GROUP_FILES.get(G);if(!fileOf)refuse('GROUP_NOT_CHECKED',at);
+   const holds=[...new Set(rows.map(r=>fileOf.get(r)))].sort(),named=b.member_files.map(f=>f.path).sort();
+   if(holds.length!==named.length||holds.some((f,i)=>f!==named[i]))refuse('BIN_FILES',at+'.member_files');}
   return{ok:true};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
