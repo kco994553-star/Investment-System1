@@ -590,7 +590,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-cc-filter]:not([data-cc-filter=NONE])').first().waitFor({ timeout: 20000 });
       assert.equal(w.log.length, before, phase + ': the QGV filter and another company read the same RAM bundle, no new read');
       assert.deepEqual(await page.locator('[data-lb-models] button[data-lb-model]').evaluateAll((e) => e.map((b) => [b.dataset.lbModel, b.disabled])),
-        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true]], phase + ': held1057 alone never makes 2.1 research models selectable');
+        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true], ['U2-333', true], ['U1-333', true], ['S1-333', true]], phase + ': held1057 alone never makes 2.1 research models selectable');
       ok(tag + ' the same RAM bundle on another company (accounting line apart) and the QGV filter, no new read');
 
       phase = tag + ' fold';
