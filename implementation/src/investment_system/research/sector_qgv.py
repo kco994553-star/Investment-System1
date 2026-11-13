@@ -4,6 +4,7 @@ The operating calc23.1 constants, formulas, publication, type weights and missin
 policy are not modified. Inputs are evidence-bearing observations, not public totals.
 """
 from __future__ import annotations
+from fractions import Fraction
 import copy
 import hashlib
 import json
@@ -135,7 +136,7 @@ def effective_weights(p):
     for axis,roles in p['axes'].items():
         for r in roles.values():
             for variant,w in r['factors'].items():
-                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
+                out[canonical(variant)]=float(Fraction(p['axis_weights'][axis]*r['weight']*w, sum(p['axis_weights'].values())*sum(x['weight'] for x in roles.values())*sum(r['factors'].values()))) if p.get('weight_policy')=='positive-integer-ratios/1' else p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
     return out
 
 
@@ -290,13 +291,14 @@ def _mapped(row,s):
 
 def _axis_score(p,scores,axis):
     total=0.0;missing=[]
+    if axis in p.get('pending_axes',[]):return None,[v for r in p['axes'][axis].values() for v in r['factors']]
     for r in p['axes'][axis].values():
         if not r['weight']:continue
         for v,w in r['factors'].items():
             if not w:continue
             key=canonical(v);value=scores[key]['score']
             if value is None:missing.append(key)
-            else:total+=r['weight']*w*value/1e8
+            else:total+=float(Fraction(r['weight']*w, sum(x['weight'] for x in p['axes'][axis].values())*sum(r['factors'].values())))*value if p.get('weight_policy')=='positive-integer-ratios/1' else r['weight']*w*value/1e8
     return (None if missing else total),missing
 
 
@@ -313,7 +315,7 @@ def aggregate(p,scores,gate,valuation_date):
             post={a:w/remaining if remaining else 0.0 for a,w in post.items()}
         if pre is not None and sum(post.values())>0:total=sum(axes[a]*w for a,w in post.items() if w)
     nominal=effective_weights(p)
-    effective={canonical(v):post[a]*r['weight']*w/1e8 for a,rs in p['axes'].items() for r in rs.values() for v,w in r['factors'].items()}
+    effective={canonical(v):post[a]*float(Fraction(r['weight']*w,sum(x['weight'] for x in rs.values())*sum(r['factors'].values()))) if p.get('weight_policy')=='positive-integer-ratios/1' else post[a]*r['weight']*w/1e8 for a,rs in p['axes'].items() for r in rs.values() for v,w in r['factors'].items()}
     return dict(axes=axes,missing_factors=missing,pre_gate_total=pre,total=total,gate_status=gate_status,
                 nominal_effective_weights=nominal,post_gate_effective_weights=effective,
                 nominal_axis_weights=p['axis_weights'],post_gate_axis_weights=post)
@@ -369,9 +371,22 @@ def _preview_core(config,snapshot,request_id,*,execution=None):
     peers,issuer_rows=scoring_representatives(records)
     for key,row in records.items():
         mapped=_mapped(row,s)
-        if mapped:presets[key]=copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else preset(config,row['sector_id'],row['accounting_template'])
+        if mapped:
+            presets[key]=(copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else
+                          copy.deepcopy(execution['scoped_presets'][row['sector_id']+'|'+row['accounting_template']]) if execution and execution.get('scoped_presets') else
+                          preset(config,row['sector_id'],row['accounting_template']))
         # Availability covers registered variants, even when mapping prevents scoring.
         matrix[key]={v:_validated_observation(row,v,s) for v in CATALOG}
+        if execution and execution.get('core_policy')=='FIXED_333':
+            for v,(value,status,raw,external) in matrix[key].items():
+                if CATALOG[v]['calculator_status']!='IMPLEMENTED':
+                    matrix[key][v]=(None,'CALCULATOR_PENDING',raw,external)
+                elif row.get('accounting_template') in TEMPLATES and row['accounting_template'] not in CATALOG[v]['scope']:
+                    matrix[key][v]=(None,'NOT_APPLICABLE',raw,external)
+                elif value is not None and any(i['unit']=='currency/share' for i in CATALOG[v]['inputs']):
+                    obs=row['observations'][v]
+                    if not row.get('security_id') or obs.get('security_id')!=row['security_id'] or not obs.get('corporate_action_basis'):
+                        matrix[key][v]=(None,'SCOPE_MISMATCH',raw,external)
         if not mapped:continue
         group=() if execution and execution['kind']=='COMMON' else (row['sector_id'],row['accounting_template'])
         for v,(value,status,_,_) in matrix[key].items():

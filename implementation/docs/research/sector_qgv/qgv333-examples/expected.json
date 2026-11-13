@@ -1,0 +1,6513 @@
+{
+  "data_kind": "SYNTHETIC",
+  "cases": {
+    "normal": {
+      "U2-333": {
+        "Q": 3,
+        "G": 3,
+        "V": 3,
+        "total": 3
+      },
+      "U1-333": {
+        "Q": 3,
+        "G": 3,
+        "V": 3,
+        "total": 3
+      },
+      "S1-333": {
+        "Q": 3,
+        "G": 3,
+        "V": 3,
+        "total": 3
+      }
+    },
+    "small-reference": {
+      "U2-333": {
+        "Q": 0,
+        "G": 0,
+        "V": 0,
+        "total": 0
+      },
+      "U1-333": {
+        "Q": 0,
+        "G": 0,
+        "V": 0,
+        "total": 0
+      },
+      "S1-333": {
+        "Q": 0,
+        "G": 0,
+        "V": 0,
+        "total": 0
+      }
+    },
+    "financial-scope": {
+      "U2-333": {
+        "Q": 0,
+        "G": 0,
+        "V": 3,
+        "total": 0
+      },
+      "U1-333": {
+        "Q": 0,
+        "G": 0,
+        "V": 3,
+        "total": 0
+      },
+      "S1-333": {
+        "Q": 3,
+        "G": 3,
+        "V": 3,
+        "total": 3
+      }
+    },
+    "reit-pending": {
+      "U2-333": {
+        "Q": 0,
+        "G": 3,
+        "V": 3,
+        "total": 0
+      },
+      "U1-333": {
+        "Q": 0,
+        "G": 3,
+        "V": 3,
+        "total": 0
+      },
+      "S1-333": {
+        "Q": 3,
+        "G": 0,
+        "V": 3,
+        "total": 0
+      }
+    }
+  },
+  "all_bins": {
+    "U2-333|COMMON|accruals_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|affo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|cfo_assets_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|cfo_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|cfo_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|cfo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|common_bps_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|common_equity_assets": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|consensus_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|depreciation_capex": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|dividend_yield_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ebit_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ebitda_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ep_fy1": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ep_fy_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ep_ntm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ep_ttm_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|eps_diluted_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|fcf_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|fcf_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|fcf_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|fcff_ev": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|ffo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|gross_profit_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|interest_coverage_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|nareit_ffo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|net_debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|net_income_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|net_share_reduction": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|ni_da_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|noa_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|operating_income_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|operating_margin_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|peg_forecast": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|peg_historical": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|profit_stability_5y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|revenue_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|revenue_cagr_5y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|revenue_growth_1y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|revenue_growth_consistency_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|roa_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|roa_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|roe_common_ttm": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|roic_explicit": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|sales_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|sales_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|shareholder_yield": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U2-333|COMMON|tangible_bps_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U2-333|COMMON|tangible_common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|accruals_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|affo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|cfo_assets_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|cfo_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|cfo_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|cfo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|common_bps_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|common_equity_assets": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|consensus_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|depreciation_capex": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|dividend_yield_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ebit_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ebitda_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ep_fy1": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ep_fy_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ep_ntm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ep_ttm_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|eps_diluted_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|fcf_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|fcf_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|fcf_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|fcff_ev": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|ffo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|gross_profit_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|interest_coverage_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|nareit_ffo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|net_debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|net_income_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|net_share_reduction": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|ni_da_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|noa_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|operating_income_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|operating_margin_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|peg_forecast": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|peg_historical": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|profit_stability_5y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|revenue_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|revenue_cagr_5y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|revenue_growth_1y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|revenue_growth_consistency_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|roa_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|roa_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|roe_common_ttm": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|roic_explicit": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|sales_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|sales_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|shareholder_yield": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "U1-333|COMMON|tangible_bps_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "U1-333|COMMON|tangible_common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|accruals_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|affo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|cfo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_bps_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|common_equity_assets": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|consensus_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|depreciation_capex": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|dividend_yield_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebit_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ebitda_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy1": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_fy_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ntm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ep_ttm_diluted": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|eps_diluted_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcf_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|fcff_ev": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ffo_per_share_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|gross_profit_assets_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|interest_coverage_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|nareit_ffo_mcap": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_debt_assets": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_income_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|net_share_reduction": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|ni_da_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|noa_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_income_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|operating_margin_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_forecast": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|peg_historical": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|profit_stability_5y": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_cagr_5y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_1y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|revenue_growth_consistency_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_improvement_3y": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roa_ttm": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roe_common_ttm": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|roic_explicit": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_ev": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|sales_mcap": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|shareholder_yield": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_bps_growth": [
+      {
+        "decile": 10,
+        "count": 0
+      },
+      {
+        "decile": 9,
+        "count": 0
+      },
+      {
+        "decile": 8,
+        "count": 0
+      },
+      {
+        "decile": 7,
+        "count": 0
+      },
+      {
+        "decile": 6,
+        "count": 0
+      },
+      {
+        "decile": 5,
+        "count": 0
+      },
+      {
+        "decile": 4,
+        "count": 0
+      },
+      {
+        "decile": 3,
+        "count": 0
+      },
+      {
+        "decile": 2,
+        "count": 0
+      },
+      {
+        "decile": 1,
+        "count": 0
+      }
+    ],
+    "S1-333|SECTOR|INFORMATION_TECHNOLOGY|GENERAL|tangible_common_bp": [
+      {
+        "decile": 10,
+        "count": 2
+      },
+      {
+        "decile": 9,
+        "count": 2
+      },
+      {
+        "decile": 8,
+        "count": 2
+      },
+      {
+        "decile": 7,
+        "count": 2
+      },
+      {
+        "decile": 6,
+        "count": 2
+      },
+      {
+        "decile": 5,
+        "count": 2
+      },
+      {
+        "decile": 4,
+        "count": 2
+      },
+      {
+        "decile": 3,
+        "count": 2
+      },
+      {
+        "decile": 2,
+        "count": 2
+      },
+      {
+        "decile": 1,
+        "count": 2
+      }
+    ]
+  }
+}

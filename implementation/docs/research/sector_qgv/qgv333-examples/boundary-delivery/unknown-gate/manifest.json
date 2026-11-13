@@ -1,0 +1,22 @@
+{
+  "schema_version": "qgv-dual-delivery-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "detail-000.json",
+      "size": 259350,
+      "sha256": "7685b1dc70e2150e8347766dbb4631830443312559c3dff2b507c482daeb0d93"
+    },
+    {
+      "path": "index.json",
+      "size": 4330,
+      "sha256": "debf4350aef1bc6e590184972c54c6cbd1ab7608073284397a2f158c4e05d23b"
+    },
+    {
+      "path": "summary.json",
+      "size": 19519,
+      "sha256": "4272b83dbc30099fc95200c53d5dccdbb492ab71ebd4b1335382fb2586ea78ce"
+    }
+  ]
+}

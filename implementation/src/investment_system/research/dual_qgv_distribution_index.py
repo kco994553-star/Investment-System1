@@ -65,7 +65,7 @@ def validate_distribution(files, expected_manifest_sha256):
     factor_members = defaultdict(set)
     for gid, g in groups.items():
         require(gid == g['board']+'|'+g['ranking_scope']+'|'+g['variant_id'] and g['board'] in idx['boards'], 'GROUP_ID')
-        require(g['ranking_scope'] == 'COMMON' if g['board'] != 'S1' else g['ranking_scope'].startswith('SECTOR|'), 'GROUP_SCOPE')
+        require(g['ranking_scope'] == 'COMMON' if g['board'] not in ('S1','S1-333') else g['ranking_scope'].startswith('SECTOR|'), 'GROUP_SCOPE')
         members = {r['company_id'] for r in rows[gid]}
         require(len(rows[gid]) == g['evaluation_rows_in_scope'] and members <= set(ids), 'GROUP_MEMBERS')
         require(set(g['files']) == set(locations[gid].values()) and len(g['files']) == len(set(g['files'])), 'GROUP_FILES')
