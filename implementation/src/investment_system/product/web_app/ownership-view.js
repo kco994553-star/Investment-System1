@@ -154,7 +154,7 @@ function view(v,{companyLink,receipt}={}){const centre=v.entity_context.entity_i
  if(v.collection.last_failure)state.push('마지막 갱신 실패 · 이전에 성공한 자료를 보임'+(v.collection.last_success_at?' ('+v.collection.last_success_at+')':''));
  // A separate refresh receipt (checkReceipt) bound to these very view bytes: the failed attempt is shown beside the retained view,
  // whose own generated and last-success times stay as they are.
- const refresh=receipt&&RECEIPTS.has(receipt)&&receipt.attempt.outcome!=='SUCCESS'?'마지막 갱신 시도 '+(ATTEMPT[receipt.attempt.outcome])+' · 시도 '+receipt.attempt.attempted_at
+ const refresh=receipt&&RECEIPTS.has(receipt)&&BOUND.get(receipt)===v&&receipt.attempt.outcome!=='SUCCESS'?'마지막 갱신 시도 '+(ATTEMPT[receipt.attempt.outcome])+' · 시도 '+receipt.attempt.attempted_at
   +' · 이전에 성공한 자료를 보임(성공 '+receipt.unchanged_last_success_at+' · 생성 '+receipt.unchanged_generated_at+')':null;
 
  if(conflicts)state.push('자료 충돌 '+conflicts+'건 · 값을 고르지 않음');if(review)state.push('재검토 필요 '+review+'건');
@@ -168,6 +168,10 @@ function view(v,{companyLink,receipt}={}){const centre=v.entity_context.entity_i
 // is later than the view. Anything else is refused and the view is shown without a refresh line.
 const ATTEMPT=Object.freeze({SUCCESS:'성공',FAILED:'실패',PARTIAL:'일부만 성공',PARSE_FAILED:'해석 실패'});
 const RECEIPTS=new WeakSet();
+// A checked receipt is bound to the one checked view it was checked against (Codex #437 6848164775): it is shown and kept only with it.
+const BOUND=new WeakMap();
+// An instant with a time and an explicit zone (the producer's _instant): a date alone or a time without a zone is refused.
+const INSTANT=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?(Z|[+-]\d{2}:\d{2})$/;
 const canonicalJson=x=>Array.isArray(x)?'['+x.map(canonicalJson).join(',')+']':isObj(x)?'{'+Object.keys(x).sort().map(k=>JSON.stringify(k)+':'+canonicalJson(x[k])).join(',')+'}':JSON.stringify(x);
 async function checkReceipt(r,v,sha256){
  try{if(!CHECKED.has(v))refuse('OWNERSHIP_VIEW_NOT_CHECKED','$');if(typeof sha256!=='function')refuse('HASH_UNAVAILABLE','$');
@@ -176,8 +180,9 @@ async function checkReceipt(r,v,sha256){
   if(!/^[0-9a-f]{64}$/.test(r.retained_dataset_sha256)||!/^[0-9a-f]{64}$/.test(r.retained_view_sha256))refuse('TYPE','$receipt');
   if((await sha256(new TextEncoder().encode(canonicalJson(v)+'\n')))!==r.retained_view_sha256)refuse('RECEIPT_VIEW_MISMATCH','$receipt.retained_view_sha256');
   if(r.unchanged_generated_at!==v.generated_at||r.unchanged_last_success_at!==v.collection.last_success_at)refuse('RECEIPT_VIEW_MISMATCH','$receipt.unchanged_generated_at');
-  if(typeof r.attempt.attempted_at!=='string'||!(Date.parse(r.attempt.attempted_at)>Date.parse(v.generated_at)))refuse('RECEIPT_TIME','$receipt.attempt.attempted_at');
-  const value=freeze(JSON.parse(JSON.stringify(r)));RECEIPTS.add(value);return{ok:true,value};}
+  if(r.retained_dataset_sha256!==v.dataset_hash)refuse('RECEIPT_DATASET_MISMATCH','$receipt.retained_dataset_sha256');
+  if(typeof r.attempt.attempted_at!=='string'||!INSTANT.test(r.attempt.attempted_at)||!(Date.parse(r.attempt.attempted_at)>Date.parse(v.generated_at)))refuse('RECEIPT_TIME','$receipt.attempt.attempted_at');
+  const value=freeze(JSON.parse(JSON.stringify(r)));RECEIPTS.add(value);BOUND.set(value,v);return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 // A relationship read from both sides is one fact: the same relationship_id, opposite relative directions (5.1.2 연결 근거).
 function sameFact(a,b){const x=new Map(a.relationships.map(r=>[r.relationship_id,r]));return b.relationships.filter(r=>x.has(r.relationship_id))
@@ -186,7 +191,7 @@ function sameFact(a,b){const x=new Map(a.relationships.map(r=>[r.relationship_id
 // validate did not return is refused; a drop tells the screens.
 const ram=(()=>{const views=new Map(),subs=new Set();const tell=()=>{for(const f of subs)try{f();}catch(_){}};
  const receipts=new WeakMap();
- return Object.freeze({put(v,receipt){if(!CHECKED.has(v))throw Error('OWNERSHIP_VIEW_NOT_CHECKED');if(receipt!==undefined&&!RECEIPTS.has(receipt))throw Error('OWNERSHIP_RECEIPT_NOT_CHECKED');
+ return Object.freeze({put(v,receipt){if(!CHECKED.has(v))throw Error('OWNERSHIP_VIEW_NOT_CHECKED');if(receipt!==undefined&&!RECEIPTS.has(receipt))throw Error('OWNERSHIP_RECEIPT_NOT_CHECKED');if(receipt!==undefined&&BOUND.get(receipt)!==v)throw Error('OWNERSHIP_RECEIPT_NOT_BOUND');
    views.set(v.entity_context.entity_id,v);if(receipt)receipts.set(v,receipt);tell();},receiptFor(v){return receipts.get(v)||null;},
   forCompany(code){for(const v of views.values()){const e=v.entities.find(x=>x.entity_id===v.entity_context.entity_id);if(e&&e.company_ids.includes(code))return v;}return null;},
   get(id){return views.get(id)||null;},all(){return[...views.values()];},clear(){views.clear();tell();},subscribe(f){subs.add(f);return()=>subs.delete(f);}});})();

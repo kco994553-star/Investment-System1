@@ -114,3 +114,10 @@ QGV(#530)와 별도 PR이다. 기반은 Codex #531 `986e02ba`(canonical `ab6a83c
   - 브라우저: 검토 전 + INCOMING의 두 줄, REVIEWED_SCOPE, 실패 receipt 줄을 확인한다.
     - 가운데 기업 코드를 시험 목록 기업으로 바꿨기 때문에, receipt의 보존 해시는 바뀐 보기 바이트로 다시 맞췄다(시험용).
 - **실자료 전달 경로**는 §5대로 아직 없다. 이 기반에는 비공개 인증 층이 없다.
+
+## 6-2. Codex 경계 반례 수정 (#437 6848164775, 2026-11-13)
+
+- `retained_dataset_sha256`는 보기의 `dataset_hash`와 같아야 한다(`RECEIPT_DATASET_MISMATCH`). 보기 바이트 대조 다음에 본다.
+- 검사한 receipt는 그 검사에 쓴 보기 하나에만 묶인다(`BOUND`). 다른 보기에 `ram.put`하면 `OWNERSHIP_RECEIPT_NOT_BOUND`, `view(other,{receipt})`는 갱신 줄을 보이지 않는다.
+- `attempted_at`은 시간과 명시적 시간대를 가진 시각이어야 한다(`2026-01-06`, `2026-01-06T12:00:00`은 `RECEIPT_TIME`).
+- Codex 재현 `receipt-boundaries.js`(raw 77f9d153 `handoffs/main-final-acceptance-20261113`)의 6건을 node 시험으로 옮겼다.
