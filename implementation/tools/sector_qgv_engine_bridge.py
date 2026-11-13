@@ -39,6 +39,10 @@ dual synthetic evaluation and reference snapshots (two inputs, never one); save 
 retained original inputs and request id (qgv-dual-saved/1 only; a sector saved record is refused, not converted). Every answer names
 the requested model and model_id, and the engine result must carry the same model_id and configuration hash, otherwise
 MODEL_RESPONSE_MISMATCH. A request without `model` keeps the sector default behaviour below unchanged.
+The 3/3/3 candidates (owner 2026-11-13; Codex #534 `research.qgv_333`, QGV_333.md) are named the same way: INTEGRATED →
+unified-333-eps/0.1.0 (U2-333) or unified-333-persistence/0.1.0 (U1-333), SECTOR → sector-333/0.1.0 (S1-333); their config is
+qgv_333.candidate_configs()[key] (qgv-dual-config/2), run, saved and replayed by the same dual_qgv calls (config/2 dispatches to
+Codex's fixed validator); view answers the S1-333 recipe of the asked sector × accounting model as the contract states it.
 
 Transport: one JSON object per line on stdin -> one JSON object per line on stdout (tools/web_app_sector_qgv_engine.js runs it
 behind the development site's POST route `sector-qgv-engine`). Errors are fixed codes; no input value, company result or
@@ -60,6 +64,7 @@ from investment_system.research import sector_qgv as engine  # noqa: E402
 from investment_system.research import sector_qgv_main as main_bridge  # noqa: E402
 from investment_system.research import sector_qgv_partial as partial  # noqa: E402
 from investment_system.research import dual_qgv  # noqa: E402
+from investment_system.research import qgv_333  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
@@ -91,8 +96,11 @@ MAIN_SYNTHETIC_I1 = ('MAIN_SYNTHETIC_I1', ROOT / 'tests' / 'fixtures' / 'sector_
 MAX_COMPARISON_BYTES = 8 << 20
 
 # Research models (Codex #529): request model → the candidates it may name explicitly (candidate_configs() keys).
-DUAL_MODELS = {'INTEGRATED': {'unified-roa-core/0.1.0': 'U1', 'unified-sales-core/0.1.0': 'U2'},
-               'SECTOR': {'sector-reduced-core/0.1.0': 'S1'}}
+DUAL_MODELS = {'INTEGRATED': {'unified-roa-core/0.1.0': 'U1', 'unified-sales-core/0.1.0': 'U2',
+                              'unified-333-eps/0.1.0': 'U2-333', 'unified-333-persistence/0.1.0': 'U1-333'},
+               'SECTOR': {'sector-reduced-core/0.1.0': 'S1', 'sector-333/0.1.0': 'S1-333'}}
+# The 3/3/3 candidates' configs come from Codex's qgv_333 (config/2), the reduced ones from dual_qgv (config/1); never one for the other.
+Q333 = ('U2-333', 'U1-333', 'S1-333')
 DUAL_OPS = ('context', 'view', 'preview', 'save', 'replay')
 DUAL_FIXTURES = FIXTURES / 'dual-synthetic'
 # Codex's dual synthetic manifest (6766962236 §1); each input file's bytes must be the ones it pins.
@@ -274,7 +282,7 @@ def _dual_candidate(req):
     if model_id not in DUAL_MODELS[model]:
         raise Refused('MODEL_ID_UNKNOWN')
     key = DUAL_MODELS[model][model_id]
-    config = dual_qgv.candidate_configs()[key]
+    config = (qgv_333.candidate_configs() if key in Q333 else dual_qgv.candidate_configs())[key]
     if config['model_id'] != model_id:
         raise Refused('MODEL_RESPONSE_MISMATCH')
     if 'config' in req and req['config'] != config:
@@ -312,7 +320,7 @@ class Bridge:
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):
-        return {'versions': {'model_id': config['model_id'], 'model_version': config['version'], 'adapter_version': dual_qgv.VERSION,
+        return {'versions': {'model_id': config['model_id'], 'model_version': config['version'], 'adapter_version': config['execution_version'],
                              'config_schema': config['schema_version'], 'board_schema': dual_qgv.SCHEMA},
                 'candidate': key, 'config': config, 'config_hash': dual_qgv.digest(config),
                 'evidence': dual_qgv.evidence_catalog(),
@@ -322,6 +330,12 @@ class Bridge:
         if config['kind'] == 'COMMON':
             return {'candidate': key, 'kind': 'COMMON', 'preset': config['uniform_preset'], 'config_hash': dual_qgv.digest(config)}
         sector, template = _scope(req)
+        if key in Q333:
+            current = config['scoped_presets'].get(sector + '|' + template)
+            if current is None:
+                raise Refused('SCOPE_UNKNOWN')
+            return {'candidate': key, 'kind': 'SECTOR', 'sector_id': sector, 'accounting_template': template, 'preset': current,
+                    'config_hash': dual_qgv.digest(config)}
         try:
             current = engine.preset(config['sector_config'], sector, template)
         except (ValueError, KeyError, TypeError, AttributeError) as exc:

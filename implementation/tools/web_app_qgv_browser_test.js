@@ -299,12 +299,12 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         // before a checked operating504 research delivery is in RAM, and a forced click changes nothing.
         const modelRow = () => page.evaluate(() => [...document.querySelectorAll('[data-lb-models] button[data-lb-model]')].map((b) => [b.dataset.lbModel, b.getAttribute('aria-pressed'), b.disabled, b.dataset.lbModelState]));
         assert.deepEqual(await modelRow(), [['OFFICIAL', 'true', false, 'READY'], ['U1', 'false', true, 'RESULT_NOT_READ'], ['U2', 'false', true, 'RESULT_NOT_READ'], ['S1', 'false', true, 'RESULT_NOT_READ'],
-          ['U2-333', 'false', true, 'CONTRACT_PENDING'], ['U1-333', 'false', true, 'CONTRACT_PENDING'], ['S1-333', 'false', true, 'CONTRACT_PENDING']]);
+          ['U2-333', 'false', true, 'RESULT_NOT_READ'], ['U1-333', 'false', true, 'RESULT_NOT_READ'], ['S1-333', 'false', true, 'RESULT_NOT_READ']]);
         await page.locator('[data-lb-model=U1]').click({ force: true });
         assert.deepEqual(await page.evaluate(() => window.__qt.drawn().map((d) => d.id)), lists.drawnIds, 'a disabled research model changes nothing');
         await page.locator('[data-lb-model-why] > summary').click();
         assert.match(await page.locator('[data-lb-model-line=U1]').innerText(), /^통합 연구 U1 · 연구 후보 · 핵심 Q1 · G1 · V2\(축소 구성 · 3\/3\/3 아님\) · 비공개 연구 결과 읽기 전 · /);
-        assert.match(await page.locator('[data-lb-model-line="U2-333"]').innerText(), /^통합 연구 U2-333 · 연구 후보 · 핵심 Q3 · G3 · V3 · 계약 미전달 · 계산 연결 전 · /, 'the 3/3/3 candidate listed, closed');
+        assert.match(await page.locator('[data-lb-model-line="U2-333"]').innerText(), /^통합 연구 U2-333 · 연구 후보 · 핵심 Q3 · G3 · V3 · 비공개 연구 결과 읽기 전 · 계약·합성·실자료 전달됨 · .*운영504 3\/3\/3 결과 불러오기/, 'the 3/3/3 candidate: delivered, closed until its own checked delivery is read');
         assert.match(await page.locator('[data-lb-model-why]').innerText(), /섹터 점수를 이어 붙여 통합 순위를 만들지 않음/);
         // A delivery the reader checked (Codex #529's synthetic delivery as operating504, against its own result) makes U1 / U2 / S1
         // selectable; each shows its own retained board (the producer's rows and ranks, never re-sorted), the official table steps
@@ -320,7 +320,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.equal(await put(DF.anchor()), 'OK');
         await page.waitForFunction(() => !document.querySelector('[data-lb-model=U1]').disabled);
         assert.deepEqual((await modelRow()).map((m) => [m[0], m[2], m[3]]), [['OFFICIAL', false, 'READY'], ['U1', false, 'READY'], ['U2', false, 'READY'], ['S1', false, 'READY'],
-          ['U2-333', true, 'CONTRACT_PENDING'], ['U1-333', true, 'CONTRACT_PENDING'], ['S1-333', true, 'CONTRACT_PENDING']], 'the 3/3/3 candidates stay closed with the delivery read');
+          ['U2-333', true, 'RESULT_NOT_READ'], ['U1-333', true, 'RESULT_NOT_READ'], ['S1-333', true, 'RESULT_NOT_READ']], 'the reduced delivery never opens the 3/3/3 candidates');
         await page.locator('[data-lb-model=U1]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-lb-research-table=U1]').waitFor();
         assert.equal(await page.locator('[data-lb-table]').count(), 0, 'the official table is not shown under a research name');
@@ -342,7 +342,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await page.evaluate(() => window.IS2.dualQgv.ram.drop());
         await page.locator('[data-lb-table]').waitFor();
         assert.equal(await page.locator('[data-lb-research]').count(), 0, 'a drop goes back to the official table');
-        assert.deepEqual((await modelRow()).map((m) => m[2]), [false, true, true, true, true, true, true], 'a drop closes U1 / U2 / S1 again; the 3/3/3 candidates stay closed');
+        assert.deepEqual((await modelRow()).map((m) => m[2]), [false, true, true, true, true, true, true], 'a drop closes U1 / U2 / S1 again; the 3/3/3 candidates stay closed (their own delivery not read)');
         // 종합 순위 without a central V publication: the empty state with its reason; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /QGV 순위 없음\s+공식 V 없음: 중앙 V 게시본이 아직 없습니다/);

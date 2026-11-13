@@ -1,6 +1,7 @@
 /* 2.2.7 연구 후보 계산 · 저장 · 취소 · 복원 (owner 2026-11-11 「#530 후속 연결」 §3; IS2.dualEngine): under 1. QGV · 1.2, beside
    the sector QGV settings (which are not changed by anything here). It calls the development engine route with an explicitly named
-   research candidate (U1 unified-roa-core / U2 unified-sales-core = 통합 연구, S1 sector-reduced-core = 섹터 연구) and shows the
+   research candidate (U1 unified-roa-core / U2 unified-sales-core = 통합 연구, S1 sector-reduced-core = 섹터 연구; the 3/3/3
+   U2-333 unified-333-eps / U1-333 unified-333-persistence / S1-333 sector-333, qgv-dual-config/2, owner 2026-11-13) and shows the
    engine's own board; nothing is scored, ranked, filled or averaged here.
    - No candidate is preselected: the owner names one. Changing the candidate (or the input) starts a new generation: the shown
      result is cleared at once and any answer that comes back for an earlier request is dropped (늦은 응답), so a previous model's
@@ -62,7 +63,7 @@ function block({signal}){
   const savedLine=r&&r.state==='INVALID'?h('p',{class:'hand err',dataset:{deSaved:'INVALID'}},'이 기기의 연구 저장본을 읽을 수 없음 · 덮어쓰지 않음'):
    rec?h('p',{class:'reason',dataset:{deSaved:'OK'}},'이 기기 저장본 · 결과 ',rec.result_hash.slice(0,12),'… · 설정 ',rec.bindings.model_hash.slice(0,12),'…'):
    st.model_id?h('p',{class:'reason',dataset:{deSaved:'EMPTY'}},'이 후보의 저장본 없음'):null;
-  root.replaceChildren(...[h('h4',null,'연구 후보 계산 (2.2.7 · 통합 U1·U2 / 섹터 S1 · 연구 · 운영 채택 안 됨)'),
+  root.replaceChildren(...[h('h4',null,'연구 후보 계산 (2.2.7 · 통합 U1·U2 / 섹터 S1 · 3/3/3 U2-333·U1-333 / S1-333 · 연구 · 운영 채택 안 됨)'),
    h('p',{class:'reason'},'섹터 QGV 설정(위)과 따로 · 이 칸은 위 저장 설정을 읽거나 바꾸지 않음 · 공식 QGV·포트폴리오 목표는 바뀌지 않음'),
    chips,h('div',{class:'sort-row'},h('label',{for:'de-input'},'입력(합성)'),inSel),
    h('div',{class:'load-row'},bCompute,bSave,bCancel,bRestore),state,savedLine,

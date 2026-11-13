@@ -282,6 +282,9 @@ function krxNumber(value) {
 // the optional full factor distribution (Codex qgv-dual-factor-distribution/1, all ten bands of every evaluation row) at
 // classification/dual/<scope>/distribution/; the same 2 MiB limit. Its all-bin routing: dual_bins_manifest|dual_bins_index and
 // dual_bins_detail&shard=<3 digits> at classification/dual/<scope>/bins/.
+// Every dual_* part also takes an optional trailing &set=333 (owner 2026-11-13, Codex #534 QGV 3/3/3): the same parts of the 3/3/3
+// candidates' own delivery at classification/dual-333/<scope>/, so the reduced U1 / U2 / S1 delivery is never replaced. Same schemas,
+// same scope check, the same 2 MiB limit; no other set value and no other position is accepted.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -355,10 +358,10 @@ export function kisClassificationPart(url) {
   if (url.hash) throw new Failure('REQUEST_INVALID', 400);
   const shard = /^\?part=expanded_detail&shard=([0-9a-f]{2})$/.exec(url.search);
   if (shard) return 'expanded_detail/' + shard[1];
-  const dual = /^\?part=(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)&scope=([a-z0-9]{1,16})$/.exec(url.search);
-  if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2]; }
-  const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})$/.exec(url.search);
-  if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + '/' + dualDetail[3]; }
+  const dual = /^\?part=(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)&scope=([a-z0-9]{1,16})(&set=333)?$/.exec(url.search);
+  if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2] + (dual[3] ? '@333' : ''); }
+  const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})(&set=333)?$/.exec(url.search);
+  if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + (dualDetail[4] ? '@333' : '') + '/' + dualDetail[3]; }
   const own = /^\?part=(ownership_view|ownership_receipt)&entity=([A-Z0-9-]{1,32})$/.exec(url.search);
   if (own) { if (!OWNERSHIP_ENTITY.test(own[2])) throw new Failure('REQUEST_INVALID', 400); return own[1] + '/' + own[2]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
@@ -368,8 +371,8 @@ export function kisClassificationPart(url) {
 }
 function classificationPath(part) {
   if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
-  if (part.startsWith('dual_')) { const [name, scope, shard] = part.split('/');
-    return 'classification/dual/' + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
+  if (part.startsWith('dual_')) { const [name, slot, shard] = part.split('/'), [scope, set] = slot.split('@');
+    return 'classification/' + (set === '333' ? 'dual-333/' : 'dual/') + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
   if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
   if (part === 'ownership_index') return 'classification/ownership/ownership-index.json';
   if (part.startsWith('ownership_')) { const [name, entity] = part.split('/');
@@ -380,7 +383,7 @@ function classificationPath(part) {
 function classificationSchema(o, part) {
   if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
   // A dual file carries its part's schema; a manifest (and the leaders index) also names the scope asked for.
-  if (part.startsWith('dual_')) { const [name, scope] = part.split('/');
+  if (part.startsWith('dual_')) { const [name, slot] = part.split('/'), scope = slot.split('@')[0];
     return o.schema_version === DUAL_PARTS[name][1] && (!DUAL_SCOPED.includes(name) || o.scope === scope); }
   // A view names the entity asked for as its centre; a receipt (no schema field) is exactly the producer's five keys.
   if (part.startsWith('ownership_view/')) return o.schema_version === 'company-ownership-view/1' && !!o.entity_context && o.entity_context.entity_id === part.slice(15);

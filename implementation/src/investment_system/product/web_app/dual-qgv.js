@@ -27,6 +27,10 @@ const SCHEMA=Object.freeze({MANIFEST:'qgv-dual-delivery-manifest/1',SUMMARY:'qgv
 const SCOPES=Object.freeze({
  operating504:Object.freeze({label:'운영504',anchor:'operating',input:'evaluation',text:'평가 504코드 행 / 501발행사'}),
  held1057:Object.freeze({label:'보유1057',anchor:'held_financial_subsample',input:'reference',text:'보유 재무 표본 1057발행사 · 운영504와 합치지 않음'})});
+// Slots: where a checked delivery is held. A 3/3/3 delivery is the same evaluation scope (its manifest names operating504 / held1057)
+// in its own slot ('<scope>@333', read with set=333 from its own private directory), so the reduced U1 / U2 / S1 delivery stays.
+const SLOTS=Object.freeze({operating504:Object.freeze({scope:'operating504',gen:'REDUCED'}),held1057:Object.freeze({scope:'held1057',gen:'REDUCED'}),
+ 'operating504@333':Object.freeze({scope:'operating504',gen:'Q333'}),'held1057@333':Object.freeze({scope:'held1057',gen:'Q333'})});
 const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference:'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'});
 // operating504's reference input is not tied to an independent anchor here (the staged bundle names only the evaluation input), so
 // a delivery whose reference hash was changed consistently is not refused on that side; the word says so (Codex binding cases).
@@ -71,14 +75,63 @@ function lineageCheck(x,boards){const at='lineage';if(!isObj(x)||x.schema_versio
  if(!Array.isArray(x.changed_top_level_fields)||!same([...x.changed_top_level_fields].sort(),PROJECTION_FIELDS))refuse('LINEAGE_INVALID',at+'.changed_top_level_fields');
  if(x.whole_market_denominator!==null||x.reference_source_is_not_eligible_whole_market!==true||x.new_score_calculations!==0)refuse('LINEAGE_INVALID',at+'.whole_market_denominator');}
 const MODELS=Object.freeze({
- U1:Object.freeze({model_id:'unified-roa-core/0.1.0',kind:'COMMON',label:'통합 연구 U1',core:'Q ROA · G ROA 개선 · V 이익·장부'}),
- U2:Object.freeze({model_id:'unified-sales-core/0.1.0',kind:'COMMON',label:'통합 연구 U2',core:'Q ROA · G 매출 성장 · V 이익·장부'}),
- S1:Object.freeze({model_id:'sector-reduced-core/0.1.0',kind:'SECTOR',label:'섹터 연구 S1',core:'섹터·회계모형별 축소 핵심 요소'})});
+ U1:Object.freeze({model_id:'unified-roa-core/0.1.0',kind:'COMMON',label:'통합 연구 U1',core:'Q ROA · G ROA 개선 · V 이익·장부',gen:'REDUCED'}),
+ U2:Object.freeze({model_id:'unified-sales-core/0.1.0',kind:'COMMON',label:'통합 연구 U2',core:'Q ROA · G 매출 성장 · V 이익·장부',gen:'REDUCED'}),
+ S1:Object.freeze({model_id:'sector-reduced-core/0.1.0',kind:'SECTOR',label:'섹터 연구 S1',core:'섹터·회계모형별 축소 핵심 요소',gen:'REDUCED'}),
+ // The 3/3/3 candidates (owner 2026-11-13; Codex #534 qgv-333-contract/1, QGV_333.md): their own ids, version, adapter and the exact
+ // configuration each was registered with (configuration_hash = SHA-256 of the contract's canonical candidate config, so its axes,
+ // roles and integer weights). A board whose model, version, adapter or configuration differs is refused; never read as another one.
+ 'U2-333':Object.freeze({model_id:'unified-333-eps/0.1.0',kind:'COMMON',label:'통합 연구 U2-333',core:'Q3 · G3 · V3 · G에 희석 EPS 3년 성장',gen:'Q333',version:'0.1.0',
+  adapter:'dual-qgv-research/0.2.0',config:'qgv-dual-config/2',configuration_hash:'8f102656cb5680e188f5551464f3ee685d21bee2506b9e95173a0eb07a96f3ab',
+  factors:Object.freeze(['roa_ttm','accruals_assets_ttm','debt_assets','revenue_cagr_3y','eps_diluted_cagr_3y','roa_improvement_3y','ep_ttm_diluted','common_bp','cfo_mcap'])}),
+ 'U1-333':Object.freeze({model_id:'unified-333-persistence/0.1.0',kind:'COMMON',label:'통합 연구 U1-333',core:'Q3 · G3 · V3 · G에 매출 성장 지속성(U2-333과 G 한 요소만 다름)',gen:'Q333',version:'0.1.0',
+  adapter:'dual-qgv-research/0.2.0',config:'qgv-dual-config/2',configuration_hash:'8d57491b52c0c406558793d41b5d50b8cc6b6e98fd90766500b74baaa103fa15',
+  factors:Object.freeze(['roa_ttm','accruals_assets_ttm','debt_assets','revenue_cagr_3y','revenue_growth_consistency_3y','roa_improvement_3y','ep_ttm_diluted','common_bp','cfo_mcap'])}),
+ 'S1-333':Object.freeze({model_id:'sector-333/0.1.0',kind:'SECTOR',label:'섹터 연구 S1-333',core:'Q3 · G3 · V3 · 섹터×회계모형별 구성 · 축 비중은 기존 섹터 설정',gen:'Q333',version:'0.1.0',
+  adapter:'dual-qgv-research/0.2.0',config:'qgv-dual-config/2',configuration_hash:'9efb87060cb095b817c56652966ae4ec6c67bf23ad7f959e00f173da43be5864',factors:null})});
+// A delivery carries one generation only: the reduced U1 / U2 / S1 or the 3/3/3 candidates, never both in one bundle (the 3/3/3
+// boards are their own models, not a newer version of U1 / U2 / S1). Each is held in its own slot, so loading one never replaces the other.
+const GEN=Object.freeze({REDUCED:'축소 구성 U1·U2·S1(Q1·G1·V2 / Q2·G1·V2)',Q333:'3/3/3 U2-333·U1-333·S1-333(Q3·G3·V3)'});
+// The 3/3/3 factor evidence, as the contract's factor table states it (axis, role, name, formula, period, direction, calculator
+// state; tools/web_app_dual_qgv_333_node_test.js keeps it equal to qgv-333-contract.json). Display only: never a weight or a score.
+const E=(axis,role,name,formula,period,direction,status)=>Object.freeze({axis,role,name,formula,period,direction,status});
+const EVIDENCE_333=Object.freeze({
+ accruals_assets_ttm:E('Q','accounting_quality','발생액/평균자산','difference_average','TTM','LOWER','IMPLEMENTED'),
+ cfo_assets_improvement_3y:E('G','profitability_change','CFO/자산 3년 개선','difference','FY_3Y','HIGHER','IMPLEMENTED'),
+ cfo_assets_ttm:E('Q','profitability','CFO/평균자산','ratio_average','TTM','HIGHER','IMPLEMENTED'),
+ cfo_mcap:E('V','cash','PCR / CFO 수익률','ratio','TTM','HIGHER','IMPLEMENTED'),
+ common_bp:E('V','other_value','PBR / 보통주 B/P','ratio','LATEST_QUARTER','HIGHER','IMPLEMENTED'),
+ common_bps_cagr_3y:E('G','growth','보통주 BPS 3년 CAGR','cagr3','FY_3Y','HIGHER','IMPLEMENTED'),
+ common_equity_assets:E('Q','financial_capacity','보통주자본/자산','ratio','LATEST_QUARTER','HIGHER','IMPLEMENTED'),
+ debt_assets:E('Q','financial_capacity','차입금/자산','ratio','LATEST_QUARTER','LOWER','IMPLEMENTED'),
+ dividend_yield_ttm:E('V','other_value','배당수익률','ratio','TTM','HIGHER','IMPLEMENTED'),
+ ebitda_ev:E('V','other_value','EV/EBITDA','sum_ratio','TTM','HIGHER','IMPLEMENTED'),
+ ep_ttm_diluted:E('V','earnings','PER / E/P (TTM 희석)','ratio','TTM','HIGHER','IMPLEMENTED'),
+ eps_diluted_cagr_3y:E('G','growth','희석 EPS 3년 CAGR','cagr3','FY_3Y','HIGHER','IMPLEMENTED'),
+ fcf_mcap:E('V','other_value','P/FCF (CFO−CAPEX)','difference_ratio','TTM','HIGHER','IMPLEMENTED'),
+ ffo_per_share_growth:E('G','growth','FFO/주 성장','pending','UNRESOLVED','HIGHER','PENDING_DEFINITION'),
+ interest_coverage_ttm:E('Q','interest_capacity','이자보상배율','ratio','TTM','HIGHER','IMPLEMENTED'),
+ nareit_ffo_mcap:E('V','earnings','P/FFO (Nareit)','ratio','TTM','HIGHER','IMPLEMENTED'),
+ operating_margin_ttm:E('Q','profitability','영업이익률','ratio','TTM','HIGHER','IMPLEMENTED'),
+ revenue_cagr_3y:E('G','growth','매출 3년 CAGR','cagr3','FY_3Y','HIGHER','IMPLEMENTED'),
+ revenue_growth_consistency_3y:E('G','growth','매출 성장 지속성','positive_growth_share','FY_3Y','HIGHER','IMPLEMENTED'),
+ roa_improvement_3y:E('G','profitability_change','3년 ROA 개선','difference','FY_3Y','HIGHER','IMPLEMENTED'),
+ roa_ttm:E('Q','profitability','ROA','ratio_average','TTM','HIGHER','IMPLEMENTED'),
+ roe_common_ttm:E('Q','profitability','보통주 ROE','ratio_average','TTM','HIGHER','IMPLEMENTED'),
+ sales_ev:E('V','other_value','EV/Sales','ratio','TTM','HIGHER','IMPLEMENTED'),
+ sales_mcap:E('V','other_value','PSR / 매출수익률','ratio','TTM','HIGHER','IMPLEMENTED')});
+const PERIOD_WORD=Object.freeze({TTM:'최근 4분기(TTM)',FY_3Y:'회계연도 3년(4개 연간 관측)',LATEST_QUARTER:'최근 분기말',UNRESOLVED:'기간 미정(정의 준비 중)'});
+const DIRECTION_WORD=Object.freeze({HIGHER:'높을수록 좋음',LOWER:'낮을수록 좋음(점수는 좋은 쪽이 높게)'});
+const RECIPE_WORD=Object.freeze({DEFINED_RESEARCH:'정의된 연구 구성',PREPARING:'정의 준비 중 · 총점 없음(G 세 번째 요소 정의 미승인 등) · Q·V·개별 요소는 따로 산출',
+ MAPPING_UNRESOLVED:'분류 미확정 · 구성 적용 안 됨'});
 const KIND=Object.freeze({COMMON:'통합 · 모든 평가 기업에 같은 핵심 요소와 같은 참조집단',SECTOR:'섹터 · 섹터×회계모형별 핵심 요소 · 다른 회계모형 순위와 합치지 않음'});
 const BOARD_KEYS=Object.freeze(['model_id','model_version','engine_version','adapter_version','normalization_version','evaluation_population','reference_population',
  'bindings','cache_key','result_hash','coverage','classification_mode','performance_state','operating_adoption','deployment_state','configuration_hash']);
 const COVERAGE_KEYS=Object.freeze(['denominator','target95','stages','causes_overlap','causes','incomplete_unique','current_sample_barrier','gap95','whole_market_denominator','whole_market_coverage']);
 const STAGES=Object.freeze([['core_inputs','핵심 요소 입력 모두'],['core_raw','핵심 요소 원지표 모두'],['core_scores','핵심 요소 점수 모두'],['Q','Q 축'],['G','G 축'],['V','V 축'],['joint','세 축 동시'],['total','최종 총점']]);
+// The 3/3/3 coverage also states 핵심 9요소 점수 모두 and 관문 판정 가능 (PASS + VALUE_EXCLUDED: a known gate, not total eligibility).
+const STAGES_333=Object.freeze([...STAGES,['nine_core_scores','핵심 9요소 점수 모두'],['gate_known','관문 판정 가능(통과 + V 제외 · 총점 적격 아님)']]);
+const stagesOf=gen=>gen==='Q333'?STAGES_333:STAGES;
 const POP_KEYS=Object.freeze(['id','version','members_hash','valuation_date','as_of','code_rows','issuers','input_hash','snapshot_id','classification_records_hash','classification_context']);
 const REF_EXTRA=Object.freeze(['factor_members_hash','candidate_population','scope']);
 const HEAD_KEYS=Object.freeze(['axes','total','rank','rank_n','ranking_scope','status','gate_status']);
@@ -92,6 +145,9 @@ const HEX=/^[0-9a-f]{64}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,FILE=/^(summary|index)\.jso
 const STATUS_WORD=Object.freeze({VALID:'산출',MISSING_INPUT:'입력 없음',MAPPING_UNRESOLVED:'분류 미확정',NOT_APPLICABLE:'산식 적용 부적합',PERIOD_MISMATCH:'기간 불일치',
  PEER_SAMPLE_SMALL:'비교 표본 부족(20 미만)',DOMAIN_INVALID:'값 범위 밖',GATE_UNKNOWN:'관문 판정 불가(UNKNOWN)',STRICT_INCOMPLETE:'핵심 요소 일부 미산출',
  PASS:'관문 통과',UNKNOWN:'관문 판정 불가',VALUE_EXCLUDED:'V 총점 반영 제외 · 기업 탈락 아님',
+ // Codex #534 EPS history (6851482941): the historical common-share basis of that EPS is not confirmed — an input gap of its own,
+ // never 「가격만 대기」.
+ HISTORICAL_SHARE_BASIS_UNCONFIRMED:'역사 보통주 귀속 근거 미확인(가격 대기 아님)',
  ISSUER_REPRESENTATIVE_UNRESOLVED:'발행사 대표 행 미확정',SCOPE_MISMATCH:'비교 범위 불일치',SAMPLE_LT_10:'평가 유효 10개 미만 · 분위 없음',NO_VALID_SCORE:'유효 점수 없음'});
 const word=c=>c===null||c===undefined?'—':STATUS_WORD[c]||String(c);
 
@@ -117,9 +173,17 @@ function population(p,at){if(!isObj(p))refuse('TYPE',at);
  if(typeof p.id!=='string'||!p.id||typeof p.version!=='string'||!p.version||!HEX.test(p.members_hash)||!HEX.test(p.input_hash)
   ||!DAY.test(p.valuation_date)||typeof p.as_of!=='string'||!int(p.code_rows)||p.code_rows<1||!int(p.issuers)||p.issuers<1||p.issuers>p.code_rows)refuse('POPULATION_INVALID',at);}
 
-function coverage(c,ev,at){exact(c,COVERAGE_KEYS,at);
+// The 3/3/3 coverage's applicability-only upper bound (Codex qgv_333.extend_coverage): issuers left if every other input,
+// classification, peer and gate gap were resolved; an assumption, never a forecast. Its arithmetic is checked as written.
+const UPPER_KEYS=Object.freeze(['known_incompatible','issuers_all_rows_incompatible','optimistic_issuers','assumptions','can_reach95_under_known_scope']);
+const UPPER_ASSUMPTION='ALL_OTHER_INPUTS_CLASSIFICATION_PEERS_AND_GATE_RESOLVED;NOT_FORECAST';
+function upperBound(u,c,at){exact(u,UPPER_KEYS,at);const den=c.denominator;count(u.known_incompatible,at+'.known_incompatible',den);
+ if(!int(u.issuers_all_rows_incompatible)||u.issuers_all_rows_incompatible<0||u.issuers_all_rows_incompatible>u.known_incompatible.issuers
+  ||u.optimistic_issuers!==den.issuers-u.issuers_all_rows_incompatible||u.assumptions!==UPPER_ASSUMPTION
+  ||u.can_reach95_under_known_scope!==(u.optimistic_issuers>=c.target95.issuers))refuse('UPPER_BOUND_INVALID',at);}
+function coverage(c,ev,at,gen){exact(c,gen==='Q333'?[...COVERAGE_KEYS,'applicability_only_upper_bound']:COVERAGE_KEYS,at);const S=stagesOf(gen);
  const den=c.denominator;if(!isObj(den)||den.code_rows!==ev.code_rows||den.issuers!==ev.issuers)refuse('DENOMINATOR_MISMATCH',at+'.denominator');
- exact(c.stages,STAGES.map(s=>s[0]),at+'.stages');for(const[k]of STAGES)count(c.stages[k],at+'.stages.'+k,den);
+ exact(c.stages,S.map(s=>s[0]),at+'.stages');for(const[k]of S)count(c.stages[k],at+'.stages.'+k,den);
  count(c.target95,at+'.target95',den);if(c.target95.code_rows<1||c.target95.issuers<1)refuse('COUNT_RANGE',at+'.target95');
  exact(c.gap95,['joint','total'],at+'.gap95');
  for(const s of['joint','total']){const g=count(c.gap95[s],at+'.gap95.'+s);
@@ -127,10 +191,13 @@ function coverage(c,ev,at){exact(c,COVERAGE_KEYS,at);
  if(c.causes_overlap!==true)refuse('CAUSES_NOT_OVERLAPPING',at+'.causes_overlap');
  if(!isObj(c.causes))refuse('TYPE',at+'.causes');for(const[k,v]of Object.entries(c.causes))count(v,at+'.causes.'+k,den);
  count(c.incomplete_unique,at+'.incomplete_unique',den);count(c.current_sample_barrier,at+'.current_sample_barrier',den);
- if(c.whole_market_denominator!==null||c.whole_market_coverage!==null)refuse('MARKET_NOT_NULL',at+'.whole_market_denominator');}
+ if(c.whole_market_denominator!==null||c.whole_market_coverage!==null)refuse('MARKET_NOT_NULL',at+'.whole_market_denominator');
+ if(gen==='Q333')upperBound(c.applicability_only_upper_bound,c,at+'.applicability_only_upper_bound');}
 
 function board(key,b,at){exact(b,BOARD_KEYS,at);const M=MODELS[key];
  if(b.model_id!==M.model_id)refuse('MODEL_MISMATCH',at+'.model_id');
+ if(M.gen==='Q333'){if(b.model_version!==M.version||b.adapter_version!==M.adapter)refuse('MODEL_VERSION_UNKNOWN',at+'.adapter_version');
+  if(b.configuration_hash!==M.configuration_hash)refuse('CONFIG_VERSION_MISMATCH',at+'.configuration_hash');}
  if(b.operating_adoption!=='NOT_ADOPTED')refuse('ADOPTION_CLAIMED',at+'.operating_adoption');
  if(b.performance_state!=='NOT_MEASURED')refuse('PERFORMANCE_CLAIMED',at+'.performance_state');
  if(!['RETROSPECTIVE_RECONSTRUCTION','AS_OF_CLASSIFICATION_NOT_SYSTEM_PIT_PROOF'].includes(b.classification_mode))refuse('CLASSIFICATION_MODE',at+'.classification_mode');
@@ -145,7 +212,7 @@ function board(key,b,at){exact(b,BOARD_KEYS,at);const M=MODELS[key];
  if(!same(b.bindings.evaluation,ev))refuse('BINDINGS_MISMATCH',at+'.bindings.evaluation');
  if(!same(b.bindings.reference,ref.candidate_population))refuse('BINDINGS_MISMATCH',at+'.bindings.reference');
  if(!HEX.test(b.bindings.code_hash)||b.bindings.engine_version!==b.engine_version||b.bindings.adapter_version!==b.adapter_version)refuse('BINDINGS_MISMATCH',at+'.bindings');
- coverage(b.coverage,ev,at+'.coverage');}
+ coverage(b.coverage,ev,at+'.coverage',M.gen);}
 
 // The manifest entry for a file; its own bytes must match (size and SHA-256).
 async function bytesMatch(file,name,entries,sha256,at){
@@ -183,6 +250,7 @@ function indexRows(x,summary,entries){exact(x,['schema_version','evaluation_popu
  // The producer's stage counts are the rows as delivered: each axis, 세 축 동시 and the total, in code rows and issuers.
  for(const k of keys){const st=summary.boards[k].coverage.stages,has={Q:r=>r.axes.Q!==null,G:r=>r.axes.G!==null,V:r=>r.axes.V!==null,
    joint:r=>r.axes.Q!==null&&r.axes.G!==null&&r.axes.V!==null,total:r=>r.total!==null};
+  if(MODELS[k].gen==='Q333')has.gate_known=r=>r.gate_status==='PASS'||r.gate_status==='VALUE_EXCLUDED';
   for(const[s,f]of Object.entries(has)){const hit=x.rows.filter(r=>f(r.boards[k]));
    if(hit.length!==st[s].code_rows||new Set(hit.filter(r=>r.issuer_id).map(r=>r.issuer_id)).size!==st[s].issuers)refuse('STAGE_COUNT_MISMATCH','summary.boards.'+k+'.coverage.stages.'+s);}}
  return x.rows;}
@@ -197,30 +265,60 @@ function head(b,k,at){exact(b.axes,['Q','G','V'],at+'.axes');for(const a of['Q',
 
 // manifest / summary / index: each {bytes, body}. opts {scope, anchor (IS2.referenceView.anchorOf of the checked bundle), sha256}.
 async function checkDelivery(parts,opts){
- try{const o=opts||{};if(!own(SCOPES,o.scope))refuse('SCOPE_UNKNOWN','$');if(typeof o.sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+ try{const o=opts||{};if(!own(SLOTS,o.scope))refuse('SCOPE_UNKNOWN','$');if(typeof o.sha256!=='function')refuse('HASH_UNAVAILABLE','$');
+  const slot=o.scope,scope=SLOTS[slot].scope;
   const p=parts||{};if(!isObj(p.manifest)||!isObj(p.manifest.body))refuse('BYTES_REQUIRED','manifest');
-  const entries=manifestOf(p.manifest.body,o.scope);
+  const entries=manifestOf(p.manifest.body,scope);
   const s=await bytesMatch(p.summary,'summary.json',entries,o.sha256,'summary');
   exact(s,['schema_version','visibility','boards'],'summary');if(s.schema_version!==SCHEMA.SUMMARY)refuse('SCHEMA','summary.schema_version');
   if(s.visibility!=='PRIVATE_RESEARCH')refuse('VISIBILITY','summary.visibility');
   const keys=isObj(s.boards)?Object.keys(s.boards):[];if(!keys.length||keys.some(k=>!own(MODELS,k)))refuse('BOARDS_INVALID','summary.boards');
+  // One generation per delivery, and the slot's own: old and new candidates are never mixed in one bundle or read into the other's slot.
+  const gens=new Set(keys.map(k=>MODELS[k].gen));if(gens.size!==1)refuse('MODEL_GENERATION_MIXED','summary.boards');
+  if(!gens.has(SLOTS[slot].gen))refuse('MODEL_GENERATION_SLOT','summary.boards');
   for(const k of keys)board(k,s.boards[k],'summary.boards.'+k);
   const ev=s.boards[keys[0]].evaluation_population;
   for(const k of keys)if(!same(s.boards[k].evaluation_population,ev))refuse('EVALUATION_MISMATCH','summary.boards.'+k+'.evaluation_population');
-  anchorCheck(o.scope,ev,s.boards,o.anchor);
+  anchorCheck(scope,ev,s.boards,o.anchor);
   const x=await bytesMatch(p.index,'index.json',entries,o.sha256,'index');const rows=indexRows(x,s,entries);
   // held1057's evaluation input: attested only by a matching projection proof; a proof that does not match refuses the delivery.
-  let input_check=INPUT_CHECK[SCOPES[o.scope].input];
-  if(p.lineage!==undefined&&p.lineage!==null){if(SCOPES[o.scope].input!=='reference')refuse('LINEAGE_NOT_APPLICABLE','lineage');
+  let input_check=INPUT_CHECK[SCOPES[scope].input];
+  if(p.lineage!==undefined&&p.lineage!==null){if(SCOPES[scope].input!=='reference')refuse('LINEAGE_NOT_APPLICABLE','lineage');
    if(!isObj(p.lineage)||!isObj(p.lineage.body))refuse('LINEAGE_SCHEMA','lineage');lineageCheck(p.lineage.body,s.boards);input_check='EVALUATION_INPUT_PROJECTION_ATTESTED';}
   // operating504's reference input: anchored only by a matching independent anchor; one that does not match refuses the delivery.
-  if(p.reference_anchor!==undefined&&p.reference_anchor!==null){if(SCOPES[o.scope].input!=='evaluation')refuse('REFERENCE_ANCHOR_NOT_APPLICABLE','reference_anchor');
+  if(p.reference_anchor!==undefined&&p.reference_anchor!==null){if(SCOPES[scope].input!=='evaluation')refuse('REFERENCE_ANCHOR_NOT_APPLICABLE','reference_anchor');
    if(!isObj(p.reference_anchor)||!isObj(p.reference_anchor.body))refuse('REFERENCE_ANCHOR_SCHEMA','reference_anchor');
-   referenceAnchorCheck(p.reference_anchor.body,o.scope,s.boards);input_check='EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED';}
+   referenceAnchorCheck(p.reference_anchor.body,scope,s.boards);input_check='EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED';}
   if(!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','manifest');const manifest_sha256=await o.sha256(p.manifest.bytes);
-  const value=freeze({scope:o.scope,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
+  const value=freeze({scope,slot,gen:SLOTS[slot].gen,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
+
+// A 3/3/3 detail row (Codex qgv_333.fractions / run_board): recipe_state, and the producer's exact rational weights beside its
+// display floats. Checked, never computed for display: every fraction is reduced; each side's axes sum to 1; every core factor gets
+// exactly a third of its axis (role weight = its factor count, factor weight 1); nine core factors, three per axis, the selected
+// ones; the unified candidates' registered nine factors at 1/3 per axis (1/9 each). A PREPARING recipe has no total.
+const gcd=(a,b)=>{while(b){[a,b]=[b,a%b];}return a;};
+function rational(x,at){exact(x,['numerator','denominator'],at);
+ if(!int(x.numerator)||!int(x.denominator)||x.numerator<0||x.denominator<1||gcd(x.numerator,x.denominator)!==1)refuse('FRACTION_INVALID',at);return x;}
+const ratEq=(a,b)=>a.numerator*b.denominator===b.numerator*a.denominator;
+function sumIsOne(xs){let n=0,d=1;for(const x of xs){n=n*x.denominator+x.numerator*d;d*=x.denominator;const g=gcd(n,d)||1;n/=g;d/=g;}return n===d;}
+const FRACTION_KEYS=Object.freeze(['nominal_axes','post_gate_axes','nominal_factors','post_gate_factors']);
+function detail333(b,M,at,preset){
+ if(!own(RECIPE_WORD,b.recipe_state))refuse('RECIPE_STATE',at+'.recipe_state');
+ if(b.recipe_state==='PREPARING'&&(b.total!==null||b.rank!==null))refuse('PREPARING_WITH_TOTAL',at+'.total');
+ const has=preset&&b.post_gate_axis_weights!==null;
+ if(own(b,'weight_fractions')!==has)refuse(has?'WEIGHT_FRACTIONS_MISSING':'WEIGHT_FRACTIONS_UNEXPECTED',at+'.weight_fractions');
+ if(!has)return;const w=b.weight_fractions,wt=at+'.weight_fractions';exact(w,FRACTION_KEYS,wt);
+ const core=b.selected_variants;if(core.length!==9||new Set(core).size!==9)refuse('CORE_COUNT',at+'.selected_variants');
+ for(const a of'QGV')if(core.filter(v=>EVIDENCE_333[v]&&EVIDENCE_333[v].axis===a).length!==3)refuse('CORE_COUNT',at+'.selected_variants.'+a);
+ if(M.factors&&!same([...core].sort(),[...M.factors].sort()))refuse('CORE_NOT_REGISTERED',at+'.selected_variants');
+ for(const side of['nominal','post_gate']){const ax=w[side+'_axes'],fs=w[side+'_factors'],st=wt+'.'+side;
+  exact(ax,['Q','G','V'],st+'_axes');for(const a of'QGV')rational(ax[a],st+'_axes.'+a);if(!sumIsOne(['Q','G','V'].map(a=>ax[a])))refuse('WEIGHT_SUM',st+'_axes');
+  exact(fs,core,st+'_factors');
+  for(const v of core){const f=rational(fs[v],st+'_factors.'+v),A=ax[EVIDENCE_333[v].axis];
+   if(f.numerator*3*A.denominator!==A.numerator*f.denominator)refuse('WEIGHT_NOT_THIRD',st+'_factors.'+v);}}
+ if(M.factors)for(const a of'QGV')if(!ratEq(w.nominal_axes[a],{numerator:1,denominator:3}))refuse('WEIGHT_NOT_REGISTERED',wt+'.nominal_axes.'+a);}
 
 // One detail file {bytes, body} for a checked delivery: every row of that file as the index heads it, factors without raw values.
 async function checkDetail(file,name,delivery,sha256){
@@ -232,9 +330,11 @@ async function checkDetail(file,name,delivery,sha256){
   const out=new Map();
   x.rows.forEach((r,i)=>{const at=name+'.rows['+i+']',w=want[i];exact(r,['company_id','boards'],at);
    if(r.company_id!==w.company_id)refuse('DETAIL_ROWS_MISMATCH',at+'.company_id');exact(r.boards,d.models,at+'.boards');
-   for(const k of d.models){const b=r.boards[k],bt=at+'.boards.'+k;exact(b,DETAIL_KEYS,bt,DETAIL_PRESET_FIELDS);
+   for(const k of d.models){const b=r.boards[k],bt=at+'.boards.'+k,q=MODELS[k].gen==='Q333';
+    exact(b,q?[...DETAIL_KEYS,'recipe_state']:DETAIL_KEYS,bt,q?[...DETAIL_PRESET_FIELDS,'weight_fractions']:DETAIL_PRESET_FIELDS);
     const preset=b.status!=='MAPPING_UNRESOLVED';
     for(const f of DETAIL_PRESET_FIELDS)if(own(b,f)!==preset)refuse(preset?'PRESET_FIELD_MISSING':'PRESET_FIELD_UNEXPECTED',bt+'.'+f);
+    if(q)detail333(b,MODELS[k],bt,preset);
     if(b.company_id!==w.company_id||b.issuer_id!==w.issuer_id||b.security_id!==w.security_id)refuse('DETAIL_IDENTITY',bt);
     for(const h of HEAD_KEYS)if(!same(b[h],w.boards[k][h]))refuse('DETAIL_MISMATCH',bt+'.'+h);
     if(!Array.isArray(b.selected_variants)||!isObj(b.factors)||b.selected_variants.some(v=>!own(b.factors,v)))refuse('FACTORS_INVALID',bt+'.selected_variants');
@@ -251,6 +351,11 @@ async function checkDetail(file,name,delivery,sha256){
 
 /* ---- words (counts and values as delivered; display rounding only) */
 const fmt=v=>v===null||v===undefined?'미산출':(Math.round(v*10)/10).toFixed(1);
+// An exact weight as the producer wrote it (numerator / denominator); never a rounded or re-derived share.
+const frac=x=>x.numerator===0?'0':x.denominator===1?String(x.numerator):x.numerator+'/'+x.denominator;
+const AXIS_WORD=Object.freeze({Q:'Q',G:'G',V:'V'});
+const evidenceText=v=>{const e=EVIDENCE_333[v];return e?v+' · '+e.name+' · '+e.axis+' 축 '+e.role+' · 산식 '+e.formula+' · '+(PERIOD_WORD[e.period]||e.period)+' · '+DIRECTION_WORD[e.direction]
+ +(e.status==='IMPLEMENTED'?'':' · 계산 정의 준비 중(PENDING_DEFINITION)'):v+' · 계약 요소표에 없음';};
 const scopeWord=(s,sectorName)=>{if(s==='COMMON')return'평가 집단 전체';const[,sec,tpl]=s.split('|');
  return(sectorName?sectorName(sec):sec)+' · '+(tpl==='None'||!tpl?'회계모형 미확정':tpl);};
 // Decile words (owner 2026-11-12). The producer's numeric decile 10 is the top band of the factor's own comparison group; the
@@ -269,7 +374,8 @@ const rankText=(b,sectorName)=>b.total===null?'총점 없음 · 순위 없음':b
 const share=(c,d)=>String(c)+' / '+String(d);
 
 function boardView(d,key){const b=d.summary.boards[key],M=MODELS[key],c=b.coverage,den=c.denominator,st=c.stages;
- return freeze({key,label:M.label,core:M.core,kind:KIND[M.kind],
+ return freeze({key,label:M.label,core:M.core,kind:KIND[M.kind],gen:M.gen,generation:GEN[M.gen],
+  config:M.gen==='Q333'?'설정 '+M.config+' · 모형 '+M.model_id+' · 적용 '+M.adapter+' · 등록된 정확한 설정과 일치(설정 해시 '+M.configuration_hash.slice(0,12)+'…)':null,
   head:M.label+' · '+M.core+' · 연구 후보 · 운영 채택 안 됨 · 성과 미측정',
   states:[['보관 결과 조회','가능 · 목록표·요약·색인 검증됨'],['입력 연결',INPUT_WORD[d.input_check]],
    ['최종 총점',st.total.code_rows?'산출 '+share(st.total.code_rows,den.code_rows)+'코드 행':'미산출 · 이 모형의 총점 순위 없음'],
@@ -278,10 +384,13 @@ function boardView(d,key){const b=d.summary.boards[key],M=MODELS[key],c=b.covera
   population:SCOPES[d.scope].label+' · '+b.evaluation_population.id+' · 코드 행 '+den.code_rows+' · 고유 발행사 '+den.issuers+' · 평가일 '+b.evaluation_population.valuation_date,
   reference:'참조집단 '+b.reference_population.id+' · 발행사 '+b.reference_population.issuers+' · 요소 입력 적격 연구 참조 · 상장·증권·투자 적격 아님 · 후보 원천 '+b.reference_population.candidate_population.code_rows+'행',
   classification:b.classification_mode==='RETROSPECTIVE_RECONSTRUCTION'?'분류: 평가일 뒤 지식으로 회고 재구성 · 당시 시스템 보유 증명 아님':'분류: 평가일 기준 분류 · 시스템 PIT 증명 아님',
-  stages:STAGES.map(([k,l])=>freeze({key:k,label:l,text:'코드 행 '+share(st[k].code_rows,den.code_rows)+' · 발행사 '+share(st[k].issuers,den.issuers)})),
+  stages:stagesOf(M.gen).map(([k,l])=>freeze({key:k,label:l,text:'코드 행 '+share(st[k].code_rows,den.code_rows)+' · 발행사 '+share(st[k].issuers,den.issuers)})),
   target:'95% 목표 · 발행사 '+share(c.target95.issuers,den.issuers)+' · 코드 행 '+share(c.target95.code_rows,den.code_rows)
    +' · 세 축 동시 부족 발행사 '+c.gap95.joint.issuers+' · 최종 총점 부족 발행사 '+c.gap95.total.issuers,
   causes:Object.entries(c.causes).map(([k,v])=>word(k)+' ('+k+') · 발행사 '+v.issuers+' · 코드 행 '+v.code_rows),
+  upper:c.applicability_only_upper_bound?'적용 범위만 본 상한(다른 입력·분류·비교 표본·관문 결손이 모두 해소된다는 가정 · 예측 아님) 발행사 '
+   +share(c.applicability_only_upper_bound.optimistic_issuers,den.issuers)+' · 모든 행이 적용 부적합인 발행사 '+c.applicability_only_upper_bound.issuers_all_rows_incompatible
+   +' · 95% 목표 발행사 '+c.target95.issuers+(c.applicability_only_upper_bound.can_reach95_under_known_scope?' · 이 가정에서도 도달 가능':' · 이 가정에서도 도달 불가'):null,
   incomplete:'총점 미산출 코드 행 '+c.incomplete_unique.code_rows+' · 비교 표본 부족이 걸린 행 '+c.current_sample_barrier.code_rows,
   market:'전체시장 분모·커버리지 미측정 · 관측 카탈로그는 상장 전체시장이 아님'});}
 
@@ -670,10 +779,16 @@ function compareView(row,d,{sectorName}={}){return freeze({company_id:row.compan
  bandRule:DECILE_RULE,
  boards:d.models.map(k=>{const b=row.boards[k],M=MODELS[k],add=Object.entries(b.factors).filter(([,f])=>f.kind==='ADDITIONAL');
   const ctx={group:scopeWord(b.ranking_scope,sectorName),date:d.summary.boards[k].evaluation_population.valuation_date};
-  return freeze({key:k,label:M.label,
+  const w=M.gen==='Q333'&&b.weight_fractions?b.weight_fractions:null,ax=o=>['Q','G','V'].map(a=>a+' '+frac(o[a])).join(' · ');
+  const wtext=v=>w?' · 총점 비중 '+frac(w.nominal_factors[v])+(ratEq(w.nominal_factors[v],w.post_gate_factors[v])?'':' → 관문 뒤 '+frac(w.post_gate_factors[v])):'';
+  return freeze({key:k,label:M.label,gen:M.gen,
+   recipe:M.gen==='Q333'?'구성 상태 · '+RECIPE_WORD[b.recipe_state]:null,
+   weights:M.gen!=='Q333'?null:w?'축 비중(관문 전) '+ax(w.nominal_axes)+' · 관문 뒤 '+ax(w.post_gate_axes)+' · 축 안 세 요소는 각 1/3':'비중 없음(구성 적용 안 됨)',
+   missing:M.gen==='Q333'&&b.missing_factors?['Q','G','V'].map(a=>a+' 결손 '+(b.missing_factors[a].length?b.missing_factors[a].join(', '):'없음')).join(' · '):null,
+   evidence:M.gen==='Q333'?b.selected_variants.map(evidenceText):[],
    axes:'Q '+fmt(b.axes.Q)+' · G '+fmt(b.axes.G)+' · V '+fmt(b.axes.V)+' · 총점 '+fmt(b.total),
    rank:rankText(b,sectorName),scope:scopeWord(b.ranking_scope,sectorName),status:word(b.status)+' · '+word(b.gate_status),
-   core:b.selected_variants.map(v=>factorText(v,b.factors[v],ctx)),
+   core:b.selected_variants.map(v=>factorText(v,b.factors[v],ctx)+wtext(v)),
    additional:add.filter(([,f])=>f.score!==null).map(([v,f])=>factorText(v,f,ctx)),
    additionalMissing:add.filter(([,f])=>f.score===null).length});})});}
 
@@ -710,9 +825,9 @@ function boardRowsView(b,{sectorName}={}){const key=MODEL_OF[b.model_id].key;ret
  total:fmt(r.total),rank:rankText(r,sectorName),status:word(r.status)+' · '+word(r.gate_status),key}));}
 
 function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(const f of[...ls]){try{f();}catch(_){}}};
- return Object.freeze({set(scope,v){if(!own(SCOPES,scope)||!CHECKED.has(v)||v.scope!==scope)throw Error('DUAL_UNCHECKED');held.set(scope,Object.freeze({delivery:v,details:new Map()}));tell();},get:scope=>held.get(scope)||null,
+ return Object.freeze({set(scope,v){if(!own(SLOTS,scope)||!CHECKED.has(v)||v.slot!==scope)throw Error('DUAL_UNCHECKED');held.set(scope,Object.freeze({delivery:v,details:new Map()}));tell();},get:scope=>held.get(scope)||null,
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

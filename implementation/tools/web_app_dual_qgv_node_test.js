@@ -306,7 +306,16 @@ test('engine answers: the same request, model and candidate; board of that candi
     const q = DQ.engineRequest('preview', U1, { input_id: 'DUAL_BOTH_VALID' });
     assert.equal(q.model, 'INTEGRATED'); assert.equal(q.model_id, U1); assert.match(q.request_id, /^DUAL-preview-U1-\d+$/);
     const a = await eng.call(q), ok = DQ.checkAnswer(q, a);
-    assert.equal(ok.ok, true, JSON.stringify(ok.code)); assert.equal(ok.value.board.result_hash, F.parse('summary.json').boards.U1.result_hash);
+    assert.equal(ok.ok, true, JSON.stringify(ok.code));
+    // The pinned synthetic result was made at #529's code. Its configuration and both input identities are bound unchanged and every
+    // row's axes, total, rank and status are the pinned ones; the code binding is the current code's, and the result hash moves exactly
+    // with it (#534 changed dual_qgv.py for config/2: an exact old replay is at its original execution commit, Codex QGV_333.md).
+    const pin = F.parse('summary.json').boards.U1, bd = ok.value.board;
+    for (const k of ['model_hash', 'evaluation', 'reference', 'engine_version', 'adapter_version']) assert.deepEqual(bd.bindings[k], pin.bindings[k], 'bindings.' + k);
+    assert.equal(bd.result_hash === pin.result_hash, bd.bindings.code_hash === pin.bindings.code_hash, 'the result hash moves exactly with the code binding');
+    const pinRows = new Map(F.parse('index.json').rows.map((r) => [r.company_id, r.boards.U1]));
+    assert.equal(bd.rows.length, pinRows.size);
+    for (const r of bd.rows) for (const k of ['axes', 'total', 'rank', 'rank_n', 'ranking_scope', 'status', 'gate_status']) assert.deepEqual(r[k], pinRows.get(r.company_id)[k], r.company_id + '.' + k);
     // the answer to another request, or under another model, is never used
     assert.equal(DQ.checkAnswer({ ...q, request_id: 'DUAL-preview-U1-0' }, a).code, 'ENGINE_ANSWER_OTHER_REQUEST');
     assert.equal(DQ.checkAnswer({ ...q, model_id: 'unified-sales-core/0.1.0' }, a).code, 'MODEL_RESPONSE_MISMATCH');

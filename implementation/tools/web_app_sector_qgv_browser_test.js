@@ -283,8 +283,14 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
         assert.deepEqual(eng.calls.slice(c0).map((x) => x.op), ['preview', 'save'], phase + ': one click = the engine preview and its save_board record (nothing stored)');
         assert.equal(await page.evaluate((k) => localStorage.getItem(k), DKEY), null, phase + ': 계산 stores nothing');
-        const u1 = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'docs/research/sector_qgv/dual-synthetic/summary.json'), 'utf8')).boards.U1.result_hash;
-        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), u1, phase + ': the engine board, the same as Codex\'s synthetic result');
+        // The board shown is the engine's own: a second, separate engine process given the same request on the same pinned inputs
+        // returns the same result hash (Codex's run_board is deterministic). Codex's retained synthetic result was made at #529's code;
+        // its rows (the ranks below) are the same, while its hash moved with the code binding when #534 changed dual_qgv.py.
+        const e2 = E.start({ env: {} });
+        let u1;
+        try { const a = await e2.call({ schema_version: 'sector-qgv-engine-request/1', op: 'preview', request_id: 'DUAL-preview-U1-0', model: 'INTEGRATED', model_id: 'unified-roa-core/0.1.0', input_id: 'DUAL_BOTH_VALID' });
+          assert.equal(a.ok, true); u1 = a.board.result_hash; } finally { await e2.close(); }
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), u1, phase + ': the engine board, the same as an independent engine run');
         assert.deepEqual(await page.locator(DB + ' [data-de-rank]').allInnerTexts(), ['3 / 3 (평가 집단 전체)', '2 / 3 (평가 집단 전체)', '1 / 3 (평가 집단 전체)']);
         assert.match(await text(DB + ' [data-de-state]'), /^합성 실제 재계산/);
         // late answer: U1 is asked again, S1 is chosen before it answers → the U1 answer is dropped, no U1 board stays

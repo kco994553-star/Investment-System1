@@ -21,6 +21,9 @@ Checks, all before anything is written:
 The anchor is written as one file (atomic replace); on any failure the existing copy stays. Restaging the delivery
 (stage_private_dual_qgv.py) replaces classification/dual/operating504/ whole and drops it; it is staged again after its delivery.
 Output: one line with hashes and counts (no content).
+
+The 3/3/3 candidates (owner 2026-11-13; Codex #534) are staged with --set 333 under classification/dual-333/<scope>/ (the Worker's
+&set=333), never over the reduced U1 / U2 / S1 delivery under classification/dual/<scope>/; the same checks, the same 2 MiB limit.
 """
 from __future__ import annotations
 
@@ -55,7 +58,12 @@ def _json(data: bytes, name: str):
         raise StageError('NOT_JSON:' + name) from None
 
 
-def check(anchor: Path, pin: str, data_dir: Path) -> tuple:
+SETS = {'reduced': 'dual', '333': 'dual-333'}
+
+
+def check(anchor: Path, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
+    if set_ not in SETS:
+        raise StageError('SET_UNKNOWN')
     if not isinstance(pin, str) or not re.fullmatch(r'[0-9a-f]{64}', pin):
         raise StageError('PIN_INVALID')
     if not anchor.is_file() or anchor.is_symlink():
@@ -70,7 +78,7 @@ def check(anchor: Path, pin: str, data_dir: Path) -> tuple:
             or x.get('new_score_calculations') != 0 or x.get('matches_all_dual_boards') is not True
             or not isinstance(x.get('expected_reference'), dict) or x['expected_reference'].get('code_rows') != x.get('candidate_rows')):
         raise StageError('ANCHOR_SCHEMA')
-    delivery = data_dir / 'classification' / 'dual' / 'operating504'
+    delivery = data_dir / 'classification' / SETS[set_] / 'operating504'
     if not (delivery / 'manifest.json').is_file() or not (delivery / 'summary.json').is_file():
         raise StageError('DELIVERY_NOT_STAGED')
     boards = _json((delivery / 'summary.json').read_bytes(), 'summary.json').get('boards') or {}
@@ -92,11 +100,11 @@ def check(anchor: Path, pin: str, data_dir: Path) -> tuple:
     return data, x, boards
 
 
-def stage(anchor: Path, pin: str, data_dir: Path) -> tuple:
+def stage(anchor: Path, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
-    data, x, boards = check(anchor, pin, data_dir)
-    target = data_dir / 'classification' / 'dual' / 'operating504' / TARGET
+    data, x, boards = check(anchor, pin, data_dir, set_)
+    target = data_dir / 'classification' / SETS[set_] / 'operating504' / TARGET
     fresh = target.with_name(TARGET + '.staging')
     try:
         fresh.write_bytes(data)
@@ -114,9 +122,10 @@ def main(argv=None) -> int:
     parser.add_argument('--anchor', required=True, type=Path)
     parser.add_argument('--anchor-sha256', required=True)
     parser.add_argument('--data-dir', required=True, type=Path)
+    parser.add_argument('--set', dest='set_', default='reduced', choices=sorted(SETS))
     args = parser.parse_args(argv)
     try:
-        data, x, boards = stage(args.anchor, args.anchor_sha256, args.data_dir)
+        data, x, boards = stage(args.anchor, args.anchor_sha256, args.data_dir, args.set_)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_REFERENCE_ANCHOR refused=' + str(error))
         return 1

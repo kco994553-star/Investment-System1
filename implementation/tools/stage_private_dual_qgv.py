@@ -31,6 +31,9 @@ Checks, all before anything is written:
 classification/dual/<scope>/ is replaced whole or not at all; on any failure the existing copy stays. A later restage of
 classification/ (stage_private_classification.py) replaces the directory whole, so this delivery is staged again after it.
 Output: one line with counts, sizes and hashes (no content).
+
+The 3/3/3 candidates (owner 2026-11-13; Codex #534) are staged with --set 333 under classification/dual-333/<scope>/ (the Worker's
+&set=333), never over the reduced U1 / U2 / S1 delivery under classification/dual/<scope>/; the same checks, the same 2 MiB limit.
 """
 from __future__ import annotations
 
@@ -46,6 +49,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 2 * 1024 * 1024
 SCOPES = {'operating504': ('operating', 'evaluation'), 'held1057': ('held_financial_subsample', 'reference')}
 MODELS = {'U1': 'unified-roa-core/0.1.0', 'U2': 'unified-sales-core/0.1.0', 'S1': 'sector-reduced-core/0.1.0'}
+# The 3/3/3 boards (Codex #534 qgv-333-contract/1): staged only with --set 333, and a set holds only its own boards (never mixed).
+MODELS_333 = {'U2-333': 'unified-333-eps/0.1.0', 'U1-333': 'unified-333-persistence/0.1.0', 'S1-333': 'sector-333/0.1.0'}
+SETS = {'reduced': ('dual', MODELS), '333': ('dual-333', MODELS_333)}
 # operating504's evaluation input is the staged result's own input; held1057 is tied by its reference source input only, so its
 # evaluation input is reported UNVERIFIED (owner 2026-11-11 §2) until the producer gives the evaluation input's derivation.
 INPUT_CHECK = {'evaluation': 'EVALUATION_INPUT_MATCHED', 'reference': 'REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED'}
@@ -82,9 +88,12 @@ def _json(data: bytes, name: str):
         raise StageError('NOT_JSON:' + name) from None
 
 
-def check(delivery: Path, scope: str, pin: str, data_dir: Path) -> tuple:
+def check(delivery: Path, scope: str, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
     if scope not in SCOPES:
         raise StageError('SCOPE_UNKNOWN')
+    if set_ not in SETS:
+        raise StageError('SET_UNKNOWN')
+    models = SETS[set_][1]
     _pin(pin, 'PIN_INVALID')
     if not delivery.is_dir():
         raise StageError('DELIVERY_MISSING')
@@ -117,7 +126,7 @@ def check(delivery: Path, scope: str, pin: str, data_dir: Path) -> tuple:
     summary = _json(files['summary.json'], 'summary.json')
     boards = summary.get('boards') if isinstance(summary, dict) else None
     if (summary.get('schema_version') != 'qgv-dual-delivery/1' or summary.get('visibility') != 'PRIVATE_RESEARCH' or not isinstance(boards, dict)
-            or not boards or any(k not in MODELS or not isinstance(b, dict) or b.get('model_id') != MODELS[k] or b.get('operating_adoption') != 'NOT_ADOPTED'
+            or not boards or any(k not in models or not isinstance(b, dict) or b.get('model_id') != models[k] or b.get('operating_adoption') != 'NOT_ADOPTED'
                                  or b.get('performance_state') != 'NOT_MEASURED' for k, b in boards.items())):
         raise StageError('SUMMARY_SCHEMA')
     evaluations = [b.get('evaluation_population') for b in boards.values()]
@@ -185,21 +194,22 @@ def check_lineage(path: Path, pin: str, scope: str, summary: dict) -> bytes:
     return data
 
 
-def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None, unverified: bool = False) -> tuple:
+def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None, unverified: bool = False,
+          set_: str = 'reduced') -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
     if not (data_dir / 'classification').is_dir():
         raise StageError('CLASSIFICATION_NOT_STAGED')
     if (lineage is None) != (lineage_pin is None):
         raise StageError('LINEAGE_PIN_REQUIRED')
-    files, manifest, summary = check(delivery, scope, pin, data_dir)
+    files, manifest, summary = check(delivery, scope, pin, data_dir, set_)
     # held1057's evaluation input: the strict path needs the producer's projection proof; staging without it is an explicit choice
     # (--unverified) and the delivery stays REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED on every screen (owner 2026-11-12 §2).
     if SCOPES[scope][1] == 'reference' and lineage is None and not unverified:
         raise StageError('LINEAGE_REQUIRED')
     if lineage is not None:
         files = {**files, LINEAGE_FILE: check_lineage(lineage, lineage_pin, scope, summary)}
-    target = data_dir / 'classification' / 'dual' / scope
+    target = data_dir / 'classification' / SETS[set_][0] / scope
     fresh, old = target.with_name(scope + '.staging'), target.with_name(scope + '.previous')
     for leftover in (fresh, old):
         if leftover.exists():
@@ -233,10 +243,11 @@ def main(argv=None) -> int:
     parser.add_argument('--data-dir', required=True, type=Path)
     parser.add_argument('--input-lineage', type=Path)
     parser.add_argument('--input-lineage-sha256')
+    parser.add_argument('--set', dest='set_', default='reduced', choices=sorted(SETS))
     parser.add_argument('--unverified', action='store_true', help='held1057 only: stage without a projection proof; its evaluation input stays UNVERIFIED')
     args = parser.parse_args(argv)
     try:
-        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir, args.input_lineage, args.input_lineage_sha256, args.unverified)
+        files, manifest, summary = stage(args.delivery, args.scope, args.manifest_sha256, args.data_dir, args.input_lineage, args.input_lineage_sha256, args.unverified, args.set_)
     except StageError as error:
         print('STAGE_PRIVATE_DUAL_QGV refused=' + str(error))
         return 1
@@ -246,7 +257,8 @@ def main(argv=None) -> int:
           + ' details=' + str(sum(1 for k in files if k.startswith('detail-'))) + ' files=' + str(len(files))
           + (' lineage sha256=' + hashlib.sha256(files[LINEAGE_FILE]).hexdigest() if LINEAGE_FILE in files else '')
           + ' bytes=' + str(sum(len(v) for v in files.values())) + ' max_file_bytes=' + str(max(len(v) for v in files.values()))
-          + ' kind=' + manifest['data_kind'] + ' input_check=' + (ATTESTED if LINEAGE_FILE in files else INPUT_CHECK[SCOPES[args.scope][1]]))
+          + ' kind=' + manifest['data_kind'] + ' input_check=' + (ATTESTED if LINEAGE_FILE in files else INPUT_CHECK[SCOPES[args.scope][1]])
+          + ('' if args.set_ == 'reduced' else ' set=' + args.set_))
     return 0
 
 
