@@ -27,6 +27,8 @@ def held_eps_observation(payload, record, reference, *, as_of, valuation_date,
     issuer-level normalization is a diagnostic until a separately reviewed
     class/attribution/history proof is supplied. No valuation-date price needed.
     """
+    if str(payload.get('cik')).zfill(10) != record.get('cik'):
+        raise ValueError('EPS_SOURCE_ISSUER_MISMATCH')
     acquired = record['acquired_at']; cutoff = date.fromisoformat(acquired[:10])
     taxonomy, currency = vf._taxonomy_and_currency(payload, cutoff)
     fields = {}; annual = {}; diagnostic = {'annual': annual, 'adapter_version': EPS_ADAPTER_VERSION}

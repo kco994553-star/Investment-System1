@@ -161,3 +161,8 @@ def test_verified_historical_observation_enters_333_pool_but_v_stays_blocked():
     b=run_board(candidate_configs()['U2-333'],ev,ref,request_id='SYN:history-only')
     assert b['rows'][0]['factors']['eps_diluted_cagr_3y']['score'] is not None
     assert b['rows'][0]['axes']['G'] is not None and b['rows'][0]['axes']['V'] is None
+
+
+def test_direct_eps_adapter_rejects_a_different_source_issuer():
+    p,r=fixture();p['cik']=2
+    with pytest.raises(ValueError,match='EPS_SOURCE_ISSUER_MISMATCH'):execute(p,r)
