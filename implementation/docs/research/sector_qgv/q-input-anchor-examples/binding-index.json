@@ -1,0 +1,15 @@
+{
+  "evaluation_population": {
+    "id": "SYN:evaluation",
+    "version": "2",
+    "members_hash": "d2a4b37cac0a57e42b1fe002a68c2449a7e41646eec1a92a0f0acd39fae589ce",
+    "valuation_date": "2026-11-04",
+    "as_of": "2026-11-13T11:00:00Z",
+    "code_rows": 1,
+    "issuers": 1,
+    "input_hash": "c05eb64744ce68319eeb0a9d1223df16fe8cdf5ffb071e5d7b6bf5524a042d86",
+    "snapshot_id": "SYN:ev",
+    "classification_records_hash": "4fe7981b055eca85bb2e220c84ac64f1e4c82e7774ede8cbeac7a4fa3fae2ae6",
+    "classification_context": null
+  }
+}
