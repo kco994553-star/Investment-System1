@@ -128,7 +128,10 @@ jobs:
     # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
     # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
     # 39251288211 was cancelled at 30:00 while its tests were still passing.
-    timeout-minutes: 60
+    # 75 (was 60; owner 2026-11-13, time headroom only, not a speed-up): #530 6bc9936a took 56.5 minutes on a normal runner
+    # (run 43233624979 attempt 2) and was cancelled at 60:00 on a slower one with no test failed (attempt 1). The test lists,
+    # checks, required steps and deploy conditions are unchanged; moving the browser list to its own job is a later proposal.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:

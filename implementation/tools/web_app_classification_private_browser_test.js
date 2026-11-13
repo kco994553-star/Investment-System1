@@ -509,6 +509,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.match(await text(page, '[data-dual-dist-band=NONE]'), new RegExp('^분위 없음 · ' + zg.unavailable_count + '개$'));
         assert.match(await text(page, '[data-dual-dist-head]'), /U1 · .+ · 통합 비교집단\(평가 집단 전체\)$/);
         assert.match(await text(page, '[data-dual-dist-context]'), /^평가 유효 \d+ \/ 범위 내 \d+ · 참조 N \d+\(순위 분모 아님\) · 원지표 .+ · 점수는 높을수록 좋음 · 평가일 \d{4}-\d{2}-\d{2}$/);
+        // Ties (owner 2026-11-13): the stored rule is kept; the block names it and lists every stored split (none in this fixture).
+        assert.match(await text(page, '[data-dual-dist-policy]'), /^분위 기준: 저장된 평가 순위 분위\(stored-evaluation-deciles\/1 · 기존 규칙 유지\) · /);
+        assert.equal(await count(page, '[data-dual-dist-ties]'), zg.legacy_tie_splits.length ? 1 : 0, phase + ': the stored tie splits listed when there are any');
         await page.locator('[data-dual-dist-band="10"]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-dist-selected="10"]').waitFor();
         assert.match(await text(page, '[data-dual-dist-selected]'), /^상위 0–10% · 분위 10 · 0개 · 확인된 빈 구간$/);
@@ -525,11 +528,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         assert.equal(w.log.length, z2, phase + ': the cached part is not read again');
         if (tag === '390') {
           await page.setViewportSize({ width: 320, height: 720 });
-          // The block itself at 320 px: nothing inside it wider than the block (the surrounding private panel is wider than 320 px
-          // before this change; recorded in DUAL_QGV §7-5, not measured here).
+          // The block itself at 320 px: nothing inside it wider than the block; and (owner 2026-11-13) the page as a whole, the private
+          // panel and the company facts included, within 320 px (.result-head>.result-facts{min-width:0}).
           assert.ok(await page.evaluate(() => { const a = document.querySelector('[data-dual-dist=held1057]'), r = a.getBoundingClientRect();
             return a.scrollWidth <= a.clientWidth + 1 && [...a.querySelectorAll('button, select, p, h5')].every((e) => e.getBoundingClientRect().right <= r.right + 1); }), phase + ': 320 px, the 10분위 block fits its width');
           const sz = await page.locator('[data-dual-dist-band="10"]').boundingBox(); assert.ok(sz.height >= 44, phase + ': 44 px band buttons');
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': 320 px, the whole page (panel included) within the width');
           await page.setViewportSize({ width: 390, height: 844 });
         }
         assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');

@@ -238,7 +238,7 @@ function block(anchor){
         if(q.ok)bins=q.value;else r=q;}
        if(!r.ok){st.dataset.dualDistState='ERROR';st.textContent='10분위 자료를 쓰지 않음 · '+(r.code==='DIST_BOARD_MISMATCH'||r.code==='COMPANIES_MISMATCH'?'이 연구 결과가 아닌 다른 결과의 분위입니다'
         :r.code==='BINS_SOURCE_MISMATCH'?'구간 색인이 이 분위 파일의 것이 아닙니다':r.code==='BINS_INCOMPLETE'?'구간 색인 파일이 반만 있습니다'
-        :r.code==='POLICY_NOT_CONFIRMED'?'오너 기준 확인 전의 표시 후보입니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
+        :r.code==='POLICY_NOT_CONFIRMED'?'활성화하지 않은 별도 연구 후보의 표시 기준입니다(저장된 분위 규칙만 씀)':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':'형식 오류')+' · '+r.code+' · '+r.path+' · 위 결과는 그대로';b.disabled=false;return;}
        DISTS.set(held,{value:r.value,bins,binParts:new Map(),parts:new Map(),board:null,group:null,band:null,page:0,view:null,routed:false});draw();},
       err=>{const c=codeOf(err);st.dataset.dualDistState='ERROR';st.textContent=(c==='KIS_SERIES_NOT_FOUND'?'10분위 전체 자료가 전달 위치에 없습니다(배치 전) · 위 상위 20개 미리보기만 있음 · 10분위 전체 조회 아님':say(c))+' · 위 결과는 그대로';b.disabled=false;})
       .finally(()=>{busy=false;});});
@@ -265,6 +265,8 @@ function block(anchor){
       h('p',{class:'meta',dataset:{dualDistRouted:String(S.routed)}},S.routed?'전체 구성원 · 구간 색인과 대조됨(10개 구간의 개수·저장 순위·구성원 해시 일치)':'전체 구성원 · 분위 파일 전체 행으로 확인(구간 색인 없음)'),h('p',{class:'meta',dataset:{dualDistContext:''}},v.context),
       h('p',{class:'meta'},v.members),h('p',{class:v.inputVerified?'meta':'reason',dataset:{dualDistInput:String(v.inputVerified)}},v.input),
       h('p',{class:'reason',dataset:{dualDistPolicy:D.display_policy}},v.policy),
+      v.ties.length?h('details',{class:'why',dataset:{dualDistTies:String(v.ties.length)}},h('summary',null,'같은 점수가 갈린 경계 '+v.ties.length+'곳 ▸'),
+       h('ul',{class:'news-lines'},...v.ties.map(t=>h('li',null,t.text)))):null,
       h('p',{class:'meta'},'구간을 고르면 그 구간의 기업만 보임 · 순위·분위·분모는 생산자 값 그대로'),
       h('div',{class:'chips',role:'group','aria-label':'분위 구간',dataset:{dualDistBands:G.group.group_id}},...v.bands.map(b=>bandBtn(b.decile,b.label,b.count,b.selected)),
        bandBtn('NONE','분위 없음',v.unavailable.count,v.unavailable.selected)),
