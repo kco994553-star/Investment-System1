@@ -1,0 +1,10 @@
+{
+  "schema_version": "sector-qgv-reference-study/1",
+  "data_kind": "SYNTHETIC_CONTRACT_EXAMPLE",
+  "study": {"study_id": "SYNTHETIC-REFERENCE-01", "version": "1", "policy": "research-reference-additive/1"},
+  "evaluation_population": {"id": "SYN-EVAL", "version": "1", "members_hash": "computed-from-three-target-ids", "valuation_date": "2026-11-04", "as_of": "2026-11-04T20:00:00Z", "code_rows": 3, "issuers": 3},
+  "reference_population": {"id": "SYN-REF", "version": "1", "members_hash": "computed-from-admitted-issuer-ids", "group_members_hash": "computed-from-factor-specific-reference-members", "valuation_date": "2026-11-04", "as_of": "2026-11-04T20:00:00Z", "issuers": 20},
+  "display_projection": {"visible_rows": 1, "evaluation_denominator": 3, "factor_valid_n": 20, "changes_reference_membership": false},
+  "expected": {"evaluation_rows_retained": 3, "reference_only_rows_in_result": 0, "total": null, "rank": null, "reason": "V_INPUT_MISSING", "whole_market_denominator": null},
+  "note": "Contract sketch only. Hash placeholders are not runnable or accepted identities. Executable synthetic fixtures will carry real hashes."
+}

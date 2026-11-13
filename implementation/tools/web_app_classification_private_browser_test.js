@@ -60,13 +60,38 @@ const SUMMARY_TEXT = JSON.stringify(BUNDLE.expanded_summary);
 const LINKED_CODE = BUNDLE.view.rows[0].company_id;
 // Codex #527 comparison outputs (Codex's comparison() on Codex's synthetic input). The synthetic coverage's operating scope is set to
 // name the peer_shift result (its input hash and row count) and to carry all three gate decisions: a synthetic pairing for the screen.
+// Codex #528's synthetic reference view (pinned in reference-synthetic/manifest.json).
+const REFVIEW = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/docs/research/sector_qgv/reference-synthetic/view.json'), 'utf8'));
 const REPAIR = JSON.parse(require('node:fs').readFileSync(require('node:path').join(R.ROOT, 'implementation/tests/fixtures/input_repair_comparison/outputs.json'), 'utf8'));
 const repairCase = (id) => JSON.parse(JSON.stringify(REPAIR.cases.find((c) => c.id === id).output));
+// Codex #529's synthetic dual delivery (pinned in dual-synthetic/manifest.json), served as the held1057 scope; the synthetic coverage's
+// held scope names its evaluation population and reference source input (a synthetic pairing for the screen).
+const DF = require('./web_app_dual_fixture.js');
+const DUAL = DF.delivery('held1057');
+const DUAL_FILE = { dual_manifest: 'manifest.json', dual_summary: 'summary.json', dual_index: 'index.json' };
+// held1057's producer projection proof (qgv-dual-input-projection-proof/1), a synthetic one binding this delivery (test-made).
+DUAL.files['input-lineage.json'] = DF.lineage();
+// Codex's synthetic factor leaders companion, re-pointed at this held1057 delivery's manifest (test-made).
+const LEADERS_SET = DF.leaders(DUAL), LEADERS = { ...LEADERS_SET.files, ...DF.selection(LEADERS_SET).files };
+const LEADER_FILE = { dual_leaders_manifest: 'factor-leaders-manifest.json', dual_leaders_index: 'factor-leaders.json',
+  dual_leaders_selection_manifest: 'factor-leaders-selection-manifest.json', dual_leaders_selection: 'factor-leaders-selection.json' };
+// A full factor distribution bound to this held1057 delivery (test-made projection of its stored factor values, Codex's
+// qgv-dual-factor-distribution/1 shape; Codex's own synthetic cases are read in web_app_dual_distribution_node_test.js).
+const DIST = { ...DF.distribution(DUAL) };
+Object.assign(DIST, DF.bins(DIST)); // its all-bin routing (test-made, Codex's qgv-dual-factor-bins/1 shape)
+const DIST_FILE = { dual_dist_manifest: 'distribution-manifest.json', dual_dist_index: 'distribution-index.json', dual_bins_manifest: 'bin-manifest.json', dual_bins_index: 'bin-index.json' };
 const DELIVERY = X.heldDelivery(SUMMARY_TEXT, BUNDLE.expanded_summary.calculation_counts.scopes.held_financial_subsample, { firstCodes: [LINKED_CODE, 'ROW:NOT-IN-LIST'],
-  coverageEdit: (c) => { const o = c.scopes.operating, x = repairCase('peer_shift');
+  coverageEdit: (c) => { const o = c.scopes.operating, k = c.scopes.catalog, x = repairCase('peer_shift'), rv = REFVIEW.evaluation_population;
     o.gate_decisions = { PASS: 1, UNKNOWN: 0, VALUE_EXCLUDED: 1 };
-    o.context = { ...(o.context || {}), valuation_date: x.valuation_date, population: { ...((o.context || {}).population || {}), denominator: x.denominator },
-      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: x.after_input_hash } }; } });
+    const hc = DF.coverageContext('held_financial_subsample'), hs = c.scopes.held_financial_subsample;
+    hs.context = { ...(hs.context || {}), valuation_date: hc.valuation_date, population: { ...((hs.context || {}).population || {}), ...hc.population },
+      result_identity: { ...((hs.context || {}).result_identity || {}), ...hc.result_identity } };
+    // the repair comparison names the catalog scope's result; the reference study names the operating scope's result
+    k.context = { ...(k.context || {}), valuation_date: x.valuation_date, population: { ...((k.context || {}).population || {}), denominator: x.denominator },
+      result_identity: { ...((k.context || {}).result_identity || {}), input_hash: x.after_input_hash } };
+    o.context = { ...(o.context || {}), valuation_date: rv.valuation_date,
+      population: { ...((o.context || {}).population || {}), id: rv.id, version: rv.version, members_hash: rv.members_hash, denominator: rv.code_rows },
+      result_identity: { ...((o.context || {}).result_identity || {}), input_hash: rv.input_hash, config_hash: REFVIEW.bindings.config_hash } }; } });
 const EXF = { expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json' };
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
@@ -93,7 +118,25 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         if (early) { w.refused = (w.refused || 0) + 1; await route.fulfill({ status: 429, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ error: { code: 'RATE_LIMITED' } }) }); return; }
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
-        const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part;
+        const part = url.searchParams.get('part'), shard = url.searchParams.get('shard'), scope = url.searchParams.get('scope');
+        const key = part === 'expanded_detail' ? 'expanded_detail/' + shard : part === 'dual_detail' ? 'dual_detail/' + scope + '/' + shard : DUAL_FILE[part] || part === 'dual_lineage' ? part + '/' + scope : part;
+        if (DIST_FILE[part] || part === 'dual_dist_detail' || part === 'dual_bins_detail') {
+          const dkey = /_detail$/.test(part) ? part + '/' + scope + '/' + shard : part + '/' + scope;
+          const name = part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : part === 'dual_bins_detail' ? 'bins-' + shard + '.json' : DIST_FILE[part], b = scope === 'held1057' ? DIST[name] : undefined;
+          const d = (w.answers[dkey] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
+        if (LEADER_FILE[part] || part === 'dual_leaders_detail') {
+          const lkey = part === 'dual_leaders_detail' ? part + '/' + scope + '/' + shard : part + '/' + scope;
+          const name = part === 'dual_leaders_detail' ? 'factor-leaders-' + shard + '.json' : LEADER_FILE[part], b = scope === 'held1057' ? LEADERS[name] : undefined;
+          const d = (w.answers[lkey] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
+        if (DUAL_FILE[part] || part === 'dual_detail' || part === 'dual_lineage') {
+          const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : part === 'dual_lineage' ? 'input-lineage.json' : DUAL_FILE[part], b = scope === 'held1057' ? DUAL.files[name] : undefined;
+          const d = (w.answers[key] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
+          await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
+        }
         const file = EXF[part] || (part === 'expanded_detail' ? 'expanded-detail/' + shard + '.json' : null);
         const a = (w.answers[key] || (() => file ? (DELIVERY.files[file] === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: DELIVERY.files[file] })
           : { status: 200, body: BUNDLE[part], text: part === 'expanded_summary' ? SUMMARY_TEXT : undefined }))();
@@ -301,13 +344,200 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         w.answers.input_repair = () => ({ status: 200, body: repairCase('peer_shift') });
         await page.locator('[data-repair-open]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-repair-state=READY]').waitFor({ timeout: 20000 });
-        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 운영504 코드 행$/);
+        assert.match(await text(page, '[data-repair-state]'), /^입력 연결 수정 전후 비교 \(INPUT_CONNECTION_REPAIR\) · 평가일 .* · 분모 24 · 관측 카탈로그$/);
         assert.match(await text(page, '[data-repair-not]'), /요소·비중 변경 아님 · 분류 변경 아님 · 설정 변경 아님/);
         assert.equal(await text(page, '[data-repair-axis=Q]'), 'Q · 전 21 → 후 24 · 새로 산출 +3 · 산출 사라짐 0 · 기존 값 바뀜 20 / 24');
         assert.match(await text(page, '[data-repair-shift]'), /기업 실적 개선·전략 성과 아님$/);
         assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with coverage and comparison open');
         delete w.answers.input_repair;
+        await page.waitForTimeout(5200);
+        // 참조집단 확대 연구 (Codex #528): another evaluation result is refused (the bundle stays); the operating result's study reads,
+        // two populations apart; nothing stored.
+        const badRef = JSON.parse(JSON.stringify(REFVIEW)); badRef.evaluation_population.input_hash = 'e'.repeat(64); badRef.bindings.evaluation.input_hash = 'e'.repeat(64);
+        w.answers.reference_view = () => ({ status: 200, body: badRef });
+        const v0 = w.log.length; await page.locator('[data-reference-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-reference-state=ERROR]').waitFor({ timeout: 20000 });
+        assert.deepEqual(w.log.slice(v0).map((x) => x.path), ['/kis/classification?part=reference_view']);
+        assert.match(await text(page, '[data-reference-state]'), /지금 받은 결과와 다른 평가 집단의 연구입니다 · REFERENCE_RESULT_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-repair-axis]'), 5, phase + ': the repair block stays');
+        await page.waitForTimeout(5200);
+        w.answers.reference_view = () => ({ status: 200, body: REFVIEW });
+        await page.locator('[data-reference-open]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-reference-state=READY]').waitFor({ timeout: 20000 });
+        assert.match(await text(page, '[data-reference-state]'), /^참조집단 확대 연구 \(PRIVATE_RESEARCH · 운영 채택 안 됨\) · SYN-REF-01 v1 · 평가일 2026-11-02$/);
+        assert.match(await text(page, '[data-reference-population=evaluation]'), /^평가 모집단 SYN-EVAL · 코드 행 3 · 고유 발행사 3/);
+        assert.match(await text(page, '[data-reference-population=reference]'), /^참조집단 SYN-REF v1 · 발행사 20 \(외부 추가 17\)/);
+        assert.equal(await text(page, '[data-reference-axis=Q]'), 'Q · 코드 행 전 0 → 후 3 (새로 +3 · 사라짐 0 · 기존 값 바뀜 0) · 고유 발행사 0 → 3 (새로 +3)');
+        assert.match(await text(page, '[data-reference-new-any]'), /새로 생긴 고유 발행사 3 \/ 3$/);
+        assert.match(await text(page, '[data-reference-not]'), /참조 전용 기업은 순위·분모에 들어가지 않음/);
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the study open');
+        delete w.answers.reference_view;
+        await page.waitForTimeout(5200);
+        // 두 모형 연구 결과 (Codex #529): keyboard; another evaluation population is refused (the bundle stays); the held1057 delivery
+        // reads (three files, bytes checked), U1 / U2 / S1 apart with their own stages and 95% line; one company's models side by side
+        // is one detail read, cached; nothing stored; held1057 alone never makes 2.1's models selectable.
+        const badDual = DF.delivery('held1057', (x) => { for (const b of Object.values(x['summary.json'].boards)) { b.evaluation_population.members_hash = 'e'.repeat(64); b.bindings.evaluation.members_hash = 'e'.repeat(64); }
+          x['index.json'].evaluation_population.members_hash = 'e'.repeat(64); });
+        for (const [k, f] of Object.entries(DUAL_FILE)) w.answers[k + '/held1057'] = () => ({ status: 200, text: badDual.files[f].toString('utf8') });
+        w.answers['dual_lineage/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+        const d0 = w.log.length; await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(d0).map((x) => x.path), ['manifest', 'summary', 'index', 'lineage'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': four reads (the proof optional), in order');
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 지금 받은 결과와 다른 평가 집단·입력의 연구입니다 · DUAL_POPULATION_MISMATCH .* 위 묶음은 그대로$/);
+        assert.equal(await count(page, '[data-reference-axis]'), 5, phase + ': the reference block stays');
+        for (const k of Object.keys(DUAL_FILE)) delete w.answers[k + '/held1057'];
+        // A proof for another evaluation input is refused by name; the bundle stays.
+        w.answers['dual_lineage/held1057'] = () => ({ status: 200, text: DF.lineage((x) => { x.selected_issuer_count = 2; }).toString('utf8') });
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-state]'), /^보유1057 연구 결과를 쓰지 않음 · 평가 입력 투영 증명이 이 결과와 맞지 않습니다 · LINEAGE_INVALID /);
+        delete w.answers['dual_lineage/held1057'];
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-state=READY]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-state]'), /^두 모형 연구 결과 · 보유1057 · 목록표·요약·색인 검증됨 · 보관 결과만 · 화면 재계산 없음$/);
+        assert.deepEqual(await page.locator('[data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['held1057:U1', 'held1057:U2', 'held1057:S1']);
+        for (const k of ['S1', 'U1']) await page.locator('[data-dual-board="held1057:' + k + '"] > summary').click();
+        assert.match(await text(page, '[data-dual-states="held1057:U1"]'), /평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨\(화면이 다시 계산한 것 아님\)/, phase + ': the proof attests the evaluation input');
+        assert.equal(await text(page, '[data-dual-stages="held1057:S1"] [data-dual-stage=total]'), '최종 총점 코드 행 3 / 3 · 발행사 3 / 3');
+        assert.match(await text(page, '[data-dual-target="held1057:U1"]'), /^95% 목표 · 발행사 3 \/ 3 · 코드 행 3 \/ 3 · /);
+        assert.match(await text(page, '[data-dual-rules]'), /총점이 없으면 총점 순위도 없음/);
+        assert.equal(await count(page, '[data-dual-leaderboard]'), 0, phase + ': only operating504 feeds 2.1');
+        const firstCo = DF.parse('index.json').rows[0].company_id;
+        await page.locator('[data-dual-query=held1057]').fill(firstCo.slice(0, 6));
+        const c0 = w.log.length; await page.locator('[data-dual-result="' + firstCo + '"] button').click();
+        await page.locator('[data-dual-compare-for="' + firstCo + '"]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(c0).map((x) => x.path), ['/kis/classification?part=dual_detail&scope=held1057&shard=000'], phase + ': one detail read');
+        assert.deepEqual(await page.locator('[data-dual-compare-board]').evaluateAll((e) => e.map((x) => x.dataset.dualCompareBoard)), ['U1', 'U2', 'S1']);
+        assert.match(await text(page, '[data-dual-compare-for]'), /점수 차이를 계산하지 않음/);
+        assert.match(await text(page, '[data-dual-compare-rank=S1]'), /^3 \/ 3 \(.+ · GENERAL\)/, phase + ': the sector rank in its own scope');
+        assert.equal(await count(page, '[data-dual-compare-core=S1] li'), 5);
+        await page.waitForTimeout(5200);
+        const c1 = w.log.length; await page.locator('[data-dual-result="' + firstCo + '"] button').click();
+        await page.locator('[data-dual-compare-for="' + firstCo + '"]').waitFor();
+        assert.equal(w.log.length, c1, phase + ': the cached detail is not read again');
+        // 개별 요소 상위권: not staged → 배치 전 (the results stay); then two reads (manifest, index), a model and a factor by keyboard,
+        // 보기 = one shard read, the stored ranks in order; the shard is cached; a companion of another delivery is refused.
+        for (const k of ['dual_leaders_manifest', 'dual_leaders_index']) w.answers[k + '/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-leaders-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-leaders-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-leaders-state]'), /^요소 상위권 파일이 전달 위치에 없습니다\(배치 전\) · 위 결과는 그대로$/);
+        const otherLeaders = DF.leaders(DF.delivery('held1057', () => {})).files;
+        for (const [k, f] of Object.entries(LEADER_FILE)) if (otherLeaders[f]) w.answers[k + '/held1057'] = () => ({ status: 200, text: otherLeaders[f].toString('utf8') });
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-leaders-open=held1057]').click();
+        await page.waitForFunction(() => { const e = document.querySelector('[data-dual-leaders-state]'); return e && /LEADERS_SOURCE_MISMATCH/.test(e.textContent); }, null, { timeout: 30000 });
+        assert.match(await text(page, '[data-dual-leaders-state]'), /^요소 상위권을 쓰지 않음 · 이 연구 결과가 아닌 다른 전달본의 순위입니다 · LEADERS_SOURCE_MISMATCH /);
+        for (const k of Object.keys(LEADER_FILE)) delete w.answers[k + '/held1057'];
+        await page.waitForTimeout(5200);
+        const l0 = w.log.length; await page.locator('[data-dual-leaders-open=held1057]').click();
+        await page.locator('[data-dual-leaders-model=held1057]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(l0).map((x) => x.path), ['manifest', 'index', 'selection_manifest', 'selection'].map((p) => '/kis/classification?part=dual_leaders_' + p + '&scope=held1057'), phase + ': leaders reads (selection optional)');
+        assert.match(await text(page, '[data-dual-leaders] [data-dual-leaders-state=READY]'), /목록표·색인 검증됨 · 선택 계약 검증됨 · 요소 묶음 153개\(유효 0인 요소 포함 · 기업 수 아님\)/);
+        assert.equal(await page.locator('[data-dual-leaders-show=held1057]').isDisabled(), true, phase + ': nothing chosen, nothing to show');
+        await page.locator('[data-dual-leaders-model=held1057]').selectOption('S1');
+        const lg = JSON.parse(LEADERS['factor-leaders-000.json'].toString('utf8')).groups.find((g) => g.board === 'S1' && g.leaders.length === 3);
+        await page.locator('[data-dual-leaders-group=held1057]').selectOption(lg.group_id);
+        await page.waitForTimeout(5200);
+        const l1 = w.log.length; await page.locator('[data-dual-leaders-show=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-leaders-table="' + lg.group_id + '"]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(l1).map((x) => x.path), ['/kis/classification?part=dual_leaders_detail&scope=held1057&shard=000'], phase + ': one shard read');
+        assert.deepEqual(await page.locator('[data-dual-leader]').evaluateAll((e) => e.map((x) => x.dataset.dualLeader)), lg.leaders.map((x) => x.company_id), phase + ': the stored order');
+        assert.match(await text(page, '[data-dual-leaders-d10]'), /^평가 유효 3개 < 10 · 분위 계산 안 함$/);
+        assert.match(await text(page, '[data-dual-leaders-preview]'), /^상위 20개 미리보기 · 10분위 전체 조회가 아님/, phase + ': the top list is called a preview');
+        assert.match(await text(page, '[data-dual-bands-none]'), /^분위 구간 없음 · 평가 유효 3개 < 10/, phase + ': no band choice below N 10');
+        assert.equal(await page.locator('[data-dual-leaders-selection=MATCHED]').count(), 1, phase + ': the selection contract agrees with the shard');
+        const l2 = w.log.length; await page.locator('[data-dual-leaders-show=held1057]').click();
+        await page.locator('[data-dual-leaders-table="' + lg.group_id + '"]').waitFor();
+        assert.equal(w.log.length, l2, phase + ': the cached shard is not read again');
+        // A leader opens the same three-model company detail (its factor lines name the comparison group and the valuation date).
+        const lead0 = lg.leaders[0].company_id, l3 = w.log.length; await page.locator('[data-dual-leader-open="' + lead0 + '"]').click();
+        await page.locator('[data-dual-compare="held1057:leaders"] [data-dual-compare-for="' + lead0 + '"]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-compare="held1057:leaders"] [data-dual-compare-core=S1]'), / · 비교집단 .+ · GENERAL · 평가일 \d{4}-\d{2}-\d{2}/);
+        assert.match(await text(page, '[data-dual-compare="held1057:leaders"] [data-dual-compare-core=U1]'), / · 비교집단 평가 집단 전체 · /, phase + ': U1 factors in the integrated group');
+        assert.equal(w.log.length, l3, phase + ': the detail shard already in RAM is not read again');
+        // 요소 10분위 전체: not staged → 배치 전 (the top-20 preview is all there is); another result's distribution is refused; then
+        // two reads, model → factor → 보기 (one part); ten bands + 분위 없음 with their counts; a confirmed empty band; the unavailable
+        // rows with reasons; a part that fails to load is an error, never an empty band; a row opens the company detail; cached part.
+        for (const k of ['dual_dist_manifest', 'dual_dist_index']) w.answers[k + '/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+        await page.waitForTimeout(5200);
+        await page.locator('[data-dual-dist-open=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-dist] [data-dual-dist-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state]'), /^10분위 전체 자료가 전달 위치에 없습니다\(배치 전\) · 위 상위 20개 미리보기만 있음 · 10분위 전체 조회 아님 · 위 결과는 그대로$/);
+        if (tag === '1440') {
+          const other = DF.distribution(DUAL, (docs) => { docs['distribution-index.json'].boards.U1.result_hash = 'a'.repeat(64); });
+          w.answers['dual_dist_manifest/held1057'] = () => ({ status: 200, text: other['distribution-manifest.json'].toString('utf8') });
+          w.answers['dual_dist_index/held1057'] = () => ({ status: 200, text: other['distribution-index.json'].toString('utf8') });
+          await page.waitForTimeout(5200); await page.locator('[data-dual-dist-open=held1057]').click();
+          await page.waitForFunction(() => { const e = document.querySelector('[data-dual-dist] [data-dual-dist-state]'); return e && /DIST_BOARD_MISMATCH/.test(e.textContent); }, null, { timeout: 30000 });
+          assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state]'), /^10분위 자료를 쓰지 않음 · 이 연구 결과가 아닌 다른 결과의 분위입니다 · DIST_BOARD_MISMATCH /);
+          // Half of the bin routing (its index missing) refuses the click: the distribution alone is never shown as routed.
+          delete w.answers['dual_dist_manifest/held1057']; delete w.answers['dual_dist_index/held1057'];
+          w.answers['dual_bins_index/held1057'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+          await page.waitForTimeout(5200); await page.locator('[data-dual-dist-open=held1057]').click();
+          await page.waitForFunction(() => { const e = document.querySelector('[data-dual-dist] [data-dual-dist-state]'); return e && /BINS_INCOMPLETE/.test(e.textContent); }, null, { timeout: 30000 });
+          assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state]'), /^10분위 자료를 쓰지 않음 · 구간 색인 파일이 반만 있습니다 · BINS_INCOMPLETE /);
+          delete w.answers['dual_bins_index/held1057'];
+        }
+        delete w.answers['dual_dist_manifest/held1057']; delete w.answers['dual_dist_index/held1057'];
+        await page.waitForTimeout(5200);
+        const z0 = w.log.length; await page.locator('[data-dual-dist-open=held1057]').click();
+        await page.locator('[data-dual-dist-model=held1057]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(z0).map((x) => x.path), ['dist_manifest', 'dist_index', 'bins_manifest', 'bins_index'].map((p) => '/kis/classification?part=dual_' + p + '&scope=held1057'), phase + ': four reads');
+        assert.match(await text(page, '[data-dual-dist] [data-dual-dist-state=READY]'), /^목록표·색인 검증됨 · 요소 묶음 \d+개\(기업 수 아님\) · 저장된 평가 순위 분위 · 평가 기업 전체 · 분위 없음도 사유와 함께 · 구간 색인 검증됨$/);
+        await page.locator('[data-dual-dist-model=held1057]').selectOption('U1');
+        const zg = JSON.parse(DIST['distribution-index.json'].toString('utf8')).groups.find((g) => g.board === 'U1');
+        await page.locator('[data-dual-dist-group=held1057]').selectOption(zg.group_id);
+        if (tag === '1440') {
+          w.answers['dual_dist_detail/held1057/000'] = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
+          await page.waitForTimeout(5200); await page.locator('[data-dual-dist-show=held1057]').click();
+          await page.locator('[data-dual-dist-out] [data-dual-dist-state=ERROR]').waitFor({ timeout: 30000 });
+          assert.match(await text(page, '[data-dual-dist-out] [data-dual-dist-state]'), /분위 파일을 불러오지 못함 · .+ · 기업 없음이 아님$/, phase + ': a failed part is an error, not an empty band');
+          assert.equal(await count(page, '[data-dual-dist-bands]'), 0); delete w.answers['dual_dist_detail/held1057/000'];
+        }
+        await page.waitForTimeout(5200);
+        const z1 = w.log.length; await page.locator('[data-dual-dist-show=held1057]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-dist-bands="' + zg.group_id + '"]').waitFor({ timeout: 30000 });
+        assert.deepEqual(w.log.slice(z1).map((x) => x.path), ['/kis/classification?part=dual_dist_detail&scope=held1057&shard=000', '/kis/classification?part=dual_bins_detail&scope=held1057&shard=000'], phase + ': the part and its bins file');
+        assert.match(await text(page, '[data-dual-dist-routed=true]'), /^전체 구성원 · 구간 색인과 대조됨\(10개 구간의 개수·저장 순위·구성원 해시 일치\)$/, phase + ': every bin checked against the routing');
+        assert.deepEqual(await page.locator('[data-dual-dist-band]').evaluateAll((e) => e.map((x) => x.dataset.dualDistBand)), ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'NONE'], phase + ': ten bands and the unavailable rows apart');
+        assert.match(await text(page, '[data-dual-dist-band="10"]'), /^상위 0–10% · 0개$/); assert.match(await text(page, '[data-dual-dist-band="1"]'), /^상위 90–100% · 0개$/);
+        assert.match(await text(page, '[data-dual-dist-band=NONE]'), new RegExp('^분위 없음 · ' + zg.unavailable_count + '개$'));
+        assert.match(await text(page, '[data-dual-dist-head]'), /U1 · .+ · 통합 비교집단\(평가 집단 전체\)$/);
+        assert.match(await text(page, '[data-dual-dist-context]'), /^평가 유효 \d+ \/ 범위 내 \d+ · 참조 N \d+\(순위 분모 아님\) · 원지표 .+ · 점수는 높을수록 좋음 · 평가일 \d{4}-\d{2}-\d{2}$/);
+        // Ties (owner 2026-11-13): the stored rule is kept; the block names it and lists every stored split (none in this fixture).
+        assert.match(await text(page, '[data-dual-dist-policy]'), /^분위 기준: 저장된 평가 순위 분위\(stored-evaluation-deciles\/1 · 기존 규칙 유지\) · /);
+        assert.equal(await count(page, '[data-dual-dist-ties]'), zg.legacy_tie_splits.length ? 1 : 0, phase + ': the stored tie splits listed when there are any');
+        await page.locator('[data-dual-dist-band="10"]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-dual-dist-selected="10"]').waitFor();
+        assert.match(await text(page, '[data-dual-dist-selected]'), /^상위 0–10% · 분위 10 · 0개 · 확인된 빈 구간$/);
+        assert.match(await text(page, '[data-dual-dist-empty]'), /^이 구간의 기업 0개 · 확인된 빈 구간\(불러오기 실패 아님\)$/);
+        assert.equal(await page.locator('[data-dual-dist-band="10"]').getAttribute('aria-pressed'), 'true');
+        await page.locator('[data-dual-dist-band=NONE]').click(); await page.locator('[data-dual-dist-table="' + zg.group_id + '"]').waitFor();
+        assert.equal(await count(page, '[data-dual-dist-row]'), zg.unavailable_count, phase + ': every unavailable row with its reason');
+        assert.match(await text(page, '[data-dual-dist-reasons]'), /^분위 없음 사유 · /);
+        const zco = await page.locator('[data-dual-dist-row]').first().getAttribute('data-dual-dist-row'), z2 = w.log.length;
+        await page.locator('[data-dual-dist-open-co="' + zco + '"]').click();
+        await page.locator('[data-dual-compare="held1057:dist"] [data-dual-compare-for="' + zco + '"]').waitFor({ timeout: 30000 });
+        assert.equal(w.log.length, z2, phase + ': the company detail already in RAM, no read');
+        await page.locator('[data-dual-dist-show=held1057]').click(); await page.locator('[data-dual-dist-bands="' + zg.group_id + '"]').waitFor();
+        assert.equal(w.log.length, z2, phase + ': the cached part is not read again');
+        if (tag === '390') {
+          await page.setViewportSize({ width: 320, height: 720 });
+          // The block itself at 320 px: nothing inside it wider than the block; and (owner 2026-11-13) the page as a whole, the private
+          // panel and the company facts included, within 320 px (.result-head>.result-facts{min-width:0}).
+          assert.ok(await page.evaluate(() => { const a = document.querySelector('[data-dual-dist=held1057]'), r = a.getBoundingClientRect();
+            return a.scrollWidth <= a.clientWidth + 1 && [...a.querySelectorAll('button, select, p, h5')].every((e) => e.getBoundingClientRect().right <= r.right + 1); }), phase + ': 320 px, the 10분위 block fits its width');
+          const sz = await page.locator('[data-dual-dist-band="10"]').boundingBox(); assert.ok(sz.height >= 44, phase + ': 44 px band buttons');
+          assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': 320 px, the whole page (panel included) within the width');
+          await page.setViewportSize({ width: 390, height: 844 });
+        }
+        assert.deepEqual(await page.evaluate(() => [Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()]), store0, phase + ': nothing stored');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), phase + ': no horizontal overflow with the models open');
         await page.waitForTimeout(5200);
         await page.waitForTimeout(5200);
         assert.ok(w.log.length > logAt);
@@ -359,6 +589,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await go(page, '#/macro', 'main[data-route=macro]'); await go(page, '#/qgv', 'main[data-route=qgv]');
       await page.locator('[data-cc-filter]:not([data-cc-filter=NONE])').first().waitFor({ timeout: 20000 });
       assert.equal(w.log.length, before, phase + ': the QGV filter and another company read the same RAM bundle, no new read');
+      assert.deepEqual(await page.locator('[data-lb-models] button[data-lb-model]').evaluateAll((e) => e.map((b) => [b.dataset.lbModel, b.disabled])),
+        [['OFFICIAL', false], ['U1', true], ['U2', true], ['S1', true]], phase + ': held1057 alone never makes 2.1 research models selectable');
       ok(tag + ' the same RAM bundle on another company (accounting line apart) and the QGV filter, no new read');
 
       phase = tag + ' fold';
@@ -366,6 +598,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-private-expand=classification]').click();
       await page.locator('.cc-block[data-cc=NONE]').waitFor();
       assert.equal(await count(page, '[data-cc-delivery=PRIVATE]'), 0);
+      assert.equal(await page.evaluate(() => window.IS2.dualQgv.ram.get('held1057')), null, phase + ': 접기 drops the research deliveries too');
       await go(page, '#/macro', 'main[data-route=macro]'); await go(page, '#/qgv', 'main[data-route=qgv]');
       await page.locator('[data-cc-filter=NONE]').first().waitFor({ timeout: 20000 });
       await go(page, '#/prompts/-/search', 'main[data-route=prompts]'); await page.locator('[data-context-screen]').waitFor({ timeout: 20000 });

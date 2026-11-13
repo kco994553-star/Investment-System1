@@ -273,6 +273,15 @@ function krxNumber(value) {
 // …?part=<expanded_manifest|expanded_index|expanded_coverage> and ?part=expanded_detail&shard=<2 hex> (owner 2026-11-09): the held
 // issuer delivery (Codex #524) at classification/expanded/; the same 2 MiB limit, nothing widened.
 // …?part=input_repair (owner 2026-11-09): Codex #527's input connection repair comparison, classification/expanded/input-repair-comparison.json.
+// …?part=reference_view (owner 2026-11-10): Codex #528's reference population research view, classification/expanded/reference-view.json.
+// …?part=<dual_manifest|dual_summary|dual_index|dual_lineage>&scope=<operating504|held1057> and ?part=dual_detail&scope=<scope>&shard=<3 digits>
+// (owner 2026-11-11): Codex #529's dual research delivery (qgv-dual-delivery/1) at classification/dual/<scope>/; the same 2 MiB limit.
+// …?part=<dual_leaders_manifest|dual_leaders_index>&scope=<scope> and ?part=dual_leaders_detail&scope=<scope>&shard=<3 digits>: its optional
+// factor leaders companion (Codex qgv-dual-factor-leaders/1) at classification/dual/<scope>/leaders/; the same 2 MiB limit.
+// …?part=<dual_dist_manifest|dual_dist_index>&scope=<scope> and ?part=dual_dist_detail&scope=<scope>&shard=<3 digits> (owner 2026-11-12):
+// the optional full factor distribution (Codex qgv-dual-factor-distribution/1, all ten bands of every evaluation row) at
+// classification/dual/<scope>/distribution/; the same 2 MiB limit. Its all-bin routing: dual_bins_manifest|dual_bins_index and
+// dual_bins_detail&shard=<3 digits> at classification/dual/<scope>/bins/.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -302,9 +311,35 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   industry_macro: 'company-industry-macro-query/1',
   // The input connection repair before/after comparison (Codex #527 sector-qgv-input-repair-comparison/1, owner 2026-11-09), one
   // file next to the held issuer delivery it compares; the same 2 MiB limit.
-  input_repair: 'sector-qgv-input-repair-comparison/1' });
+  input_repair: 'sector-qgv-input-repair-comparison/1',
+  // The evaluation / reference population research view (Codex #528 sector-qgv-reference-view/1, owner 2026-11-10), one file next
+  // to the held issuer delivery whose operating result it evaluated; the same 2 MiB limit.
+  reference_view: 'sector-qgv-reference-view/1' });
+// The dual research delivery (Codex #529 qgv-dual-delivery/1, owner 2026-11-11): one directory per evaluation scope, a manifest that
+// names its scope, a summary, an index and numbered detail files; each file carries its schema.
+const DUAL_SCOPES = Object.freeze(['operating504', 'held1057']);
+const DUAL_PARTS = Object.freeze({ dual_manifest: ['manifest', 'qgv-dual-delivery-manifest/1'], dual_summary: ['summary', 'qgv-dual-delivery/1'],
+  dual_index: ['index', 'qgv-dual-index/1'], dual_detail: [null, 'qgv-dual-detail/1'],
+  // held1057's evaluation input projection proof (Codex qgv-dual-input-projection-proof/1), staged beside that scope's delivery.
+  dual_lineage: ['input-lineage', 'qgv-dual-input-projection-proof/1'],
+  // operating504's independent reference anchor (Codex qgv-dual-reference-anchor/1), staged beside that scope's delivery.
+  dual_reference_anchor: ['reference-anchor', 'qgv-dual-reference-anchor/1'],
+  // The optional factor leaders companion of that delivery (Codex qgv-dual-factor-leaders/1), its own manifest, index and shards.
+  dual_leaders_manifest: ['leaders/factor-leaders-manifest', 'qgv-dual-factor-leaders-manifest/1'], dual_leaders_index: ['leaders/factor-leaders', 'qgv-dual-factor-leaders/1'],
+  dual_leaders_detail: [null, 'qgv-dual-factor-leaders-detail/1'],
+  // Its optional selection contract (Codex qgv-dual-factor-leaders-selection/1): top N and the stored top 10 % apart.
+  dual_leaders_selection_manifest: ['leaders/factor-leaders-selection-manifest', 'qgv-dual-factor-leaders-selection-manifest/1'],
+  dual_leaders_selection: ['leaders/factor-leaders-selection', 'qgv-dual-factor-leaders-selection/1'],
+  // The optional full factor distribution (Codex qgv-dual-factor-distribution/1): manifest, index and numbered parts.
+  dual_dist_manifest: ['distribution/distribution-manifest', 'qgv-dual-factor-distribution-manifest/1'],
+  dual_dist_index: ['distribution/distribution-index', 'qgv-dual-factor-distribution/1'], dual_dist_detail: [null, 'qgv-dual-factor-distribution-part/1'],
+  // Its optional all-bin routing (Codex qgv-dual-factor-bins/1): manifest, index and numbered bins files under bins/.
+  dual_bins_manifest: ['bins/bin-manifest', 'qgv-dual-factor-bins-manifest/1'], dual_bins_index: ['bins/bin-index', 'qgv-dual-factor-bins/1'],
+  dual_bins_detail: [null, 'qgv-dual-factor-bins-part/1'] });
+const DUAL_SCOPED = Object.freeze(['dual_manifest', 'dual_reference_anchor', 'dual_leaders_manifest', 'dual_leaders_index', 'dual_leaders_selection_manifest', 'dual_leaders_selection',
+  'dual_dist_manifest', 'dual_dist_index', 'dual_bins_manifest', 'dual_bins_index']);
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
-  input_repair: 'input-repair-comparison.json' });
+  input_repair: 'input-repair-comparison.json', reference_view: 'reference-view.json' });
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
 // 'expanded_detail/<shard>'.
@@ -312,6 +347,10 @@ export function kisClassificationPart(url) {
   if (url.hash) throw new Failure('REQUEST_INVALID', 400);
   const shard = /^\?part=expanded_detail&shard=([0-9a-f]{2})$/.exec(url.search);
   if (shard) return 'expanded_detail/' + shard[1];
+  const dual = /^\?part=(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)&scope=([a-z0-9]{1,16})$/.exec(url.search);
+  if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2]; }
+  const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})$/.exec(url.search);
+  if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + '/' + dualDetail[3]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
   if (!Object.hasOwn(CLASSIFICATION_PARTS, part) || part === 'expanded_detail') throw new Failure('REQUEST_INVALID', 400);
@@ -319,12 +358,17 @@ export function kisClassificationPart(url) {
 }
 function classificationPath(part) {
   if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
+  if (part.startsWith('dual_')) { const [name, scope, shard] = part.split('/');
+    return 'classification/dual/' + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
   if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
   return 'classification/' + part + '.json';
 }
 // The file must carry its part's schema; a detail shard must also name the shard asked for.
 function classificationSchema(o, part) {
   if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
+  // A dual file carries its part's schema; a manifest (and the leaders index) also names the scope asked for.
+  if (part.startsWith('dual_')) { const [name, scope] = part.split('/');
+    return o.schema_version === DUAL_PARTS[name][1] && (!DUAL_SCOPED.includes(name) || o.scope === scope); }
   return o.schema_version === CLASSIFICATION_PARTS[part];
 }
 // Routes that take no query string at all.

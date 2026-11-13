@@ -24,6 +24,56 @@ def run(job,output,synthetic=False):
         raise ValueError('PRIVATE_OUTPUT_OUTSIDE_CHECKOUT_REQUIRED')
     if output.exists():raise ValueError('OUTPUT_ALREADY_EXISTS')
     mode=job.get('mode','normalized')
+    if mode=='dual-study':
+        from investment_system.research.dual_qgv import run_board,save_board,replay_board,delivery_artifacts,json_bytes
+        if any(k in job for k in ('config','main_request','saved_config','reference_plan','comparisons')):
+            raise ValueError('DUAL_JOB_CONFLICT')
+        evaluation,reference=[json.loads(checked_bytes(job[k])) for k in ('evaluation_snapshot','reference_snapshot')]
+        if job.get('dual_saved'):
+            if 'dual_config' in job:raise ValueError('DUAL_JOB_CONFLICT')
+            saved=json.loads(checked_bytes(job['dual_saved']));config=saved['configuration']
+            result=replay_board(saved,evaluation,reference,job['request_id'])
+        else:
+            config=json.loads(checked_bytes(job['dual_config']))
+            result=run_board(config,evaluation,reference,request_id=job['request_id'])
+            saved=save_board(config,result)
+        artifacts={'dual-result.json':result,'dual-saved.json':saved}
+        artifacts.update(delivery_artifacts({config['model_id']:result}))
+        output.mkdir(parents=True,mode=0o700)
+        manifest={'schema_version':'qgv-dual-run/1','data_kind':'SYNTHETIC' if synthetic else 'PRIVATE','input_job':job,'files':[]}
+        for name,data in artifacts.items():
+            body=json_bytes(data);p=output/name;p.write_bytes(body);p.chmod(0o600)
+            manifest['files'].append({'path':name,'size':len(body),'sha256':hashlib.sha256(body).hexdigest()})
+        (output/'manifest.json').write_bytes(json_bytes(manifest))
+        return {'schema_version':'qgv-dual-run-summary/1','model_id':config['model_id'],'coverage':result['coverage'],'performance':'NOT_MEASURED'}
+    if mode=='reference-study':
+        from investment_system.research.sector_qgv_reference import run_reference_study,save_reference_settings,replay_reference_study,reference_view
+        if any(k in job for k in ('main_request','saved_config','retained_preview','comparisons','axis_comparison')):
+            raise ValueError('REFERENCE_JOB_CONFLICT')
+        ev,base,source,source_preview=[json.loads(checked_bytes(job[k])) for k in
+            ('evaluation_snapshot','evaluation_preview','reference_snapshot','reference_preview')]
+        if job.get('reference_saved'):
+            if 'config' in job or 'reference_plan' in job:raise ValueError('REFERENCE_JOB_CONFLICT')
+            saved=json.loads(checked_bytes(job['reference_saved']))
+            result=replay_reference_study(saved,ev,base,source,source_preview,request_id=job['request_id'])
+            config,plan=saved['config'],saved['plan']
+        else:
+            config=job.get('config',default_config());plan=json.loads(checked_bytes(job['reference_plan']))
+            result=run_reference_study(config,ev,base,source,source_preview,plan,request_id=job['request_id'])
+        saved=save_reference_settings(config,plan,result)
+        reference_snapshot=result.pop('reference_snapshot')
+        artifacts={'reference-result.json':result,'reference-settings.json':saved,'reference-snapshot.json':reference_snapshot,
+                   'reference-view.json':reference_view(result)}
+        output.mkdir(parents=True,mode=0o700)
+        manifest={'schema_version':'sector-qgv-reference-run/1','data_kind':job.get('data_kind','PRIVATE'),'input_job':job,'files':[]}
+        for name,data in artifacts.items():
+            body=(json.dumps(data,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+            p=output/name;p.write_bytes(body);p.chmod(0o600)
+            manifest['files'].append({'path':name,'size':len(body),'sha256':hashlib.sha256(body).hexdigest()})
+        (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+        return {'schema_version':'sector-qgv-reference-run-summary/1','evaluation_denominator':len(ev['members']),
+            'reference_issuers':result['reference_population']['issuers'],'comparison':result['comparison']['axes'],
+            'performance':'NOT_MEASURED'}
     restoring='saved_config' in job or 'retained_preview' in job
     if restoring and (not all(k in job for k in ('saved_config','retained_preview')) or
                       mode!='normalized' or any(k in job for k in ('config','main_request')) or

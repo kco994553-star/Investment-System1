@@ -46,6 +46,7 @@ const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
 const SHARES = require('./sec_universe_shares_fixture.js');
 const RB = R.requireOld('report-benchmarks.js');
+const DF = require('./web_app_dual_fixture.js');
 
 const NOW = '2026-10-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
@@ -294,6 +295,51 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.ok(lists.outside.length >= 1 && lists.outside.every((id) => !lists.drawnIds.includes(id)), 'the layer\'s outside catalog rows are never drawn');
         assert.ok(lists.drawnIds.every((id) => lists.uni.includes(id)), 'every drawn row is a Universe504 row');
         assert.match(lists.count, /^평가: Universe504 중 점수 행 \d+$/, 'the count names Universe504 only');
+        // 모형 (owner 2026-11-10 §2, 2026-11-11 §3): the official model is the one the table reads; U1 / U2 / S1 cannot be chosen
+        // before a checked operating504 research delivery is in RAM, and a forced click changes nothing.
+        const modelRow = () => page.evaluate(() => [...document.querySelectorAll('[data-lb-models] button[data-lb-model]')].map((b) => [b.dataset.lbModel, b.getAttribute('aria-pressed'), b.disabled, b.dataset.lbModelState]));
+        assert.deepEqual(await modelRow(), [['OFFICIAL', 'true', false, 'READY'], ['U1', 'false', true, 'RESULT_NOT_READ'], ['U2', 'false', true, 'RESULT_NOT_READ'], ['S1', 'false', true, 'RESULT_NOT_READ']]);
+        await page.locator('[data-lb-model=U1]').click({ force: true });
+        assert.deepEqual(await page.evaluate(() => window.__qt.drawn().map((d) => d.id)), lists.drawnIds, 'a disabled research model changes nothing');
+        await page.locator('[data-lb-model-why] > summary').click();
+        assert.match(await page.locator('[data-lb-model-line=U1]').innerText(), /^통합 연구 U1 · 연구 후보 · 비공개 연구 결과 읽기 전 · /);
+        assert.match(await page.locator('[data-lb-model-why]').innerText(), /섹터 점수를 이어 붙여 통합 순위를 만들지 않음/);
+        // A delivery the reader checked (Codex #529's synthetic delivery as operating504, against its own result) makes U1 / U2 / S1
+        // selectable; each shows its own retained board (the producer's rows and ranks, never re-sorted), the official table steps
+        // aside and comes back; a drop puts the models back to 읽기 전. A delivery the reader refuses never reaches RAM.
+        const dual = DF.delivery('operating504'), b64 = Object.fromEntries(Object.entries(dual.files).map(([k, v]) => [k, v.toString('base64')]));
+        const put = (anchor) => page.evaluate(async ({ files, anchor }) => { const D = window.IS2.dualQgv;
+          const part = (f) => { const bytes = Uint8Array.from(atob(files[f]), (c) => c.charCodeAt(0)); return { bytes, body: JSON.parse(new TextDecoder().decode(bytes)) }; };
+          const sha256 = async (b) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', b))].map((x) => x.toString(16).padStart(2, '0')).join('');
+          const r = await D.checkDelivery({ manifest: part('manifest.json'), summary: part('summary.json'), index: part('index.json') }, { scope: 'operating504', anchor, sha256 });
+          if (r.ok) D.ram.set('operating504', r.value); return r.ok ? 'OK' : r.code; }, { files: b64, anchor });
+        assert.equal(await put(DF.anchor({ operating: { input_hash: 'b'.repeat(64) } })), 'DUAL_INPUT_MISMATCH');
+        assert.equal((await modelRow())[1][2], true, 'a refused delivery leaves the models unselectable');
+        assert.equal(await put(DF.anchor()), 'OK');
+        await page.waitForFunction(() => !document.querySelector('[data-lb-model=U1]').disabled);
+        assert.deepEqual((await modelRow()).map((m) => [m[0], m[2], m[3]]), [['OFFICIAL', false, 'READY'], ['U1', false, 'READY'], ['U2', false, 'READY'], ['S1', false, 'READY']]);
+        await page.locator('[data-lb-model=U1]').focus(); await page.keyboard.press('Enter');
+        await page.locator('[data-lb-research-table=U1]').waitFor();
+        assert.equal(await page.locator('[data-lb-table]').count(), 0, 'the official table is not shown under a research name');
+        assert.equal(await page.locator('[data-lb-model=U1]').getAttribute('aria-pressed'), 'true');
+        assert.match(await page.locator('[data-lb-research-head]').innerText(), /^통합 연구 U1 · .* · 연구 후보 · 운영 채택 안 됨 · 성과 미측정$/);
+        assert.match(await page.locator('[data-lb-research-states]').innerText(), /화면 재계산\s+연결 안 됨 · 보관 결과만 보임/);
+        const dualIds = DF.parse('index.json').rows.map((r) => r.company_id);
+        assert.deepEqual(await page.locator('[data-lb-research-row]').evaluateAll((e) => e.map((x) => x.dataset.lbResearchRow)), dualIds, 'the producer\'s row order');
+        assert.deepEqual(await page.locator('[data-lb-research-rank]').allInnerTexts(), ['3 / 3 (평가 집단 전체)', '2 / 3 (평가 집단 전체)', '1 / 3 (평가 집단 전체)']);
+        assert.match(await page.locator('[data-lb-research-table] caption').innerText(), /점수로 다시 정렬하지 않음/);
+        await page.locator('[data-lb-model=S1]').click(); await page.locator('[data-lb-research-table=S1]').waitFor();
+        assert.ok((await page.locator('[data-lb-research-rank]').allInnerTexts()).every((t) => / · GENERAL\)$/.test(t)), 'S1 ranks inside sector × accounting model only');
+        assert.match(await page.locator('[data-lb-research-table=S1] thead').innerText(), /섹터×회계모형 안에서만/);
+        assert.ok(!/TARGET/.test(await page.locator('[data-lb="2.1.1"]').innerText()), 'DC-24: no TARGET word in 2.1.1');
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no horizontal overflow with a research board');
+        await page.locator('[data-lb-model=OFFICIAL]').click(); await page.locator('[data-lb-table]').waitFor();
+        assert.deepEqual(await page.evaluate(() => window.__qt.drawn().map((d) => d.id)), lists.drawnIds, 'the official table comes back unchanged');
+        await page.locator('[data-lb-model=U2]').click(); await page.locator('[data-lb-research-table=U2]').waitFor();
+        await page.evaluate(() => window.IS2.dualQgv.ram.drop());
+        await page.locator('[data-lb-table]').waitFor();
+        assert.equal(await page.locator('[data-lb-research]').count(), 0, 'a drop goes back to the official table');
+        assert.deepEqual((await modelRow()).map((m) => m[2]), [false, true, true, true]);
         // 종합 순위 without a central V publication: the empty state with its reason; its button switches to the QG list.
         await page.locator('button[data-list=RANKED]').click(); await page.locator('[data-empty=NO_RANKING]').waitFor();
         assert.match(await page.locator('[data-empty=NO_RANKING]').innerText(), /QGV 순위 없음\s+공식 V 없음: 중앙 V 게시본이 아직 없습니다/);

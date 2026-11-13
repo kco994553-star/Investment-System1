@@ -128,7 +128,10 @@ jobs:
     # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
     # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
     # 39251288211 was cancelled at 30:00 while its tests were still passing.
-    timeout-minutes: 60
+    # 75 (was 60; owner 2026-11-13, time headroom only, not a speed-up): #530 6bc9936a took 56.5 minutes on a normal runner
+    # (run 43233624979 attempt 2) and was cancelled at 60:00 on a slower one with no test failed (attempt 1). The test lists,
+    # checks, required steps and deploy conditions are unchanged; moving the browser list to its own job is a later proposal.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -139,10 +142,25 @@ jobs:
       - name: Offline public boundary regression (GSQ-010)
         working-directory: implementation
         run: |
-          python -m pip install pytest==9.1.1 jsonschema==4.26.0
+          python -m pip install pytest==9.1.1 jsonschema==4.26.0 -r tests/research/dependencies/technical-properties.txt
           python -m pytest -q --tb=no tests/test_app_nav_ia.py tests/test_public_price_boundary.py tests/test_pages_cockpit_build.py tests/test_pages_artifact_guard.py tests/test_device_actual_build.py tests/test_private_history_build.py tests/test_sec_m1_provider.py tests/test_sec_m2_qg.py tests/test_sec_m2_candidates.py tests/test_worker_deployment_diagnostics.py tests/test_public_sec_inputs.py tests/test_sec_reported_consumer.py tests/test_public_engine_screens.py tests/test_public_screens_pipeline.py tests/test_device_profile_defaults.py tests/test_preserve_public_sec_inputs.py
+      # The property module skips itself when Hypothesis is missing, and a skip is green. Here a skip, a missing pin or a
+      # missing property test is a named failure, so this job's green means the generated examples really ran (#489).
+      - name: Technical property tests must run (Hypothesis, no skip)
+        working-directory: implementation
+        env:
+          HYPOTHESIS_STORAGE_DIRECTORY: ${{ runner.temp }}/hypothesis
+        run: |
+          python tools/require_property_tests.py --installed > "$RUNNER_TEMP/technical-properties-result.txt" || { cat "$RUNNER_TEMP/technical-properties-result.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-result.txt"
+          PYTHONPATH=src python -m pytest -q --tb=short -p no:cacheprovider -rs --hypothesis-show-statistics --junitxml="$RUNNER_TEMP/technical-properties.xml" tests/research/test_technical_properties.py tests/research/test_technical_screen_fixtures.py > "$RUNNER_TEMP/technical-properties-pytest.txt" 2>&1 || { cat "$RUNNER_TEMP/technical-properties-pytest.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-pytest.txt"
+          python tools/require_property_tests.py "$RUNNER_TEMP/technical-properties.xml" > "$RUNNER_TEMP/technical-properties-result.txt" || { cat "$RUNNER_TEMP/technical-properties-result.txt"; exit 1; }
+          cat "$RUNNER_TEMP/technical-properties-result.txt"
       - name: Full Python unit suite
         working-directory: implementation
+        env:
+          HYPOTHESIS_STORAGE_DIRECTORY: ${{ runner.temp }}/hypothesis
         run: PYTHONPATH=src python -m pytest -q --tb=short -p no:cacheprovider tests
       - name: Build and inspect local price-free cockpit
         run: |
@@ -199,6 +217,13 @@ jobs:
           M2_SERVER_PID=$!
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
+
+      # Only repeats the property step's own two result lines, so they can be read from the tail of a long log. It runs only when
+      # every step before it passed (the property step prints the same lines itself when it fails).
+      - name: Technical property result (repeated at the end of the log)
+        run: |
+          tail -n 1 "$RUNNER_TEMP/technical-properties-pytest.txt" 2>/dev/null || echo 'PROPERTY_PYTEST_OUTPUT_MISSING'
+          cat "$RUNNER_TEMP/technical-properties-result.txt" 2>/dev/null || echo 'PROPERTY_RESULT_MISSING'
 
       - name: Upload checked price-free Pages artifact
         if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'

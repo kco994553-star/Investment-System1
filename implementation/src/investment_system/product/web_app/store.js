@@ -52,6 +52,7 @@ const KEYS=Object.freeze({
  RECENT:'investment.web.v1.recent-search',// home-screen.js RECENT_KEY: recent search entity keys (no query text)
  PROMPT_FAVORITES:'investment.web.v1.prompt-favorites',// research-bridge.js PL_FAV_KEY: favorite prompt ids (not in a backup)
  PROMPT_COPIES:'investment.web.v1.prompt-personal-copies',// research-bridge.js PL_COPY_KEY: personal prompt copies (not in a backup)
+ DUAL_QGV:'investment.web.v2.dual-qgv-saved',// NEW (2026-11-11, 2.2.7): research candidate saved records (qgv-dual-saved/1), one per candidate model_id; this device, not in a backup
  SECTOR_QGV:'investment.web.v2.sector-qgv-user-config',// NEW (2026-11-06, 2.2): the user's saved sector QGV config (engine save_user_config answer; this device, not in a backup)
  DEVICE_DB:'investment-device-actual-v1'});// DeviceActual IndexedDB
 const CATALOG='actual-catalog.json',ID=/^[A-Za-z0-9_-]{20,100}$/;
@@ -241,9 +242,28 @@ function create({win,action,data}){
    const text=JSON.stringify(saved);if(text.length>SQ_MAX)throw Error('SECTOR_QGV_CONFIG_TOO_LARGE');storage.setItem(KEYS.SECTOR_QGV,text);return deepFreeze(copy(saved));});},
   clear(event){return write(event,'SECTOR_QGV',()=>{storage.removeItem(KEYS.SECTOR_QGV);return true;});}});
 
+ // ---- research candidate saved records (2.2.7, owner 2026-11-11 §3): {schema_version:'dual-qgv-saved-set/1', records:{model_id: qgv-dual-saved/1}}.
+ // Each record is the engine's save_board answer as returned (IS2.dualQgv.validateSaved, read at call time); a record of one
+ // candidate never replaces another's; the sector QGV record (SECTOR_QGV) is a different key and is never read or rewritten here.
+ // An unreadable stored set is never overwritten silently: read() says INVALID and only an explicit clear(event) removes it.
+ const DQ=()=>{const x=win.IS2&&win.IS2.dualQgv;if(!x||typeof x.validateSaved!=='function')throw Error('READER_MISSING');return x;};
+ const DQ_SET='dual-qgv-saved-set/1';
+ function readDual(){const raw=storage.getItem(KEYS.DUAL_QGV);if(raw===null||raw==='')return{state:'EMPTY',value:{schema_version:DQ_SET,records:{}}};
+  let v;try{v=JSON.parse(raw);}catch(_){return{state:'INVALID',value:null};}
+  try{const ok=v&&v.schema_version===DQ_SET&&v.records&&typeof v.records==='object'&&!Array.isArray(v.records)
+    &&Object.entries(v.records).every(([k,r])=>DQ().validateSaved(r).ok&&r.configuration.model_id===k);return ok?{state:'OK',value:v}:{state:'INVALID',value:null};}
+  catch(_){return{state:'INVALID',value:null};}}
+ const dualQgv=Object.freeze({
+  read:()=>deepFreeze(readDual()),
+  save(event,saved){return write(event,'DUAL_QGV',()=>{const r=DQ().validateSaved(saved);if(!r.ok)throw Error('DUAL_QGV_SAVED_INVALID');
+   const cur=readDual();if(cur.state==='INVALID')throw Error('DUAL_QGV_STORAGE_INVALID');
+   const next={schema_version:DQ_SET,records:{...cur.value.records,[saved.configuration.model_id]:copy(saved)}};
+   const text=JSON.stringify(next);if(text.length>SQ_MAX)throw Error('DUAL_QGV_TOO_LARGE');storage.setItem(KEYS.DUAL_QGV,text);return deepFreeze(copy(saved));});},
+  clear(event){return write(event,'DUAL_QGV',()=>{storage.removeItem(KEYS.DUAL_QGV);return true;});}});
+
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,macroEstimates,promptFavorites,promptCopies,
-  chartNotes,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,sectorQgv,subscribe};
+  chartNotes,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,sectorQgv,dualQgv,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);

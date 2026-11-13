@@ -30,14 +30,18 @@ const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/ki
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
 const CLASSIFICATION_PARTS=Object.freeze(['view','technical','macro','qgv_links','dictionary','expanded_summary']);
 // Read on its own click, never in the bundle's six-part read: the common industry → macro evidence query (Codex #525) and the input
-// connection repair comparison (Codex #527).
-const OTHER_PARTS=Object.freeze(['industry_macro','input_repair']);
+// connection repair comparison (Codex #527) and the reference population research view (Codex #528).
+const OTHER_PARTS=Object.freeze(['industry_macro','input_repair','reference_view']);
 // The held issuer delivery (Codex #524, owner 2026-11-09): manifest, index, coverage and one detail shard ('expanded_detail/<2 hex>').
 // These answer {bytes, body}: the reader checks each file's own bytes against the manifest (SHA-256 and size), not a re-encoding.
 const EXPANDED_PARTS=Object.freeze(['expanded_manifest','expanded_index','expanded_coverage']);
 const EXPANDED_DETAIL=/^expanded_detail\/([0-9a-f]{2})$/;
+// The dual research delivery (Codex #529, owner 2026-11-11): 'dual_manifest|dual_summary|dual_index/<scope>' and
+// 'dual_detail/<scope>/<3 digits>', each with its bytes (the reader checks them against the delivery manifest).
+const DUAL_PART=/^(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)\/(operating504|held1057)$/,DUAL_DETAIL=/^(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)\/(operating504|held1057)\/(\d{3})$/;
+const dualPart=x=>typeof x==='string'&&(DUAL_PART.test(x)||DUAL_DETAIL.test(x));
 // The expanded summary also comes with its bytes: their SHA-256 is what the held issuer delivery names.
-const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x));
+const expandedPart=x=>typeof x==='string'&&(x==='expanded_summary'||EXPANDED_PARTS.includes(x)||EXPANDED_DETAIL.test(x)||dualPart(x));
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 const DAY=/^\d{4}-\d{2}-\d{2}$/;
@@ -265,8 +269,9 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route),byPart=route==='classification';
   if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');if(byPart&&!CLASSIFICATION_PARTS.includes(symbol)&&!OTHER_PARTS.includes(symbol)&&!expandedPart(symbol))throw Error('REQUEST_INVALID');const raw=byPart&&expandedPart(symbol);
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
-  const shard=byPart?EXPANDED_DETAIL.exec(symbol):null;
-  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:shard?'?part=expanded_detail&shard='+shard[1]:byPart?'?part='+symbol:'');
+  const shard=byPart?EXPANDED_DETAIL.exec(symbol):null,dual=byPart?DUAL_PART.exec(symbol):null,dualDetail=byPart?DUAL_DETAIL.exec(symbol):null;
+  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:shard?'?part=expanded_detail&shard='+shard[1]:dual?'?part='+dual[1]+'&scope='+dual[2]
+   :dualDetail?'?part='+dualDetail[1]+'&scope='+dualDetail[2]+'&shard='+dualDetail[3]:byPart?'?part='+symbol:'');
   let res;try{res=await send(url,{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal});}
   catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw Error('UPSTREAM_UNAVAILABLE');}
   if(mine!==epoch)throw Error('CANCELED');

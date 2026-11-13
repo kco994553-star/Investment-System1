@@ -48,6 +48,8 @@ function fill(route,{body}){
  const refocus=k=>{if(!k)return;const el=body.querySelector('[data-k="'+CSS.escape(k)+'"]');if(el&&!el.disabled)el.focus({preventScroll:true});};
  const card=(state,words,why,alert,...more)=>h('div',{class:'sk state-card',role:alert?'alert':null,dataset:{sqState:state}},I.parts.mascot(alert?'alarm':'plain'),h('b',null,words),why?h('span',{class:'reason'},why):null,...more);
  const draw=()=>{if(!signal.aborted)paint();};
+ // 2.2.7 연구 후보 (owner 2026-11-11 §3, IS2.dualEngine): its own block after this body, its own state and store key.
+ if(I.dualEngine&&I.dualQgv&&body.parentNode&&!body.parentNode.querySelector('[data-de-block]'))body.after(I.dualEngine.block({signal}));
  // 2.2.7 × 공통 분류 (owner 2026-11-08, Codex GROUP_JOIN.md 2.2.7 인계): the record set is read once (source NONE today, no request);
  // a shown preview is matched to classification records only through common-classification-qgv-links/1 naming that same preview.
  const CC=()=>I.classification;

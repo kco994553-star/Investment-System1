@@ -1,0 +1,50 @@
+{
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "evaluation.json",
+      "bytes": 24066,
+      "sha256": "f5ee499e1d15716bde1c95ef066485dd2d9051c352244898d573134a937b1435"
+    },
+    {
+      "path": "baseline.json",
+      "bytes": 73220,
+      "sha256": "480ca3a31ebae3868bcdc995508599abcad9ff5307a2eb21a4d4b205b7e4f62e"
+    },
+    {
+      "path": "source.json",
+      "bytes": 157959,
+      "sha256": "c051a7a7a4bbc0f989f54f3e82dbaf6a3ae8efcec9931795f59958a22b83f19c"
+    },
+    {
+      "path": "source-preview.json",
+      "bytes": 354125,
+      "sha256": "38c39289d7ada0222d5d44c0bd4c5601517be535f13bda9bc1f19a02fcaad680"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 934,
+      "sha256": "0bf44b08b5daacb1598fb2375834610cc7ec8dca523c3d79edabf63650ef17c4"
+    },
+    {
+      "path": "result.json",
+      "bytes": 131411,
+      "sha256": "97bc7c42180e7907d4ba9880ea44ae52345239710fa6bdfd455670a4aba18dde"
+    },
+    {
+      "path": "filtered.json",
+      "bytes": 19224,
+      "sha256": "6e8ecf3d543488f3b7e2af71088a849190889e348dd7a71f1549e4500cdc74b3"
+    },
+    {
+      "path": "saved.json",
+      "bytes": 6440,
+      "sha256": "7f1a2ec582f841f249429340d319ec9400754a3e9352fe80a1378228d32d6906"
+    },
+    {
+      "path": "view.json",
+      "bytes": 31384,
+      "sha256": "8e6ebccc1f2c740bcb4f8e4815d4e81dd96ef07c8f2d33d3c47ee3663dc8cef4"
+    }
+  ]
+}

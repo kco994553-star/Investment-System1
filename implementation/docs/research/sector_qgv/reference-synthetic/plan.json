@@ -1,0 +1,36 @@
+{
+  "schema_version": "sector-qgv-reference-plan/1",
+  "study_id": "SYN-REF-01",
+  "version": "1",
+  "policy": "research-reference-additive/1",
+  "reference_id": "SYN-REF",
+  "reference_version": "1",
+  "minimum": 20,
+  "eligible_groups": [
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "operating_margin_ttm"
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "accruals_assets_ttm"
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "debt_assets"
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "revenue_cagr_3y"
+    },
+    {
+      "sector_id": "INFORMATION_TECHNOLOGY",
+      "accounting_template": "GENERAL",
+      "variant_id": "roa_improvement_3y"
+    }
+  ]
+}

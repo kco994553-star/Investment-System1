@@ -59,12 +59,12 @@ const LOAD_ORDER=Object.freeze([
  'virtual-trading-compare.js','home-quotes.js','data-refresh.js',
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
- 'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
+ 'search-part-live.js','screen-search-live.js','qgv-models.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
  'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
  'discovery.js','screen-discovery-live.js',
- 'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-sector-qgv-live.js',
+ 'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-dual-engine-live.js','screen-sector-qgv-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
- 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','input-repair.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
+ 'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','input-repair.js','reference-view.js','dual-qgv.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -82,7 +82,7 @@ const API=Object.freeze({
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
   stars:'s',toggleStar:'a',macroEstimates:{read:'s',add:'a',remove:'a'},promptFavorites:{read:'s',toggle:'a'},promptCopies:{read:'s',save:'a',remove:'a'},chartNotes:{read:'s',add:'a',remove:'a'},
   backup:{create:'p',download:'a',restore:'a',restored:'s'},vHistoryKeys:{count:'s',clear:'a'},sheetSource:{has:'s',set:'a'},
-  universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},sectorQgv:{read:'s',save:'a',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
+  universeSource:{has:'s',set:'a',useSheet:'a'},workerOrigin:{has:'s',approved:'s',set:'a'},marketQuotes:{count:'p',clear:'a'},sectorQgv:{read:'s',save:'a',clear:'a'},dualQgv:{read:'s',save:'a',clear:'a'},subscribe:'sub',PRODUCT_PRESETS:'v'},
  qgv:{V_SOURCES:'v',RANK_LABELS:'v',READERS:'v',vSource:'s',page:'p',isPage:'s',row:'s',rows:'s',coverage:'s',preview:'s',model:'s',setProfile:'s',profile:'s',
   reasonText:'s',rankLabel:'s',constants:'s',subscribe:'sub'},
  engines:{target:{state:'s',basis:'p',draft:'p',build:'a',blockers:'p',finalize:'a',answer:'a',ruleBDue:'s',selectRuleB:'a',compare:'a',scoringPending:'p',

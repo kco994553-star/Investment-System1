@@ -135,7 +135,7 @@ def effective_weights(p):
     for axis,roles in p['axes'].items():
         for r in roles.values():
             for variant,w in r['factors'].items():
-                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/1e12
+                out[canonical(variant)]=p['axis_weights'][axis]*r['weight']*w/(sum(p['axis_weights'].values())*1e8)
     return out
 
 
@@ -304,8 +304,8 @@ def aggregate(p,scores,gate,valuation_date):
     axes={};missing={}
     for axis in ('Q','G','V'):axes[axis],missing[axis]=_axis_score(p,scores,axis)
     active=[a for a,w in p['axis_weights'].items() if w]
-    pre=None if any(axes[a] is None for a in active) else sum(axes[a]*p['axis_weights'][a]/10000 for a in active)
-    gate_status='UNKNOWN';post={a:w/10000 for a,w in p['axis_weights'].items()};total=None
+    pre=None if any(axes[a] is None for a in active) else sum(axes[a]*p['axis_weights'][a]/sum(p['axis_weights'].values()) for a in active)
+    gate_status='UNKNOWN';post={a:w/sum(p['axis_weights'].values()) for a,w in p['axis_weights'].items()};total=None
     if isinstance(gate,dict) and gate.get('calc_version')=='qgv2-calc/2026-10-23.1' and gate.get('as_of')==valuation_date and gate.get('provenance') and finite(gate.get('q_industry_percentile')) and 0<=gate['q_industry_percentile']<=100:
         gate_status='VALUE_EXCLUDED' if gate['q_industry_percentile']<=GATE_PERCENTILE else 'PASS'
         if gate_status=='VALUE_EXCLUDED':
@@ -326,7 +326,34 @@ def _input_identity(s):
     return digest(dict(rows=rows,members=sorted(s['members']),**{k:s[k] for k in ('snapshot_id','input_version','universe_id','universe_version','mapping_version','as_of','valuation_date')}))
 
 
+def scoring_representatives(records):
+    """One evidenced scoring row per issuer; this is not a security master."""
+    issuer_rows=defaultdict(list)
+    for key,row in records.items():
+        if row.get('issuer_id'):issuer_rows[row['issuer_id']].append(key)
+    peers=set()
+    for keys in issuer_rows.values():
+        if len(keys)==1:peers.add(keys[0])
+        else:
+            reps=[key for key in keys if records[key].get('scoring_representative') is True and records[key].get('representative_evidence')]
+            if len(reps)==1:peers.add(reps[0])
+    return peers,issuer_rows
+
+
+def rank_result_rows(rows):
+    """Existing unrounded total ordering, applied to the evaluation set only."""
+    for row in rows:row['rank']=None
+    valid=sorted((r for r in rows if r['total'] is not None),key=lambda r:(-r['total'],r['company_id']))
+    for n,r in enumerate(valid,1):r['rank']=n
+    return valid
+
+
 def preview_qgv(config,snapshot,request_id):
+    return _preview_core(config,snapshot,request_id)
+
+
+def _preview_core(config,snapshot,request_id,*,execution=None):
+    """Shared kernel; dual research caller validates its explicit execution policy."""
     validate_config(config);s=snapshot
     if s.get('schema_version')!='sector-qgv-input/1' or s.get('mapping_version')!=MAPPING:raise ValueError('INPUT_VERSION_MISMATCH')
     if day(s['valuation_date'])>timestamp(s['as_of']).astimezone(timezone.utc).date():raise ValueError('VALUATION_AFTER_AS_OF')
@@ -338,29 +365,23 @@ def preview_qgv(config,snapshot,request_id):
         if key not in s['members']:raise ValueError('ROW_OUTSIDE_UNIVERSE')
         rows[key]=row
     records={key:rows.get(key,{'company_id':key}) for key in sorted(s['members'])}
-    matrix={};presets={};pools=defaultdict(list);issuer_rows=defaultdict(list)
-    for key,row in records.items():
-        if row.get('issuer_id'):issuer_rows[row['issuer_id']].append(key)
-    peers=set()
-    for keys in issuer_rows.values():
-        if len(keys)==1:peers.add(keys[0])
-        else:
-            reps=[key for key in keys if records[key].get('scoring_representative') is True and records[key].get('representative_evidence')]
-            if len(reps)==1:peers.add(reps[0])
+    matrix={};presets={};pools=defaultdict(list)
+    peers,issuer_rows=scoring_representatives(records)
     for key,row in records.items():
         mapped=_mapped(row,s)
-        if mapped:presets[key]=preset(config,row['sector_id'],row['accounting_template'])
+        if mapped:presets[key]=copy.deepcopy(execution['uniform_preset']) if execution and execution['kind']=='COMMON' else preset(config,row['sector_id'],row['accounting_template'])
         # Availability covers registered variants, even when mapping prevents scoring.
         matrix[key]={v:_validated_observation(row,v,s) for v in CATALOG}
         if not mapped:continue
-        group=(row['sector_id'],row['accounting_template'])
+        group=() if execution and execution['kind']=='COMMON' else (row['sector_id'],row['accounting_template'])
         for v,(value,status,_,_) in matrix[key].items():
             if value is not None and key in peers:pools[group+(v,)].append(value)
     out=[]
     for key,row in records.items():
         p=presets.get(key);fs={}
         for v,(value,status,raw,external) in matrix[key].items():
-            pool=pools.get((row.get('sector_id'),row.get('accounting_template'),v),[])
+            group=() if execution and execution['kind']=='COMMON' else (row.get('sector_id'),row.get('accounting_template'))
+            pool=pools.get(group+(v,),[])
             reason=status
             score=None
             if value is not None:
@@ -383,8 +404,7 @@ def preview_qgv(config,snapshot,request_id):
             if result['pre_gate_total'] is not None and sum(result['post_gate_axis_weights'].values())==0:result['status']='NO_WEIGHT_AFTER_GATE'
         else:result.update(axes=dict.fromkeys(('Q','G','V')),total=None,pre_gate_total=None,gate_status='UNKNOWN')
         out.append(result)
-    valid=sorted((r for r in out if r['total'] is not None),key=lambda r:(-r['total'],r['company_id']))
-    for n,r in enumerate(valid,1):r['rank']=n
+    valid=rank_result_rows(out)
     n=len(records);cov={'denominator':{'kind':'ORIGINAL_MEMBER_ROWS','count':n,'unique_issuers':len(issuer_rows),
                                     'security_id_present':sum(bool(r.get('security_id')) for r in records.values())},'factors':{}}
     for v in CATALOG:

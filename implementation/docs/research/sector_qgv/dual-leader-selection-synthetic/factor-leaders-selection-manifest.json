@@ -1,0 +1,13 @@
+{
+  "schema_version": "qgv-dual-factor-leaders-selection-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "source_leaders_manifest_sha256": "c2ff51e399b89dd8912ca6d81f769c522b85dc3aa3c459ad78a1a892f8fbd5d6",
+  "files": [
+    {
+      "path": "factor-leaders-selection.json",
+      "size": 102586,
+      "sha256": "64a4b698ad0728af252abf68c947ebdebe284c097d74004ea41709ccda3b9864"
+    }
+  ]
+}
