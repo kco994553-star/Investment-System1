@@ -645,11 +645,12 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
           assert.equal(await page.locator('[data-dual-q-scope=' + sc + '] [data-dual-q-chain]').getAttribute('data-dual-q-chain'), 'CHAINED', phase + ': three versions chained');
           assert.equal(await count(page, '[data-dual-q-primary=' + sc + '] dt'), 2); assert.equal(await count(page, '[data-dual-q-gate=' + sc + '] dt'), 2);
           assert.equal(await count(page, '[data-dual-q-times=' + sc + '] dt'), 7);
+          assert.equal(await count(page, '[data-dual-q-steps=' + sc + '] dt'), 4); assert.equal(await count(page, '[data-dual-q-deliverables=' + sc + '] dt'), 4);
         }
         const qt = await text(page, '[data-dual-q]');
         assert.match(qt, /서로 겹치지 않음 · 합계 3 = 3 발행사/); assert.match(qt, /공식 입력 연결 수 · 판정 가능 수·통과 수가 아님/);
         assert.match(qt, /원래 입력 마감\(재무\)\s*2026-02-02T12:00:00Z/); assert.match(qt, /새 입력 마감\(검토 반영\)\s*2026-02-04T12:00:00Z/);
-        assert.match(qt, /계산 시각\s*전달 안 됨/); assert.match(qt, /historical PIT\) 아님/);
+        assert.match(qt, /계산 시각\s*미확인 · 생산자 계약상 실행 manifest/); assert.match(qt, /③ 관문 통과\s*이 전달에 따로 집계 없음/); assert.match(qt, /새 점수 결과 연결\s*전달 전/); assert.match(qt, /historical PIT\) 아님/);
         assert.ok(!/가격만 대기/.test(qt));
         if (tag === '390') {
           await page.setViewportSize({ width: 320, height: 720 });

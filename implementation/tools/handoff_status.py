@@ -13,7 +13,7 @@ comment's wording, and reports six stages apart:
   REAL_ENV         confirmed only when the registry records a deployed, checked environment; otherwise NOT_CONFIRMED with its reason
 
 Each stage is OK, FAILED (with what differs), NOT_CHECKED (an input was not given, e.g. no --raw-repo) or NOT_APPLICABLE. The
-registry's open items are listed as MISSING lines so nothing already delivered is asked for again and nothing missing is assumed.
+registry's open items are listed as MISSING lines; each entry states what its OK stages cover (scope) and each deliverable apart (screen connection, new scores, full deciles, calculation time, real environment) so nothing already delivered is asked for again and nothing missing is assumed.
 A contract that exists is not accepted until its stages check. Read only: nothing is fetched, written or staged.
 
   python implementation/tools/handoff_status.py [--registry …] [--raw-repo <raw clone>] [--data-dir <private data checkout>] [--json]
@@ -32,6 +32,8 @@ REGISTRY = REPO / 'implementation' / 'docs' / 'frontend_v2' / 'HANDOFF_REGISTRY.
 WEB = REPO / 'implementation' / 'src' / 'investment_system' / 'product' / 'web_app'
 WORKER = REPO / 'implementation' / 'worker' / 'src' / 'index.js'
 STAGES = ('DELIVERED', 'RECEIPT_CHECKED', 'READER_VERIFIED', 'STAGED', 'SCREEN_CONNECTED', 'REAL_ENV')
+DELIVERABLE_STATES = ('CONNECTED', 'RECEIVED', 'NOT_DELIVERED', 'NOT_CONFIRMED', 'NOT_APPLICABLE')
+STATE_WORD = {'CONNECTED': '연결', 'RECEIVED': '수령', 'NOT_DELIVERED': '전달 전', 'NOT_CONFIRMED': '미확인', 'NOT_APPLICABLE': '해당 없음'}
 WORD = {'DELIVERED': '전달됨', 'RECEIPT_CHECKED': '수령 확인', 'READER_VERIFIED': '판독 검증', 'STAGED': '배치됨', 'SCREEN_CONNECTED': '화면 연결', 'REAL_ENV': '실환경 확인'}
 
 
@@ -130,7 +132,11 @@ def check_entry(e: dict, raw_repo, data_dir, reader, routes) -> dict:
     re_ = e.get('real_env')
     if re_ is not None:
         st['REAL_ENV'] = ('OK', re_.get('evidence', '')) if re_.get('confirmed') else ('NOT_CONFIRMED', re_.get('reason', ''))
-    return {'id': e['id'], 'title': e['title'], 'comments': e.get('comments', []), 'producer': e.get('producer'), 'stages': st, 'missing': e.get('missing', [])}
+    dl = e.get('deliverables') or []
+    if not e.get('scope') or not dl or any(d.get('state') not in DELIVERABLE_STATES for d in dl):
+        raise SystemExit('REGISTRY_SCOPE: ' + e['id'])
+    return {'id': e['id'], 'title': e['title'], 'comments': e.get('comments', []), 'producer': e.get('producer'), 'stages': st, 'missing': e.get('missing', []),
+            'scope': e['scope'], 'deliverables': dl}
 
 
 def run(registry: Path, raw_repo, data_dir) -> list:
@@ -144,12 +150,16 @@ def run(registry: Path, raw_repo, data_dir) -> list:
 
 
 def markdown(rows: list) -> str:
-    out = ['| 인계 | ' + ' | '.join(WORD[s] for s in STAGES) + ' |', '|---|' + '---|' * len(STAGES)]
+    out = ['| 인계 | ' + ' | '.join(WORD[s] for s in STAGES) + ' | 산출물 |', '|---|' + '---|' * (len(STAGES) + 1)]
     for r in rows:
-        out.append('| ' + r['id'] + ' | ' + ' | '.join(r['stages'][s][0] for s in STAGES) + ' |')
+        out.append('| ' + r['id'] + ' | ' + ' | '.join(r['stages'][s][0] for s in STAGES) + ' | '
+                   + ' · '.join(d['word'] + ' ' + STATE_WORD[d['state']] for d in r['deliverables']) + ' |')
     for r in rows:
         out.append('')
         out.append('- ' + r['id'] + ' — ' + r['title'] + ' · comments ' + (', '.join(map(str, r['comments'])) or '—') + ' · producer ' + str((r['producer'] or {}).get('sha')))
+        out.append('  - OK 범위: ' + r['scope'])
+        for d in r['deliverables']:
+            out.append('  - 산출물 ' + d['word'] + ': ' + d['state'] + (' · ' + d['note'] if d.get('note') else ''))
         for s in STAGES:
             state, why = r['stages'][s]
             if state not in ('NOT_APPLICABLE',):

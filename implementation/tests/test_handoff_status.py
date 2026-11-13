@@ -8,6 +8,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import handoff_status as tool  # noqa: E402
@@ -43,7 +45,7 @@ def test_differences_are_failed_with_what_differs(tmp_path):
     bad_public['public']['sha256'] = '0' * 64
     bad_reader = json.loads(json.dumps(_entry('qgv333-contract')))
     bad_reader['id'] = 'reader'; bad_reader['reader']['models'] = ['U2-333', 'U9-333']
-    staged = {'id': 'staged', 'title': 't', 'staged': [{'path': 'a.json', 'sha256': hashlib.sha256(b'{}').hexdigest()}, {'path': 'b.json', 'sha256': '1' * 64}],
+    staged = {'id': 'staged', 'title': 't', 'scope': 's', 'deliverables': [{'id': 'd', 'word': 'w', 'state': 'CONNECTED'}], 'staged': [{'path': 'a.json', 'sha256': hashlib.sha256(b'{}').hexdigest()}, {'path': 'b.json', 'sha256': '1' * 64}],
               'screen_parts': ['?part=dual_eps_index', '?part=dual_eps_continuation'], 'real_env': {'confirmed': False, 'reason': 'not deployed'}, 'missing': ['x']}
     data = tmp_path / 'data'; data.mkdir(); (data / 'a.json').write_bytes(b'{}'); (data / 'b.json').write_bytes(b'[]')
     rows = {r['id']: r for r in tool.run(_reg(tmp_path, [bad_public, bad_reader, staged]), None, data)}
@@ -64,10 +66,26 @@ def test_a_raw_handoff_is_checked_in_the_local_clone(tmp_path):
     subprocess.run(['git', '-C', str(raw), *env, 'add', '.'], check=True)
     subprocess.run(['git', '-C', str(raw), *env, 'commit', '-qm', 'x'], check=True)
     head = subprocess.run(['git', '-C', str(raw), 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True).stdout.strip()
-    good = {'id': 'good', 'title': 't', 'raw': {'commit': head, 'path': 'h/m.json', 'sha256': hashlib.sha256(b'{"a":1}\n').hexdigest()}}
-    pin = {'id': 'pin', 'title': 't', 'raw': {'commit': head, 'path': 'h/m.json', 'sha256': '2' * 64}}
-    gone = {'id': 'gone', 'title': 't', 'raw': {'commit': head, 'path': 'h/none.json', 'sha256': '2' * 64}}
+    sd = {'scope': 's', 'deliverables': [{'id': 'd', 'word': 'w', 'state': 'RECEIVED'}]}
+    good = {**sd, 'id': 'good', 'title': 't', 'raw': {'commit': head, 'path': 'h/m.json', 'sha256': hashlib.sha256(b'{"a":1}\n').hexdigest()}}
+    pin = {**sd, 'id': 'pin', 'title': 't', 'raw': {'commit': head, 'path': 'h/m.json', 'sha256': '2' * 64}}
+    gone = {**sd, 'id': 'gone', 'title': 't', 'raw': {'commit': head, 'path': 'h/none.json', 'sha256': '2' * 64}}
     rows = {r['id']: r['stages'] for r in tool.run(_reg(tmp_path, [good, pin, gone]), raw, None)}
     assert rows['good']['DELIVERED'][0] == rows['good']['RECEIPT_CHECKED'][0] == 'OK'
     assert rows['pin']['DELIVERED'][0] == 'OK' and rows['pin']['RECEIPT_CHECKED'][0] == 'FAILED'
     assert rows['gone']['DELIVERED'][0] == 'FAILED' and rows['gone']['RECEIPT_CHECKED'][0] == 'NOT_CHECKED'
+
+
+def test_each_ok_states_its_scope_and_deliverables_apart(tmp_path):
+    rows = {r['id']: r for r in tool.run(tool.REGISTRY, None, None)}
+    q = {d['id']: d['state'] for d in rows['qgv333-qinput']['deliverables']}
+    assert q == {'diagnostic': 'CONNECTED', 'scores': 'NOT_DELIVERED', 'deciles': 'NOT_DELIVERED', 'calc_time': 'NOT_DELIVERED', 'real_env': 'NOT_CONFIRMED'}
+    assert 'not a result delivery' in rows['qgv333-qinput']['scope'] and 'ORIGINAL' in rows['qgv333-results']['scope']
+    assert {d['id']: d['state'] for d in rows['qgv333-results']['deliverables']}['deciles'] == 'CONNECTED'
+    assert all(r['scope'] and r['deliverables'] for r in rows.values())
+    bad = dict(_entry('qgv333-contract'), deliverables=[{'id': 'x', 'word': 'x', 'state': 'OK'}])
+    with pytest.raises(SystemExit, match='REGISTRY_SCOPE'):
+        tool.run(_reg(tmp_path, [bad]), None, None)
+    md = tool.markdown(list(rows.values()))
+    assert '  - OK 범위: ' in md and '  - 산출물 새 점수 결과: NOT_DELIVERED' in md
+    assert '진단 화면 연결 · 새 점수 결과 전달 전 · 전체 10분위 전달 전 · 계산 시각 전달 전 · 실환경 미확인' in md

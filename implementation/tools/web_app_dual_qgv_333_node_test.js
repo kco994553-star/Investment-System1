@@ -208,12 +208,16 @@ test('Q input recovery: separate Q-missing / gate / linkage lines, clocks, versi
   assert.equal(DQ.qinputView(r.value, 'operating504', null, d).chain, 'NOT_CHECKED');
   assert.equal(DQ.qinputView(r.value, 'operating504', ev, null).onScreen, 'NOT_LOADED');
   assert.deepEqual(v.times.map((x) => x[0]), ['평가일', '원래 입력 마감(재무)', '새 입력 마감(검토 반영)', '근거 검토 시각', '원천 취득', '생산자 검증 시각', '계산 시각']);
-  assert.match(v.times[5][1], /계산 시각 아님$/); assert.match(v.times[6][1], /^전달 안 됨 · 실행 코드 444444444444로만 고정$/);
+  assert.match(v.times[5][1], /계산 시각 아님$/); assert.match(v.times[6][1], /^미확인 · 생산자 계약상 실행 manifest·실행 영수증의 칸인데 이번 실행 manifest에 시각 칸 없음 · 실행 코드 444444444444로만 고정$/);
   assert.match(v.kind, /RETROSPECTIVE_REVIEW.*historical PIT\) 아님/);
-  assert.deepEqual(v.qPrimary, [['Q 산출 가능', '2 / 3 발행사'], ['분류·회계모형 미확정', '1 / 3 발행사']]); assert.match(v.qPrimaryNote, /겹치지 않음 · 합계 3 = 3 발행사/);
+  assert.deepEqual(v.qPrimary, [['Q 산출 가능', '2 / 3 발행사 · Q_AVAILABLE'], ['분류·회계모형 미확정', '1 / 3 발행사 · CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED']]); assert.match(v.qPrimaryNote, /겹치지 않음 · 합계 3 = 3 발행사/);
   assert.match(v.qOverlapNote, /더하지 않음/); assert.equal(v.qOverlap.length, 2);
-  assert.deepEqual(v.gate.map((x) => x[0]), ['공식 관문 판정 가능(통과 수 아님)', '판정 불가 · 공식 백분위는 연결됐으나 산식 미확정']);
-  assert.deepEqual(v.link, [['공식 Q 백분위 입력 연결', '3 / 3 발행사']]); assert.match(v.linkNote, /판정 가능 수·통과 수가 아님/);
+  assert.deepEqual(v.gate.map((x) => x[0]), ['공식 관문 판정 가능(통과 수 아님)', '판정 불가 · 공식 Q 백분위 입력은 연결됐으나 공식 산식(recipe) 미확정']);
+  assert.deepEqual(v.link, [['공식 Q 백분위 입력 연결', '3 / 3 발행사 · PERCENTILE_LINKED']]);
+  assert.deepEqual(v.gateSteps.map((x) => x[0]), ['① 공식 입력 연결', '② 관문 판정 가능', '③ 관문 통과', '④ 총점 산출']);
+  assert.match(v.gateSteps[0][1], /^3 \/ 3 발행사 · PERCENTILE_LINKED$/); assert.match(v.gateSteps[1][1], /^2 \/ 3 발행사 · DECISION_KNOWN_NOT_NECESSARILY_PASS · 통과로 확정된 수 아님$/);
+  assert.match(v.gateSteps[2][1], /따로 집계 없음 · ②의 판정 가능 수로 대신하지 않음/); assert.match(v.gateSteps[3][1], /^U2-333 0 · U1-333 0 · S1-333 0 \/ 3 발행사/);
+  assert.deepEqual(v.deliverables.map((x) => [x[0], x[1].split(' · ')[0]]), [['진단 화면 연결', '완료'], ['새 점수 결과 연결', '전달 전'], ['전체 10분위 연결', '전달 전'], ['실환경 확인', '미확인']]); assert.match(v.linkNote, /판정 가능 수·통과 수가 아님/);
   assert.match(v.stages[0][1], /^Q 산출 1 → 2\(\+1 · 잃음 0 · 기존 점수 바뀜 1\)/); assert.match(v.relative, /재무 개선이 아님/);
   assert.match(v.delivery, /결과 묶음.*전달 전.*점수·순위·분위를 보이지 않음/);
   assert.ok(!/가격만 대기/.test(JSON.stringify(v)));
@@ -236,4 +240,21 @@ test('Q input recovery: separate Q-missing / gate / linkage lines, clocks, versi
   for (const [code, edit] of cases) assert.equal((await run(edit)).code, code, code);
   const p = parts(DF.qinput(E)); p.diagnostic = { bytes: new Uint8Array([...p.diagnostic.bytes, 10]), body: p.diagnostic.body };
   assert.equal((await DQ.checkQinput(p, sha256)).code, 'BYTES_MISMATCH', 'each file is the index\'s bytes');
+});
+
+// Status words against the producer's reason codes (owner 2026-11-13 「새 Q 결과 전환·인수 상태 정리」 §3): each code has its own word;
+// 「분류·회계모형 미확정」 is only CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED and 「산식」 only the unresolved official recipe; official input
+// linkage, a known gate decision, a gate PASS and a total are four different words.
+test('status words follow the reason codes: no shared word, no recipe word for an accounting or classification code', () => {
+  const tables = { Q: DQ.Q_CAUSE_WORD, GATE: DQ.GATE_DIAG_WORD, LINK: DQ.LINK_WORD, STATUS: DQ.STATUS_WORD, RECIPE: DQ.RECIPE_WORD };
+  for (const [name, t] of Object.entries(tables)) { const w = Object.values(t); assert.equal(new Set(w).size, w.length, name + ': one word per code'); }
+  const all = Object.entries(tables).flatMap(([n, t]) => Object.entries(t).map(([k, w]) => [n + '.' + k, w]));
+  for (const [k, w] of all) {
+    if (/산식/.test(w)) assert.equal(k, 'GATE.OFFICIAL_INPUT_PRESENT_RECIPE_UNRESOLVED', k + ' uses the recipe word: ' + w);
+    if (/분류·회계모형 미확정/.test(w)) assert.equal(k, 'Q.CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED', k + ': ' + w);
+  }
+  assert.match(DQ.STATUS_WORD.NOT_APPLICABLE, /해당 없음/); assert.match(DQ.Q_CAUSE_WORD.ACCOUNTING_NOT_APPLICABLE, /해당 없음/);
+  assert.match(DQ.GATE_DIAG_WORD.DECISION_KNOWN_NOT_NECESSARILY_PASS, /판정 가능\(통과 수 아님\)/);
+  assert.equal(DQ.STATUS_WORD.PASS, '관문 통과'); assert.ok(!/통과/.test(DQ.LINK_WORD.PERCENTILE_LINKED) && !/판정/.test(DQ.LINK_WORD.PERCENTILE_LINKED));
+  assert.ok(!/총점/.test(Object.values(DQ.GATE_DIAG_WORD).join(' ')), 'a gate state is never a total');
 });

@@ -361,6 +361,8 @@ function block(anchor){
       h('h5',null,'Q 결손 (대표 원인)'),dl(v.qPrimary,{dualQPrimary:scope}),h('p',{class:'meta'},v.qPrimaryNote),
       h('h5',null,'공식 관문 판정 상태 (Q 결손과 별도)'),dl(v.gate,{dualQGate:scope}),h('p',{class:'meta'},v.gateNote),
       h('h5',null,'공식 입력 연결 (판정 가능·통과와 별도)'),dl(v.link,{dualQLink:scope}),h('p',{class:'meta'},v.linkNote),
+      h('h5',null,'입력 연결 · 관문 판정 · 관문 통과 · 총점 (네 단계 따로)'),dl(v.gateSteps,{dualQSteps:scope}),
+      h('h5',null,'이 입력 버전의 산출물 상태'),dl(v.deliverables,{dualQDeliverables:scope}),
       h('details',{class:'why'},h('summary',null,'겹치는 Q 원인 ▸'),list(v.qOverlap,{dualQOverlap:scope},''),h('p',{class:'meta'},v.qOverlapNote)));}));}
   const wrap=h('div',{class:'sk card',dataset:{dualBlock:''}},h('h4',null,'연구 후보 결과 (U1 · U2 · S1 / 3/3/3 · 연구 · 운영 채택 안 됨)'),h('div',{class:'load-row'},...btns),rs,slot,epsArea,qArea);
   for(const[k,b]of btns.map((b,i)=>[Object.keys(DQ.SLOTS)[i],b]))if(DQ.ram.get(k))b.hidden=true;

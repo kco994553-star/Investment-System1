@@ -142,7 +142,7 @@ const DETAIL_PRESET_FIELDS=Object.freeze(['missing_factors','nominal_axis_weight
 const FACTOR_KEYS=Object.freeze(['raw_status','score','score_status','valid_n','raw_components_available','verified_external_available','kind','rank','rank_n','decile','decile_status']);
 const MAX_BYTES=2000000;
 const HEX=/^[0-9a-f]{64}$/,DAY=/^\d{4}-\d{2}-\d{2}$/,FILE=/^(summary|index)\.json$|^detail-\d{3}\.json$/,DETAIL_FILE=/^detail-\d{3}\.json$/;
-const STATUS_WORD=Object.freeze({VALID:'산출',MISSING_INPUT:'입력 없음',MAPPING_UNRESOLVED:'분류 미확정',NOT_APPLICABLE:'산식 적용 부적합',PERIOD_MISMATCH:'기간 불일치',
+const STATUS_WORD=Object.freeze({VALID:'산출',MISSING_INPUT:'입력 없음',MAPPING_UNRESOLVED:'분류 미확정',NOT_APPLICABLE:'이 회계모형에 해당 없음(적용 대상 아님)',PERIOD_MISMATCH:'기간 불일치',
  PEER_SAMPLE_SMALL:'비교 표본 부족(20 미만)',DOMAIN_INVALID:'값 범위 밖',GATE_UNKNOWN:'관문 판정 불가(UNKNOWN)',STRICT_INCOMPLETE:'핵심 요소 일부 미산출',
  PASS:'관문 통과',UNKNOWN:'관문 판정 불가',VALUE_EXCLUDED:'V 총점 반영 제외 · 기업 탈락 아님',
  // Codex #534 EPS history (6851482941): the historical common-share basis of that EPS is not confirmed — an input gap of its own,
@@ -482,7 +482,7 @@ async function checkQinput(parts,sha256){
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 const Q_CAUSE_WORD=Object.freeze({Q_AVAILABLE:'Q 산출 가능',ACCOUNTING_NOT_APPLICABLE:'통합 회계모형 부적합(해당 없음)',CLASSIFICATION_OR_ACCOUNTING_UNCONFIRMED:'분류·회계모형 미확정',
  ELIGIBLE_FINANCIAL_COMPONENT_MISSING:'적격 재무 구성값 없음(모든 공시에 없다는 뜻 아님)',FLOW_OR_AVERAGE_ASSET_PERIOD_MISMATCH:'흐름·평균자산 기간 불일치',SOURCE_NOT_CONNECTED_OR_NOT_REVIEWED:'원천 연결·검토 안 됨'});
-const GATE_DIAG_WORD=Object.freeze({DECISION_KNOWN_NOT_NECESSARILY_PASS:'공식 관문 판정 가능(통과 수 아님)',OFFICIAL_INPUT_PRESENT_RECIPE_UNRESOLVED:'판정 불가 · 공식 백분위는 연결됐으나 산식 미확정',
+const GATE_DIAG_WORD=Object.freeze({DECISION_KNOWN_NOT_NECESSARILY_PASS:'공식 관문 판정 가능(통과 수 아님)',OFFICIAL_INPUT_PRESENT_RECIPE_UNRESOLVED:'판정 불가 · 공식 Q 백분위 입력은 연결됐으나 공식 산식(recipe) 미확정',
  OFFICIAL_Q_AXIS_COVERAGE_BELOW_50:'판정 불가 · 공식 Q축 가용 비중 50% 미만',OFFICIAL_SOURCE_ROW_UNAVAILABLE:'판정 불가 · 공식 원천 행 없음',OUTSIDE_FROZEN_OFFICIAL_REFERENCE_POPULATION:'판정 불가 · 고정된 공식 참조 모집단 밖'});
 const LINK_WORD=Object.freeze({PERCENTILE_LINKED:'공식 Q 백분위 입력 연결',PERCENTILE_NOT_LINKED:'공식 Q 백분위 입력 연결 안 됨'});
 const wordOr=(w,k)=>w[k]||(k+'(사전에 없는 분류)');
@@ -493,7 +493,8 @@ function qinputView(Q,scope,eps,delivery){const x=Q.index,t=x.clocks,d=Q.diag[sc
  const side=k=>{if(!delivery||!own(delivery.summary.boards,k))return'NOT_LOADED';const h=delivery.summary.boards[k].result_hash;
   return h===c[k].after_result_hash?'Q_STEP':h===c[k].before_result_hash?'EPS_STEP':e&&h===e[k].before_result_hash?'ORIGINAL':'OTHER';};
  const ld=Q333_KEYS.map(side).filter(v=>v!=='NOT_LOADED'),onScreen=!ld.length?'NOT_LOADED':ld.every(v=>v===ld[0])?ld[0]:'MIXED';
- const lines=(o,w)=>Object.entries(o).map(([k,v])=>[wordOr(w,k),v+' / '+den+' 발행사']);
+ const lines=(o,w)=>Object.entries(o).map(([k,v])=>[wordOr(w,k),v+' / '+den+' 발행사 · '+k]);
+ const cnt=(o,k)=>own(o,k)?o[k]+' / '+den+' 발행사 · '+k:'생산자 집계 칸 없음('+k+')';
  return freeze({scope,label:SCOPES[scope].label,onScreen,chain,
   screen:{ORIGINAL:'지금 화면의 3/3/3 결과 = 원래 입력 버전(EPS 연결·Q 복구 이전) · 이 복구 결과는 화면에 없음 · 함께 읽지 않음',
    EPS_STEP:'지금 화면의 3/3/3 결과 = EPS 연결 단계 결과(이 복구의 「이전」) · 이 복구 결과는 화면에 없음',Q_STEP:'지금 화면의 3/3/3 결과 = 이 Q 입력 복구 결과',
@@ -505,7 +506,7 @@ function qinputView(Q,scope,eps,delivery){const x=Q.index,t=x.clocks,d=Q.diag[sc
   times:[['평가일',t.valuation_date+' (그대로)'],['원래 입력 마감(재무)',t.original_input_cutoff],['새 입력 마감(검토 반영)',t.input_cutoff],['근거 검토 시각',t.reviewed_at],
    ['원천 취득',x.source_snapshots_reused?'원래 입력의 원천 스냅숏 재사용 · 공시일·취득 시각 그대로 · 새 문서·가격 취득 없음':'원천 스냅숏 재사용 아님(생산자 기록)'],
    ['생산자 검증 시각',t.producer_verified_at+' · '+(x.producer_verification_passed?'통과':'실패')+' · 계산 시각 아님'],
-   ['계산 시각',t.calculated_at||('전달 안 됨 · 실행 코드 '+x.source.execution_sha.slice(0,12)+'로만 고정')]],
+   ['계산 시각',t.calculated_at||('미확인 · 생산자 계약상 실행 manifest·실행 영수증의 칸인데 이번 실행 manifest에 시각 칸 없음 · 실행 코드 '+x.source.execution_sha.slice(0,12)+'로만 고정')]],
   version:Q333_KEYS.map(k=>k+' 결과 '+sh12(c[k].before_result_hash)+' → '+sh12(c[k].after_result_hash)).join(' · ')+' · 같은 평가일·같은 구성원이라도 입력 버전이 다르면 다른 결과 · 섞지 않음',
   stages:Q333_KEYS.map(k=>{const s=c[k].stages;return[k,'Q 산출 '+s.Q.before+' → '+s.Q.after+'(+'+s.Q.gained+' · 잃음 '+s.Q.lost+' · 기존 점수 바뀜 '+s.Q.common_score_changed+') · G '+s.G.before+' → '+s.G.after
    +' · V '+s.V.before+' → '+s.V.after+' · 동시 '+s.joint.before+' → '+s.joint.after+' · 총점 '+s.total.before+' → '+s.total.after];}),
@@ -514,6 +515,13 @@ function qinputView(Q,scope,eps,delivery){const x=Q.index,t=x.clocks,d=Q.diag[sc
   qOverlap:Object.entries(d.overlapping_q_causes).map(([k,v])=>wordOr(Q_CAUSE_WORD,k)+' · '+v+' 발행사'),qOverlapNote:'겹치는 원인 집계 · 한 발행사가 여러 줄에 들어감 · 더하지 않음',
   gate:lines(d.gate_diagnostic,GATE_DIAG_WORD),gateNote:'공식 관문 판정 상태 · 서로 겹치지 않음 · 합계 '+sumOf(d.gate_diagnostic)+' = '+den+' 발행사 · 이 Q 복구로 바뀐 관문 판정 없음 · 연구 Q로 대신하지 않음',
   link:lines(d.official_input_linkage,LINK_WORD),linkNote:'공식 입력 연결 수 · 판정 가능 수·통과 수가 아님',
+  // four separate steps, never one read as another (owner 2026-11-13 「새 Q 결과 전환·인수 상태 정리」 §3)
+  gateSteps:[['① 공식 입력 연결',cnt(d.official_input_linkage,'PERCENTILE_LINKED')],
+   ['② 관문 판정 가능',cnt(d.gate_diagnostic,'DECISION_KNOWN_NOT_NECESSARILY_PASS')+' · 통과로 확정된 수 아님'],
+   ['③ 관문 통과','이 전달에 따로 집계 없음 · ②의 판정 가능 수로 대신하지 않음'],
+   ['④ 총점 산출',Q333_KEYS.map(k=>k+' '+c[k].stages.total.after).join(' · ')+' / '+den+' 발행사 · 이 입력 버전의 생산자 집계 · 관문 통과와 별개']],
+  deliverables:[['진단 화면 연결','완료 · Q 결손·관문 상태·입력 연결·시각(진단 요약과 실행 비교)'],['새 점수 결과 연결','전달 전 · 범위별 결과 전달 목록 없음 · 새 점수·순위 표시 안 함'],
+   ['전체 10분위 연결','전달 전 · 새 결과의 분포·구간 색인 없음'],['실환경 확인','미확인 · 비공개 서버 배포 전']],
   delivery:'새 입력 버전의 결과 묶음(범위별 전달 목록·분포·구간 색인·새 입력 고정 근거) 전달 전 · 이 표는 진단·건수만 · 점수·순위·분위를 보이지 않음'});}
 
 /* ---- words (counts and values as delivered; display rounding only) */
@@ -996,5 +1004,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({QIN,checkQinput,qinputView,EPS,checkEps,epsView,SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({Q_CAUSE_WORD,GATE_DIAG_WORD,LINK_WORD,STATUS_WORD,QIN,checkQinput,qinputView,EPS,checkEps,epsView,SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

@@ -1,6 +1,6 @@
 {
   "schema_version": "main-handoff-registry/1",
-  "note": "Main's record of producer handoffs it consumes (owner 2026-11-13 「3/3/3 화면 연결 우선, 전달·재현 병렬 작업 추가」 §2). Hashes, paths and comment ids only; no content. tools/handoff_status.py checks each stage against the files themselves. A stage with nothing to check is NOT_APPLICABLE, never assumed done.",
+  "note": "Main's record of producer handoffs it consumes (owner 2026-11-13 「3/3/3 화면 연결 우선, 전달·재현 병렬 작업 추가」 §2). Hashes, paths and comment ids only; no content. tools/handoff_status.py checks each stage against the files themselves. A stage with nothing to check is NOT_APPLICABLE, never assumed done. Each OK stage holds only for the entry's scope (what was handed over and checked); each deliverable is recorded apart (owner 2026-11-13 「새 Q 결과 전환·인수 상태 정리」 §2).",
   "entries": [
     {
       "id": "qgv333-contract",
@@ -29,7 +29,22 @@
       "staged": [],
       "screen_parts": [],
       "real_env": null,
-      "missing": []
+      "missing": [],
+      "scope": "contract, synthetic and boundary examples registered in Main's reader (model ids, config/2, configuration hashes)",
+      "deliverables": [
+        {
+          "id": "reader",
+          "word": "판독기",
+          "state": "CONNECTED",
+          "note": ""
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_APPLICABLE",
+          "note": "public examples only"
+        }
+      ]
     },
     {
       "id": "qgv333-results",
@@ -98,7 +113,28 @@
         "confirmed": false,
         "reason": "Worker &set=333 not deployed (owner approval)"
       },
-      "missing": []
+      "missing": [],
+      "scope": "the ORIGINAL 3/3/3 input version: delivery (summary, index, details), reference anchor / projection proof, full distribution and all-bin routing",
+      "deliverables": [
+        {
+          "id": "scores",
+          "word": "점수 결과",
+          "state": "CONNECTED",
+          "note": "0. 기업 검색 3/3/3 카드 · 기업 상세 · 2.1 리더보드"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "CONNECTED",
+          "note": "분포 + 구간 색인"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker &set=333 not deployed"
+        }
+      ]
     },
     {
       "id": "qgv333-validator",
@@ -126,7 +162,16 @@
       "staged": [],
       "screen_parts": [],
       "real_env": null,
-      "missing": []
+      "missing": [],
+      "scope": "validator type rule (no data regeneration)",
+      "deliverables": [
+        {
+          "id": "reader",
+          "word": "판독기 규칙",
+          "state": "CONNECTED",
+          "note": "exact integer-ratio configuration types"
+        }
+      ]
     },
     {
       "id": "main533-recheck",
@@ -146,7 +191,16 @@
       "staged": [],
       "screen_parts": [],
       "real_env": null,
-      "missing": []
+      "missing": [],
+      "scope": "Codex's recheck of #533 boundaries, received",
+      "deliverables": [
+        {
+          "id": "receipt",
+          "word": "Codex 재검토",
+          "state": "RECEIVED",
+          "note": "no screen of its own"
+        }
+      ]
     },
     {
       "id": "qgv333-eps",
@@ -189,6 +243,33 @@
         "an anchor for the new evaluation input (operating 29514f1d…, held 3a422521…): the staged classification bundle names the previous input",
         "a calculation time field (still absent in qgv333-qinput)",
         "a reviewed historical common share basis: no adopted proof yet (0); its review clock field is now defined (sector-qgv-review-context/1, delivered with qgv333-qinput)"
+      ],
+      "scope": "the EPS input-connection progress record of the SECOND input version (diagnostic summary, run comparison, continuation inputs); not a result delivery",
+      "deliverables": [
+        {
+          "id": "diagnostic",
+          "word": "진단 화면",
+          "state": "CONNECTED",
+          "note": "EPS 다섯 단계 · 시각 · 입력 버전"
+        },
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "NOT_DELIVERED",
+          "note": "no scope delivery manifest for this input version"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "NOT_DELIVERED",
+          "note": "no distribution / bins for this input version"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker dual_eps_* not deployed"
+        }
       ]
     },
     {
@@ -238,6 +319,39 @@
         "the new results' full distribution and bins",
         "an anchor for the new evaluation input (the staged classification bundle names the original input)",
         "a calculation time field (calculation is pinned only by execution 93a699ed)"
+      ],
+      "scope": "the Q input recovery progress record of the THIRD input version (diagnostic summary, comparison, review clocks); not a result delivery",
+      "deliverables": [
+        {
+          "id": "diagnostic",
+          "word": "진단 화면",
+          "state": "CONNECTED",
+          "note": "Q 결손 원인 · 관문 판정 상태 · 공식 입력 연결 · 네 단계 · 시각 7가지 · 버전 사슬"
+        },
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "NOT_DELIVERED",
+          "note": "per-candidate runs in the archive, but no scope delivery manifest; Main does not assemble it"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "NOT_DELIVERED",
+          "note": "no distribution / bins for the new results"
+        },
+        {
+          "id": "calc_time",
+          "word": "계산 시각",
+          "state": "NOT_DELIVERED",
+          "note": "producer contract: calculation time belongs to the run manifest / execution receipt; the six run manifests (qgv-dual-run/1) carry no time field; pinned by execution 93a699ed only"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker dual_q_* not deployed"
+        }
       ]
     },
     {
@@ -269,7 +383,69 @@
       },
       "missing": [
         "refresh receipt (none delivered)"
+      ],
+      "scope": "company relationship view (Codex #531), staged and connected",
+      "deliverables": [
+        {
+          "id": "view",
+          "word": "관계 화면",
+          "state": "CONNECTED",
+          "note": ""
+        },
+        {
+          "id": "refresh",
+          "word": "갱신 영수증",
+          "state": "NOT_DELIVERED",
+          "note": "none delivered"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker ownership_* not deployed"
+        }
       ]
+    },
+    {
+      "id": "wrb-acquisition",
+      "title": "WRB 0000011544-26-000046 approved acquisition (owner 2026-11-07 A; Main is the producer)",
+      "comments": [],
+      "producer": {
+        "pr": null,
+        "sha": "8c946c42a46cfeda60aaa50147f36611680b25ca",
+        "run_id": "43524551717"
+      },
+      "raw": {
+        "commit": "df79e83cadf77177c56329d55270bcb325ffe0ea",
+        "path": "handoffs/main-acquisition-20261107/manifest.json",
+        "sha256": "c9f40ad7c823032313872f886c8ba1d6c7e2247680634e70389333531149102f"
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "scope": "two SEC GETs (body + the directly named Exhibit 99.1) preserved bytes unchanged with receipt and manifest in the private raw repository",
+      "deliverables": [
+        {
+          "id": "acquired",
+          "word": "원문·receipt",
+          "state": "RECEIVED",
+          "note": "2 GET 200 · 36,732 + 329,311 bytes · SHA-256 = receipt"
+        },
+        {
+          "id": "codex",
+          "word": "Codex 근거 검증",
+          "state": "NOT_CONFIRMED",
+          "note": "handed to Codex in #437; its validation is the producer's"
+        }
+      ],
+      "missing": []
     }
-  ]
+  ],
+  "deliverable_states": {
+    "CONNECTED": "checked and connected to the screen in code (not a deployment)",
+    "RECEIVED": "received and checked, no screen of its own",
+    "NOT_DELIVERED": "not part of any handoff yet",
+    "NOT_CONFIRMED": "needs a deployed, checked environment (or the consumer) first",
+    "NOT_APPLICABLE": "nothing of that kind"
+  }
 }
