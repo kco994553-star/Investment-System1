@@ -35,7 +35,7 @@ function block(v,{compact=false,href,companies}={}){const M=O(),x=M.view(v,{rece
   h('p',{class:'hand'},compact?'관계 (5.1)':'기업 중심 관계 (5.1.1) · 연결 근거 (5.1.2)',' · ',x.centre.name,' · 연구 자료 ',x.dataKind),
   head,...lists,unresolved);}
 // 관계 자료 불러오기 (owner 2026-11-13): the owner's authenticated delivery, on the existing private Worker route
-// (/kis/classification ?part=ownership_index, then ?part=ownership_view|ownership_receipt&entity=<id>), each read on its own click,
+// (its classification route: the part ownership_index, then ownership_view and ownership_receipt for one entity), each read on its own click,
 // RAM only. Click 1 reads Main's index (one read); for a company the index lists, click 2 reads its view and, if staged, its refresh
 // receipt (two reads, the receipt OPTIONAL). The reader (IS2.ownershipView.checkDelivered) takes the view only when its bytes are the
 // ones the index names; then it goes into IS2.ownershipView.ram and the screens draw it. A missing file, a refused sign-in, damaged
