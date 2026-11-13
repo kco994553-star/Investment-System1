@@ -377,6 +377,37 @@ test('classification dual distribution: the full factor distribution reads class
   }
 });
 
+test('classification ownership: the index, one view per entity (its centre the entity asked) and its optional receipt (the producer\'s five keys)', async () => {
+  const idx = setup({ github: () => new Response(JSON.stringify({ schema_version: 'company-ownership-delivery/1', views: [] }), { status: 200 }) });
+  assert.equal((await idx.run('/kis/classification?part=ownership_index')).status, 200);
+  assert.equal(githubCalls(idx)[0].url, 'https://api.github.com' + REPO + '/contents/classification/ownership/ownership-index.json?ref=data');
+  const view = (id) => JSON.stringify({ schema_version: 'company-ownership-view/1', entity_context: { entity_id: id, node_id: 'issuer:' + id } });
+  for (const id of ['0000002488', 'SYN-A']) {
+    const s = setup({ github: () => new Response(view(id), { status: 200 }) });
+    assert.equal((await s.run('/kis/classification?part=ownership_view&entity=' + id)).status, 200, id);
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/ownership/views/' + id + '.json?ref=data');
+  }
+  assert.equal((await setup({ github: () => new Response(view('SYN-B'), { status: 200 }) }).run('/kis/classification?part=ownership_view&entity=SYN-A')).status, 502, 'a view of another centre');
+  assert.equal((await setup({ github: () => new Response(JSON.stringify({ schema_version: 'company-ownership-delivery/1' }), { status: 200 }) }).run('/kis/classification?part=ownership_view&entity=SYN-A')).status, 502, 'the index is not a view');
+  const receipt = JSON.stringify({ attempt: { attempted_at: '2026-01-07T00:00:00Z', outcome: 'FAILED' }, retained_dataset_sha256: 'a'.repeat(64), retained_view_sha256: 'b'.repeat(64),
+    unchanged_generated_at: '2026-01-05T00:00:00Z', unchanged_last_success_at: '2026-01-05T00:00:00Z' });
+  const r = setup({ github: () => new Response(receipt, { status: 200 }) });
+  assert.equal((await r.run('/kis/classification?part=ownership_receipt&entity=SYN-A')).status, 200);
+  assert.equal(githubCalls(r)[0].url, 'https://api.github.com' + REPO + '/contents/classification/ownership/receipts/SYN-A.json?ref=data');
+  assert.equal((await setup({ github: () => new Response(view('SYN-A'), { status: 200 }) }).run('/kis/classification?part=ownership_receipt&entity=SYN-A')).status, 502, 'a view is not a receipt');
+  assert.equal((await setup({ github: () => new Response(JSON.stringify({ ...JSON.parse(receipt), note: 'x' }), { status: 200 }) }).run('/kis/classification?part=ownership_receipt&entity=SYN-A')).status, 502, 'a receipt with an extra key');
+  const missing = await setup({ github: () => new Response('{"message":"Not Found"}', { status: 404 }) }).run('/kis/classification?part=ownership_receipt&entity=SYN-A');
+  assert.equal(missing.status, 404, 'no receipt staged = not found (the screen reads it as OPTIONAL)');
+  const big = await setup({ github: () => new Response(view('SYN-A'), { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=ownership_view&entity=SYN-A');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  for (const route of ['/kis/classification?part=ownership_view', '/kis/classification?part=ownership_view&entity=syn-a', '/kis/classification?part=ownership_view&entity=-A',
+    '/kis/classification?part=ownership_view&entity=../x', '/kis/classification?part=ownership_view&entity=' + 'A'.repeat(33), '/kis/classification?part=ownership_index&entity=SYN-A',
+    '/kis/classification?part=ownership_receipt&entity=SYN-A&x=1', '/kis/classification?part=ownership_view&entity=SYN%2DA', '/kis/classification?part=ownership']) {
+    const t = setup({ github: () => new Response(view('SYN-A'), { status: 200 }) }), x = await t.run(route);
+    assert.equal(x.status, 400, route); assert.equal(githubCalls(t).length, 0, route);
+  }
+});
+
 test('classification dual: only the exact scope and 3-digit shard forms; nothing else reaches a read', async () => {
   for (const route of ['/kis/classification?part=dual_summary', '/kis/classification?part=dual_summary&scope=market', '/kis/classification?part=dual_summary&scope=Operating504',
     '/kis/classification?scope=operating504&part=dual_summary', '/kis/classification?part=dual_summary&scope=operating504&x=1', '/kis/classification?part=dual_detail&scope=operating504',

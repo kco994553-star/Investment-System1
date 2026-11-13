@@ -314,7 +314,10 @@ const CLASSIFICATION_PARTS = Object.freeze({ view: 'common-classification-view/1
   input_repair: 'sector-qgv-input-repair-comparison/1',
   // The evaluation / reference population research view (Codex #528 sector-qgv-reference-view/1, owner 2026-11-10), one file next
   // to the held issuer delivery whose operating result it evaluated; the same 2 MiB limit.
-  reference_view: 'sector-qgv-reference-view/1' });
+  reference_view: 'sector-qgv-reference-view/1',
+  // The company relationship delivery (owner 2026-11-13, Codex #531 company-ownership-view/1): Main's index of the staged views
+  // (stage_private_ownership_view.py); each view and its optional refresh receipt are read one entity at a time below.
+  ownership_index: 'company-ownership-delivery/1' });
 // The dual research delivery (Codex #529 qgv-dual-delivery/1, owner 2026-11-11): one directory per evaluation scope, a manifest that
 // names its scope, a summary, an index and numbered detail files; each file carries its schema.
 const DUAL_SCOPES = Object.freeze(['operating504', 'held1057']);
@@ -340,6 +343,11 @@ const DUAL_SCOPED = Object.freeze(['dual_manifest', 'dual_reference_anchor', 'du
   'dual_dist_manifest', 'dual_dist_index', 'dual_bins_manifest', 'dual_bins_index']);
 const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expanded_index: 'expanded-index.json', expanded_coverage: 'coverage.json',
   input_repair: 'input-repair-comparison.json', reference_view: 'reference-view.json' });
+// …?part=ownership_index, and ?part=ownership_view|ownership_receipt&entity=<entity id> (owner 2026-11-13): one view (Codex #531
+// company-ownership-view/1, its centre the entity asked for) and its optional refresh-attempt receipt (the producer's five keys),
+// staged byte for byte under classification/ownership/{views,receipts}/<entity id>.json; the same 2 MiB limit and the same owner auth.
+const OWNERSHIP_ENTITY = /^[A-Z0-9][A-Z0-9-]{0,31}$/;
+const RECEIPT_KEYS = ['attempt', 'retained_dataset_sha256', 'retained_view_sha256', 'unchanged_generated_at', 'unchanged_last_success_at'];
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
 // 'expanded_detail/<shard>'.
@@ -351,6 +359,8 @@ export function kisClassificationPart(url) {
   if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2]; }
   const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})$/.exec(url.search);
   if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + '/' + dualDetail[3]; }
+  const own = /^\?part=(ownership_view|ownership_receipt)&entity=([A-Z0-9-]{1,32})$/.exec(url.search);
+  if (own) { if (!OWNERSHIP_ENTITY.test(own[2])) throw new Failure('REQUEST_INVALID', 400); return own[1] + '/' + own[2]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
   const part = url.searchParams.get('part');
   if (!Object.hasOwn(CLASSIFICATION_PARTS, part) || part === 'expanded_detail') throw new Failure('REQUEST_INVALID', 400);
@@ -361,6 +371,9 @@ function classificationPath(part) {
   if (part.startsWith('dual_')) { const [name, scope, shard] = part.split('/');
     return 'classification/dual/' + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
   if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
+  if (part === 'ownership_index') return 'classification/ownership/ownership-index.json';
+  if (part.startsWith('ownership_')) { const [name, entity] = part.split('/');
+    return 'classification/ownership/' + (name === 'ownership_view' ? 'views/' : 'receipts/') + entity + '.json'; }
   return 'classification/' + part + '.json';
 }
 // The file must carry its part's schema; a detail shard must also name the shard asked for.
@@ -369,6 +382,9 @@ function classificationSchema(o, part) {
   // A dual file carries its part's schema; a manifest (and the leaders index) also names the scope asked for.
   if (part.startsWith('dual_')) { const [name, scope] = part.split('/');
     return o.schema_version === DUAL_PARTS[name][1] && (!DUAL_SCOPED.includes(name) || o.scope === scope); }
+  // A view names the entity asked for as its centre; a receipt (no schema field) is exactly the producer's five keys.
+  if (part.startsWith('ownership_view/')) return o.schema_version === 'company-ownership-view/1' && !!o.entity_context && o.entity_context.entity_id === part.slice(15);
+  if (part.startsWith('ownership_receipt/')) return Object.keys(o).sort().join(',') === RECEIPT_KEYS.join(',') && !!o.attempt && typeof o.attempt === 'object' && typeof o.retained_view_sha256 === 'string';
   return o.schema_version === CLASSIFICATION_PARTS[part];
 }
 // Routes that take no query string at all.

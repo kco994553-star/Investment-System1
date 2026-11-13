@@ -216,11 +216,17 @@ function screen(route,{legend,band,slots}){
    put(centerBody,lost?empty('CENTER_NOT_FOUND','이 이름의 기업을 Universe504 목록에서 찾지 못했습니다 · '+S.given):empty('NO_CENTER','가운데 기업 없음 · 위에서 기업을 검색해 고르세요'),
     h('div',{class:'card-body'},sketch(null),h('p',{class:'reason',dataset:{sketchCaption:''}},'가운데 원 = 지금 보는 기업 (선택 안 함) · 점선 = 관계 자료 미연결 (빈 자리 · 연결 아님)')),rel);return;}
   const name=c.name_ko||c.name_en,ended=c.status==='WITHDRAWN'?c.withdrawn_on:null;
+  // A checked relationship view for this centre (Codex #531 company-ownership-view/1, RAM only) replaces 「관계 자료 미연결」;
+  // without one the screen stays as it was (REL-SOURCE).
+  const ov=I.ownershipView&&I.ownershipScreen?I.ownershipView.ram.forCompany(c.code):null;
+  // Without one, the owner (signed in) can read the authenticated delivery here (IS2.ownershipScreen.privateLoader); signed out it adds nothing.
+  const relPart=ov?I.ownershipScreen.block(ov,{href,companies:I.companies}):I.ownershipScreen&&I.ownershipScreen.privateLoader?h('div',null,rel,I.ownershipScreen.privateLoader(c.code,{signal})):rel;
   put(centerBody,h('h4',{dataset:{centerCode:c.code}},c.ticker,name?' · '+name:''),
    h('p',{class:'reason'},c.code,' · Universe504',ended?h('span',{dataset:{listingEnded:ended}},' · 상장 종료 ',ended,' · 점수 없음'):null),
    h('div',{class:'links'},starButton(c.id),h('a',{class:'lk',href:href('company',c.id),dataset:{centerCompany:''}},'기업 화면 →'),
     h('button',{type:'button',class:'chip',dataset:{centerClear:''},onclick:()=>{I.selection.set(null);if(route.id==='news'&&route.params.length)win.location.hash=href('news');else{S.center=null;S.given=null;paintCenter();paintLists();focusLater('#news-center');}}},'가운데 기업 비우기')),
-   h('div',{class:'card-body'},sketch(c.ticker),h('p',{class:'reason',dataset:{sketchCaption:''}},'가운데 원 = ',c.ticker,' · 점선 = 관계 자료 미연결 (빈 자리 · 연결 아님)')),rel);}
+   h('div',{class:'card-body'},sketch(c.ticker),h('p',{class:'reason',dataset:{sketchCaption:''}},'가운데 원 = ',c.ticker,ov?' · 점선 = 그림은 장식 · 관계는 아래 목록':' · 점선 = 관계 자료 미연결 (빈 자리 · 연결 아님)')),relPart);}
+ if(I.ownershipView){const off=I.ownershipView.ram.subscribe(()=>{if(!aborted())paintCenter();});signal.addEventListener('abort',off);}
  const mineBody=h('div',{class:'card-body',dataset:{newsMine:''}},loading('관심 기업'));
  function paintMine(){
   const p=prefs(),C=I.companies;
@@ -387,7 +393,7 @@ function screen(route,{legend,band,slots}){
  /* ---------------- 5.3 tree (code) */
  const TREE=[['input','수집','SEC 8-K (sec-disclosures.json) · DART (dart-disclosures.json) · 뉴스·IR (news-signals.json) · 지금은 고정 대상 기업만','ok','연결됨',null],
   ['class','분류','8-K 항목 → 분류 · 같은 사건 묶기 (NEW / REPEAT) · 중요도 표시 (보유 · 관심 · 기타 · 시장, 보유는 미연결)','ok','연결됨',null],
-  ['5.1','5.1 관계망 (메뉴 4.1)','가운데 기업 하나 · 관계 자료원 결정 대기 (REL-SOURCE) · 관계 자료 미연결','na','미연결 · NOT_AVAILABLE','4-1'],
+  ['5.1','5.1 관계망 (메뉴 4.1)','가운데 기업 하나 · 관계 판독기·화면 연결(Codex company-ownership-view/1, 합성 · 개발 빌드) · 실자료 전달 경로 전 (REL-SOURCE) · 관계 자료 미연결','na','미연결 · NOT_AVAILABLE','4-1'],
   ['5.2','5.2 공시 · 뉴스 목록 (메뉴 4.2)','최신순 · 범위 (전체 · 가운데 · 관심) · 채널 · 분류 · 신규·반복 조건','ok','연결됨','4-2'],
   ['5.2.2','5.2.2 ~ 5.2.4 요약 · 영향 · 주가 반영','5줄 요약 방식 결정 대기 (IA-14) · 반영 여부는 직접 알 수 없음 · 사건 전후 반응은 비공개 칸 (준비 중)','na','미산출 · NOT_AVAILABLE','4-2'],
   ['5.2.6','5.2.6 컨센서스 변화','무료 자료원 없음 · 컨센서스 자료 미연결','na','미연결','4-2'],
