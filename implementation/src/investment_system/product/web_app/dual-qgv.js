@@ -260,7 +260,7 @@ const scopeWord=(s,sectorName)=>{if(s==='COMMON')return'평가 집단 전체';co
 const BAND=Object.freeze(Object.fromEntries(Array.from({length:10},(_,i)=>[10-i,'상위 '+i*10+'–'+(i+1)*10+'%'])));
 const DECILE_RULE=Object.freeze(['분위 숫자 10 = 상위 0–10% · 1 = 상위 90–100% · 낮을수록 좋은 요소도 기존 평가 방향대로 좋은 쪽이 상위',
  '구간은 생산자가 순위 위치로 나눔 · 10·1 구간은 N/10(내림)개씩, 나머지 8구간이 남은 순위를 고르게 나눔 · 정확한 백분율 아님',
- '같은 점수는 회사 ID 순으로 순위가 정해져 구간 경계 양쪽에 놓일 수 있음(지금 생산자 규칙 · 계약 확인 중)',
+ '같은 점수도 회사 ID 순으로 순위가 정해져 서로 다른 구간에 들어갈 수 있음(저장된 분위 규칙 stored-evaluation-deciles/1 그대로 · 구간마다 실제 기업 수를 따로 보임)',
  '평가 유효 10개 미만이면 순위만 있고 분위 없음 · 점수 없는 요소는 순위·분위 없음 · 총점이 없어도 요소 분위는 보임',
  '통합(U1·U2)과 섹터(S1) 비교집단은 따로 · 섹터 분위를 합친 통합 분위 없음 · 추가 요소 분위는 핵심 점수에 더하지 않음',
  '구간 선택·필터는 보이는 기업만 고름 · 분위·순위·분모를 바꾸지 않음']);
@@ -553,14 +553,16 @@ function distributionGroup(D,group_id,parts){
 const DIST_PAGE=50;
 function distributionView(D,G,{band=null,page=0,sectorName}={}){const g=G.group,b=D.boards[g.board],n=g.evaluation_valid_n;
  const scope=g.ranking_scope==='COMMON'?'통합 비교집단(평가 집단 전체)':'섹터 비교집단 · '+g.ranking_scope.split('|').slice(1).map((x,i)=>i===0&&sectorName?sectorName(x):x).join(' · ');
- const policy=D.display_policy===DIST.STORED?'분위 기준: 저장된 평가 순위 분위(기존 규칙)'+(g.legacy_tie_splits.length?' · 같은 점수가 구간 경계에서 갈린 곳 '+g.legacy_tie_splits.length+'곳(회사 ID 순 · 오너 기준 확인 중)':'')
-  :'분위 기준: 참조 점수 10점 구간(연구 표시 후보 · 오너 기준 확인 전 · 합성만)';
+ const policy=D.display_policy===DIST.STORED?'분위 기준: 저장된 평가 순위 분위(stored-evaluation-deciles/1 · 기존 규칙 유지)'+(g.legacy_tie_splits.length?' · 같은 점수가 서로 다른 구간에 들어간 곳 '+g.legacy_tie_splits.length+'곳(회사 ID 순으로 경계가 갈림)':' · 이 묶음에서는 같은 점수가 구간 경계에서 갈린 곳 없음')
+  :'분위 기준: 참조 점수 10점 구간(reference-score-deciles/1 · 별도 연구 후보 · 활성화 안 함 · 합성만)';
+ // Each stored split as delivered (score, the two saved ranks either side of the boundary, the two bands); nothing re-ranked.
+ const ties=g.legacy_tie_splits.map(t=>freeze({text:'점수 '+fmt(t.score)+' · 순위 '+t.last_rank+'까지 '+BAND[t.from_decile]+' · 순위 '+t.next_rank+'부터 '+BAND[t.to_decile]}));
  const bands=g.bins.map(x=>freeze({decile:x.decile,label:BAND[x.decile],count:x.count,selected:band===x.decile}));
  const pick=band===null?null:band==='NONE'?G.rows.filter(r=>r.decile===null):G.rows.filter(r=>r.decile===band).sort((a,c)=>a.rank-c.rank);
  const total=pick?pick.length:0,pages=Math.max(1,Math.ceil(total/DIST_PAGE)),pg=Math.min(Math.max(0,page|0),pages-1),slice=pick?pick.slice(pg*DIST_PAGE,pg*DIST_PAGE+DIST_PAGE):[];
  return freeze({head:MODELS[g.board].label+' · '+g.variant_id+' · '+scope,
   context:'평가 유효 '+n+' / 범위 내 '+g.evaluation_rows_in_scope+' · 참조 N '+g.reference_valid_n+'(순위 분모 아님) · 원지표 '+(g.raw_direction==='LOWER'?'낮을수록 좋음':'높을수록 좋음')+' · 점수는 높을수록 좋음 · 평가일 '+b.evaluation_population.valuation_date,
-  members:'비교집단 구성원 해시 '+g.comparison_group.members_hash.slice(0,12)+'… · 결과 '+b.result_hash.slice(0,12)+'…',policy,bands,
+  members:'비교집단 구성원 해시 '+g.comparison_group.members_hash.slice(0,12)+'… · 결과 '+b.result_hash.slice(0,12)+'…',policy,ties,bands,
   input:D.bound?inputLine(D.delivery):'합성 사례 · 전달본과 묶이지 않음',inputVerified:D.bound&&inputVerified(D.delivery),
   unavailable:freeze({count:g.unavailable_count,selected:band==='NONE',reasons:Object.entries(g.unavailable_reasons).map(([k,v])=>word(k)+' '+v)}),
   selected:band===null?null:band==='NONE'?'분위 없음 · '+total+'개':BAND[band]+' · 분위 '+band+' · '+total+'개'+(total?'':' · 확인된 빈 구간'),

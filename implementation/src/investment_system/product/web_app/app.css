@@ -150,6 +150,9 @@ svg.ico{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stro
 .quote-en{font-style:italic;color:var(--muted)}
 .quote-who,.quote-src{font-size:15px;overflow-wrap:anywhere}
 .result-facts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:20px;color:var(--muted);word-break:keep-all}
+/* The facts are a flex item of .result-head: without min-width:0 they keep their content's widest line (the 공통 분류 block and its
+   private panel, 357 px at 320) and push the page sideways; with it they take the row and their text wraps (owner 2026-11-13). */
+.result-head>.result-facts{min-width:0;max-width:100%}
 /* 공통 분류 block + its private panel inside .result-facts: long producer codes (e.g. a summary basis code) break instead of widening the page at 390 */
 .cc-wrap{min-width:0;max-width:100%;overflow-wrap:anywhere}
 /* A list inside a classification wrapper keeps the wrapper's wrapping: long ids and codes break at 320 px instead of widening the page. */

@@ -48,7 +48,7 @@ test('ten bands in the producer\'s words; a band shows its rows in stored rank o
   assert.deepEqual(v.bands.map((b) => b.label), ['상위 0–10%', '상위 10–20%', '상위 20–30%', '상위 30–40%', '상위 40–50%', '상위 50–60%', '상위 60–70%', '상위 70–80%', '상위 80–90%', '상위 90–100%']);
   assert.deepEqual(v.bands.map((b) => b.count), [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]); assert.equal(v.selected, null); assert.deepEqual(v.rows, []);
   assert.match(v.context, /^평가 유효 20 \/ 범위 내 20 · 참조 N \d+\(순위 분모 아님\) · 원지표 .+ · 점수는 높을수록 좋음 · 평가일 2026-11-04$/);
-  assert.match(v.policy, /^분위 기준: 저장된 평가 순위 분위\(기존 규칙\)/);
+  assert.match(v.policy, /^분위 기준: 저장된 평가 순위 분위\(stored-evaluation-deciles\/1 · 기존 규칙 유지\)/);
   const top = DQ.distributionView(r.value, G, { band: 10 });
   assert.equal(top.selected, '상위 0–10% · 분위 10 · 2개'); assert.deepEqual(top.rows.map((x) => x.rank), ['1 / 20', '2 / 20']); assert.match(top.rows[0].band, /^상위 0–10%\(분위 10\)$/);
   assert.ok(top.bands.find((b) => b.decile === 10).selected && top.bands.filter((b) => b.selected).length === 1);
@@ -67,10 +67,20 @@ test('ten bands in the producer\'s words; a band shows its rows in stored rank o
 test('ties stay as stored and are named; the reference-score candidate is labelled research only and refused on private data', async () => {
   const e = await synthetic('equal_scores-stored'), m = await load(e.r.value, e.c.files), g = e.r.value.groups[0], G = DQ.distributionGroup(e.r.value, g.group_id, m).value;
   assert.ok(g.legacy_tie_splits.length > 0, 'twenty equal scores split by company id across the stored bands');
-  assert.match(DQ.distributionView(e.r.value, G).policy, /같은 점수가 구간 경계에서 갈린 곳 \d+곳\(회사 ID 순 · 오너 기준 확인 중\)/);
+  const ev = DQ.distributionView(e.r.value, G);
+  assert.match(ev.policy, /^분위 기준: 저장된 평가 순위 분위\(stored-evaluation-deciles\/1 · 기존 규칙 유지\) · 같은 점수가 서로 다른 구간에 들어간 곳 \d+곳\(회사 ID 순으로 경계가 갈림\)$/);
+  // Each stored split is listed as delivered (score, the saved ranks either side, the two bands); the band counts stay the stored ones.
+  assert.equal(ev.ties.length, g.legacy_tie_splits.length);
+  ev.ties.forEach((t, i) => { const x = g.legacy_tie_splits[i];
+    assert.equal(t.text, '점수 ' + (Math.round(x.score * 10) / 10).toFixed(1) + ' · 순위 ' + x.last_rank + '까지 ' + DQ.BAND[x.from_decile] + ' · 순위 ' + x.next_rank + '부터 ' + DQ.BAND[x.to_decile]); });
+  assert.deepEqual(ev.bands.map((b) => b.count), g.bins.map((b) => b.count), 'the chips carry the stored counts of every band');
+  assert.ok(DQ.DECILE_RULE.some((l) => /같은 점수도 회사 ID 순으로 순위가 정해져 서로 다른 구간에 들어갈 수 있음\(저장된 분위 규칙 stored-evaluation-deciles\/1 그대로/.test(l)));
+  const sm0 = await synthetic('all_ten-stored'), sm0m = await load(sm0.r.value, sm0.c.files), sg0 = sm0.r.value.groups.find((x) => !x.legacy_tie_splits.length);
+  if (sg0) { const v0 = DQ.distributionView(sm0.r.value, DQ.distributionGroup(sm0.r.value, sg0.group_id, sm0m).value);
+    assert.match(v0.policy, / · 이 묶음에서는 같은 점수가 구간 경계에서 갈린 곳 없음$/); assert.deepEqual(v0.ties, []); }
   const cand = await synthetic('equal_scores-reference-candidate'), cm = await load(cand.r.value, cand.c.files);
   const cv = DQ.distributionView(cand.r.value, DQ.distributionGroup(cand.r.value, cand.r.value.groups[0].group_id, cm).value);
-  assert.match(cv.policy, /연구 표시 후보 · 오너 기준 확인 전 · 합성만/); assert.deepEqual(cv.bands.map((b) => b.count), [0, 0, 0, 0, 20, 0, 0, 0, 0, 0]);
+  assert.match(cv.policy, /reference-score-deciles\/1 · 별도 연구 후보 · 활성화 안 함 · 합성만/); assert.deepEqual(cv.bands.map((b) => b.count), [0, 0, 0, 0, 20, 0, 0, 0, 0, 0]);
   const privCase = await synthetic('equal_scores-reference-candidate', (docs, mf) => { mf.data_kind = 'PRIVATE'; docs['distribution-index.json'].data_kind = 'PRIVATE'; });
   assert.equal(privCase.r.code, 'SYNTHETIC_ONLY');
   const d = F.delivery('operating504'), v = (await DQ.checkDelivery({ manifest: file(d.files, 'manifest.json'), summary: file(d.files, 'summary.json'), index: file(d.files, 'index.json') }, { scope: 'operating504', anchor: F.anchor(), sha256 })).value;
