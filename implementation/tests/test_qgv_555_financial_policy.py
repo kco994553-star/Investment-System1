@@ -170,3 +170,32 @@ def test_financial_code_rows_and_unique_issuers_remain_separate():
     assert len(out['rows'])==11 and out['coverage']['denominator']==10
     assert out['coverage']['financial_temporary_issuers']==10
     assert out['coverage']['financial_temporary_code_rows']==11
+
+
+def test_financial_source_cannot_expand_general_metric_reference_pool():
+    """A retained GENERAL-named raw is not evidence for the financial recipe."""
+    e,r=fixture(10);fe,fr=inputs()
+    for s,fin in ((e,fe),(r,fr)):
+        for row in s['rows']:
+            row['metrics']['incremental_roic_3y']=None
+        for original in fin['rows']:
+            row=deepcopy(original)
+            row['company_id']='financial:'+row['company_id']
+            row['issuer_id']='financial:'+row['issuer_id']
+            row['metrics']['sector::roa_improvement_3y']=999
+            s['rows'].append(row);s['members'].append(row['company_id'])
+    before=attach(run(configuration('U1-555',version='0.4.0'),e,r),e,r)
+    after=attach(run(configuration('U1-555',version='0.5.0'),e,r),e,r)
+    old={x['company_id']:x for x in before['rows']}
+    for row in after['rows']:
+        if row['company_id'].startswith('financial:'):continue
+        previous=old[row['company_id']]
+        assert row['axes']==previous['axes']
+        for role,value in row['roles'].items():
+            assert value['score']==previous['roles'][role]['score']
+            assert value['metrics']==previous['roles'][role]['metrics']
+        assert row['total']==previous['total']
+        for metric,value in row['factors'].items():
+            if metric.startswith('financial::'):continue
+            assert value['score']==previous['factors'][metric]['score']
+            assert value['reference_n']==previous['factors'][metric]['reference_n']

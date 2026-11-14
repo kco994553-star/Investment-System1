@@ -285,6 +285,10 @@ def _usable(r,metric,s,*,share_policy=None,share_evidence_scope=None,financial_p
             if proof.get('formula_variant')!=variant or proof.get('denominator_definition')!=SHARE_DENOMINATOR:
                 return None,'FINANCIAL_SHARE_FORMULA_MISMATCH'
         return (x,'VALID') if proof.get('raw_reusable') is True and type(x) in (int,float) and math.isfinite(x) else (None,'RAW_MISSING')
+    if _financial_enabled(dict(financial_temporary_policy=financial_policy),r):
+        # Retained GENERAL-named observations are not financial-variant evidence.
+        # Keep them in the input for provenance without expanding GENERAL peers.
+        return None,'FINANCIAL_RECIPE_REQUIRES_FINANCIAL_VARIANT'
     official_share=metric in SHARE_METRICS and share_policy==OFFICIAL_REUSE_POLICY
     if official_share:
         from .qgv_555_official_share import FORMULAS as REUSE_FORMULAS
