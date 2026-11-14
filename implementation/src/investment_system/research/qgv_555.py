@@ -221,9 +221,8 @@ def _row_support(c,r):
     return ok,None if ok else reason
 
 
-def financial_peer_context(c,r,snapshot):
-    """S1 peers require the retained point-in-time classification, not a label."""
-    if not _financial_enabled(c,r) or c['candidate']!='S1-555':return r
+def classification_peer_verified(c,r,snapshot):
+    """Retained point-in-time common classification evidence, not a label."""
     m=r.get('classification_mapping') or {};ctx=snapshot.get('classification_context') or {}
     hashes={x.get('classification_hash') for x in (ctx.get('source_contexts') or [ctx])}
     try:
@@ -235,7 +234,13 @@ def financial_peer_context(c,r,snapshot):
             (m.get('valid_to') is None or date.fromisoformat(snapshot['evaluation_day'])<date.fromisoformat(m['valid_to'])) and
             timestamp(m['knowledge_as_of'])<=timestamp(snapshot['input_cutoff']))
     except (KeyError,TypeError,ValueError,AttributeError):valid=False
-    if valid:return r
+    return valid
+
+
+def financial_peer_context(c,r,snapshot):
+    """S1 peers require the retained point-in-time classification, not a label."""
+    if not _financial_enabled(c,r) or c['candidate']!='S1-555':return r
+    if classification_peer_verified(c,r,snapshot):return r
     out=deepcopy(r);out['reported_peer_accounting_template']=r.get('accounting_template')
     out['accounting_template']=None
     return out
@@ -365,7 +370,16 @@ def _bindings(c,e,ref):
         code_hash=digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}))
 
 
-def run(c,e,ref,*,calculated_at=None):
+def run(c,e,ref,*,calculated_at=None,calculation_scope='RESEARCH'):
+    marked=any('personal_sheet_context' in s or any('personal_reference_included' in r or
+        any(p.get('scope')=='PERSONAL_SHEET_V' for p in (r.get('metric_evidence') or {}).values() if isinstance(p,dict))
+        for r in s.get('rows',[])) for s in (e,ref))
+    personal=e.get('personal_sheet_context') if marked else None
+    if marked:
+        if (calculation_scope!='PERSONAL_SHEET_V' or not isinstance(personal,dict) or
+            e.get('personal_sheet_context')!=ref.get('personal_sheet_context') or personal.get('namespace')!='PERSONAL_SHEET_V'):
+            raise ValueError('PERSONAL_SCOPE_REQUIRED')
+    elif calculation_scope!='RESEARCH':raise ValueError('PERSONAL_SCOPE_CONTEXT_REQUIRED')
     validate_configuration(c)
     for s in (e,ref):
         if s.get('schema_version')!='qgv-555-input/1':raise ValueError('INPUT_SCHEMA')
@@ -378,6 +392,7 @@ def run(c,e,ref,*,calculated_at=None):
             raise ValueError('CLASSIFICATION_CONTEXT_REQUIRED')
     cats=catalog();points={};ref_rows={}
     for original in sorted(ref['rows'],key=lambda x:x['company_id']):
+        if personal and not original.get('personal_reference_included'):continue
         r=financial_peer_context(c,calculation_row(c,original),ref)
         if not r.get('issuer_id') or (r.get('accounting_template')!='GENERAL' and not _financial_enabled(c,r)):continue
         if r['issuer_id'] in points:
@@ -397,6 +412,8 @@ def run(c,e,ref,*,calculated_at=None):
         if financial:role_config=deepcopy(c['financial_roles'])
         elif c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
         supported,unsupported_reason=_row_support(c,r)
+        if personal and original.get('personal_support_reason'):
+            supported=False;unsupported_reason=original['personal_support_reason']
         raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'),financial_policy=c.get('financial_temporary_policy')) for m in cats};roles={};metric_scores={}
         for role,spec in role_config.items():
             vals=[];items=[]
@@ -577,6 +594,11 @@ def run(c,e,ref,*,calculated_at=None):
                 if r['roles']['g_growth_efficiency']['metrics'][0]['metric']==m
                 and r['roles']['g_growth_efficiency']['metrics'][0]['score'] is not None})
                 for m in {r['roles']['g_growth_efficiency']['metrics'][0]['metric'] for r in out}})
+    if personal:
+        result.update(schema_version='personal-sheet-v-core/1',namespace='PERSONAL_SHEET_V',
+            storage='EPHEMERAL_ONLY',personal_sheet_context=deepcopy(personal))
+        for key in ('target','axis_target','target_criteria'):result['coverage'].pop(key,None)
+        result['coverage']['measurement_scope']='PERSONAL_SESSION_ONLY_NOT_RESEARCH'
     result['result_hash']=digest(result)
     return result
 

@@ -20,6 +20,15 @@ STATUSES = ('TRADED', 'NO_TRADE', 'NOT_IN_FILE', 'INELIGIBLE')
 NY = ZoneInfo('America/New_York')
 
 
+def reported_raw(record, quote, parameters=None):
+    """Shared reported-flow raw kernel; callers validate provider and basis first."""
+    normalized, periods = qgv2_inputs._v_inputs(record.get('v_inputs_v2'))
+    params = load_default_dcf_parameters() if parameters is None else parameters
+    values = qgv_v2._metrics(dict(profile=record.get('profile'), v_inputs=normalized),
+                             quote, params, cyclical_years=None)
+    return normalized, periods, values
+
+
 def _stamp(value, code):
     try:
         return timestamp(value)
@@ -179,8 +188,7 @@ def bind_central_prices(snapshot, financial_records, price_rows, reviewed_at, in
         if closes is not None:converted_quote['month_closes'] = closes
         # Fixed reported-flow version; Lynch tags/type weights cannot choose
         # normalized earnings or a different calculation for individual issuers.
-        values = qgv_v2._metrics(dict(profile=record.get('profile'), v_inputs=normalized),
-                                converted_quote, params, cyclical_years=None)
+        _, _, values = reported_raw(record, converted_quote, params)
         entry.update(raw_values={m:values[m] for m in METRICS}, reasons=deepcopy(values['reasons']),
                      normalized_periods=deepcopy(periods), earnings_basis=values['earnings_basis'],
                      history_connection_reason=history_reason,

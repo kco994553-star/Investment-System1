@@ -1,0 +1,153 @@
+{
+  "schema_version": "personal-sheet-v-request/1",
+  "context": {
+    "context_id": "synthetic-current-session",
+    "evaluation_day": "2026-11-13",
+    "evaluated_at": "2026-11-13T21:02:00Z",
+    "input_cutoff": "2026-11-13T21:02:00Z",
+    "provider": "GOOGLEFINANCE",
+    "price_definition": "GOOGLEFINANCE_CURRENT"
+  },
+  "configuration": {
+    "schema_version": "qgv-555-config/1",
+    "model_id": "unified-555/0.4.0",
+    "candidate": "U1-555",
+    "version": "0.4.0",
+    "axis_weights": {
+      "Q": 34,
+      "G": 33,
+      "V": 33
+    },
+    "sector_axis_overrides": {},
+    "roles": {
+      "q_profitability": {
+        "axis": "Q",
+        "weight": 25,
+        "metrics": {
+          "roic": 1,
+          "gross_profit_to_assets": 1
+        }
+      },
+      "q_moat_proxy": {
+        "axis": "Q",
+        "weight": 20,
+        "metrics": {
+          "moat_proxy": 1
+        }
+      },
+      "q_earnings_quality": {
+        "axis": "Q",
+        "weight": 20,
+        "metrics": {
+          "accruals_to_assets": 1,
+          "fcf_to_net_income": 1
+        }
+      },
+      "q_financial_safety": {
+        "axis": "Q",
+        "weight": 20,
+        "metrics": {
+          "net_debt_to_ebitda": 1,
+          "interest_coverage": 1
+        }
+      },
+      "q_capital_allocation": {
+        "axis": "Q",
+        "weight": 15,
+        "metrics": {
+          "dilution_3y": 1,
+          "incremental_roic_5y": 1
+        }
+      },
+      "g_revenue_growth": {
+        "axis": "G",
+        "weight": 25,
+        "metrics": {
+          "revenue_cagr_3y": 1
+        }
+      },
+      "g_per_share_growth": {
+        "axis": "G",
+        "weight": 25,
+        "metrics": {
+          "eps_cagr_3y": 1,
+          "fcf_per_share_cagr_3y": 1
+        }
+      },
+      "g_growth_efficiency": {
+        "axis": "G",
+        "weight": 20,
+        "metrics": {
+          "incremental_roic_3y": 1
+        }
+      },
+      "g_consistency": {
+        "axis": "G",
+        "weight": 15,
+        "metrics": {
+          "revenue_positive_growth_share": 1,
+          "revenue_growth_volatility": 1
+        }
+      },
+      "g_recent_acceleration": {
+        "axis": "G",
+        "weight": 15,
+        "metrics": {
+          "revenue_acceleration": 1
+        }
+      },
+      "v_earnings_yield": {
+        "axis": "V",
+        "weight": 25,
+        "metrics": {
+          "central::ebit_yield": 1
+        }
+      },
+      "v_fcf_yield": {
+        "axis": "V",
+        "weight": 25,
+        "metrics": {
+          "central::fcf_yield": 1
+        }
+      },
+      "v_vs_industry": {
+        "axis": "V",
+        "weight": 20,
+        "metrics": {
+          "central::ebit_yield": 1
+        }
+      },
+      "v_vs_own_history": {
+        "axis": "V",
+        "weight": 15,
+        "metrics": {
+          "central::own_history": 1
+        }
+      },
+      "v_expectation_check": {
+        "axis": "V",
+        "weight": 15,
+        "metrics": {
+          "central::gap": 1
+        }
+      }
+    },
+    "minimum": 8,
+    "missing_policy": "available-role-weight-50/1",
+    "submetric_missing_policy": "available-submetric-weight-renormalize/1",
+    "reference_policy": "legacy-general-industry-fallback8/1",
+    "gate_policy": "official-q-percentile-required/1",
+    "duplicate_policy": "DISCLOSE_ONLY",
+    "classification_dictionary_version": "common-industry-dictionary/2",
+    "type_multiplier": false,
+    "additional_factor_weight": 0,
+    "official": false,
+    "classification_policy": "official-profile-sic-provisional/1",
+    "accounting_policy": "reit-general-financial-reference-only/1",
+    "historical_share_policy": "official-kernel-share-reuse/1",
+    "growth_efficiency_policy": "incremental-roic-then-roa-improvement/1",
+    "valuation_share_policy": "central-weighted-average-diluted/1",
+    "target_policy": "joint-eligible95-all15-reference/1",
+    "share_evidence_scope": "ALL_OFFICIAL_REUSE"
+  }
+}
