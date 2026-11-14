@@ -9,7 +9,7 @@ from .sector_qgv import digest
 
 
 def artifacts(boards,*,data_kind,max_bytes=MAX_BYTES):
-    require(not any(b.get('namespace')=='PERSONAL_SHEET_V' for b in boards.values()),'PERSONAL_RESULT_NOT_RESEARCH_DELIVERY')
+    require(not any(b.get('namespace') in ('PERSONAL_SHEET_V','OWNER_PRIVATE_KIS_V') for b in boards.values()),'PERSONAL_RESULT_NOT_RESEARCH_DELIVERY')
     require(all(b.get('schema_version')=='qgv-555-result/1' for b in boards.values()),'RESEARCH_RESULT_SCHEMA')
     require(data_kind in ('SYNTHETIC','PRIVATE'),'DATA_KIND')
     require(0<max_bytes<=MAX_BYTES,'SIZE_LIMIT')

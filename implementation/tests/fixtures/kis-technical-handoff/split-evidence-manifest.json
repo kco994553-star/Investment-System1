@@ -1,0 +1,14 @@
+{
+  "schema": "synthetic-kis-split-manifest/1",
+  "data_kind": "SYNTHETIC",
+  "generator": "implementation/tools/kis_contract_fixture.py::split_evidence_fixtures",
+  "execution_state": "EXPECTED_METADATA_WRITTEN_AUTOMATIC_VALIDATION_PENDING",
+  "frozen_examples_policy": "UNCHANGED_DEFAULT_OUTPUT_AND_MANIFEST",
+  "files": [
+    {
+      "path": "split-evidence-expectations.json",
+      "bytes": 6062,
+      "sha256": "4f485a131938c7576e77187a1d8487987ab5c46bd2de5fd87ca002dd6a290543"
+    }
+  ]
+}

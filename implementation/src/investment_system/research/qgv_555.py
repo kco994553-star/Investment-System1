@@ -372,12 +372,12 @@ def _bindings(c,e,ref):
 
 def run(c,e,ref,*,calculated_at=None,calculation_scope='RESEARCH'):
     marked=any('personal_sheet_context' in s or any('personal_reference_included' in r or
-        any(p.get('scope')=='PERSONAL_SHEET_V' for p in (r.get('metric_evidence') or {}).values() if isinstance(p,dict))
+        any(p.get('scope') in ('PERSONAL_SHEET_V','OWNER_PRIVATE_KIS_V') for p in (r.get('metric_evidence') or {}).values() if isinstance(p,dict))
         for r in s.get('rows',[])) for s in (e,ref))
     personal=e.get('personal_sheet_context') if marked else None
     if marked:
-        if (calculation_scope!='PERSONAL_SHEET_V' or not isinstance(personal,dict) or
-            e.get('personal_sheet_context')!=ref.get('personal_sheet_context') or personal.get('namespace')!='PERSONAL_SHEET_V'):
+        if (calculation_scope not in ('PERSONAL_SHEET_V','OWNER_PRIVATE_KIS_V') or not isinstance(personal,dict) or
+            e.get('personal_sheet_context')!=ref.get('personal_sheet_context') or personal.get('namespace')!=calculation_scope):
             raise ValueError('PERSONAL_SCOPE_REQUIRED')
     elif calculation_scope!='RESEARCH':raise ValueError('PERSONAL_SCOPE_CONTEXT_REQUIRED')
     validate_configuration(c)
@@ -595,10 +595,11 @@ def run(c,e,ref,*,calculated_at=None,calculation_scope='RESEARCH'):
                 and r['roles']['g_growth_efficiency']['metrics'][0]['score'] is not None})
                 for m in {r['roles']['g_growth_efficiency']['metrics'][0]['metric'] for r in out}})
     if personal:
-        result.update(schema_version='personal-sheet-v-core/1',namespace='PERSONAL_SHEET_V',
+        result.update(schema_version='owner-price-v-core/1' if calculation_scope=='OWNER_PRIVATE_KIS_V' else 'personal-sheet-v-core/1',
+            namespace=calculation_scope,
             storage='EPHEMERAL_ONLY',personal_sheet_context=deepcopy(personal))
         for key in ('target','axis_target','target_criteria'):result['coverage'].pop(key,None)
-        result['coverage']['measurement_scope']='PERSONAL_SESSION_ONLY_NOT_RESEARCH'
+        result['coverage']['measurement_scope']='OWNER_PRIVATE_SESSION_ONLY_NOT_RESEARCH' if calculation_scope=='OWNER_PRIVATE_KIS_V' else 'PERSONAL_SESSION_ONLY_NOT_RESEARCH'
     result['result_hash']=digest(result)
     return result
 

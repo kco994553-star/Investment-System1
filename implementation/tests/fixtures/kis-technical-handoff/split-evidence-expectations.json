@@ -1,0 +1,215 @@
+{
+  "schema": "synthetic-kis-split-evidence/1",
+  "data_kind": "SYNTHETIC",
+  "examples_scope": "DECLARATION_AND_CONFLICT_METADATA_NOT_SOURCE_DOCUMENT_VERIFICATION",
+  "cases": [
+    {
+      "case": "declared-reference",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "EXISTING_DECLARED_EVIDENCE_POLICY",
+      "block_reasons": [],
+      "confirmed_count": 1,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "DECLARED_CONFIRMED_WITH_REFERENCE"
+      ],
+      "source_record_states": [
+        "NOT_PROVIDED"
+      ],
+      "adjustment_applied": [
+        true
+      ]
+    },
+    {
+      "case": "matching-source-metadata",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "EXISTING_DECLARED_EVIDENCE_POLICY",
+      "block_reasons": [],
+      "confirmed_count": 1,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "DECLARED_CONFIRMED_WITH_REFERENCE"
+      ],
+      "source_record_states": [
+        "SUPPLIED_FIELDS_MATCH"
+      ],
+      "adjustment_applied": [
+        true
+      ]
+    },
+    {
+      "case": "future-event",
+      "evaluation_day": "2026-10-21",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "EXISTING_DECLARED_EVIDENCE_POLICY",
+      "block_reasons": [],
+      "confirmed_count": 0,
+      "future_count": 1,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "EXCLUDED_FUTURE_EVENT"
+      ],
+      "source_record_states": [
+        "NOT_PROVIDED"
+      ],
+      "adjustment_applied": [
+        false
+      ]
+    },
+    {
+      "case": "empty-events-unconfirmed",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "EXISTING_DECLARED_EVIDENCE_POLICY",
+      "block_reasons": [],
+      "confirmed_count": 0,
+      "future_count": 0,
+      "full_retained_state": "UNCONFIRMED",
+      "event_states": [],
+      "source_record_states": [],
+      "adjustment_applied": []
+    },
+    {
+      "case": "raw-window-with-split",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "EXISTING_DECLARED_EVIDENCE_POLICY",
+      "block_reasons": [],
+      "confirmed_count": 1,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "DECLARED_CONFIRMED_WITH_REFERENCE"
+      ],
+      "source_record_states": [
+        "NOT_PROVIDED"
+      ],
+      "adjustment_applied": [
+        false
+      ]
+    },
+    {
+      "case": "ratio-conflict",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "WITHHELD_CONFLICT",
+      "block_reasons": [
+        "SPLIT_RATIO_CONFLICT"
+      ],
+      "confirmed_count": 0,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "CONFLICT"
+      ],
+      "source_record_states": [
+        "CONFLICT"
+      ],
+      "adjustment_applied": [
+        false
+      ]
+    },
+    {
+      "case": "effective-date-conflict",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "WITHHELD_CONFLICT",
+      "block_reasons": [
+        "SPLIT_EFFECTIVE_DATE_CONFLICT"
+      ],
+      "confirmed_count": 0,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "CONFLICT"
+      ],
+      "source_record_states": [
+        "CONFLICT"
+      ],
+      "adjustment_applied": [
+        false
+      ]
+    },
+    {
+      "case": "identity-conflict",
+      "evaluation_day": "2026-10-23",
+      "error": null,
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "WITHHELD_CONFLICT",
+      "block_reasons": [
+        "SPLIT_SUBJECT_MISMATCH"
+      ],
+      "confirmed_count": 0,
+      "future_count": 0,
+      "full_retained_state": "COVERED_BY_DECLARED_REFERENCE",
+      "event_states": [
+        "CONFLICT"
+      ],
+      "source_record_states": [
+        "CONFLICT"
+      ],
+      "adjustment_applied": [
+        false
+      ]
+    },
+    {
+      "case": "provider-modp1",
+      "evaluation_day": "2026-10-23",
+      "error": "RAW_DAILY_SOURCE_REQUIRED",
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "REJECTED_INPUT"
+    },
+    {
+      "case": "already-adjusted-raw",
+      "evaluation_day": "2026-10-23",
+      "error": "RAW_INPUT_ALREADY_ADJUSTED",
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "REJECTED_INPUT"
+    },
+    {
+      "case": "unconfirmed-event",
+      "evaluation_day": "2026-10-23",
+      "error": "SPLIT_EVIDENCE_REQUIRED",
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "REJECTED_INPUT"
+    },
+    {
+      "case": "invalid-ratio",
+      "evaluation_day": "2026-10-23",
+      "error": "INVALID_DECIMAL_VALUE",
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "REJECTED_INPUT"
+    },
+    {
+      "case": "double-adjusted-bars",
+      "evaluation_day": "2026-10-23",
+      "error": "ADJUSTED_ROWS_DO_NOT_MATCH_CONFIRMED_SPLITS",
+      "independently_verified": false,
+      "source_document_verification": "NOT_PERFORMED",
+      "state": "REJECTED_INPUT"
+    }
+  ]
+}

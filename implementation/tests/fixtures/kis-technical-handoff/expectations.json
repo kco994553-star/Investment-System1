@@ -1,0 +1,92 @@
+{
+  "cases": [
+    {
+      "case": "normal",
+      "chart_observation_day": "2026-11-13",
+      "component_adopted": 12,
+      "component_raw": 12,
+      "decile": null,
+      "group_status": "NOT_REQUESTED",
+      "measure_adopted": 1,
+      "measure_raw": 1,
+      "missing_sessions": [],
+      "pattern_reasons": [],
+      "pattern_state": "CALCULATED_RESEARCH",
+      "rank": null,
+      "signal_day": "2026-11-13"
+    },
+    {
+      "case": "split",
+      "chart_observation_day": "2026-11-13",
+      "component_adopted": 12,
+      "component_raw": 12,
+      "decile": null,
+      "group_status": "NOT_REQUESTED",
+      "measure_adopted": 1,
+      "measure_raw": 1,
+      "missing_sessions": [],
+      "pattern_reasons": [],
+      "pattern_state": "CALCULATED_RESEARCH",
+      "rank": null,
+      "signal_day": "2026-11-13"
+    },
+    {
+      "case": "missing-session",
+      "chart_observation_day": "2026-11-13",
+      "component_adopted": 0,
+      "component_raw": 0,
+      "decile": null,
+      "group_status": "NOT_REQUESTED",
+      "measure_adopted": 0,
+      "measure_raw": 0,
+      "missing_sessions": [
+        "2026-09-04"
+      ],
+      "pattern_reasons": [
+        "PRICE_WINDOW_INCOMPLETE"
+      ],
+      "pattern_state": "NOT_JUDGEABLE",
+      "rank": null,
+      "signal_day": "2026-11-13"
+    },
+    {
+      "case": "missing-evidence",
+      "chart_observation_day": "2026-11-13",
+      "component_adopted": 0,
+      "component_raw": 12,
+      "decile": null,
+      "group_status": "NOT_REQUESTED",
+      "measure_adopted": 0,
+      "measure_raw": 1,
+      "missing_sessions": [],
+      "pattern_reasons": [
+        "IDENTITY_UNCONFIRMED"
+      ],
+      "pattern_state": "NOT_JUDGEABLE",
+      "rank": null,
+      "signal_day": "2026-11-13"
+    },
+    {
+      "case": "stale",
+      "chart_observation_day": "2026-11-12",
+      "component_adopted": 12,
+      "component_raw": 12,
+      "decile": null,
+      "group_status": "NOT_REQUESTED",
+      "measure_adopted": 0,
+      "measure_raw": 0,
+      "missing_sessions": [
+        "2026-11-13"
+      ],
+      "pattern_reasons": [
+        "PRICE_WINDOW_INCOMPLETE",
+        "SIGNAL_SESSION_MISSING"
+      ],
+      "pattern_state": "NOT_JUDGEABLE",
+      "rank": null,
+      "signal_day": "2026-11-13"
+    }
+  ],
+  "data_kind": "SYNTHETIC",
+  "schema": "synthetic-technical-expectations/1"
+}
