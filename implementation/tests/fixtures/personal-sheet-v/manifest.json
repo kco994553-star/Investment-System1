@@ -1,0 +1,91 @@
+{
+  "schema_version": "personal-sheet-v-example-manifest/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "input-evaluation.json",
+      "size": 1216575,
+      "sha256": "6417e27378f9df8793a2b5b94b547aeea778636ac50126259bd08d92e58c4a7b"
+    },
+    {
+      "path": "input-financial-records.json",
+      "size": 61738,
+      "sha256": "376ebf72ca392c13e2d20cce566df874b4ebe0415a6f71be857fc92c536d5403"
+    },
+    {
+      "path": "input-prices.json",
+      "size": 12758,
+      "sha256": "79803827c4063ccb3cd8faea88c6a7ba4482d2d4c2721190f4d8c12829a7f355"
+    },
+    {
+      "path": "input-reference.json",
+      "size": 1216574,
+      "sha256": "c7701b0bd47691e688dcfab09219e3e09ee78423f8060cc7d412753ff5813fcf"
+    },
+    {
+      "path": "s1-555-expected.json",
+      "size": 2186,
+      "sha256": "6cb74a0bf3a9a867268efce72d94764ae50943cd973dfd013d603f1cd114a8a9"
+    },
+    {
+      "path": "s1-555-groups.json",
+      "size": 17101,
+      "sha256": "fccb38aa7f8cac8d78bceae192212ea3faa459f5049a5037ddc7266497fadc4d"
+    },
+    {
+      "path": "s1-555-packet.json",
+      "size": 266625,
+      "sha256": "e9b00cdfbfa478cbed0a28836f57da1c58a97ce49ffe21d0d0d4bb45823068cb"
+    },
+    {
+      "path": "s1-555-page.json",
+      "size": 213341,
+      "sha256": "6ba409fc0ebba35e2d333e88b1d941647fbd6961b0109fe1047edb2136f099e5"
+    },
+    {
+      "path": "s1-555-request.json",
+      "size": 3896,
+      "sha256": "78082c9a27e6db8c797173bbcd8c7f0c8a624167fb52ffbfb80a0c06cf14bd2e"
+    },
+    {
+      "path": "s1-555-result.json",
+      "size": 230204,
+      "sha256": "e40b9327f2bf3af48a1caee6d4e42b4cb00ddeebd0d23367cdfc7add4e395823"
+    },
+    {
+      "path": "states.json",
+      "size": 66790,
+      "sha256": "07f395a2e1f35fb1a2a6288ede3659b1aba85072052b1b04cdde99af5ad96274"
+    },
+    {
+      "path": "u1-555-expected.json",
+      "size": 2186,
+      "sha256": "3b02b8903a8340d9e2dca66c075d3b22489e76e273f50a3766f546e9817fa8f7"
+    },
+    {
+      "path": "u1-555-groups.json",
+      "size": 16791,
+      "sha256": "2adb2c19699ba99327db29bd5852ff5e88201c8cf75976b78678982dd0db2019"
+    },
+    {
+      "path": "u1-555-packet.json",
+      "size": 265203,
+      "sha256": "bf1bca17d64a948778f74baf61ac279b6d35dfe413f9b01286f9d1f46db7dee1"
+    },
+    {
+      "path": "u1-555-page.json",
+      "size": 207479,
+      "sha256": "d385ea50d6c0b09946605e9b24a158d37c798d7ef2a568724b4639a09b920a97"
+    },
+    {
+      "path": "u1-555-request.json",
+      "size": 3900,
+      "sha256": "f92a50379eb55a83895a2ad4db692c414cfc3a3b5a8a81c5dbc20a7a7fe6156d"
+    },
+    {
+      "path": "u1-555-result.json",
+      "size": 224032,
+      "sha256": "61ef07c8c86a1322e9eed20ee7a9470cee74ed24db72b5806c62a66b5359bca2"
+    }
+  ]
+}

@@ -1,0 +1,2119 @@
+{
+  "data_kind": "SYNTHETIC",
+  "schema_version": "personal-sheet-v-states/1",
+  "states": [
+    {
+      "state": "UNCONFIRMED_TIME",
+      "expected_counts": {
+        "price_available": 10,
+        "price_qualified": 10,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 10,
+        "raw_all": 0,
+        "role_any": 10,
+        "V_axis": 10,
+        "personal_partial_total": 0,
+        "personal_eligible_total": 10
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": 0.1941747572815534,
+          "central::fcf_yield": 0.11650485436893204,
+          "central::own_history": null,
+          "central::gap": -0.17741908947355114
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": 0.11650485436893204,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "industry|synthetic-industry",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_HISTORY_NOT_LINKED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": -0.17741908947355114,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": 0.11650485436893204,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "industry|synthetic-industry",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_HISTORY_NOT_LINKED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": -0.17741908947355114,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": 100.0
+        },
+        "gate_status": "PASS",
+        "total": 43.1,
+        "partial_total": false,
+        "rank": 10,
+        "rank_n": 10,
+        "price_metadata": {
+          "status": "AVAILABLE",
+          "price_timestamp": null,
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": null,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "UNCONFIRMED",
+          "actual_delay_seconds": null,
+          "freshness": "UNDETERMINED",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "AS_TRADED",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [],
+          "price_available": true,
+          "qualified": true,
+          "exact_eod": false
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "DELAYED",
+      "expected_counts": {
+        "price_available": 10,
+        "price_qualified": 10,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 10,
+        "raw_all": 0,
+        "role_any": 10,
+        "V_axis": 10,
+        "personal_partial_total": 0,
+        "personal_eligible_total": 10
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": 0.1941747572815534,
+          "central::fcf_yield": 0.11650485436893204,
+          "central::own_history": null,
+          "central::gap": -0.17741908947355114
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": 0.11650485436893204,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "industry|synthetic-industry",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_HISTORY_NOT_LINKED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": -0.17741908947355114,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": 0.11650485436893204,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "industry|synthetic-industry",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_HISTORY_NOT_LINKED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": -0.17741908947355114,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": 100.0
+        },
+        "gate_status": "PASS",
+        "total": 43.1,
+        "partial_total": false,
+        "rank": 10,
+        "rank_n": 10,
+        "price_metadata": {
+          "status": "AVAILABLE",
+          "price_timestamp": "2026-11-13T20:00:00Z",
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": 3720.0,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "CONFIRMED",
+          "actual_delay_seconds": 3660.0,
+          "freshness": "DELAYED",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "AS_TRADED",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [],
+          "price_available": true,
+          "qualified": true,
+          "exact_eod": false,
+          "delay_definition": "RECEIPT_MINUS_PRICE_TIME_NOT_PROVIDER_FEED_LATENCY"
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "ADJUSTMENT_UNKNOWN",
+      "expected_counts": {
+        "price_available": 10,
+        "price_qualified": 9,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 9,
+        "raw_all": 0,
+        "role_any": 9,
+        "V_axis": 9,
+        "personal_partial_total": 1,
+        "personal_eligible_total": 9
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": null,
+          "central::fcf_yield": null,
+          "central::own_history": null,
+          "central::gap": null
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_ADJUSTMENT_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": null
+        },
+        "gate_status": "PASS",
+        "total": 15.074626865671641,
+        "partial_total": true,
+        "rank": null,
+        "rank_n": 0,
+        "price_metadata": {
+          "status": "AVAILABLE",
+          "price_timestamp": "2026-11-13T20:59:00Z",
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": 180.0,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "CONFIRMED",
+          "actual_delay_seconds": 120.0,
+          "freshness": "WITHIN_PROVIDER_NOTICE",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "UNKNOWN",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [
+            "PRICE_ADJUSTMENT_UNCONFIRMED"
+          ],
+          "price_available": true,
+          "qualified": false,
+          "exact_eod": false,
+          "delay_definition": "RECEIPT_MINUS_PRICE_TIME_NOT_PROVIDER_FEED_LATENCY"
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "READ_FAILED",
+      "expected_counts": {
+        "price_available": 9,
+        "price_qualified": 9,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 9,
+        "raw_all": 0,
+        "role_any": 9,
+        "V_axis": 9,
+        "personal_partial_total": 1,
+        "personal_eligible_total": 9
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": null,
+          "central::fcf_yield": null,
+          "central::own_history": null,
+          "central::gap": null
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "READ_FAILED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": null,
+            "score": null,
+            "reason": "READ_FAILED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "READ_FAILED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "READ_FAILED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": null,
+            "score": null,
+            "reason": "READ_FAILED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "READ_FAILED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": null,
+                "score": null,
+                "reason": "READ_FAILED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "READ_FAILED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "READ_FAILED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": null,
+                "score": null,
+                "reason": "READ_FAILED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": null
+        },
+        "gate_status": "PASS",
+        "total": 15.074626865671641,
+        "partial_total": true,
+        "rank": null,
+        "rank_n": 0,
+        "price_metadata": {
+          "status": "READ_FAILED",
+          "price_timestamp": "2026-11-13T20:59:00Z",
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": null,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "CONFIRMED",
+          "actual_delay_seconds": null,
+          "freshness": "UNDETERMINED",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "AS_TRADED",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [
+            "READ_FAILED"
+          ],
+          "price_available": false,
+          "qualified": false,
+          "exact_eod": false
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "NONPRICE_UNCONFIRMED",
+      "expected_counts": {
+        "price_available": 10,
+        "price_qualified": 9,
+        "nonprice_any": 9,
+        "nonprice_all": 0,
+        "raw_any": 9,
+        "raw_all": 0,
+        "role_any": 9,
+        "V_axis": 9,
+        "personal_partial_total": 1,
+        "personal_eligible_total": 9
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": null,
+          "central::fcf_yield": null,
+          "central::own_history": null,
+          "central::gap": null
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "SHARE_BASIS_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": null,
+            "score": null,
+            "reason": "SHARE_BASIS_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "SHARE_BASIS_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "SHARE_BASIS_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": null,
+            "score": null,
+            "reason": "SHARE_BASIS_UNCONFIRMED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "SHARE_BASIS_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": null,
+                "score": null,
+                "reason": "SHARE_BASIS_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "SHARE_BASIS_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "SHARE_BASIS_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": null,
+                "score": null,
+                "reason": "SHARE_BASIS_UNCONFIRMED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": null
+        },
+        "gate_status": "PASS",
+        "total": 15.074626865671641,
+        "partial_total": true,
+        "rank": null,
+        "rank_n": 0,
+        "price_metadata": {
+          "status": "AVAILABLE",
+          "price_timestamp": "2026-11-13T20:59:00Z",
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": 180.0,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "CONFIRMED",
+          "actual_delay_seconds": 120.0,
+          "freshness": "WITHIN_PROVIDER_NOTICE",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "AS_TRADED",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [
+            "SHARE_BASIS_UNCONFIRMED"
+          ],
+          "price_available": true,
+          "qualified": false,
+          "exact_eod": false,
+          "delay_definition": "RECEIPT_MINUS_PRICE_TIME_NOT_PROVIDER_FEED_LATENCY"
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "UNKNOWN",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "NO_PRICE",
+      "expected_counts": {
+        "price_available": 0,
+        "price_qualified": 0,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 0,
+        "raw_all": 0,
+        "role_any": 0,
+        "V_axis": 0,
+        "personal_partial_total": 10,
+        "personal_eligible_total": 0
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": null,
+          "central::fcf_yield": null,
+          "central::own_history": null,
+          "central::gap": null
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "MISSING",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": null,
+            "score": null,
+            "reason": "MISSING",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": null,
+            "score": null,
+            "reason": "MISSING",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "MISSING",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": null,
+            "score": null,
+            "reason": "MISSING",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "MISSING",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_fcf_yield": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": null,
+                "score": null,
+                "reason": "MISSING",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_industry": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": null,
+                "score": null,
+                "reason": "MISSING",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "MISSING",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": null,
+                "score": null,
+                "reason": "MISSING",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": null
+        },
+        "gate_status": "PASS",
+        "total": 15.074626865671641,
+        "partial_total": true,
+        "rank": null,
+        "rank_n": 0,
+        "price_metadata": {
+          "status": "MISSING",
+          "price_timestamp": null,
+          "trade_day": null,
+          "received_at": null,
+          "price_age_at_evaluation_seconds": null,
+          "query_started_at": null,
+          "currency": null,
+          "source_refs": [],
+          "time_status": "UNCONFIRMED",
+          "actual_delay_seconds": null,
+          "freshness": "UNDETERMINED",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "UNKNOWN",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [
+            "MISSING"
+          ],
+          "price_available": false,
+          "qualified": false,
+          "exact_eod": false
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    },
+    {
+      "state": "GATE_UNKNOWN",
+      "expected_counts": {
+        "price_available": 10,
+        "price_qualified": 10,
+        "nonprice_any": 10,
+        "nonprice_all": 0,
+        "raw_any": 10,
+        "raw_all": 0,
+        "role_any": 10,
+        "V_axis": 10,
+        "personal_partial_total": 0,
+        "personal_eligible_total": 9
+      },
+      "row": {
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "ranking_scope": "COMMON",
+        "raw": {
+          "central::ebit_yield": 0.1941747572815534,
+          "central::fcf_yield": 0.11650485436893204,
+          "central::own_history": null,
+          "central::gap": -0.17741908947355114
+        },
+        "metrics": {
+          "v_earnings_yield|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield|central::fcf_yield": {
+            "metric": "central::fcf_yield",
+            "raw": 0.11650485436893204,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry|central::ebit_yield": {
+            "metric": "central::ebit_yield",
+            "raw": 0.1941747572815534,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "industry|synthetic-industry",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history|central::own_history": {
+            "metric": "central::own_history",
+            "raw": null,
+            "score": null,
+            "reason": "PRICE_HISTORY_NOT_LINKED",
+            "reference_n": 0,
+            "reference_scope": null,
+            "weight": 1,
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check|central::gap": {
+            "metric": "central::gap",
+            "raw": -0.17741908947355114,
+            "score": 100.0,
+            "reason": null,
+            "reference_n": 10,
+            "reference_scope": "all",
+            "weight": 1,
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "roles": {
+          "v_earnings_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_fcf_yield": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::fcf_yield",
+                "raw": 0.11650485436893204,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_industry": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::ebit_yield",
+                "raw": 0.1941747572815534,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "industry|synthetic-industry",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          },
+          "v_vs_own_history": {
+            "score": null,
+            "metrics": [
+              {
+                "metric": "central::own_history",
+                "raw": null,
+                "score": null,
+                "reason": "PRICE_HISTORY_NOT_LINKED",
+                "reference_n": 0,
+                "reference_scope": null,
+                "weight": 1,
+                "rank": null,
+                "rank_n": 0,
+                "decile": null,
+                "decile_status": "NO_VALID_SCORE"
+              }
+            ],
+            "rank": null,
+            "rank_n": 0,
+            "decile": null,
+            "decile_status": "NO_VALID_SCORE"
+          },
+          "v_expectation_check": {
+            "score": 100.0,
+            "metrics": [
+              {
+                "metric": "central::gap",
+                "raw": -0.17741908947355114,
+                "score": 100.0,
+                "reason": null,
+                "reference_n": 10,
+                "reference_scope": "all",
+                "weight": 1,
+                "rank": 1,
+                "rank_n": 10,
+                "decile": 10,
+                "decile_status": "VALID"
+              }
+            ],
+            "rank": 1,
+            "rank_n": 10,
+            "decile": 10,
+            "decile_status": "VALID"
+          }
+        },
+        "axes": {
+          "Q": 20.0,
+          "G": 10.0,
+          "V": 100.0
+        },
+        "gate_status": "UNKNOWN",
+        "total": null,
+        "partial_total": false,
+        "rank": null,
+        "rank_n": 0,
+        "price_metadata": {
+          "status": "AVAILABLE",
+          "price_timestamp": "2026-11-13T20:59:00Z",
+          "trade_day": "2026-11-13",
+          "received_at": "2026-11-13T21:01:00Z",
+          "price_age_at_evaluation_seconds": 180.0,
+          "query_started_at": "2026-11-13T21:00:00Z",
+          "currency": "USD",
+          "source_refs": [
+            "SYNTHETIC_QUOTE_ONLY"
+          ],
+          "time_status": "CONFIRMED",
+          "actual_delay_seconds": 120.0,
+          "freshness": "WITHIN_PROVIDER_NOTICE",
+          "provider": "GOOGLEFINANCE",
+          "price_definition": "GOOGLEFINANCE_CURRENT",
+          "adjustment_status": "AS_TRADED",
+          "provider_delay_notice": "UP_TO_20_MINUTES",
+          "reasons": [],
+          "price_available": true,
+          "qualified": true,
+          "exact_eod": false,
+          "delay_definition": "RECEIPT_MINUS_PRICE_TIME_NOT_PROVIDER_FEED_LATENCY"
+        },
+        "financial_periods": {
+          "ebit": "TTM 2026-09-30",
+          "fcf": "TTM 2026-09-30",
+          "revenue": "TTM 2026-09-30",
+          "total_debt": "2026-09-30",
+          "cash_and_equivalents": "2026-09-30",
+          "diluted_shares": "2026-09-30"
+        },
+        "provenance": {
+          "financial": {
+            "record_hash": "63ca1380d5c2785d6b3da721d8253d20598f41664c56e1b16b6d15d57a422a2d",
+            "companyfacts_sha256": null,
+            "source_refs": [
+              "SYNTHETIC_FINANCIAL_ONLY"
+            ],
+            "acquired_at": "2026-11-13T12:00:00Z",
+            "currency": "USD",
+            "fiscal_year_end": "2025-12-31",
+            "calc_version": "qgv2-calc/2026-10-23.1"
+          },
+          "basis": {
+            "mapping": {
+              "status": "VERIFIED",
+              "record_id": "synthetic-mapping-0",
+              "company_id": "SYN:000",
+              "issuer_id": "synthetic-issuer-000",
+              "security_id": "synthetic-security-000",
+              "share_class_id": "SYN_COMMON",
+              "provider_symbol": "SYN0",
+              "security_type": "COMMON_STOCK",
+              "valid_from": "2026-09-30",
+              "valid_to": null,
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ]
+            },
+            "share_basis": {
+              "status": "VERIFIED",
+              "share_class_id": "SYN_COMMON",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "definition": "WEIGHTED_AVERAGE_DILUTED",
+              "period_end": "2026-09-30",
+              "unit": "COMMON_SHARES"
+            },
+            "corporate_actions": {
+              "status": "VERIFIED",
+              "available_at": "2026-11-13T12:00:00Z",
+              "source_refs": [
+                "SYNTHETIC_BASIS_ONLY"
+              ],
+              "from_day": "2026-09-30",
+              "through_day": "2026-11-13",
+              "basis": "ALREADY_NORMALIZED"
+            }
+          },
+          "history": {},
+          "history_source_refs": []
+        }
+      }
+    }
+  ],
+  "real_sheet_connected": false,
+  "real_price_calculation_executed": false,
+  "performance_verified": false
+}

@@ -1,0 +1,62 @@
+{
+  "data_kind": "SYNTHETIC",
+  "counts": {
+    "price_available": 23,
+    "price_qualified": 23,
+    "nonprice_any": 23,
+    "nonprice_all": 0,
+    "raw_any": 23,
+    "raw_all": 0,
+    "role_any": 23,
+    "V_axis": 23,
+    "personal_partial_total": 0,
+    "personal_eligible_total": 23
+  },
+  "counts_unit": "UNIQUE_ISSUER",
+  "denominator": {
+    "code_rows": 23,
+    "issuers": 23
+  },
+  "expected_payload_sha256": "bf1bca17d64a948778f74baf61ac279b6d35dfe413f9b01286f9d1f46db7dee1",
+  "expected_evaluation": {
+    "population_id": "synthetic-evaluation",
+    "population_version": "current-synthetic/1",
+    "unit": "CODE_ROW",
+    "code_rows": 23,
+    "issuers": 23,
+    "evaluation_day": "2026-11-13",
+    "input_cutoff": "2026-11-13T21:02:00Z",
+    "input_hash": "b228f265b9a4843d28c38e46021db06fd9bcaa3f704fde85c71731459c7cedc3",
+    "members_hash": "296d6cb547ea97bd3d6cbcc579f4afebfe4b43d552610287e9e2a005121dfafa",
+    "classification_version": "synthetic-adapter-map/1",
+    "classification_context": {
+      "dictionary_version": "common-industry-dictionary/2",
+      "mapping_version": "common-classification-map/2",
+      "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source_anchors": [
+      "SYNTHETIC"
+    ]
+  },
+  "expected_reference": {
+    "population_id": "synthetic-reference",
+    "population_version": "current-synthetic/1",
+    "unit": "CODE_ROW",
+    "code_rows": 23,
+    "issuers": 23,
+    "evaluation_day": "2026-11-13",
+    "input_cutoff": "2026-11-13T21:02:00Z",
+    "input_hash": "bfe4d2ce367941a722cb93f315829babb94af229a4f603dfa20210367e7a71ea",
+    "members_hash": "296d6cb547ea97bd3d6cbcc579f4afebfe4b43d552610287e9e2a005121dfafa",
+    "classification_version": "synthetic-adapter-map/1",
+    "classification_context": {
+      "dictionary_version": "common-industry-dictionary/2",
+      "mapping_version": "common-classification-map/2",
+      "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source_anchors": [
+      "SYNTHETIC"
+    ]
+  },
+  "expected_configuration_hash": "c72160e3758e7f1725120c95d705528c7cd951115fe9e9045d87e5b810e6f99c"
+}

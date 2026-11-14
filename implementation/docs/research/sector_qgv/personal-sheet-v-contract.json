@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "personal-sheet-v-contract/1",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "context",
+        "configuration"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "personal-sheet-v-request/1"
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "context_id",
+            "evaluation_day",
+            "evaluated_at",
+            "input_cutoff",
+            "provider",
+            "price_definition"
+          ],
+          "properties": {
+            "context_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evaluation_day": {
+              "type": "string",
+              "format": "date"
+            },
+            "evaluated_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "input_cutoff": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "provider": {
+              "enum": [
+                "GOOGLEFINANCE",
+                "IEX_HIST"
+              ]
+            },
+            "price_definition": {
+              "enum": [
+                "GOOGLEFINANCE_CURRENT",
+                "IEX_LAST_REGULAR_SESSION_TRADE"
+              ]
+            }
+          }
+        },
+        "configuration": {
+          "type": "object",
+          "$comment": "Validated by existing qgv_555.validate_configuration; supported price variants 0.2-0.5 central WAD."
+        }
+      }
+    },
+    "price_row": {
+      "type": "object",
+      "required": [
+        "company_id",
+        "issuer_id",
+        "provider_symbol",
+        "status",
+        "provider",
+        "price_definition",
+        "adjustment_status",
+        "currency",
+        "price",
+        "trade_day",
+        "price_timestamp",
+        "time_status",
+        "query_started_at",
+        "received_at",
+        "source_refs"
+      ],
+      "properties": {
+        "company_id": {
+          "type": "string"
+        },
+        "issuer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provider_symbol": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "MISSING",
+            "INVALID",
+            "READ_FAILED",
+            "NO_TRADE"
+          ]
+        },
+        "provider": {
+          "enum": [
+            "GOOGLEFINANCE",
+            "IEX_HIST"
+          ]
+        },
+        "price_definition": {
+          "enum": [
+            "GOOGLEFINANCE_CURRENT",
+            "IEX_LAST_REGULAR_SESSION_TRADE"
+          ]
+        },
+        "adjustment_status": {
+          "enum": [
+            "AS_TRADED",
+            "SPLIT_ADJUSTED",
+            "UNKNOWN"
+          ]
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "trade_day": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price_timestamp": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "time_status": {
+          "enum": [
+            "CONFIRMED",
+            "DATE_ONLY",
+            "UNCONFIRMED"
+          ]
+        },
+        "query_started_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "received_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "namespace",
+        "storage",
+        "model_id",
+        "evaluation",
+        "reference",
+        "evaluation_effective",
+        "reference_effective",
+        "counts",
+        "counts_unit",
+        "denominator",
+        "rows",
+        "groups",
+        "result_hash"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "personal-sheet-v-result/1"
+        },
+        "namespace": {
+          "const": "PERSONAL_SHEET_V"
+        },
+        "storage": {
+          "const": "EPHEMERAL_ONLY"
+        },
+        "counts_unit": {
+          "const": "UNIQUE_ISSUER"
+        },
+        "research_coverage_claim": {
+          "const": false
+        },
+        "official": {
+          "const": false
+        },
+        "filter_recalculates": {
+          "const": false
+        }
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "target"
+            ]
+          },
+          {
+            "required": [
+              "coverage"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "description": "Wire shapes only; economic eligibility and independently trusted source pins are enforced by the executable adapter."
+}

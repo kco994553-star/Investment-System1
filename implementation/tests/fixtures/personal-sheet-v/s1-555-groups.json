@@ -1,0 +1,727 @@
+{
+  "schema_version": "personal-sheet-v-groups/1",
+  "namespace": "PERSONAL_SHEET_V",
+  "result_hash": "08c6647633467d029a3ff95664048ea12ac6429e302dce86f7f5195c08482234",
+  "groups": [
+    {
+      "group_id": "personal:c81ca5b2d76a265602b2400530df7e9d996ef5fefdec90d88d2b58f42dc6b1cb",
+      "kind": "roles",
+      "key": "v_earnings_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:0bb7a8e6f520bdad5486e3c6ddfff6a3b7d401f23e9648385eaa55ec60796277",
+      "kind": "roles",
+      "key": "v_expectation_check",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:c7179e0d5bd1cb79471d78499a09c8d9a1000e3aa3636662dffba46d716e71bd",
+      "kind": "roles",
+      "key": "v_fcf_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:287b85fed64b6c6df0e819813230fc5fb501df098c3d21ab74535caf31b996b3",
+      "kind": "roles",
+      "key": "v_vs_industry",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:e8212b2daa91b3119e2ea97070eed59a6f13eaa746b35775f22c3d85ab80f41e",
+      "kind": "roles",
+      "key": "v_vs_own_history",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 0,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 0,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 0,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 0,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 0,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 0,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 0,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 0,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 0,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 0,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 0,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:2052059e68859bdf35ac8efd3c5c181d1369b0f9b50fb139733b23a2419c3d33",
+      "kind": "metrics",
+      "key": "v_earnings_yield|central::ebit_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:6dad487d80b8daef8ce1c28e485b68edeb8868367ca8e8a38c58b86109633e3c",
+      "kind": "metrics",
+      "key": "v_expectation_check|central::gap",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:fca34ec957a1223de6907cfd60412ad8745b9eebef5d331cd3bb07b9e67c96d6",
+      "kind": "metrics",
+      "key": "v_fcf_yield|central::fcf_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:a17a4b8140e9392ca88100e9919584c49c10d70b57c9ed3799c6608731a8a696",
+      "kind": "metrics",
+      "key": "v_vs_industry|central::ebit_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 23,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 3,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 3,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    },
+    {
+      "group_id": "personal:5fc6644ccf0c52364f6dc7fd37c1fa6e98721bc788641df26943d18751dd071d",
+      "kind": "metrics",
+      "key": "v_vs_own_history|central::own_history",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "minimum_decile_n": 10,
+      "evaluation_valid_n": 0,
+      "original_code_rows": 23,
+      "unit": "CODE_ROW",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 0,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 0,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 0,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 0,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 0,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 0,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 0,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 0,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 0,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 0,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2302 @@
+{
+  "SYN:000": {
+    "record": {
+      "cik": "synthetic-issuer-000",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 200,
+          "fy_end": "2025-12-31",
+          "ttm_value": 200,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 120,
+          "fy_end": "2025-12-31",
+          "ttm_value": 120,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-0",
+        "company_id": "SYN:000",
+        "issuer_id": "synthetic-issuer-000",
+        "security_id": "synthetic-security-000",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN0",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:001": {
+    "record": {
+      "cik": "synthetic-issuer-001",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 210,
+          "fy_end": "2025-12-31",
+          "ttm_value": 210,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 123,
+          "fy_end": "2025-12-31",
+          "ttm_value": 123,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-1",
+        "company_id": "SYN:001",
+        "issuer_id": "synthetic-issuer-001",
+        "security_id": "synthetic-security-001",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN1",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:002": {
+    "record": {
+      "cik": "synthetic-issuer-002",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 220,
+          "fy_end": "2025-12-31",
+          "ttm_value": 220,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 126,
+          "fy_end": "2025-12-31",
+          "ttm_value": 126,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-2",
+        "company_id": "SYN:002",
+        "issuer_id": "synthetic-issuer-002",
+        "security_id": "synthetic-security-002",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN2",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:003": {
+    "record": {
+      "cik": "synthetic-issuer-003",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 230,
+          "fy_end": "2025-12-31",
+          "ttm_value": 230,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 129,
+          "fy_end": "2025-12-31",
+          "ttm_value": 129,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-3",
+        "company_id": "SYN:003",
+        "issuer_id": "synthetic-issuer-003",
+        "security_id": "synthetic-security-003",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN3",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:004": {
+    "record": {
+      "cik": "synthetic-issuer-004",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 240,
+          "fy_end": "2025-12-31",
+          "ttm_value": 240,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 132,
+          "fy_end": "2025-12-31",
+          "ttm_value": 132,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-4",
+        "company_id": "SYN:004",
+        "issuer_id": "synthetic-issuer-004",
+        "security_id": "synthetic-security-004",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN4",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:005": {
+    "record": {
+      "cik": "synthetic-issuer-005",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 250,
+          "fy_end": "2025-12-31",
+          "ttm_value": 250,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 135,
+          "fy_end": "2025-12-31",
+          "ttm_value": 135,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-5",
+        "company_id": "SYN:005",
+        "issuer_id": "synthetic-issuer-005",
+        "security_id": "synthetic-security-005",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN5",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:006": {
+    "record": {
+      "cik": "synthetic-issuer-006",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 260,
+          "fy_end": "2025-12-31",
+          "ttm_value": 260,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 138,
+          "fy_end": "2025-12-31",
+          "ttm_value": 138,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-6",
+        "company_id": "SYN:006",
+        "issuer_id": "synthetic-issuer-006",
+        "security_id": "synthetic-security-006",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN6",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:007": {
+    "record": {
+      "cik": "synthetic-issuer-007",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 270,
+          "fy_end": "2025-12-31",
+          "ttm_value": 270,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 141,
+          "fy_end": "2025-12-31",
+          "ttm_value": 141,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-7",
+        "company_id": "SYN:007",
+        "issuer_id": "synthetic-issuer-007",
+        "security_id": "synthetic-security-007",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN7",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:008": {
+    "record": {
+      "cik": "synthetic-issuer-008",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 280,
+          "fy_end": "2025-12-31",
+          "ttm_value": 280,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 144,
+          "fy_end": "2025-12-31",
+          "ttm_value": 144,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-8",
+        "company_id": "SYN:008",
+        "issuer_id": "synthetic-issuer-008",
+        "security_id": "synthetic-security-008",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN8",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:009": {
+    "record": {
+      "cik": "synthetic-issuer-009",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 290,
+          "fy_end": "2025-12-31",
+          "ttm_value": 290,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 147,
+          "fy_end": "2025-12-31",
+          "ttm_value": 147,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-9",
+        "company_id": "SYN:009",
+        "issuer_id": "synthetic-issuer-009",
+        "security_id": "synthetic-security-009",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN9",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:010": {
+    "record": {
+      "cik": "synthetic-issuer-010",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 300,
+          "fy_end": "2025-12-31",
+          "ttm_value": 300,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 150,
+          "fy_end": "2025-12-31",
+          "ttm_value": 150,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-10",
+        "company_id": "SYN:010",
+        "issuer_id": "synthetic-issuer-010",
+        "security_id": "synthetic-security-010",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN10",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:011": {
+    "record": {
+      "cik": "synthetic-issuer-011",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 310,
+          "fy_end": "2025-12-31",
+          "ttm_value": 310,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 153,
+          "fy_end": "2025-12-31",
+          "ttm_value": 153,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-11",
+        "company_id": "SYN:011",
+        "issuer_id": "synthetic-issuer-011",
+        "security_id": "synthetic-security-011",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN11",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:012": {
+    "record": {
+      "cik": "synthetic-issuer-012",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 320,
+          "fy_end": "2025-12-31",
+          "ttm_value": 320,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 156,
+          "fy_end": "2025-12-31",
+          "ttm_value": 156,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-12",
+        "company_id": "SYN:012",
+        "issuer_id": "synthetic-issuer-012",
+        "security_id": "synthetic-security-012",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN12",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:013": {
+    "record": {
+      "cik": "synthetic-issuer-013",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 330,
+          "fy_end": "2025-12-31",
+          "ttm_value": 330,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 159,
+          "fy_end": "2025-12-31",
+          "ttm_value": 159,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-13",
+        "company_id": "SYN:013",
+        "issuer_id": "synthetic-issuer-013",
+        "security_id": "synthetic-security-013",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN13",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:014": {
+    "record": {
+      "cik": "synthetic-issuer-014",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 340,
+          "fy_end": "2025-12-31",
+          "ttm_value": 340,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 162,
+          "fy_end": "2025-12-31",
+          "ttm_value": 162,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-14",
+        "company_id": "SYN:014",
+        "issuer_id": "synthetic-issuer-014",
+        "security_id": "synthetic-security-014",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN14",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:015": {
+    "record": {
+      "cik": "synthetic-issuer-015",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 350,
+          "fy_end": "2025-12-31",
+          "ttm_value": 350,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 165,
+          "fy_end": "2025-12-31",
+          "ttm_value": 165,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-15",
+        "company_id": "SYN:015",
+        "issuer_id": "synthetic-issuer-015",
+        "security_id": "synthetic-security-015",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN15",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:016": {
+    "record": {
+      "cik": "synthetic-issuer-016",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 360,
+          "fy_end": "2025-12-31",
+          "ttm_value": 360,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 168,
+          "fy_end": "2025-12-31",
+          "ttm_value": 168,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-16",
+        "company_id": "SYN:016",
+        "issuer_id": "synthetic-issuer-016",
+        "security_id": "synthetic-security-016",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN16",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:017": {
+    "record": {
+      "cik": "synthetic-issuer-017",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 370,
+          "fy_end": "2025-12-31",
+          "ttm_value": 370,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 171,
+          "fy_end": "2025-12-31",
+          "ttm_value": 171,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-17",
+        "company_id": "SYN:017",
+        "issuer_id": "synthetic-issuer-017",
+        "security_id": "synthetic-security-017",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN17",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:018": {
+    "record": {
+      "cik": "synthetic-issuer-018",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 380,
+          "fy_end": "2025-12-31",
+          "ttm_value": 380,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 174,
+          "fy_end": "2025-12-31",
+          "ttm_value": 174,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-18",
+        "company_id": "SYN:018",
+        "issuer_id": "synthetic-issuer-018",
+        "security_id": "synthetic-security-018",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN18",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:019": {
+    "record": {
+      "cik": "synthetic-issuer-019",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 390,
+          "fy_end": "2025-12-31",
+          "ttm_value": 390,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 177,
+          "fy_end": "2025-12-31",
+          "ttm_value": 177,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-19",
+        "company_id": "SYN:019",
+        "issuer_id": "synthetic-issuer-019",
+        "security_id": "synthetic-security-019",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN19",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:020": {
+    "record": {
+      "cik": "synthetic-issuer-020",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 400,
+          "fy_end": "2025-12-31",
+          "ttm_value": 400,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 180,
+          "fy_end": "2025-12-31",
+          "ttm_value": 180,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-20",
+        "company_id": "SYN:020",
+        "issuer_id": "synthetic-issuer-020",
+        "security_id": "synthetic-security-020",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN20",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:021": {
+    "record": {
+      "cik": "synthetic-issuer-021",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 410,
+          "fy_end": "2025-12-31",
+          "ttm_value": 410,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 183,
+          "fy_end": "2025-12-31",
+          "ttm_value": 183,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-21",
+        "company_id": "SYN:021",
+        "issuer_id": "synthetic-issuer-021",
+        "security_id": "synthetic-security-021",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN21",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  },
+  "SYN:022": {
+    "record": {
+      "cik": "synthetic-issuer-022",
+      "profile": "GENERAL",
+      "currency": "USD",
+      "fiscal_year_end": "2025-12-31",
+      "acquired_at": "2026-11-13T12:00:00Z",
+      "calc_version": "qgv2-calc/2026-10-23.1",
+      "v_inputs_v2": {
+        "currency": "USD",
+        "ebit": {
+          "fy_value": 420,
+          "fy_end": "2025-12-31",
+          "ttm_value": 420,
+          "ttm_end": "2026-09-30"
+        },
+        "fcf": {
+          "fy_value": 186,
+          "fy_end": "2025-12-31",
+          "ttm_value": 186,
+          "ttm_end": "2026-09-30"
+        },
+        "revenue": {
+          "fy_value": 1000,
+          "fy_end": "2025-12-31",
+          "ttm_value": 1000,
+          "ttm_end": "2026-09-30"
+        },
+        "total_debt": {
+          "value": 50,
+          "period_end": "2026-09-30"
+        },
+        "cash_and_equivalents": {
+          "value": 20,
+          "period_end": "2026-09-30"
+        },
+        "diluted_shares": {
+          "value": 100,
+          "period_end": "2026-09-30"
+        },
+        "revenue_cagr_3y": 0.1,
+        "ebit_per_share_history": [
+          {
+            "fiscal_year_end": "2023-12-31",
+            "value": 1
+          },
+          {
+            "fiscal_year_end": "2024-12-31",
+            "value": 2
+          },
+          {
+            "fiscal_year_end": "2025-12-31",
+            "value": 3
+          }
+        ]
+      }
+    },
+    "source_refs": [
+      "SYNTHETIC_FINANCIAL_ONLY"
+    ],
+    "basis_evidence": {
+      "mapping": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "record_id": "synthetic-mapping-22",
+        "company_id": "SYN:022",
+        "issuer_id": "synthetic-issuer-022",
+        "security_id": "synthetic-security-022",
+        "share_class_id": "SYN_COMMON",
+        "provider_symbol": "SYN22",
+        "security_type": "COMMON_STOCK",
+        "valid_from": "2026-09-30",
+        "valid_to": null
+      },
+      "share_basis": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "definition": "WEIGHTED_AVERAGE_DILUTED",
+        "period_end": "2026-09-30",
+        "share_class_id": "SYN_COMMON",
+        "unit": "COMMON_SHARES"
+      },
+      "corporate_actions": {
+        "status": "VERIFIED",
+        "available_at": "2026-11-13T12:00:00Z",
+        "source_refs": [
+          "SYNTHETIC_BASIS_ONLY"
+        ],
+        "from_day": "2026-09-30",
+        "through_day": "2026-11-13",
+        "basis": "ALREADY_NORMALIZED"
+      }
+    }
+  }
+}
