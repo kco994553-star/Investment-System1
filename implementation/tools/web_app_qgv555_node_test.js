@@ -1,6 +1,6 @@
 'use strict';
-// QGV 555 · 시총 Top500 · 사용자 설정 (web_app/qgv-555.js; owner 2026-11-14, DC-49) against Codex #537 research.qgv_555 /
-// top500_selection through Main's development engine route (tools/sector_qgv_engine_bridge.py as the real child process;
+// QGV 555 · 시총 Top500 · 사용자 설정 (web_app/qgv-555.js; owner 2026-11-14, DC-49) against Codex #537 a22ce2a4 research.qgv_555 /
+// qgv_555_preview / top500_selection through Main's development engine route (tools/sector_qgv_engine_bridge.py as the real child process;
 // SYNTHETIC inputs only): the context reads as the 15 official roles (5 per axis); the editor writes qgv-555-config/1 the engine
 // accepts (a second metric splits the role, the role weight unchanged; alias / axis / accounting / preparing refusals; S1 edits
 // only its SECTOR|TEMPLATE; restore = own candidate and version); a preview is the engine's before / after on the same input
@@ -43,7 +43,8 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.equal(d.roles.q_moat_proxy.weight, c.roles.q_moat_proxy.weight);
       assert.deepEqual(d.roles.q_moat_proxy.metrics, { moat_proxy: 1, roic: 1 });
       const { res } = await preview(d); assert.equal(res.ok, true, res.code);
-      assert.deepEqual(res.after.rows[0].roles.q_moat_proxy.metrics.map((m) => m.metric), ['moat_proxy', 'roic']);
+      const det = await ask('qgv555_detail', { preview_id: res.preview_id, company_id: res.page.rows[0].company_id });
+      assert.deepEqual(det.row.roles.q_moat_proxy.metrics.map((m) => m.metric), ['moat_proxy', 'roic']);
       assert.ok(Object.isFrozen(d)); assert.notEqual(c, d);
     });
 
@@ -58,15 +59,18 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       const s = Q.start(ctx, 'S1-555'); throws(() => Q.addMetric(ctx, s, 'FINANCIALS|BANK', 'q_profitability', 'sector::roe_common_ttm'), 'ACCOUNTING_RECIPE_PREPARING');
       throws(() => Q.removeMetric(c, 'COMMON', 'q_moat_proxy', 'moat_proxy'), 'ROLE_LAST_METRIC');
       const k = Q.card(ctx, 'revenue_cagr_3y', c, 'COMMON', 'q_profitability', null); assert.equal(k.selectable, false); assert.equal(k.why, 'AXIS_MISMATCH');
+      const unassigned = Object.values(ctx.catalog).find((e) => e.axis === 'Q' && !e.roles.length && ctx.selectable.GENERAL.q_profitability.includes(e.canonical_id));
+      assert.ok(unassigned, 'a metric without a default role is still selectable (Codex selectable_metrics)');
+      assert.equal(Q.blocked(ctx, c, 'COMMON', 'q_profitability', unassigned.canonical_id), null);
     });
 
     await ok('exclude a role: active count Q4/G5/V5; the engine runs it and the coverage says 15 roles complete for nobody', async () => {
       const c = Q.excludeRole(Q.start(ctx, 'U1-555'), 'COMMON', 'q_capital_allocation');
       assert.equal(Q.activeCount(c, 'COMMON').text, 'Q4/G5/V5');
       const { res } = await preview(c); assert.equal(res.ok, true, res.code);
-      assert.deepEqual(res.after.rows[0].active_roles, { Q: 4, G: 5, V: 5 });
-      assert.equal(res.after.coverage.all15, 0);
-      assert.equal(res.before.coverage.all15, res.before.coverage.denominator);
+      assert.deepEqual(res.page.rows[0].after.active_roles, { Q: 4, G: 5, V: 5 });
+      assert.equal(res.page.after_coverage.all15, 0);
+      assert.equal(res.page.before_coverage.all15, res.page.before_coverage.denominator);
     });
 
     await ok('S1: a role edit goes to its own SECTOR|TEMPLATE override, the sector axis to its sector only; nothing reaches another scope', async () => {
@@ -86,18 +90,25 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       throws(() => Q.restore(ctx, { ...c, version: '0.0.9' }), 'BASE_VERSION_MISSING');
     });
 
-    await ok('preview: same input → population effect none; before / after rows, versions, coverage stages, deciles from the engine', async () => {
+    await ok('preview: Codex preview() page — settings effect only, 20 + 1 rows, stages, role deciles, detail with three weights, family exposure', async () => {
       const c = Q.setAxis(Q.start(ctx, 'U1-555'), ctx, 'COMMON', 'V', 66);
       const { req, res } = await preview(c);
       assert.equal(Q.previewAnswer(req, res, req).state, 'SHOWN');
-      const C = Q.compare(res); assert.equal(C.population, 'SAME'); assert.equal(C.rows.length, 21);
-      assert.notEqual(C.versions.config_before, C.versions.config_after);
-      const st = Q.stages(C.coverage.after); assert.ok(st.find((s) => s.key === 'eligible_total')); assert.equal(st.find((s) => s.key === 'denominator').value, 21);
-      const D = Q.deciles(res.after, 'q_profitability'); assert.equal(D.bands.length, 10); assert.equal(D.bands.reduce((t, x) => t + x, 0) + D.other, 21);
-      const d = Q.detail(res.after, res.after.rows[0].company_id); assert.equal(d.axes.length, 3); assert.equal(d.axes[0].roles.length, 5);
-      assert.ok(d.axes[0].roles[0].metrics[0].lineage, 'lineage from the engine');
-      const fam = Q.families(ctx, c, 'COMMON', res.after.rows[0]); assert.ok(fam.length > 0 && fam.every((f) => f.nominal !== null));
-      assert.equal(res.after.rows[0].total !== null, true);
+      const C = Q.compare(res.page); assert.equal(C.population, 'NOT_EVALUATED'); assert.equal(C.scope, 'SETTINGS_ONLY_FIXED_INPUT_AND_POPULATIONS');
+      assert.equal(C.rows.length, 20); assert.equal(C.row_count, 21); assert.equal(res.page.next_offset, 20);
+      assert.notEqual(C.versions.before, C.versions.after);
+      const p2 = await ask('qgv555_page', { preview_id: res.preview_id, offset: 20 });
+      assert.equal(Q.pageAnswer(res.page, p2).state, 'SHOWN'); assert.equal(p2.page.rows.length, 1); assert.equal(p2.page.next_offset, null);
+      assert.equal(Q.pageAnswer({ source_preview_hash: 'x' }, p2).state, 'LATE_ANSWER');
+      const st = Q.stages(C.coverage.after); assert.ok(st.find((x) => x.key === 'eligible_total')); assert.equal(st.find((x) => x.key === 'denominator').value, 21);
+      const role = await ask('qgv555_role', { preview_id: res.preview_id, role: 'q_profitability' });
+      assert.equal(role.after_result_hash, res.page.after_result_hash);
+      const D = Q.deciles(role); assert.equal(D.bands.length, 10); assert.equal(D.bands.reduce((t, x) => t + x, 0) + D.other, 21);
+      const det = await ask('qgv555_detail', { preview_id: res.preview_id, company_id: C.rows[0].company_id });
+      const d = Q.detail(det.row, res.page.rows[0]); assert.equal(d.axes.length, 3); assert.equal(d.axes[0].roles.length, 5);
+      const w = d.axes[0].roles[0].metrics[0].w; assert.ok(w && 'missing_redistributed_before_gate' in w && 'after_gate' in w, 'three weights from the engine');
+      const fam = Q.families(ctx, c, 'COMMON', res.page.rows[0]); assert.ok(fam.length > 0 && fam.every((f) => f.nominal !== null));
+      assert.equal((await ask('qgv555_detail', { preview_id: 'f'.repeat(64), company_id: 'SYN:000' })).code, 'PREVIEW_NOT_KEPT');
     });
 
     await ok('late, other-model and other-config answers are never shown; an engine refusal is a refusal', async () => {
@@ -106,7 +117,7 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       assert.equal(Q.previewAnswer(req, { ...res, request_id: 'other' }, req).state, 'LATE_ANSWER');
       assert.equal(Q.previewAnswer(req, { ...res, model_id: 'sector-555/0.1.0' }, req).state, 'MODEL_MISMATCH');
       assert.equal(Q.previewAnswer({ ...req, config: Q.setAxis(c, ctx, 'COMMON', 'Q', 1) }, res, null).state, 'LATE_ANSWER');
-      const r2 = { ...req, config: Q.setAxis(c, ctx, 'COMMON', 'Q', 1) }; assert.equal(Q.previewAnswer(r2, res, r2).state, 'CONFIG_MISMATCH');
+      const r2 = { ...req, config: Q.setAxis(c, ctx, 'COMMON', 'Q', 1) }; assert.equal(Q.previewAnswer(r2, { ...res, page: { ...res.page, request_id: r2.request_id } }, r2).state, 'CONFIG_MISMATCH');
       const dup = copy(c); dup.roles.q_profitability.metrics.EV_EBIT_TTM = 1; dup.roles.q_profitability.metrics.ebit_yield = 1;
       const bad = await preview(dup); assert.equal(bad.res.ok, false); assert.equal(Q.previewAnswer(bad.req, bad.res, bad.req).state, 'REFUSED');
       const other = await eng.call({ schema_version: REQ, op: 'qgv555_preview', request_id: 'N-x', model_id: 'unified-333-eps/0.1.0', config: c, before_config: c, input_id: 'SYNTHETIC_21' });
@@ -116,25 +127,25 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
     await ok('save and replay: the engine\'s record of the shown preview replays to the same result hash (Codex replay)', async () => {
       const c = Q.setRole(Q.start(ctx, 'U1-555'), 'COMMON', 'g_consistency', 5);
       const { res } = await preview(c); const sv = { saved: res.saved };
-      assert.equal(Q.validateSaved(sv.saved).ok, true); assert.equal(sv.saved.result_hash, res.after.result_hash);
-      assert.deepEqual(Q.savedFrom(res.after), sv.saved);
+      assert.equal(Q.validateSaved(sv.saved).ok, true); assert.equal(sv.saved.result_hash, res.page.after_result_hash);
       const rp = await ask('qgv555_replay', { saved: sv.saved }); assert.equal(rp.ok, true); assert.equal(rp.reproduced, true);
       const t = copy(sv.saved); t.configuration.axis_weights.Q = 1; const rp2 = await ask('qgv555_replay', { saved: t });
       assert.ok(rp2.ok === false || rp2.reproduced === false, 'a changed record is not reproduced');
       assert.equal(Q.validateSaved({ ...sv.saved, rows: [] }).ok, false);
     });
 
-    await ok('Top500 selection: public view only (no price, market cap or evidence); unproven roster = 확정 아님 with the reason', async () => {
+    await ok('Top500 view: Codex top500_view() allowlist (no price, market cap or evidence); unproven roster = 확정 아님 with the reason', async () => {
       const a = await ask('qgv555_population', { input_id: 'SYNTHETIC_COMPLETE' }), b = await ask('qgv555_population', { input_id: 'SYNTHETIC_ROSTER_UNPROVEN' });
       assert.doesNotMatch(JSON.stringify([a, b]), /market_cap|price|shares|evidence/);
-      const sa = Q.checkSelection(a.selection), sb = Q.checkSelection(b.selection);
+      const sa = Q.checkView(a.view), sb = Q.checkView(b.view);
       const va = Q.populationView('top500', sa, 'SYNTHETIC'), vb = Q.populationView('top500', sb, 'SYNTHETIC');
       assert.match(va.lines[0], /검증된 연구 후보 .* 공식 모집단 교체 아님/); assert.match(vb.lines[0], /자료가 있는 기업 중 상위 500\(전체시장 Top500 확정 아님\)/);
       assert.match(vb.lines[1], /후보 명부 완전성 근거 없음/); assert.match(va.lines.join('\n'), /QGV 순위가 아님/);
-      assert.match(vb.lines.join('\n'), /분모 확정 전/);
-      throws(() => Q.checkSelection({ ...a.selection, market_cap_usd: '1' }), 'SELECTION_KEY');
-      const g = copy(a.selection); g.members[3].selection_rank = 9; throws(() => Q.checkSelection(g), 'RANK_GAP');
-      const dup = copy(a.selection); dup.members[1].issuer_id = dup.members[0].issuer_id; throws(() => Q.checkSelection(dup), 'ISSUER_DUPLICATE');
+      assert.match(vb.lines.join('\n'), /분모 확정 전/); assert.match(va.lines.join('\n'), /공개 게시 권한 아님/);
+      throws(() => Q.checkView({ ...a.view, market_cap_usd: '1' }), 'VIEW_KEY');
+      const g = copy(a.view); g.members[3].selection_rank = g.members[2].selection_rank; throws(() => Q.checkView(g), 'RANK_INVALID');
+      const dup = copy(a.view); dup.members[1].issuer_id = dup.members[0].issuer_id; throws(() => Q.checkView(dup), 'ISSUER_DUPLICATE');
+      throws(() => Q.checkView({ ...a.view, public_publication_authorized: true }), 'VIEW_STATE');
       assert.equal(Q.populationView('top500', null).state, 'NOT_DELIVERED');
     });
 

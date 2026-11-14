@@ -67,6 +67,7 @@ from investment_system.research import sector_qgv_partial as partial  # noqa: E4
 from investment_system.research import dual_qgv  # noqa: E402
 from investment_system.research import qgv_333  # noqa: E402
 from investment_system.research import qgv_555  # noqa: E402
+from investment_system.research import qgv_555_preview  # noqa: E402
 from investment_system.research.top500_selection import select_top500  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
@@ -76,20 +77,26 @@ MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
 OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay',
-       'qgv555_context', 'qgv555_preview', 'qgv555_replay', 'qgv555_population')
-# QGV 555 · 시총 Top500 (owner 2026-11-14, DC-49; Codex #537 beaadbd2 research.qgv_555 / top500_selection, called unchanged):
-#   qgv555_context    Codex catalog(), accounting_recipes(), configuration(U1-555 / S1-555), the sector axis defaults, the inputs
-#   qgv555_preview    run() of the edited config and of the before config on the same synthetic evaluation / reference pair
-#                     (Codex fixture(21)); both results as returned, with the after result's replay record (qgv-555-saved/1,
-#                     Main's projection of Codex's result: everything replay() reads, no rows) for the screen's 저장
+       'qgv555_context', 'qgv555_preview', 'qgv555_page', 'qgv555_detail', 'qgv555_role', 'qgv555_replay', 'qgv555_population')
+# QGV 555 · 시총 Top500 (owner 2026-11-14, DC-49; Codex #537 a22ce2a4 research.qgv_555 / qgv_555_preview / top500_selection,
+# called unchanged; synthetic inputs only — the server resolves them, a request never names an input hash):
+#   qgv555_context    catalog(), accounting_recipes(), configuration(U1-555 / S1-555), selectable_metrics(role, template) for every
+#                     role × template, the sector axis defaults
+#   qgv555_preview    qgv_555_preview.preview() of the before / after setting on the fixture pair (identity() of each as the
+#                     expected anchors), first preview_page() (20 rows), and the after result's replay record (qgv-555-saved/1,
+#                     Main's projection: the fields replay() reads, no rows); the whole preview stays here (never sent)
+#   qgv555_page       preview_page() of a kept preview at an offset
+#   qgv555_detail     one company's after row of a kept preview (axis → roles → metrics, the engine's own row)
+#   qgv555_role       one role's engine decile / rank per row of a kept preview's after result (the screen counts D1..D10)
 #   qgv555_replay     Codex replay(saved, e, ref): REPRODUCED only when the result hash is the saved one
-#   qgv555_population select_top500() on a synthetic candidate job (COMPLETE, or with the candidate roster unproven)
-# Synthetic inputs only. The published site has no engine route.
+#   qgv555_population top500_view(select_top500()) on a synthetic candidate job (COMPLETE, or with the roster unproven)
+# The published site has no engine route.
 QGV555_MODELS = {'unified-555/0.1.0': 'U1-555', 'sector-555/0.1.0': 'S1-555'}
 QGV555_INPUTS = ('SYNTHETIC_21',)
 QGV555_SAVED = 'qgv-555-saved/1'
 QGV555_SAVED_KEYS = ('configuration', 'evaluation', 'reference', 'bindings', 'calculated_at', 'result_hash')
 QGV555_POPULATIONS = ('SYNTHETIC_COMPLETE', 'SYNTHETIC_ROSTER_UNPROVEN')
+QGV555_PAGE = 20
 MAX_REQUEST_BYTES = 1 << 20
 MAX_KEPT_PREVIEWS = 32
 REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
@@ -150,25 +157,6 @@ def _top500_job(kind):
         population_id='synthetic-us-candidates', population_version='1', policy=dict(version='top500-research/0.1.0',
         status='RESEARCH_PROPOSAL', markets=['NYSE', 'NASDAQ', 'NYSE_AMERICAN', 'BATS'],
         included_kinds=['COMMON', 'ADR', 'FOREIGN_COMMON', 'REIT'], cadence='DAILY_CLOSE'), coverage=coverage, issuers=issuers)
-
-
-# The screen's view of a top500-selection/1 answer: identity, dates, counts, states and members by issuer / representative security
-# and selection order. Market caps, prices, share counts and their evidence never leave the engine route (they are not public).
-TOP500_PUBLIC_KEYS = ('schema_version', 'population_id', 'population_version', 'evaluation_day', 'input_cutoff', 'apply_at',
-                      'status', 'official', 'target_count', 'denominator', 'members_hash', 'boundary_uncertain', 'selected_count',
-                      'candidate_count', 'unique_candidate_issuers', 'replace_official', 'reasons', 'whole_market_denominator', 'result_hash')
-
-
-def _top500_public(sel):
-    out = {k: copy.deepcopy(sel[k]) for k in TOP500_PUBLIC_KEYS}
-    out['policy'] = {k: sel['policy'][k] for k in ('version', 'status', 'cadence', 'markets', 'included_kinds')}
-    out['members'] = [{'selection_rank': i + 1, 'issuer_id': m['issuer_id'], 'representative_security_id': m['representative_security_id'],
-                       'economic_classes': len(m['economic_classes'])} for i, m in enumerate(sel['members'])]
-    out['unresolved_count'], out['excluded_count'] = len(sel['unresolved']), len(sel['excluded'])
-    out['retained_confirmed'] = None if sel['retained_confirmed'] is None else 'PREVIOUS_RETAINED'
-    out['membership_changes'] = {'entered': len(sel['membership_changes']['entered']), 'exited': len(sel['membership_changes']['exited']),
-                                 'reason': sel['membership_changes']['reason']}
-    return out
 
 
 class Refused(Exception):
@@ -358,6 +346,7 @@ class Bridge:
     def __init__(self, env=None):
         self.kept = {}
         self.kept_dual = {}
+        self.kept_555 = {}
         self.private = private_comparisons(env)
 
     def handle(self, req):
@@ -379,30 +368,54 @@ class Bridge:
             return {'model': model, 'model_id': model_id, **body}
         return getattr(self, '_' + op)(req, rid)
 
-    # ---- QGV 555 (Codex #537 research.qgv_555 / top500_selection, called unchanged; synthetic inputs only)
+    # ---- QGV 555 (Codex #537 research.qgv_555 / qgv_555_preview / top500_selection, called unchanged; synthetic inputs only)
     def _qgv555(self, op, req):
-        rid = req['request_id']
+        try:
+            return self._qgv555_op(op, req)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise Refused(_code(exc)) from None
+
+    def _kept555(self, req):
+        kept = self.kept_555.get(req.get('preview_id'))
+        if kept is None:
+            raise Refused('PREVIEW_NOT_KEPT')
+        return kept
+
+    def _qgv555_op(self, op, req):
         if op == 'qgv555_context':
             return {'data_kind': 'SYNTHETIC', 'catalog': qgv_555.catalog(), 'recipes': qgv_555.accounting_recipes(),
                     'configs': {k: qgv_555.configuration(k) for k in ('U1-555', 'S1-555')},
+                    'selectable': {t: {r: qgv_555_preview.selectable_metrics(r, t) for r in qgv_555.SPECS} for t in TEMPLATES},
                     'sectors': [{'sector_id': k, 'axis_weights': dict(zip('QGV', v))} for k, v in SECTORS.items()],
                     'templates': list(TEMPLATES),
-                    'inputs': [{'input_id': 'SYNTHETIC_21', 'label': '합성 · 21개 발행사(Codex fixture)', 'data_kind': 'SYNTHETIC'}],
-                    'populations': [{'input_id': k, 'data_kind': 'SYNTHETIC'} for k in QGV555_POPULATIONS]}
+                    'inputs': [{'input_id': 'SYNTHETIC_21', 'label': '합성 · 21개 발행사(Codex fixture)', 'data_kind': 'SYNTHETIC'}]}
         if op == 'qgv555_population':
             if req.get('input_id') not in QGV555_POPULATIONS:
                 raise Refused('INPUT_UNKNOWN')
-            return {'data_kind': 'SYNTHETIC', 'selection': _top500_public(select_top500(_top500_job(req['input_id'])))}
+            return {'data_kind': 'SYNTHETIC', 'view': qgv_555_preview.top500_view(select_top500(_top500_job(req['input_id'])))}
         if op == 'qgv555_replay':
             saved = req.get('saved')
             if not isinstance(saved, dict) or saved.get('schema_version') != QGV555_SAVED or set(saved) != {'schema_version', *QGV555_SAVED_KEYS}:
                 raise Refused('SAVED_INVALID')
             e, ref = qgv_555.fixture()
-            try:
-                result = qgv_555.replay(saved, e, ref)
-            except (ValueError, KeyError, TypeError) as exc:
-                raise Refused(_code(exc)) from None
+            result = qgv_555.replay(saved, e, ref)
             return {'data_kind': 'SYNTHETIC', 'reproduced': result['result_hash'] == saved['result_hash'], 'result_hash': result['result_hash']}
+        if op == 'qgv555_page':
+            off = req.get('offset')
+            return {'data_kind': 'SYNTHETIC', 'page': qgv_555_preview.preview_page(self._kept555(req)['preview'], offset=off, limit=QGV555_PAGE)}
+        if op == 'qgv555_detail':
+            after = self._kept555(req)['preview']['after_result']
+            row = next((r for r in after['rows'] if r['company_id'] == req.get('company_id')), None)
+            if row is None:
+                raise Refused('COMPANY_UNKNOWN')
+            return {'data_kind': 'SYNTHETIC', 'model_id': after['model_id'], 'after_result_hash': after['result_hash'], 'row': row}
+        if op == 'qgv555_role':
+            after = self._kept555(req)['preview']['after_result']
+            role = req.get('role')
+            if role not in qgv_555.SPECS:
+                raise Refused('ROLE_UNKNOWN')
+            return {'data_kind': 'SYNTHETIC', 'role': role, 'after_result_hash': after['result_hash'], 'n': len(after['rows']),
+                    'rows': [{'company_id': r['company_id'], **{k: r['roles'][role].get(k) for k in ('decile', 'decile_status', 'rank', 'rank_n')}} for r in after['rows']]}
         # qgv555_preview
         model_id, config, before = req.get('model_id'), req.get('config'), req.get('before_config')
         if model_id not in QGV555_MODELS:
@@ -413,15 +426,18 @@ class Bridge:
             if not isinstance(c, dict) or c.get('model_id') != model_id:
                 raise Refused('MODEL_RESPONSE_MISMATCH')
         e, ref = qgv_555.fixture()
-        try:
-            out = {'before': qgv_555.run(copy.deepcopy(before), e, ref), 'after': qgv_555.run(copy.deepcopy(config), e, ref)}
-        except (ValueError, KeyError, TypeError) as exc:
-            raise Refused(_code(exc)) from None
-        for x in out.values():
-            if x['model_id'] != model_id:
-                raise Refused('MODEL_RESPONSE_MISMATCH')
-        saved = {'schema_version': QGV555_SAVED, **{k: copy.deepcopy(out['after'][k]) for k in QGV555_SAVED_KEYS}}
-        return {'data_kind': 'SYNTHETIC', 'model_id': model_id, 'input_id': req['input_id'], 'preview_id': out['after']['result_hash'], 'saved': saved, **out}
+        preview = qgv_555_preview.preview({'schema_version': 'qgv-555-preview-request/1', 'request_id': req['request_id'],
+                                           'before': copy.deepcopy(before), 'after': copy.deepcopy(config)}, e, ref,
+                                          expected_evaluation=qgv_555.identity(e), expected_reference=qgv_555.identity(ref))
+        after = preview['after_result']
+        if after['model_id'] != model_id:
+            raise Refused('MODEL_RESPONSE_MISMATCH')
+        self.kept_555[preview['result_hash']] = {'preview': preview}
+        while len(self.kept_555) > MAX_KEPT_PREVIEWS:
+            self.kept_555.pop(next(iter(self.kept_555)))
+        saved = {'schema_version': QGV555_SAVED, **{k: copy.deepcopy(after[k]) for k in QGV555_SAVED_KEYS}}
+        return {'data_kind': 'SYNTHETIC', 'model_id': model_id, 'input_id': req['input_id'], 'preview_id': preview['result_hash'],
+                'page': qgv_555_preview.preview_page(preview, offset=0, limit=QGV555_PAGE), 'saved': saved}
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):

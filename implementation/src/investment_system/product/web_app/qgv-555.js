@@ -1,7 +1,9 @@
 /* QGV 555 · 시총 Top500 · 사용자 설정 (IS2.qgv555; owner 2026-11-14 「Top500 전환·QGV 555·사용자 설정 구현」, DC-49).
-   Reader and setting editor of Codex's contract (#537 beaadbd2, docs/research/sector_qgv/QGV_555.md): catalog(), accounting
-   recipes, qgv-555-config/1, qgv-555-result/1 (the engine's answer), Main's replay record qgv-555-saved/1 (the result's fields
-   Codex replay() reads, no rows), and the public view of top500-selection/1. Pure: no window, no request, no storage.
+   Reader and setting editor of Codex's contract (#537 a22ce2a4, docs/research/sector_qgv/QGV_555.md): catalog(), accounting
+   recipes, selectable_metrics(), qgv-555-config/1, the preview page qgv-555-preview-page/1 (Codex preview() → preview_page()),
+   detail rows and role deciles of the same preview, Main's replay record qgv-555-saved/1 (the after result's fields Codex
+   replay() reads, no rows), and top500-view/1 (Codex top500_view(): an allowlisted authenticated research projection, not a
+   publication right). Pure: no window, no request, no storage.
    - Populations (2.1): 기존504 / 시총 Top500 / 확장 연구 — three identities. A Top500 selection is a research candidate
      (VALIDATED_RESEARCH_CANDIDATE, never an official replacement) or UNCONFIRMED_CANDIDATE: 「자료가 있는 기업 중 상위 500
      (전체시장 Top500 확정 아님)」 with the previous good one kept. Selection order is not a QGV rank; no price or market cap.
@@ -18,7 +20,7 @@
      Scores, ranks, deciles, nominal / effective weights: the engine's only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.qgv555=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-const SCHEMA=Object.freeze({CONFIG:'qgv-555-config/1',RESULT:'qgv-555-result/1',SAVED:'qgv-555-saved/1',SELECTION:'top500-selection/1'});
+const SCHEMA=Object.freeze({CONFIG:'qgv-555-config/1',RESULT:'qgv-555-result/1',PAGE:'qgv-555-preview-page/1',SAVED:'qgv-555-saved/1',VIEW:'top500-view/1'});
 const AXES=Object.freeze(['Q','G','V']),ROLES_PER_AXIS=5;
 const SAVED_KEYS=Object.freeze(['schema_version','configuration','evaluation','reference','bindings','calculated_at','result_hash']);
 const HEX=/^[0-9a-f]{64}$/,DAY=/^\d{4}-\d{2}-\d{2}$/;
@@ -80,7 +82,8 @@ function checkContext(x){
  const sectors={};for(const s of x.sectors){if(!isObj(s)||typeof s.sector_id!=='string'||!isObj(s.axis_weights))fail('SECTOR');sectors[s.sector_id]=s.axis_weights;}
  const recipes={};for(const r of x.recipes)recipes[r.accounting_template]=r;
  if(!recipes.GENERAL||recipes.GENERAL.state!=='DEFINED_GENERAL')fail('RECIPE_GENERAL');
- return freeze({data_kind:x.data_kind||null,catalog:copy(x.catalog),configs:copy(x.configs),roles,sectors,templates:[...x.templates],recipes,inputs:copy(x.inputs||[])});}
+ if(!isObj(x.selectable))fail('SELECTABLE');for(const t of x.templates)if(!isObj(x.selectable[t]))fail('SELECTABLE:'+t);
+ return freeze({data_kind:x.data_kind||null,catalog:copy(x.catalog),configs:copy(x.configs),selectable:copy(x.selectable),roles,sectors,templates:[...x.templates],recipes,inputs:copy(x.inputs||[])});}
 function aliasOf(cat,name){for(const m of Object.values(cat))if(m.aliases.includes(name))return m.canonical_id;return null;}
 const canonical=(ctx,m)=>own(ctx.catalog,m)?m:(aliasOf(ctx.catalog,m)||m);
 const roleText=r=>own(ROLE_TEXT,r)?ROLE_TEXT[r][0]:r;
@@ -111,9 +114,11 @@ function editRole(c,scope,role,fn){const cur=rolesOf(c,scope)[role];if(!cur)fail
 const setRole=(c,scope,role,v)=>{if(!weightOk(v))fail('WEIGHT_INVALID');return editRole(c,scope,role,r=>({...r,weight:v}));};
 const excludeRole=(c,scope,role)=>editRole(c,scope,role,r=>({...r,weight:0}));
 function setMetric(c,scope,role,m,v){if(!weightOk(v))fail('WEIGHT_INVALID');return editRole(c,scope,role,r=>{if(!own(r.metrics,m))fail('METRIC_NOT_SELECTED');r.metrics[m]=v;return r;});}
-// Why a metric cannot go into a role here (null = it can).
+// Why a metric cannot go into a role here (null = it can). Codex selectable_metrics(role, template) decides fit (an unassigned or
+// not-recommended metric of the same axis and accounting model is selectable); the setting adds alias and recipe states.
 function blocked(ctx,c,scope,role,m){const e=ctx.catalog[canonical(ctx,m)],r=rolesOf(c,scope)[role];if(!e)return'METRIC_UNKNOWN';if(!r)return'ROLE_UNKNOWN';
- if(e.axis!==r.axis)return'AXIS_MISMATCH';if(!e.accounting_scope.includes(templateOf(scope)))return'ACCOUNTING_NOT_APPLICABLE';
+ const sel=(ctx.selectable[templateOf(scope)]||{})[role]||[];
+ if(!sel.includes(e.canonical_id))return e.axis!==r.axis?'AXIS_MISMATCH':'ACCOUNTING_NOT_APPLICABLE';
  if((ctx.recipes[templateOf(scope)]||{}).state!=='DEFINED_GENERAL')return'ACCOUNTING_RECIPE_PREPARING';
  if(Object.keys(r.metrics).some(x=>canonical(ctx,x)===e.canonical_id))return'ALIAS_DUPLICATE';return null;}
 // Adding a metric splits the role's budget (weight 1 beside the others); the role's weight never grows.
@@ -142,11 +147,11 @@ function sums(c,ctx,scope){const r=rolesOf(c,scope),ax=axisOf(c,ctx,scope);
 function families(ctx,c,scope,row){const by=new Map(),r=rolesOf(c,scope);
  for(const[role,x]of Object.entries(r))for(const m of Object.keys(x.metrics)){const e=ctx.catalog[canonical(ctx,m)];if(!e)continue;
   const f=by.get(e.input_family)||{family:e.input_family,roles:new Set(),axes:new Set(),metrics:[]};f.roles.add(role);f.axes.add(x.axis);f.metrics.push(e.canonical_id);by.set(e.input_family,f);}
- const fc=row&&isObj(row.input_family_contributions)?row.input_family_contributions:null;
+ const fc=row&&row.after&&isObj(row.after.families)?row.after.families:null;
  return freeze([...by.values()].filter(f=>f.metrics.length>1).map(f=>({family:f.family,roles:[...f.roles],axes:[...f.axes].sort(),metrics:f.metrics,cross_axis:f.axes.size>1,
   nominal:fc&&fc[f.family]?fc[f.family].nominal:null,effective:fc&&fc[f.family]?fc[f.family].effective:null})).sort((a,b)=>b.metrics.length-a.metrics.length||a.family.localeCompare(b.family)));}
 function card(ctx,m,c,scope,role,row){const e=ctx.catalog[canonical(ctx,m)];if(!e)return null;const r=c?rolesOf(c,scope)[role]:null,chosen=!!(r&&own(r.metrics,m));
- const why=c&&!chosen?blocked(ctx,c,scope,role,m):null,lin=row&&Array.isArray(row.lineage)?row.lineage.filter(x=>x.role===role&&x.metric===e.canonical_id):[];
+ const why=c&&!chosen?blocked(ctx,c,scope,role,m):null,W=row&&row.after&&Array.isArray(row.after.weights)?row.after.weights:[],lin=W.filter(x=>x.role===role&&x.metric===e.canonical_id);
  const alts=why&&why!=='ALIAS_DUPLICATE'&&r?Object.values(ctx.catalog).filter(x=>x.axis===r.axis&&!blocked(ctx,c,scope,role,x.canonical_id)).slice(0,4).map(x=>x.display_name):[];
  const share=chosen?Object.values(r.metrics).reduce((t,w)=>t+w,0):0;
  return freeze({id:e.canonical_id,name:e.display_name,axis:e.axis,roles:e.roles.map(roleText),
@@ -155,66 +160,68 @@ function card(ctx,m,c,scope,role,row){const e=ctx.catalog[canonical(ctx,m)];if(!
   recommendation:word(REC_TEXT,e.recommendation),status:word(STATUS_TEXT,e.implementation_status)+' · 자료 유무는 엔진 답',selectable:chosen||!why,why,alternatives:alts,
   evidence:e.formula_source+' · '+(e.source==='SECTOR_CATALOG'?'섹터 요소 사전':'기존 코드 정의')+' · 검증 '+(e.validation==='REQUIRES_EVIDENCE'?'기업별 근거 필요':e.validation),
   aliases:e.aliases,family:e.input_family,
-  weights:chosen?'역할 안 설정 '+r.metrics[m]+'/'+share+' · 역할 설정 '+r.weight+(lin.length?' · 총점 명목 '+pct(lin[0].nominal)+' · 실효 '+pct(lin[0].effective)+'(엔진 답)':' · 명목·실효 비중은 미리보기 뒤 엔진 답'):'선택 안 됨'});}
+  weights:chosen?'역할 안 설정 '+r.metrics[m]+'/'+share+' · 역할 설정 '+r.weight+(lin.length?' · 총점 명목 '+pct(lin[0].nominal)+' · 결측 재배분 뒤 '+pct(lin[0].missing_redistributed_before_gate)+' · 관문 뒤 '+pct(lin[0].after_gate)+'(엔진 답 · 첫 기업)':' · 명목·재배분·관문 뒤 비중은 미리보기 뒤 엔진 답'):'선택 안 됨'});}
 function search(ctx,q){const t=String(q||'').trim().toLowerCase();if(!t)return[];
  return Object.values(ctx.catalog).filter(e=>[e.canonical_id,e.display_name,...e.aliases].some(n=>String(n).toLowerCase().includes(t))).map(e=>e.canonical_id);}
 
-/* ---- engine answers */
-function checkResult(x,model_id){if(!isObj(x)||x.schema_version!==SCHEMA.RESULT)fail('RESULT_SCHEMA');if(x.model_id!==model_id)fail('MODEL_RESPONSE_MISMATCH');
- if(!Array.isArray(x.rows)||!isObj(x.coverage)||!isObj(x.evaluation)||!isObj(x.reference)||!HEX.test(String(x.result_hash)))fail('RESULT_SHAPE');return x;}
-// One preview answer: late (another request or an edited setting) and other-model answers are never shown.
+/* ---- engine answers (qgv-555-preview-page/1 from Codex preview(); detail rows and role deciles of the same kept preview) */
+// One preview answer: late (another request or an edited setting), other-model and other-setting answers are never shown.
 function previewAnswer(req,res,current){if(!isObj(res))return{state:'ENGINE_NOT_CONNECTED'};if(res.request_id!==req.request_id||req!==current)return{state:'LATE_ANSWER'};
  if(res.ok!==true)return{state:'REFUSED',code:res.code||'ENGINE_FAILED'};if(res.model_id!==req.model_id)return{state:'MODEL_MISMATCH'};
- try{checkResult(res.before,req.model_id);checkResult(res.after,req.model_id);}catch(e){return{state:e.message==='MODEL_RESPONSE_MISMATCH'?'MODEL_MISMATCH':'REFUSED',code:e.message};}
- if(JSON.stringify(res.after.configuration)!==JSON.stringify(req.config))return{state:'CONFIG_MISMATCH'};return{state:'SHOWN'};}
-// Before / after on the same input: the engine's rows side by side (never re-ranked or re-scored here).
-function compare(res){const b=new Map(res.before.rows.map(r=>[r.company_id,r])),same=res.before.evaluation.input_hash===res.after.evaluation.input_hash&&res.before.reference.input_hash===res.after.reference.input_hash;
- const rows=res.after.rows.map(a=>{const x=b.get(a.company_id)||null;const t=r=>r?{Q:r.axes.Q.score,G:r.axes.G.score,V:r.axes.V.score,total:r.total,rank:r.rank,rank_n:r.rank_n,partial:r.partial_total,complete:r.fifteen_roles_complete,gate:r.gate_status,status:r.status}:null;
-  return{company_id:a.company_id,issuer_id:a.issuer_id,before:t(x),after:t(a)};});
- return freeze({population:same?'SAME':'DIFFERENT',rows,coverage:{before:res.before.coverage,after:res.after.coverage},
-  versions:{model:res.after.model_id,config_before:res.before.bindings.configuration_hash,config_after:res.after.bindings.configuration_hash,evaluation:res.after.evaluation.input_hash,
-   reference:res.after.reference.input_hash,classification:res.after.evaluation.classification_version,code:res.after.bindings.code_hash,calculated_at:res.after.calculated_at}});}
+ const pg=res.page,sv=res.saved;
+ if(!isObj(pg)||pg.schema_version!==SCHEMA.PAGE||pg.request_id!==req.request_id||!Array.isArray(pg.rows)||!isObj(pg.before_coverage)||!isObj(pg.after_coverage))return{state:'REFUSED',code:'PAGE_SHAPE'};
+ if(validateSaved(sv).ok!==true||sv.configuration.model_id!==req.model_id)return{state:'MODEL_MISMATCH'};
+ if(JSON.stringify(sv.configuration)!==JSON.stringify(req.config))return{state:'CONFIG_MISMATCH'};
+ if(sv.result_hash!==pg.after_result_hash)return{state:'REFUSED',code:'RESULT_HASH'};return{state:'SHOWN'};}
+// A later page of the same preview (same source hash) only.
+function pageAnswer(first,res){if(!isObj(res)||res.ok!==true||!isObj(res.page))return{state:'REFUSED',code:res&&res.code||'PAGE_SHAPE'};
+ if(res.page.source_preview_hash!==first.source_preview_hash)return{state:'LATE_ANSWER'};return{state:'SHOWN'};}
+const TRANSITION=Object.freeze({COMMON:'',NEWLY_COMPUTABLE:'새로 산출',LOST:'미산출로 바뀜',UNAVAILABLE_BOTH:'전후 모두 없음'});
+// Before / after as the engine projected them (never re-scored or re-ranked here).
+function compare(pg){return freeze({population:pg.population_effect,scope:pg.effect_scope,coverage:{before:pg.before_coverage,after:pg.after_coverage},row_count:pg.row_count,
+ rows:pg.rows.map(r=>({company_id:r.company_id,issuer_id:r.issuer_id,axes:r.axes,before:r.before,after:r.after})),
+ versions:{evaluation:pg.evaluation.input_hash,reference:pg.reference.input_hash,classification:pg.evaluation.classification_version,before:pg.before_result_hash,after:pg.after_result_hash,
+  calculated_at:pg.after_calculated_at,preview:pg.source_preview_hash}});}
 const STAGES=Object.freeze([['denominator','원래 분모(발행사)'],['axes.Q','Q 축'],['axes.G','G 축'],['axes.V','V 축'],['joint','세 축 모두'],['all15','15역할 모두 충족'],
  ['gate_known','관문 판정 가능'],['gate_pass','관문 통과'],['total','총점(부분 합계 포함)'],['eligible_total','완전 총점(순위·95% 분자)']]);
 function stages(cov){const g=(o,p)=>p.split('.').reduce((x,k)=>x&&x[k],o);return freeze(STAGES.map(([k,l])=>({key:k,label:l,value:g(cov,k)})).concat([{key:'target',label:'95% 목표',value:cov.target}]));}
-// Role deciles: the engine's decile per row, counted D1..D10 (D10 = top); never a top-N list in place of the bands.
-function deciles(result,role){const bands=Array(10).fill(0);let valid=0,other=0;
- for(const r of result.rows){const x=r.roles[role];if(x&&x.decile_status==='VALID'&&Number.isInteger(x.decile)&&x.decile>=1&&x.decile<=10){bands[x.decile-1]++;valid++;}else other++;}
- return freeze({role,bands,valid,other,n:result.rows.length});}
-function detail(result,company_id){const r=result.rows.find(x=>x.company_id===company_id);if(!r)return null;
- return freeze({company_id,issuer_id:r.issuer_id,total:r.total,partial:r.partial_total,rank:r.rank,rank_n:r.rank_n,gate:r.gate_status,complete:r.fifteen_roles_complete,active:r.active_roles,
-  axes:AXES.map(a=>({axis:a,score:r.axes[a].score,state:r.axes[a].state,roles:Object.entries(r.roles).filter(([k])=>k[0]===a.toLowerCase()).map(([k,x])=>({role:k,name:roleText(k),score:x.score,rank:x.rank,rank_n:x.rank_n,decile:x.decile,decile_status:x.decile_status,selected:x.selected,partial:x.partial,
+// Role deciles: the engine's decile per row (qgv555_role), counted D1..D10 (D10 = top); never a top-N list in place of the bands.
+function deciles(ans){const bands=Array(10).fill(0);let valid=0,other=0;
+ for(const x of ans.rows){if(x.decile_status==='VALID'&&Number.isInteger(x.decile)&&x.decile>=1&&x.decile<=10){bands[x.decile-1]++;valid++;}else other++;}
+ return freeze({role:ans.role,bands,valid,other,n:ans.n});}
+// Company detail: the engine's after row (qgv555_detail) and, from the preview page, the three weights per metric.
+function detail(row,pageRow){if(!isObj(row))return null;const W=pageRow&&pageRow.after?pageRow.after.weights:[];
+ return freeze({company_id:row.company_id,issuer_id:row.issuer_id,total:row.total,partial:row.partial_total,rank:row.rank,rank_n:row.rank_n,gate:row.gate_status,complete:row.fifteen_roles_complete,active:row.active_roles,
+  axes:AXES.map(a=>({axis:a,score:row.axes[a].score,state:row.axes[a].state,roles:Object.entries(row.roles).filter(([k])=>k[0]===a.toLowerCase()).map(([k,x])=>({role:k,name:roleText(k),score:x.score,rank:x.rank,rank_n:x.rank_n,decile:x.decile,decile_status:x.decile_status,selected:x.selected,partial:x.partial,
    metrics:x.metrics.map(m=>({metric:m.metric,raw_status:m.raw_status,score:m.score,reason:m.reason,reference_n:m.reference_n,reference_scope:m.reference_scope,weight:m.weight,
-    lineage:(r.lineage||[]).find(l=>l.role===k&&l.metric===m.metric)||null}))}))})),families:r.input_family_contributions||{}});}
+    w:W.find(l=>l.role===k&&l.metric===m.metric)||null}))}))})),families:row.input_family_contributions||{}});}
 
 /* ---- saved record (Main's projection of the engine's result for replay) */
-function savedFrom(result){checkResult(result,result.model_id);return freeze({schema_version:SCHEMA.SAVED,...Object.fromEntries(SAVED_KEYS.slice(1).map(k=>[k,copy(result[k])]))});}
 function validateSaved(x){try{if(!isObj(x)||x.schema_version!==SCHEMA.SAVED||Object.keys(x).sort().join()!==[...SAVED_KEYS].sort().join())return{ok:false,code:'SAVED_SHAPE'};
  if(!isObj(x.configuration)||x.configuration.schema_version!==SCHEMA.CONFIG||!own(CANDIDATE_OF,x.configuration.model_id)||!HEX.test(String(x.result_hash)))return{ok:false,code:'SAVED_CONFIG'};
  return{ok:true};}catch(_){return{ok:false,code:'SAVED_SHAPE'};}}
 
-/* ---- Top500 selection (public view from the engine route) */
-const SELECTION_KEYS=['schema_version','population_id','population_version','evaluation_day','input_cutoff','apply_at','status','official','target_count','denominator','members_hash',
- 'boundary_uncertain','selected_count','candidate_count','unique_candidate_issuers','replace_official','reasons','whole_market_denominator','result_hash','policy','members',
- 'unresolved_count','excluded_count','retained_confirmed','membership_changes'];
-function checkSelection(x){if(!isObj(x)||x.schema_version!==SCHEMA.SELECTION)fail('SELECTION_SCHEMA');
- for(const k of Object.keys(x))if(!SELECTION_KEYS.includes(k))fail('SELECTION_KEY:'+k);// prices, market caps, evidence never reach the screen
- if(!own(SELECTION_TEXT,x.status)||x.official!==false||x.replace_official!==false)fail('SELECTION_STATE');
- if(!DAY.test(x.evaluation_day)||!HEX.test(String(x.members_hash))||!Array.isArray(x.members))fail('SELECTION_SHAPE');
- const iss=new Set(),sec=new Set();x.members.forEach((m,i)=>{if(m.selection_rank!==i+1)fail('RANK_GAP');if(iss.has(m.issuer_id))fail('ISSUER_DUPLICATE');if(sec.has(m.representative_security_id))fail('SECURITY_DUPLICATE');
-  iss.add(m.issuer_id);sec.add(m.representative_security_id);});
- if(x.status==='VALIDATED_RESEARCH_CANDIDATE'&&(x.members.length!==500||x.denominator!==500))fail('SELECTION_COUNT');return freeze(copy(x));}
-function populationView(key,sel,kind){const P=POPULATIONS[key];if(!P)return null;
+/* ---- Top500 view (Codex top500_view(): top500-view/1, an allowlisted authenticated research projection) */
+const VIEW_KEYS=['schema_version','population_id','population_version','evaluation_day','input_cutoff','apply_at','status','denominator','target_count','selected_count','boundary_uncertain',
+ 'reasons','source_result_hash','visibility','public_publication_authorized','retained_confirmed_available','members','official','replace_official','view_hash'];
+function checkView(x){if(!isObj(x)||x.schema_version!==SCHEMA.VIEW)fail('VIEW_SCHEMA');
+ for(const k of Object.keys(x))if(!VIEW_KEYS.includes(k))fail('VIEW_KEY:'+k);// prices, market caps, evidence never reach the screen
+ if(!own(SELECTION_TEXT,x.status)||x.official!==false||x.replace_official!==false||x.public_publication_authorized!==false)fail('VIEW_STATE');
+ if(!DAY.test(x.evaluation_day)||!HEX.test(String(x.view_hash))||!HEX.test(String(x.source_result_hash))||!Array.isArray(x.members))fail('VIEW_SHAPE');
+ const iss=new Set(),sec=new Set(),rk=new Set();for(const m of x.members){if(!Number.isInteger(m.selection_rank)||m.selection_rank<1||rk.has(m.selection_rank))fail('RANK_INVALID');
+  if(iss.has(m.issuer_id))fail('ISSUER_DUPLICATE');if(sec.has(m.representative_security_id))fail('SECURITY_DUPLICATE');iss.add(m.issuer_id);sec.add(m.representative_security_id);rk.add(m.selection_rank);}
+ if(x.status==='VALIDATED_RESEARCH_CANDIDATE'&&(x.members.length!==500||x.denominator!==500))fail('VIEW_COUNT');return freeze(copy(x));}
+function populationView(key,v,kind){const P=POPULATIONS[key];if(!P)return null;
  if(key!=='top500')return freeze({key,label:P.label,text:P.text,state:'KNOWN',lines:[]});
- if(!sel)return freeze({key,label:P.label,text:P.text,state:'NOT_DELIVERED',lines:['선정 결과 전달 전 · 실제 Top500 명부·가격·주식수 근거 미충족(계산 담당 보고)']});
- return freeze({key,label:P.label,text:P.text,state:sel.status,lines:[
-  SELECTION_TEXT[sel.status]+' · '+(DATA_KIND_TEXT[kind]||''),
-  sel.reasons.length?'사유 '+sel.reasons.map(r=>SELECTION_REASON[r]||r).join(' · ')+(sel.retained_confirmed?' · 이전 정상본 유지':' · 이전 정상본 없음'):'선정 사유 없음',
-  '선정 기준일 '+sel.evaluation_day+' · 적용 '+sel.apply_at+' · 입력 마감 '+sel.input_cutoff,
-  '선정 '+sel.selected_count+' 고유 발행사 · 후보 '+sel.candidate_count+' · 미해결 '+sel.unresolved_count+' · 제외 '+sel.excluded_count+' · 복수 종류주 발행사 '+sel.members.filter(m=>m.economic_classes>1).length+'(합산)',
-  '분모 '+(sel.denominator===null?'확정 전(없음)':sel.denominator)+' · 95% 목표 '+sel.target_count+'/500 · 전체시장 분모 없음',
-  '모집단 '+sel.population_id+' · '+sel.population_version+' · 정책 '+sel.policy.version+' · 구성원 해시 '+sel.members_hash.slice(0,12)+'…',
-  '시총 선정 순위(1~'+sel.members.length+')는 QGV 순위가 아님 · 가격·시총은 보이지 않음']});}
+ if(!v)return freeze({key,label:P.label,text:P.text,state:'NOT_DELIVERED',lines:['선정 결과 전달 전 · 실제 Top500 명부·가격·주식수 근거 미충족(계산 담당 보고)']});
+ return freeze({key,label:P.label,text:P.text,state:v.status,lines:[
+  SELECTION_TEXT[v.status]+' · '+(DATA_KIND_TEXT[kind]||''),
+  v.reasons.length?'사유 '+v.reasons.map(r=>SELECTION_REASON[r]||r).join(' · ')+(v.retained_confirmed_available?' · 이전 정상본 유지(인증 경로)':' · 이전 정상본 없음'):'선정 사유 없음',
+  '선정 기준일 '+v.evaluation_day+' · 적용 '+v.apply_at+' · 입력 마감 '+v.input_cutoff,
+  '선정 '+v.selected_count+' 고유 발행사 · 복수 종류주 발행사 '+v.members.filter(m=>m.economic_class_count>1).length+'(합산)'+(v.boundary_uncertain?' · 500위 경계 불확실':''),
+  '분모 '+(v.denominator===null?'확정 전(없음)':v.denominator)+' · 95% 목표 '+v.target_count+'/500 · 전체시장 분모 없음',
+  '모집단 '+v.population_id+' · '+v.population_version+' · 선정 결과 '+v.source_result_hash.slice(0,12)+'… · 인증 연구 보기(공개 게시 권한 아님)',
+  '시총 선정 순위(1~'+v.members.length+')는 QGV 순위가 아님 · 가격·시총은 보이지 않음']});}
 
 /* ---- 2.1 pair state (no result of another model or population under the chosen name) */
 function boardState(pop,model,{officialLoaded=false,saved=null,selection=null}={}){
@@ -227,5 +234,5 @@ function boardState(pop,model,{officialLoaded=false,saved=null,selection=null}={
 
 return Object.freeze({SCHEMA,AXES,ROLE_TEXT,POPULATIONS,MODELS,CANDIDATE_OF,KIND_TEXT,TEMPLATE_TEXT,GATE_TEXT,REASON_TEXT,SELECTION_TEXT,DATA_KIND_TEXT,
  checkContext,canonical,roleText,templateOf,sectorOf,scopes,recipeLine,start,rolesOf,axisOf,setAxis,setRole,excludeRole,setMetric,blocked,addMetric,removeMetric,replaceMetric,
- restore,restoreScope,activeCount,problems,sums,families,card,search,checkResult,previewAnswer,compare,stages,deciles,detail,savedFrom,validateSaved,checkSelection,populationView,boardState,pct,score});
+ restore,restoreScope,activeCount,problems,sums,families,card,search,previewAnswer,pageAnswer,TRANSITION,compare,stages,deciles,detail,validateSaved,checkView,populationView,boardState,pct,score});
 });

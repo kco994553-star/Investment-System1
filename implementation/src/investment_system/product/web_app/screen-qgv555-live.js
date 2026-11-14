@@ -19,7 +19,7 @@ const Q=()=>I.qgv555;
 const REQ='sector-qgv-engine-request/1';
 const S={pop:'universe504',model:'OFFICIAL',load:'IDLE',code:null,ctx:null,selections:null,selKind:'SYNTHETIC_COMPLETE',
  cand:'U1-555',scope:'COMMON',axis:'Q',edit:null,addRole:null,query:'',preview:null,pendingId:null,current:null,dropped:0,msg:null,err:null,
- company:null,decRole:'q_profitability',replay:null};
+ company:null,detail:null,decRole:'q_profitability',dec:null,replay:null};
 const listeners=new Set();
 const changed=()=>{for(const f of[...listeners]){try{f();}catch(_){}}};
 let seq=0;const rid=()=>'q555-'+(++seq)+'-'+Math.random().toString(36).slice(2,8);
@@ -50,10 +50,10 @@ async function load(signal){if(S.load==='LOADING')return;S.load='LOADING';S.code
  const a=await call('qgv555_context',{},signal);if(!a.res||a.res.ok!==true){S.load='ERROR';S.code=a.res&&a.res.code;changed();return;}
  let ctx;try{ctx=Q().checkContext(a.res);}catch(e){S.load='ERROR';S.code='CONTEXT '+e.message;changed();return;}
  const sel={};for(const k of['SYNTHETIC_COMPLETE','SYNTHETIC_ROSTER_UNPROVEN']){const b=await call('qgv555_population',{input_id:k},signal);
-  if(b.res&&b.res.ok===true){try{sel[k]=Q().checkSelection(b.res.selection);}catch(_){sel[k]=null;}}}
+  if(b.res&&b.res.ok===true){try{sel[k]=Q().checkView(b.res.view);}catch(_){sel[k]=null;}}}
  S.ctx=ctx;S.selections=sel;S.load='READY';pick('U1-555','COMMON');changed();}
 function pick(cand,scope){const sv=savedOf(Q().MODELS[cand].model_id);S.cand=cand;S.scope=scope;S.edit=sv?Object.freeze(JSON.parse(JSON.stringify(sv.configuration))):Q().start(S.ctx,cand);
- S.preview=null;S.pendingId=null;S.current=null;S.err=null;S.msg=null;S.company=null;S.replay=null;}
+ S.preview=null;S.pendingId=null;S.current=null;S.err=null;S.msg=null;S.company=null;S.detail=null;S.dec=null;S.replay=null;}
 
 /* ---- 2.1 selector (inside 2.1.1) */
 function selector({redraw}){const M=Q();if(!M)return{el:null,official:true};
@@ -92,10 +92,21 @@ function fill(route,{body}){const signal=route.signal;
   if(S.pendingId!==req.request_id||key()!==k){S.dropped++;changed();return;}
   S.pendingId=null;const a=M.previewAnswer(req,res,S.current);
   if(a.state!=='SHOWN'){S.err='재계산 거절 · '+say(a.code||a.state)+(S.preview?' · 이전 미리보기는 그대로':'');changed();return;}
-  S.preview={key:k,res,cmp:M.compare(res),saved:!!sv};S.company=null;changed();}
+  const pg=res.page;S.preview={key:k,res,id:res.preview_id,first:pg,cmp:M.compare(pg),rows:[...pg.rows],next:pg.next_offset,saved:!!sv};S.company=null;S.detail=null;S.dec=null;changed();
+  void roleDeciles(S.decRole);}
+ // The other requests of one shown preview (each answers for that preview only; an answer for an older one is dropped).
+ const same=(pv,hash)=>S.preview===pv&&pv.key===key()&&(!hash||hash===pv.first.after_result_hash);
+ async function morePage(){const pv=S.preview;if(!pv||pv.next===null)return;const{res}=await call('qgv555_page',{preview_id:pv.id,offset:pv.next},signal);if(signal.aborted)return;
+  const a=Q().pageAnswer(pv.first,res);if(a.state!=='SHOWN'||!same(pv)){S.dropped++;changed();return;}pv.rows.push(...res.page.rows);pv.next=res.page.next_offset;changed();}
+ async function openDetail(id){const pv=S.preview;if(!pv)return;if(S.company===id){S.company=null;S.detail=null;changed();return;}S.company=id;S.detail=null;changed();
+  const{res}=await call('qgv555_detail',{preview_id:pv.id,company_id:id},signal);if(signal.aborted)return;
+  if(!res||res.ok!==true||!same(pv,res.after_result_hash)||res.model_id!==S.edit.model_id||S.company!==id){S.dropped++;changed();return;}S.detail=res.row;changed();}
+ async function roleDeciles(role){const pv=S.preview;if(!pv)return;S.decRole=role;S.dec=null;changed();
+  const{res}=await call('qgv555_role',{preview_id:pv.id,role},signal);if(signal.aborted)return;
+  if(!res||res.ok!==true||!same(pv,res.after_result_hash)||res.role!==S.decRole){S.dropped++;changed();return;}S.dec=Q().deciles(res);changed();}
  // 저장: inside the click (the store's action gate), the engine's replay record that came with the shown preview of this exact setting.
  function save(e){const p=S.preview;if(!p||p.key!==key())return;const sv=p.res.saved;
-  if(!sv||sv.result_hash!==p.res.after.result_hash||JSON.stringify(sv.configuration)!==JSON.stringify(S.edit)){S.err='저장하지 못함 · 엔진 기록이 보인 미리보기와 다름';changed();return;}
+  if(!sv||sv.result_hash!==p.first.after_result_hash||JSON.stringify(sv.configuration)!==JSON.stringify(S.edit)){S.err='저장하지 못함 · 엔진 기록이 보인 미리보기와 다름';changed();return;}
   try{I.store.qgv555.save(e,sv);S.msg='이 기기에 저장함 · '+S.cand+' · 결과 '+sv.result_hash.slice(0,12)+'… · 합성 입력';S.err=null;}catch(err){S.err='저장하지 못함 · '+String(err&&err.message);}changed();}
  async function replay(){const sv=savedOf(S.edit.model_id);if(!sv)return;S.replay={state:'PENDING'};changed();const{res}=await call('qgv555_replay',{saved:sv},signal);if(signal.aborted)return;
   S.replay=res&&res.ok===true?{state:res.reproduced?'REPRODUCED':'DIFFERENT',hash:res.result_hash}:{state:'REFUSED',code:res&&res.code};changed();}
@@ -106,7 +117,7 @@ function fill(route,{body}){const signal=route.signal;
    h('b',null,S.load==='ERROR'?'불러오지 못함':'555 계약 · 합성 입력'),h('span',{class:'reason'},S.load==='ERROR'?say(S.code):'계산 담당 요소 목록·기본 설정·회계모형 정의와 Top500 합성 선정 · 누를 때만 부름'),
    h('button',{type:'button',class:'btn',disabled:S.load==='LOADING',dataset:{k:'q5-load'},onclick:()=>{void load(signal);}},S.load==='LOADING'?'불러오는 중':'555 계약 불러오기'))];
   const ctx=S.ctx,c=S.edit,sc=S.scope,roles=M.rolesOf(c,sc),cnt=M.activeCount(c,sc),sums=M.sums(c,ctx,sc),probs=M.problems(c,ctx,sc);
-  const pv=S.preview&&S.preview.key===key()?S.preview:null,row=pv?(pv.res.after.rows.find(r=>r.lineage&&r.lineage.length)||null):null;
+  const pv=S.preview&&S.preview.key===key()?S.preview:null,row=pv?(pv.rows.find(r=>r.after&&r.after.weights&&r.after.weights.length)||null):null;
   const editable=(ctx.recipes[M.templateOf(sc)]||{}).state==='DEFINED_GENERAL';
   const models=group('555 모형',...['U1-555','S1-555'].map(k=>chip(M.MODELS[k].label,S.cand===k,{dataset:{q5M2:k,k:'q5-m2-'+k},
    onclick:act(()=>pick(k,k==='U1-555'?'COMMON':M.scopes(ctx,'S1-555').find(x=>x.state==='DEFINED_GENERAL').scope))})));
@@ -172,36 +183,39 @@ function fill(route,{body}){const signal=route.signal;
   if(!pv)return h('div',{class:'sk state-card',role:'status',dataset:{q5Preview:pend?'PENDING':'NONE'}},h('b',null,'전후 미리보기'),
    h('span',{class:'reason'},pend?'요청 중 · 끝나기 전 답은 보이지 않음':'재계산 전 · 같은 입력에서 엔진이 계산한 전후만 보임 · 이전 결과를 새 설정 이름으로 보이지 않음'),
    S.dropped?h('span',{class:'meta',dataset:{q5Dropped:String(S.dropped)}},'버린 늦은 답 ',String(S.dropped)):null);
-  const C=pv.cmp,a=pv.res.after,cov=M.stages(C.coverage.after),covB=M.stages(C.coverage.before);
-  const th=(t,s)=>h('th',{scope:'col'},t,s?h('small',{class:'sub'},s):null),td=v=>h('td',null,v);
-  const rows=C.rows.map(x=>h('tr',{dataset:{q5Row:x.company_id}},
-   h('td',null,h('button',{type:'button',class:'lk',dataset:{k:'q5-co-'+x.company_id},onclick:act(()=>{S.company=S.company===x.company_id?null:x.company_id;})},x.company_id)),
-   td(x.before?M.score(x.before.total)+(x.before.rank?' · '+x.before.rank+'위':''):'—'),
-   td(M.score(x.after.Q)),td(M.score(x.after.G)),td(M.score(x.after.V)),td(M.score(x.after.total)+(x.after.partial?' 부분':'')),
-   td(x.after.rank?x.after.rank+'/'+x.after.rank_n:'순위 없음'),td((M.GATE_TEXT[x.after.gate]||x.after.gate)+(x.after.complete?' · 15역할':''))));
-  const D=M.deciles(a,S.decRole),roleOpts=Object.keys(a.rows[0]?a.rows[0].roles:{});
+  const C=pv.cmp,cov=M.stages(C.coverage.after),covB=M.stages(C.coverage.before);
+  const th=(t,sub)=>h('th',{scope:'col'},t,sub?h('small',{class:'sub'},sub):null),td=v=>h('td',null,v);
+  const ax=(r,a)=>{const x=r.axes[a];return M.score(x.after)+(x.transition&&M.TRANSITION[x.transition]?' · '+M.TRANSITION[x.transition]:'');};
+  const rows=pv.rows.map(x=>h('tr',{dataset:{q5Row:x.company_id}},
+   h('td',null,h('button',{type:'button',class:'lk','aria-expanded':String(S.company===x.company_id),dataset:{k:'q5-co-'+x.company_id},onclick:()=>{void openDetail(x.company_id);}},x.company_id)),
+   td(M.score(x.before.total)+(x.before.rank?' · '+x.before.rank+'위':'')),td(ax(x,'Q')),td(ax(x,'G')),td(ax(x,'V')),
+   td(M.score(x.after.total)+(x.after.partial_total?' 부분':'')),td(x.after.rank?x.after.rank+'위':'순위 없음'),
+   td('Q'+x.after.active_roles.Q+'/G'+x.after.active_roles.G+'/V'+x.after.active_roles.V)));
+  const roleIds=Object.keys(S.edit.roles),D=S.dec;
   return h('div',{class:'lb',dataset:{q5Preview:'SHOWN'}},
    h('div',{class:'lb-head'},h('b',null,'전후 미리보기 · 엔진 답'),h('span',{class:'meta'},M.DATA_KIND_TEXT.SYNTHETIC,' · ',pv.res.input_id)),
-   h('p',{class:'reason',dataset:{q5PopEffect:C.population}},C.population==='SAME'?'같은 평가·참조 입력 · 모집단 효과 없음 · 차이는 설정 효과만':'입력이 다름 · 모집단 효과와 설정 효과를 나눠 봐야 함'),
-   h('p',{class:'meta',dataset:{q5Versions:''}},'모형 ',C.versions.model,' · 설정 전 ',C.versions.config_before.slice(0,10),'… → 후 ',C.versions.config_after.slice(0,10),'… · 평가 입력 ',C.versions.evaluation.slice(0,10),
-    '… · 참조 입력 ',C.versions.reference.slice(0,10),'… · 분류 ',C.versions.classification,' · 엔진 코드 ',C.versions.code.slice(0,10),'… · 계산 ',C.versions.calculated_at),
+   h('p',{class:'reason',dataset:{q5PopEffect:C.population}},C.scope==='SETTINGS_ONLY_FIXED_INPUT_AND_POPULATIONS'?'설정 효과만 · 같은 평가·참조 입력과 모집단 고정 · 모집단 효과는 이 비교에서 평가하지 않음(별도 비교)':'비교 범위 '+C.scope),
+   h('p',{class:'meta',dataset:{q5Versions:''}},'평가 입력 ',C.versions.evaluation.slice(0,10),'… · 참조 입력 ',C.versions.reference.slice(0,10),'… · 분류 ',C.versions.classification,
+    ' · 결과 전 ',C.versions.before.slice(0,10),'… → 후 ',C.versions.after.slice(0,10),'… · 계산 ',C.versions.calculated_at),
    h('table',{class:'tbl',dataset:{q5Coverage:'SHOWN'}},h('caption',null,'커버리지 단계 · 발행사 수 · 전 → 후'),
-    h('tbody',null,...cov.map((s,i)=>h('tr',null,h('th',{scope:'row'},s.label),td(String(covB[i].value)+' → '+String(s.value)))))),
-   h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{q5Table:''}},h('caption',null,'기업 · 전 총점 → 후 Q/G/V·총점·순위 · 엔진 순서 그대로'),
-    h('thead',null,h('tr',null,th('기업'),th('전 총점'),th('Q'),th('G'),th('V'),th('총점'),th('순위',M.KIND_TEXT[M.MODELS[S.cand].kind].split(' · ')[0]),th('관문·완결'))),h('tbody',null,...rows))),
-   S.company?detailBlock(M,a,S.company):null,
-   h('div',{dataset:{q5Deciles:S.decRole}},h('label',{class:'meta'},'역할 10분위 ',h('select',{dataset:{k:'q5-dec-role'},onchange:e=>{S.decRole=e.target.value;changed();}},
-     ...roleOpts.map(r=>h('option',{value:r,selected:r===S.decRole},M.roleText(r))))),
-    h('div',{class:'scroll',role:'group','aria-label':'10분위'},...D.bands.map((n,i)=>h('span',{class:'chip',dataset:{q5Band:String(i+1)}},'D'+(i+1)+' '+n))),
-    h('p',{class:'meta'},'D10 = 상위 · 유효 '+D.valid+'/'+D.n+' · 구간 밖 '+D.other+' · 상위 20개로 대신하지 않음 · 동점은 엔진의 저장 순서 규칙')));}
- function detailBlock(M,a,id){const d=M.detail(a,id);if(!d)return null;
+    h('tbody',null,...cov.map((st,i)=>h('tr',null,h('th',{scope:'row'},st.label),td(String(covB[i].value)+' → '+String(st.value)))))),
+   h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{q5Table:''}},h('caption',null,'기업 '+pv.rows.length+'/'+C.row_count+' · 전 총점 → 후 축·총점·순위 · 엔진 순서 그대로'),
+    h('thead',null,h('tr',null,th('기업'),th('전 총점'),th('Q'),th('G'),th('V'),th('총점'),th('순위',M.KIND_TEXT[M.MODELS[S.cand].kind].split(' · ')[0]),th('활성 역할'))),h('tbody',null,...rows))),
+   pv.next!==null?h('button',{type:'button',class:'btn',dataset:{k:'q5-more'},onclick:()=>{void morePage();}},'다음 기업 보기('+pv.rows.length+'/'+C.row_count+')'):null,
+   S.company?detailBlock(M,S.company):null,
+   h('div',{dataset:{q5Deciles:S.decRole,q5DecState:D?'SHOWN':'PENDING'}},h('label',{class:'meta'},'역할 10분위 ',h('select',{dataset:{k:'q5-dec-role'},onchange:e=>{void roleDeciles(e.target.value);}},
+     ...roleIds.map(r=>h('option',{value:r,selected:r===S.decRole},M.roleText(r))))),
+    D?h('div',{class:'scroll',role:'group','aria-label':'10분위'},...D.bands.map((n,i)=>h('span',{class:'chip',dataset:{q5Band:String(i+1)}},'D'+(i+1)+' '+n))):h('p',{class:'meta'},'구간 불러오는 중'),
+    D?h('p',{class:'meta'},'D10 = 상위 · 유효 '+D.valid+'/'+D.n+' · 구간 밖 '+D.other+' · 상위 20개로 대신하지 않음 · 동점은 엔진의 저장 순서 규칙'):null));}
+ function detailBlock(M,id){const pr=S.preview.rows.find(r=>r.company_id===id),d=S.detail?M.detail(S.detail,pr):null;
+  if(!d)return h('p',{class:'meta',dataset:{q5Detail:'PENDING'}},id,' 상세 불러오는 중');
   const metricLine=m=>h('li',null,m.metric,' ',M.score(m.score),' · ',m.reason?(M.REASON_TEXT[m.reason]||m.reason):'참조 '+m.reference_n,' · 설정 '+m.weight,
-   m.lineage?' · 명목 '+M.pct(m.lineage.nominal)+' · 실효 '+M.pct(m.lineage.effective):'');
+   m.w?' · 명목 '+M.pct(m.w.nominal)+' · 결측 재배분 뒤 '+M.pct(m.w.missing_redistributed_before_gate)+' · 관문 뒤 '+M.pct(m.w.after_gate):'');
   const roleLine=r=>h('li',{dataset:{q5DetailRole:r.role}},h('b',null,r.name),' ',M.score(r.score),r.decile_status==='VALID'?' · D'+r.decile:'',r.selected?'':' · 제외',r.partial?' · 일부 지표만':'',
    h('ul',null,...r.metrics.map(metricLine)));
   const axisBox=x=>h('details',{class:'why',open:x.axis===S.axis},h('summary',null,x.axis,' ',M.score(x.score),' ▸'),h('ul',{class:'news-lines'},...x.roles.map(roleLine)));
   return h('div',{class:'lb',dataset:{q5Detail:id}},
-   h('div',{class:'lb-head'},h('b',null,id),h('span',{class:'meta'},'총점 ',M.score(d.total),d.partial?' 부분 합계':'',' · ',M.GATE_TEXT[d.gate]||d.gate,' · 활성 Q',d.active.Q,'/G',d.active.G,'/V',d.active.V)),
+   h('div',{class:'lb-head'},h('b',null,id),h('span',{class:'meta'},'총점 ',M.score(d.total),d.partial?' 부분 합계':'',' · ',M.GATE_TEXT[d.gate]||d.gate,d.complete?' · 15역할 모두':'',' · 활성 Q',d.active.Q,'/G',d.active.G,'/V',d.active.V)),
    ...d.axes.map(axisBox));}
  changed();}
 function subscribe(fn,signal){listeners.add(fn);if(signal)signal.addEventListener('abort',()=>listeners.delete(fn),{once:true});}
