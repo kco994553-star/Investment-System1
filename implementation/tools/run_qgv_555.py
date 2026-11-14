@@ -23,6 +23,14 @@ def main():
         e,r=fixture();job=dict(data_kind='SYNTHETIC');configs={k:configuration(k) for k in ('U1-555','S1-555')}
     else:
         job=json.loads(a.job.read_bytes())
+        if job.get('mode')=='central-v-input':
+            from investment_system.research.qgv_555_central_v import bind_central_prices
+            snapshot,audit=bind_central_prices(read(job['snapshot']),read(job['financial_records']),read(job['prices']),
+                job['reviewed_at'],job['input_cutoff'])
+            a.output.mkdir(parents=True)
+            (a.output/'snapshot.json').write_bytes(json_bytes(snapshot))
+            (a.output/'central-v-audit.json').write_bytes(json_bytes(audit))
+            return
         if job.get('mode')=='preview':
             from investment_system.research.qgv_555_preview import preview,preview_page
             result=preview(job['request'],read(job['evaluation']),read(job['reference']),

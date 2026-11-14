@@ -4,7 +4,7 @@ from copy import deepcopy
 import hashlib,json
 from .dual_qgv import json_bytes
 from .dual_qgv_delivery import MAX_BYTES,require
-from .qgv_555 import IDS,SPECS
+from .qgv_555 import IDS,SPECS,configuration,validate_configuration
 from .sector_qgv import digest
 
 
@@ -29,7 +29,8 @@ def artifacts(boards,*,data_kind,max_bytes=MAX_BYTES):
         if part:flush()
         return out
     for key,b in boards.items():
-        require(b['model_id']==IDS[key],'MODEL_ID')
+        config=validate_configuration(b['configuration'])
+        require(config['candidate']==key and b['model_id']==configuration(key,version=config['version'])['model_id'],'MODEL_ID')
         require(b['result_hash']==digest({k:v for k,v in b.items() if k!='result_hash'}),'RESULT_HASH')
         if evaluation is None:evaluation=b['evaluation']
         require(b['evaluation']==evaluation,'EVALUATION_CONTEXT')

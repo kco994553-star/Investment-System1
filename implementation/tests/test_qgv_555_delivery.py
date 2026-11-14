@@ -21,3 +21,12 @@ def test_anchor_independent_and_partial_sample_kept():
     pin=hashlib.sha256(json_bytes(f['manifest.json'])).hexdigest()
     with pytest.raises(ValueError,match='REFERENCE_ANCHOR'):
         validate(f,manifest_sha256=pin,expected_evaluation=b['evaluation'],expected_references={'U1-555':b['evaluation']})
+
+
+def test_registered_owner_version_projects_but_unknown_or_mislabeled_candidate_refuses():
+    e,r=fixture(8);b=run(configuration('U1-555',version='0.2.0'),e,r)
+    f=artifacts({'U1-555':b},data_kind='SYNTHETIC')
+    assert f['index.json']['models']['U1-555']['model_id']=='unified-555/0.2.0'
+    with pytest.raises(ValueError):artifacts({'S1-555':b},data_kind='SYNTHETIC')
+    bad=deepcopy(b);bad['configuration']['version']='9.9.9'
+    with pytest.raises(ValueError):artifacts({'U1-555':bad},data_kind='SYNTHETIC')
