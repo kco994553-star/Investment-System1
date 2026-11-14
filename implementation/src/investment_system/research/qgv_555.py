@@ -16,6 +16,13 @@ from .sector_qgv import digest, timestamp
 from .sector_qgv_registry import SECTORS, TEMPLATES, ALIASES as SECTOR_ALIASES
 
 IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
+OWNER_IDS={'U1-555':'unified-555/0.2.0','S1-555':'sector-555/0.2.0'}
+OWNER_POLICIES=dict(classification_policy='official-profile-sic-provisional/1',
+    accounting_policy='reit-general-financial-reference-only/1',
+    historical_share_policy='cross-filing-annual-duplicates/1',
+    growth_efficiency_policy='incremental-roic-then-roa-improvement/1',
+    valuation_share_policy='central-weighted-average-diluted/1',
+    target_policy='joint-eligible95-all15-reference/1')
 V_SPECS={'v_earnings_yield':(('ebit_yield',1),),'v_fcf_yield':(('fcf_yield',1),),
     'v_vs_industry':(('ebit_yield',1),),'v_vs_own_history':(('own_history',1),),
     'v_expectation_check':(('gap',-1),)}
@@ -74,13 +81,22 @@ def catalog():
             formula_source='sector_qgv.calculate_factor',required_inputs=v['inputs'],source='SECTOR_CATALOG',
             implementation_status='EXISTING_KERNEL',availability='PER_INPUT',validation='REQUIRES_EVIDENCE',
             default=False,recommendation='SUITABLE_OPTION_NOT_DEFAULT')
+    for key in ('ebit_yield','fcf_yield','own_history','gap'):
+        out['central::'+key]=dict(out[key],canonical_id='central::'+key,
+            variant=key+'/central-wad-reported-1',aliases=[],
+            formula=out[key]['formula']+'; EV uses price × weighted-average diluted shares + debt − cash',
+            formula_source='qgv_v2._metrics; qgv2_inputs._v_inputs',
+            period='CENTRAL_SELECTED_REPORTED_FLOW_PERIOD',
+            valuation_share_basis='WEIGHTED_AVERAGE_DILUTED',default=False,
+            recommendation='OWNER_RESEARCH_20261114_NOT_ACTUAL_CLASS_MARKET_CAP')
     return out
 
 
-def configuration(candidate):
+def configuration(candidate, *, version='0.1.0'):
     if candidate not in IDS:raise ValueError('UNKNOWN_MODEL')
-    return dict(schema_version='qgv-555-config/1',model_id=IDS[candidate],candidate=candidate,
-        version='0.1.0',axis_weights=dict(Q=34,G=33,V=33),sector_axis_overrides={},
+    if version not in ('0.1.0','0.2.0'):raise ValueError('UNKNOWN_MODEL_VERSION')
+    out=dict(schema_version='qgv-555-config/1',model_id=(OWNER_IDS if version=='0.2.0' else IDS)[candidate],candidate=candidate,
+        version=version,axis_weights=dict(Q=34,G=33,V=33),sector_axis_overrides={},
         roles={r:dict(axis=a,weight=w,metrics={m:1 for m,d in SPECS[r]}) for a,rs in WEIGHTS.items() for r,w in rs.items()},
         minimum=MIN_PEERS,missing_policy='available-role-weight-50/1',
         submetric_missing_policy='available-submetric-weight-renormalize/1',
@@ -88,11 +104,18 @@ def configuration(candidate):
         gate_policy='official-q-percentile-required/1',duplicate_policy='DISCLOSE_ONLY',
         classification_dictionary_version='common-industry-dictionary/2',type_multiplier=False,
         additional_factor_weight=0,official=False)
+    if version=='0.2.0':
+        out.update(OWNER_POLICIES)
+        for role in V_SPECS:out['roles'][role]['metrics']={'central::'+k:v for k,v in out['roles'][role]['metrics'].items()}
+    return out
 
 
 def validate_configuration(c):
-    if c.get('candidate') not in IDS or c.get('model_id')!=IDS[c['candidate']]:raise ValueError('MODEL_ID')
-    base=configuration(c['candidate'])
+    if c.get('candidate') not in IDS:raise ValueError('MODEL_ID')
+    base=configuration(c['candidate'],version=c.get('version'))
+    if c.get('model_id')!=base['model_id']:raise ValueError('MODEL_ID')
+    for k in OWNER_POLICIES:
+        if c.get(k)!=base.get(k):raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
     for k in ('schema_version','version','minimum','missing_policy','submetric_missing_policy',
               'reference_policy','gate_policy','duplicate_policy','type_multiplier','additional_factor_weight','classification_dictionary_version'):
         if c.get(k)!=base[k]:raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
@@ -142,9 +165,28 @@ def _usable(r,metric,s):
     if timestamp(proof['available_at'])>timestamp(s['input_cutoff']):return None,'NOT_AVAILABLE_AT_CUTOFF'
     if metric in SHARE_METRICS and proof.get('historical_share_basis')!='VERIFIED':return None,'HISTORICAL_SHARE_BASIS_UNVERIFIED'
     if r.get('accounting_template') not in catalog()[metric]['accounting_scope']:return None,'ACCOUNTING_NOT_APPLICABLE'
-    if metric in ('ebit_yield','fcf_yield','own_history','gap'):
+    if metric in ('ebit_yield','fcf_yield','own_history','gap') or metric.startswith('central::'):
         if proof.get('valuation_day')!=s['evaluation_day'] or proof.get('security_and_actions')!='VERIFIED':return None,'VALUATION_SECURITY_BASIS_UNVERIFIED'
+        if metric.startswith('central::') and proof.get('share_basis')!='WEIGHTED_AVERAGE_DILUTED':return None,'VALUATION_SHARE_BASIS_UNVERIFIED'
     return x,'VALID'
+
+
+def calculation_row(c, row):
+    """Owner-approved research view; preserve the original classification record."""
+    if c['version']!='0.2.0':return row
+    out=deepcopy(row)
+    if 'calculation_accounting_template' in row:
+        context=row.get('owner_source_context') or {}
+        activating=(row['calculation_accounting_template']=='GENERAL' and row.get('accounting_template')!='GENERAL')
+        if activating and (not context or not (row.get('temporary_classification') or {}).get('source_refs')):
+            raise ValueError('TEMPORARY_CLASSIFICATION_EVIDENCE')
+        if (row.get('calculation_sector_id')!=row.get('sector_id') and row.get('calculation_sector_id') is not None
+            and not row.get('calculation_sector_evidence')):
+            raise ValueError('TEMPORARY_SECTOR_EVIDENCE')
+        out['accounting_template']=row['calculation_accounting_template']
+        out['sector_id']=row.get('calculation_sector_id')
+        out['industry_group']=row.get('calculation_industry_group')
+    return out
 
 
 def _gate(r,s):
@@ -177,7 +219,8 @@ def run(c,e,ref,*,calculated_at=None):
         if not contexts or any(x.get('dictionary_version')!=c['classification_dictionary_version'] or not x.get('mapping_version') or not x.get('classification_hash') for x in contexts):
             raise ValueError('CLASSIFICATION_CONTEXT_REQUIRED')
     cats=catalog();points={};ref_rows={}
-    for r in sorted(ref['rows'],key=lambda x:x['company_id']):
+    for original in sorted(ref['rows'],key=lambda x:x['company_id']):
+        r=calculation_row(c,original)
         if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
         if r['issuer_id'] in points:
             if r.get('metrics')!=ref_rows[r['issuer_id']].get('metrics'):raise ValueError('ISSUER_POINT_CONFLICT')
@@ -189,7 +232,8 @@ def run(c,e,ref,*,calculated_at=None):
         for issuer,r in ref_rows.items():groups[keyfun(r)][issuer]=points[issuer]
         pools.update({k:_Pool(v) for k,v in groups.items()})
     out=[]
-    for r in sorted(e['rows'],key=lambda x:x['company_id']):
+    for original in sorted(e['rows'],key=lambda x:x['company_id']):
+        r=calculation_row(c,original)
         role_config=deepcopy(c['roles'])
         if c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
         supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
@@ -197,9 +241,13 @@ def run(c,e,ref,*,calculated_at=None):
         for role,spec in role_config.items():
             vals=[];items=[]
             for name,mw in spec['metrics'].items():
-                m=ALIASES.get(name,name);value,reason=raw[m];score=None;n=0;basis=None
+                m=ALIASES.get(name,name);requested_metric=m;value,reason=raw[m];score=None;n=0;basis=None
+                if (c['version']=='0.2.0' and role=='g_growth_efficiency' and
+                    m=='incremental_roic_3y' and value is None and
+                    'sector::roa_improvement_3y' not in {ALIASES.get(k,k) for k in spec['metrics']}):
+                    m='sector::roa_improvement_3y';value,reason=raw[m]
                 if supported and value is not None and mw>0:
-                    if m=='own_history':
+                    if m in ('own_history','central::own_history'):
                         if 0<=value<=100:score=value;basis='OWN_HISTORY'
                     else:
                         if c['candidate']=='S1-555':keys=[('sector',r.get('sector_id'),r.get('accounting_template'))]
@@ -215,6 +263,10 @@ def run(c,e,ref,*,calculated_at=None):
                 elif mw==0:reason='DISABLED_IN_SETTING'
                 items.append(dict(metric=m,raw=value,raw_status=raw[m][1],score=score,reason=None if score is not None else reason,
                                   reference_n=n,reference_scope=basis,weight=mw))
+                if c['version']=='0.2.0':
+                    items[-1].update(requested_metric=requested_metric,
+                        selection_reason='PRIMARY_RAW_UNAVAILABLE_ROA_FALLBACK' if m!=requested_metric else 'PRIMARY',
+                        primary_raw_status=raw[requested_metric][1])
                 if score is not None:vals.append((score,mw))
                 metric_scores[role+'|'+m]=items[-1]
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
@@ -253,6 +305,16 @@ def run(c,e,ref,*,calculated_at=None):
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
             status='READY' if supported else 'ACCOUNTING_RECIPE_PREPARING',lineage=lineage,
             input_family_contributions=dict(families)))
+        if c['version']=='0.2.0':
+            out[-1].update(original_accounting_template=original.get('accounting_template'),
+                original_sector_id=original.get('sector_id'),
+                calculation_accounting_template=r.get('accounting_template'),
+                temporary_classification=deepcopy(original.get('temporary_classification')),
+                financial_reference=deepcopy(original.get('financial_reference')),
+                growth_efficiency_calculation=[dict(metric=x['metric'],requested_metric=x['requested_metric'],
+                    selection_reason=x['selection_reason'],score_status=x['reason'])
+                    for x in roles['g_growth_efficiency']['metrics']],
+                valuation_share_basis='WEIGHTED_AVERAGE_DILUTED_NOT_ACTUAL_CLASS_SHARES')
     # Do not invent a new decile rule: the reusable stored order adapter below
     # uses the existing dual rule verbatim via its function (including tie splits).
     _rank(out)
@@ -273,6 +335,13 @@ def run(c,e,ref,*,calculated_at=None):
         raw_any=count(lambda r:any(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         raw_all=count(lambda r:all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         score=count(lambda r:r['roles'][role]['score'] is not None)) for role in SPECS}
+    if c['version']=='0.2.0':
+        result['coverage'].update(axis_target=math.ceil(.9*b['evaluation']['issuers']),
+            target_criteria='ALL_THREE_AXES_EACH_ROLE_WEIGHT_AT_LEAST_50_AND_ELIGIBLE_TOTAL',
+            all15_reference_only=True,
+            growth_efficiency_choices={m:len({r['issuer_id'] for r in out
+                if r['roles']['g_growth_efficiency']['metrics'][0]['metric']==m})
+                for m in {r['roles']['g_growth_efficiency']['metrics'][0]['metric'] for r in out}})
     result['result_hash']=digest(result)
     return result
 
@@ -317,7 +386,8 @@ def fixture(n=21):
             sector_id='INFORMATION_TECHNOLOGY',accounting_template='GENERAL',industry_group='synthetic-industry',
             metrics={m:(50 if m=='own_history' else i+1) for m in cats},
             metric_evidence={m:dict(status='VERIFIED',variant=v['variant'],source_refs=['SYNTHETIC_ONLY'],available_at=ts,
-                historical_share_basis='VERIFIED',valuation_day='2026-11-04',security_and_actions='VERIFIED') for m,v in cats.items()},
+                historical_share_basis='VERIFIED',valuation_day='2026-11-04',security_and_actions='VERIFIED',
+                share_basis='WEIGHTED_AVERAGE_DILUTED' if m.startswith('central::') else None) for m,v in cats.items()},
             gate=dict(percentile=80,calc_version='qgv2-calc/2026-10-23.1',evaluation_day='2026-11-04',source_refs=['SYNTHETIC_OFFICIAL_GATE'])))
     e=dict(schema_version='qgv-555-input/1',population_id='synthetic-evaluation',population_version='1',
         evaluation_day='2026-11-04',input_cutoff=ts,classification_version='synthetic-adapter-map/1',
@@ -327,7 +397,7 @@ def fixture(n=21):
     return e,ref
 
 
-def accounting_recipes():
+def accounting_recipes(*, version='0.1.0'):
     """Do not activate five names as five defined financial formulas."""
     out=[]
     known={'q_profitability':['roa_ttm','roe_common_ttm'],
@@ -341,4 +411,17 @@ def accounting_recipes():
                 variants=[m for m,d in SPECS[role]] if t=='GENERAL' else known.get(role,[]),
                 state='DEFINED' if t=='GENERAL' else 'PARTIAL_DEFINITION' if role in known else 'DEFINITION_REQUIRED',
                 limitation=None if t=='GENERAL' else 'Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback') for role in SPECS}))
+    if version=='0.2.0':
+        cfg=configuration('S1-555',version=version)
+        for item in out:
+            if item['accounting_template']=='EQUITY_REIT':
+                item.update(state='TEMPORARY_GENERAL',label='REIT 임시(일반기업 식)',
+                    calculation_accounting_template='GENERAL',permanent_ffo_affo_recipe='PREPARING')
+                for role,node in item['roles'].items():
+                    node.update(variants=list(cfg['roles'][role]['metrics']),state='TEMPORARY_GENERAL',
+                        limitation='Owner-approved interim GENERAL calculation; not a completed FFO/AFFO recipe')
+            elif item['accounting_template']=='GENERAL':
+                for role,node in item['roles'].items():node['variants']=list(cfg['roles'][role]['metrics'])
+            else:item['financial_reference_policy']='ORIGINAL_OFFICIAL_MODEL_ONLY_NOT_555'
+    elif version!='0.1.0':raise ValueError('UNKNOWN_MODEL_VERSION')
     return out

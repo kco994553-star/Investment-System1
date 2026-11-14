@@ -2,7 +2,7 @@
 from copy import deepcopy
 from collections import defaultdict
 from datetime import datetime,timezone
-from .qgv_555 import catalog,identity,_usable
+from .qgv_555 import catalog,identity,_usable,calculation_row
 from .sector_qgv import digest
 from .dual_qgv import _rank_factors
 from .sector_qgv_registry import CATALOG
@@ -13,7 +13,8 @@ def attach(result,evaluation,reference):
     if result['evaluation']!=identity(evaluation) or result['reference']!=identity(reference):raise ValueError('INPUT_ANCHORS')
     if result['result_hash']!=digest({k:v for k,v in result.items() if k!='result_hash'}):raise ValueError('SOURCE_RESULT_HASH')
     out=deepcopy(result);cats=catalog();c=result['configuration'];points={};rmap={}
-    for r in sorted(reference['rows'],key=lambda x:x['company_id']):
+    for original in sorted(reference['rows'],key=lambda x:x['company_id']):
+        r=calculation_row(c,original)
         if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
         if r['issuer_id'] in points:continue
         points[r['issuer_id']]={m:_usable(r,m,reference)[0] for m in cats};rmap[r['issuer_id']]=r
@@ -24,7 +25,7 @@ def attach(result,evaluation,reference):
         pools.update({k:_Pool(v) for k,v in groups.items()})
     lookup={r['company_id']:r for r in evaluation['rows']}
     for outrow in out['rows']:
-        r=lookup[outrow['company_id']];outrow['factors']={}
+        r=calculation_row(c,lookup[outrow['company_id']]);outrow['factors']={}
         selected={x['metric']:x for role in reversed(list(outrow['roles'].values())) for x in role['metrics']}
         for m,spec in cats.items():
             if m in selected:
