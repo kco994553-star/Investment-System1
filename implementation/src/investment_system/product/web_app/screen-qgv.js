@@ -30,7 +30,7 @@ function render(route){
  later(route,'leaderboard',{band,chips,conn,buttons,status,nav,bodies},()=>{for(const b of Object.values(bodies))b.replaceChildren(lf('리더보드를'));});
  // 1.1.9 (2.1.8), 1.2 (2.2): own bodies, outside the QGV state cards
  const disc=h('div',{class:'lb-body',dataset:{discBody:''}},pending('선정 기업 · 하는 일 · 발견 이유 · 기존 QGV')),sq=h('div',{dataset:{sqBody:''}},pending('섹터 QGV 설정(요소·가중치) · 미리보기'));
- later(route,'list',{body:disc},()=>disc.replaceChildren(lf('의외의 기업 목록을')),'discoveryLive');later(route,'fill',{body:sq},null,'sectorQgvLive');
+ later(route,'list',{body:disc},()=>disc.replaceChildren(lf('의외의 기업 목록을')),'discoveryLive');later(route,'fill',{body:sq},null,'sectorQgvLive');later(route,'fill',{body:sq},null,'qgv555Live');
  return h('div',{class:'screen lb-screen'},head('1','QGV','기업의 질(Q) · 성장(G) · 가치(V)를 한 장으로'),band,
   section('1-1','1.1 리더보드',null,...blocks,h('div',{class:'lb',dataset:{lb:'2.1.8'}},h('div',{class:'lb-head'},h('h3',{class:'stamp sub',tabindex:'-1'},'1.1.9 의외의 기업'),
    h('span',{class:'meta'},'기능 2.1.8'),h('span',{class:'hand'},'확인된 사업 특성으로 찾은 기업 · 누르면 기업 상세')),disc)),

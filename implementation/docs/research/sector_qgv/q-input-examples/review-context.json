@@ -1,0 +1,24 @@
+{
+  "schema_version": "sector-qgv-review-context/1",
+  "original_snapshot_hash": "7db201915ae54b5b1661167819f042e8052b2c6a3fc47f26088adb4ba9a5ee57",
+  "valuation_date": "2026-02-02",
+  "input_cutoff": "2026-02-04T12:00:00Z",
+  "reviewed_at": "2026-02-04T11:00:00Z",
+  "reviews": [
+    {
+      "claim_id": "SYN:debt",
+      "claim_type": "INTEREST_BEARING_DEBT",
+      "subject_id": "0000000001",
+      "status": "VERIFIED",
+      "source_ref": "SYN:doc#sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_published": "2026-02-01",
+      "source_published_precision": "DATE",
+      "retrieved_at": "2026-02-02T11:00:00Z",
+      "reviewed_at": "2026-02-04T11:00:00Z",
+      "valid_from": "2025-12-31",
+      "valid_to": "2025-12-31",
+      "locator": "/facts/us-gaap/debt"
+    }
+  ]
+}

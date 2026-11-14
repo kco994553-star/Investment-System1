@@ -1,0 +1,318 @@
+{
+  "schema_version": "top500-selection/1",
+  "population_id": "synthetic-us-candidates",
+  "population_version": "1",
+  "policy": {
+    "version": "top500-research/0.1.0",
+    "status": "RESEARCH_PROPOSAL",
+    "markets": [
+      "NYSE",
+      "NASDAQ",
+      "NYSE_AMERICAN",
+      "BATS"
+    ],
+    "included_kinds": [
+      "COMMON",
+      "ADR",
+      "FOREIGN_COMMON",
+      "REIT"
+    ],
+    "cadence": "DAILY_CLOSE"
+  },
+  "evaluation_day": "2026-11-04",
+  "input_cutoff": "2026-11-04T22:00:00Z",
+  "apply_at": "2026-11-05T14:30:00Z",
+  "input_hash": "c68b039105fb39d041854755e29cd14309e740795bd32e957f9b418aca2b72bc",
+  "candidate_members_hash": "3b4abff1366f14834b2fb24d5b3ae738682dab6ca138d2a01875afc4d040a870",
+  "status": "UNCONFIRMED_CANDIDATE",
+  "official": false,
+  "target_count": 475,
+  "denominator": null,
+  "availability_context": "SAME_DAY_INPUT_CUTOFF",
+  "historical_pit": false,
+  "members": [
+    {
+      "issuer_id": "issuer-0000",
+      "representative_security_id": "security-0",
+      "market_cap_usd": "1000000",
+      "economic_classes": [
+        "class-0"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-0",
+          "security_id": "security-0",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 1000,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-0",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    },
+    {
+      "issuer_id": "issuer-0001",
+      "representative_security_id": "security-1",
+      "market_cap_usd": "999000",
+      "economic_classes": [
+        "class-1"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-1",
+          "security_id": "security-1",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 999,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-1",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    },
+    {
+      "issuer_id": "issuer-0002",
+      "representative_security_id": "security-2",
+      "market_cap_usd": "998000",
+      "economic_classes": [
+        "class-2"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-2",
+          "security_id": "security-2",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 998,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-2",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    }
+  ],
+  "members_hash": "fe418b55d9d21229129bf8b9d14ddf03519fe512b6688bbbb65f19712e3c43fb",
+  "ranked": [
+    {
+      "issuer_id": "issuer-0000",
+      "representative_security_id": "security-0",
+      "market_cap_usd": "1000000",
+      "economic_classes": [
+        "class-0"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-0",
+          "security_id": "security-0",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 1000,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-0",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    },
+    {
+      "issuer_id": "issuer-0001",
+      "representative_security_id": "security-1",
+      "market_cap_usd": "999000",
+      "economic_classes": [
+        "class-1"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-1",
+          "security_id": "security-1",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 999,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-1",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    },
+    {
+      "issuer_id": "issuer-0002",
+      "representative_security_id": "security-2",
+      "market_cap_usd": "998000",
+      "economic_classes": [
+        "class-2"
+      ],
+      "selection_evidence": [
+        {
+          "economic_class_id": "class-2",
+          "security_id": "security-2",
+          "security_kind": "COMMON",
+          "exchange": "NYSE",
+          "identity_status": "VERIFIED",
+          "identity_evidence": [
+            "synthetic-identity"
+          ],
+          "valid_from": "2026-11-04",
+          "valid_to": null,
+          "observed_on": "2026-11-04",
+          "available_at": "2026-11-04T22:00:00Z",
+          "corporate_action_status": "VERIFIED",
+          "corporate_action_evidence": [
+            "synthetic-action-ledger"
+          ],
+          "shares_basis": "ACTUAL_CLASS_OUTSTANDING",
+          "shares": 1000,
+          "price": 998,
+          "price_basis": "RAW_CLOSE",
+          "currency": "USD",
+          "fx_to_usd": 1,
+          "price_security_id": "security-2",
+          "price_day": "2026-11-04",
+          "shares_day": "2026-11-04",
+          "evidence": [
+            "synthetic-price-and-shares"
+          ]
+        }
+      ],
+      "representative_evidence": [
+        "synthetic-primary-listing"
+      ]
+    }
+  ],
+  "unresolved": [],
+  "excluded": [],
+  "reasons": [
+    "FEWER_THAN_500_ELIGIBLE_ISSUERS"
+  ],
+  "boundary_uncertain": true,
+  "selected_count": 3,
+  "candidate_count": 3,
+  "unique_candidate_issuers": 3,
+  "retained_confirmed": null,
+  "replace_official": false,
+  "membership_changes": {
+    "entered": [
+      "issuer-0000",
+      "issuer-0001",
+      "issuer-0002"
+    ],
+    "exited": [],
+    "reason": "PROVISIONAL_MARKET_CAP_ORDER"
+  },
+  "whole_market_denominator": null,
+  "result_hash": "6258e769354c15fd1f6a5e54a994fb5938c3809403a9a2bf42b46b5b1e088bb5"
+}

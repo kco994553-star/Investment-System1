@@ -242,7 +242,10 @@ function leaderboard(route,refs){
   if(pg.state!=='READY'){stateCards(pg);refocus(k);return;}
   paintChips(pg);const v=view();
   const fill=(fn,list)=>B[fn].replaceChildren(...list.flat(Infinity).filter(x=>x!==null&&x!==undefined&&x!==false));
-  fill('2.1.1',block1(v));fill('2.1.2',block2(v));fill('2.1.3',block3(v));fill('2.1.4',block4(v));fill('2.1.5',block5(v));fill('2.1.6',block6(v));fill('2.1.7',block7(v));
+  fill('2.1.1',block1(v));
+  // A 555 population / model pair other than 기존504 × 기존 공식: the official sorting, lists, returns and candidates are not shown under it.
+  if(I.qgv555Live&&!I.qgv555Live.isOfficial()){for(const fn of Object.keys(B))if(fn!=='2.1.1')fill(fn,[h('p',{class:'reason',dataset:{q5Held:fn}},'기존504 × 기존 공식에서만 보임 · 지금 고른 모집단·모형의 결과 전달 전')]);refocus(k);return;}
+  fill('2.1.2',block2(v));fill('2.1.3',block3(v));fill('2.1.4',block4(v));fill('2.1.5',block5(v));fill('2.1.6',block6(v));fill('2.1.7',block7(v));
   if(B['3.5'])fill('3.5',TF?TF.block():[h('p',{class:'na',dataset:{na:'LOADER_FAILED'}},'기술 조건 필터를 불러오지 못했습니다')]);
   refocus(k);}
  const set=(fn)=>()=>{fn();draw();};
@@ -256,6 +259,10 @@ function leaderboard(route,refs){
  /* ---- 2.1.1 평가 대상과 목록: Universe504 only (DC-24: no TARGET v0 scope, box or column), counts, the one table */
  function block1(v){
   const pg=v.pg,E=populationOf(v.cls);
+  // 모집단 · 모형 (owner 2026-11-14 「Top500 전환·QGV 555」, IS2.qgv555Live): only 기존504 × 기존 공식 goes on to the table below;
+  // every other pair is its own state panel (no result of another model or population under the chosen name).
+  const sel=I.qgv555Live?I.qgv555Live.selector({redraw:draw}):{el:null,official:true};
+  if(!sel.official)return[sel.el];
   const scope=group('보기 범위',h('span',{class:'chip on',dataset:{scope:'UNIVERSE'}},'Universe504 전체 · 고정 504코드'));
   // 모형 (owner 2026-11-10 queue §2, 2026-11-11 §3, IS2.qgvModels): only a READY model can be chosen. The official one always; U1 / U2 /
   // S1 once the checked operating504 research delivery is in RAM (IS2.dualQgv.ram). A research model shows its own retained board,
@@ -266,11 +273,11 @@ function leaderboard(route,refs){
      onclick:sel?set(()=>{V.model=m.id;V.rShown=STEP;}):null});})),
    h('details',{class:'why',dataset:{lbModelWhy:''}},h('summary',null,'모형 구분 ▸'),h('ul',{class:'news-lines'},...M.MODELS.map(m=>h('li',{dataset:{lbModelLine:m.id}},M.line(m,rd),' · ',m.note)),
     ...M.RULES.map(r=>h('li',{class:'reason'},r))))):null;
-  if(cur!=='OFFICIAL')return[scope,models,researchBoard(cur)];
+  if(cur!=='OFFICIAL')return[sel.el,scope,models,researchBoard(cur)];
   const count=h('p',{class:'count',dataset:{lbCount:''}},'평가: Universe504 중 점수 행 ',E===null?naBox(text('SEC_QGV2_NOT_AVAILABLE'),'SEC_QGV2_NOT_AVAILABLE'):h('b',null,String(E)));
   // A READY page with a reason (V2_SCORES_NOT_AVAILABLE …): the reason above the table, the rows still draw.
   const why=pg.reason?h('p',{class:'reason',dataset:{na:pg.reason,pageReason:''}},say(pg.reason,'QGV 점수를 모두 계산하지 못했습니다')):null;
-  return[scope,models,count,why,h('div',{class:'lb-grid'},table(v))];}
+  return[sel.el,scope,models,count,why,h('div',{class:'lb-grid'},table(v))];}
  // The research boards in RAM (operating504 only: the leaderboard's population), or none: the reduced U1 / U2 / S1 delivery and the
  // 3/3/3 one (U2-333 / U1-333 / S1-333) are separate slots, each checked on its own; a model is ready only when its own checked
  // delivery carries it (IS2.dualQgv.SLOTS).
@@ -548,6 +555,8 @@ function leaderboard(route,refs){
  I.store.subscribe(()=>{ctx.preview=null;later();},{signal});
  // A research delivery read (or dropped) on another screen changes which models can be chosen here.
  if(I.dualQgv){const un=I.dualQgv.ram.subscribe(()=>{if(!signal.aborted)later();});signal.addEventListener('abort',un,{once:true});}
+ // The 555 contract read on 1.2 (population lines, 내 설정) changes the 2.1 selector's panel.
+ if(I.qgv555Live)I.qgv555Live.subscribe(()=>{if(!signal.aborted)later();},signal);
 }
 I.qgvLive=Object.freeze({leaderboard,helpers});
 })();

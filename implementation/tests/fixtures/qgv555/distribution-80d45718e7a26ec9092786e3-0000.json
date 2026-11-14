@@ -1,0 +1,280 @@
+{
+  "schema_version": "qgv-555-distribution-part/1",
+  "group_id": "80d45718e7a26ec9092786e3",
+  "result_hash": "94de093bdd72dbe44d1be93a13ed410e3bd281ae9330421ccc8cd1cdccd512a5",
+  "rows": [
+    {
+      "company_id": "SYN:000",
+      "issuer_id": "synthetic-issuer-000",
+      "score": 0.0,
+      "rank": 21,
+      "rank_n": 21,
+      "decile": 1,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:001",
+      "issuer_id": "synthetic-issuer-001",
+      "score": 5.0,
+      "rank": 20,
+      "rank_n": 21,
+      "decile": 1,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:002",
+      "issuer_id": "synthetic-issuer-002",
+      "score": 10.0,
+      "rank": 19,
+      "rank_n": 21,
+      "decile": 2,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:003",
+      "issuer_id": "synthetic-issuer-003",
+      "score": 15.0,
+      "rank": 18,
+      "rank_n": 21,
+      "decile": 2,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:004",
+      "issuer_id": "synthetic-issuer-004",
+      "score": 20.0,
+      "rank": 17,
+      "rank_n": 21,
+      "decile": 3,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:005",
+      "issuer_id": "synthetic-issuer-005",
+      "score": 25.0,
+      "rank": 16,
+      "rank_n": 21,
+      "decile": 3,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:006",
+      "issuer_id": "synthetic-issuer-006",
+      "score": 30.0,
+      "rank": 15,
+      "rank_n": 21,
+      "decile": 4,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:007",
+      "issuer_id": "synthetic-issuer-007",
+      "score": 35.0,
+      "rank": 14,
+      "rank_n": 21,
+      "decile": 4,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:008",
+      "issuer_id": "synthetic-issuer-008",
+      "score": 40.0,
+      "rank": 13,
+      "rank_n": 21,
+      "decile": 5,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:009",
+      "issuer_id": "synthetic-issuer-009",
+      "score": 45.0,
+      "rank": 12,
+      "rank_n": 21,
+      "decile": 5,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:010",
+      "issuer_id": "synthetic-issuer-010",
+      "score": 50.0,
+      "rank": 11,
+      "rank_n": 21,
+      "decile": 6,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:011",
+      "issuer_id": "synthetic-issuer-011",
+      "score": 55.0,
+      "rank": 10,
+      "rank_n": 21,
+      "decile": 6,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:012",
+      "issuer_id": "synthetic-issuer-012",
+      "score": 60.0,
+      "rank": 9,
+      "rank_n": 21,
+      "decile": 7,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:013",
+      "issuer_id": "synthetic-issuer-013",
+      "score": 65.0,
+      "rank": 8,
+      "rank_n": 21,
+      "decile": 7,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:014",
+      "issuer_id": "synthetic-issuer-014",
+      "score": 70.0,
+      "rank": 7,
+      "rank_n": 21,
+      "decile": 8,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:015",
+      "issuer_id": "synthetic-issuer-015",
+      "score": 75.0,
+      "rank": 6,
+      "rank_n": 21,
+      "decile": 8,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:016",
+      "issuer_id": "synthetic-issuer-016",
+      "score": 80.0,
+      "rank": 5,
+      "rank_n": 21,
+      "decile": 9,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:017",
+      "issuer_id": "synthetic-issuer-017",
+      "score": 85.0,
+      "rank": 4,
+      "rank_n": 21,
+      "decile": 9,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:018",
+      "issuer_id": "synthetic-issuer-018",
+      "score": 90.0,
+      "rank": 3,
+      "rank_n": 21,
+      "decile": 9,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:019",
+      "issuer_id": "synthetic-issuer-019",
+      "score": 95.0,
+      "rank": 2,
+      "rank_n": 21,
+      "decile": 10,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    },
+    {
+      "company_id": "SYN:020",
+      "issuer_id": "synthetic-issuer-020",
+      "score": 100.0,
+      "rank": 1,
+      "rank_n": 21,
+      "decile": 10,
+      "decile_status": "VALID",
+      "reference_counts": {
+        "sector::shareholder_yield": 21
+      },
+      "missing_metrics": []
+    }
+  ]
+}

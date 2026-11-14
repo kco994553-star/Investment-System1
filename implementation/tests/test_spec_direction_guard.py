@@ -54,6 +54,16 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'When the central V is missing, show the device V.',
         'If the publication is stale, the screen uses the device V.',
         'V 점수는 이 기기에서 계산한다.',
+        # DC-50 (2026-11-14, 내 시트 V: personal, never official)
+        '내 시트 V는 공식 V와 같은 점수다.',
+        '내 시트 V로 TARGET 확정을 한다.',
+        '내 시트 V를 전진검증 장부에 넣는다.',
+        'The my-sheet V is the official V on this screen.',
+        '공식 V를 내 시트 V로 대체한다.',
+        '공식 순위를 내 시트 결과로 덮어쓴다.',
+        '중앙 V가 STALE이면 내 시트 V를 보여 준다.',
+        'If the central V is missing, show the my-sheet V.',
+        'Fall back to my-sheet prices when IEX fails.',
     ]
     good = [
         'Universe504는 S&P 500 구성에서 출발한 고정 목록이다(UNI-DEF).',
@@ -77,6 +87,11 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'V 이력이 필요하면 중앙에서 날짜별로 게시한다(DC-31).',
         'The radar V axis reads the central publication (qgv-official.json).',
         '기기 계산 V는 모두 중앙 V로 대체(GSQ-025)',
+        # DC-50: the personal V, labelled as not official, passes; DC-31 lines naming it are left to DC-50
+        '내 시트 V · 구글 시트 시세 · 가격 시각 · 공식 아님',
+        '내 시트 V는 이 기기에서 계산하며 공식 V·총점·순위를 바꾸지 않는다(DC-50).',
+        'My-sheet V is computed on this device and is not official.',
+        '공식 V는 중앙 V 하나뿐이고 내 시트 V는 따로 표시한다.',
     ]
     for line in bad:
         assert g.scan_text(line, rules), line

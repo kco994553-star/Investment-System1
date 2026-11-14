@@ -53,6 +53,7 @@ const KEYS=Object.freeze({
  PROMPT_FAVORITES:'investment.web.v1.prompt-favorites',// research-bridge.js PL_FAV_KEY: favorite prompt ids (not in a backup)
  PROMPT_COPIES:'investment.web.v1.prompt-personal-copies',// research-bridge.js PL_COPY_KEY: personal prompt copies (not in a backup)
  DUAL_QGV:'investment.web.v2.dual-qgv-saved',// NEW (2026-11-11, 2.2.7): research candidate saved records (qgv-dual-saved/1), one per candidate model_id; this device, not in a backup
+ QGV555:'investment.web.v2.qgv555-saved',// NEW (2026-11-14, 2.2.7 · DC-49): QGV 555 saved settings (qgv-555-saved/1), one per model_id; this device, not in a backup
  SECTOR_QGV:'investment.web.v2.sector-qgv-user-config',// NEW (2026-11-06, 2.2): the user's saved sector QGV config (engine save_user_config answer; this device, not in a backup)
  DEVICE_DB:'investment-device-actual-v1'});// DeviceActual IndexedDB
 const CATALOG='actual-catalog.json',ID=/^[A-Za-z0-9_-]{20,100}$/;
@@ -253,6 +254,24 @@ function create({win,action,data}){
   try{const ok=v&&v.schema_version===DQ_SET&&v.records&&typeof v.records==='object'&&!Array.isArray(v.records)
     &&Object.entries(v.records).every(([k,r])=>DQ().validateSaved(r).ok&&r.configuration.model_id===k);return ok?{state:'OK',value:v}:{state:'INVALID',value:null};}
   catch(_){return{state:'INVALID',value:null};}}
+ // ---- QGV 555 saved settings (2.2.7, owner 2026-11-14, DC-49): {schema_version:'qgv555-saved-set/1', records:{model_id: qgv-555-saved/1}}.
+ // Each record is the replay projection of an engine result the user saw (IS2.qgv555.validateSaved, read at call time); one model's
+ // record never replaces another's; the sector and research-candidate keys are never read or rewritten here. An unreadable stored
+ // set is never overwritten silently: read() says INVALID and only an explicit clear(event) removes it.
+ const Q5=()=>{const x=win.IS2&&win.IS2.qgv555;if(!x||typeof x.validateSaved!=='function')throw Error('READER_MISSING');return x;};
+ const Q5_SET='qgv555-saved-set/1';
+ function readQ5(){const raw=storage.getItem(KEYS.QGV555);if(raw===null||raw==='')return{state:'EMPTY',value:{schema_version:Q5_SET,records:{}}};
+  let v;try{v=JSON.parse(raw);}catch(_){return{state:'INVALID',value:null};}
+  try{const ok=v&&v.schema_version===Q5_SET&&v.records&&typeof v.records==='object'&&!Array.isArray(v.records)
+    &&Object.entries(v.records).every(([k,r])=>Q5().validateSaved(r).ok&&r.configuration.model_id===k);return ok?{state:'OK',value:v}:{state:'INVALID',value:null};}
+  catch(_){return{state:'INVALID',value:null};}}
+ const qgv555=Object.freeze({
+  read:()=>deepFreeze(readQ5()),
+  save(event,saved){return write(event,'QGV555',()=>{const r=Q5().validateSaved(saved);if(!r.ok)throw Error('QGV555_SAVED_INVALID');
+   const cur=readQ5();if(cur.state==='INVALID')throw Error('QGV555_STORAGE_INVALID');
+   const next={schema_version:Q5_SET,records:{...cur.value.records,[saved.configuration.model_id]:copy(saved)}};
+   const text=JSON.stringify(next);if(text.length>SQ_MAX)throw Error('QGV555_TOO_LARGE');storage.setItem(KEYS.QGV555,text);return deepFreeze(copy(saved));});},
+  clear(event){return write(event,'QGV555',()=>{storage.removeItem(KEYS.QGV555);return true;});}});
  const dualQgv=Object.freeze({
   read:()=>deepFreeze(readDual()),
   save(event,saved){return write(event,'DUAL_QGV',()=>{const r=DQ().validateSaved(saved);if(!r.ok)throw Error('DUAL_QGV_SAVED_INVALID');
@@ -263,7 +282,7 @@ function create({win,action,data}){
 
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
  const api={KEYS,storage,prefs,savePrefs,recent,pushRecent,clearRecent,weights,saveWeights,holdings,playbook,saveThesis,saveHold,saveRecord,stars,toggleStar,macroEstimates,promptFavorites,promptCopies,
-  chartNotes,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,sectorQgv,dualQgv,subscribe};
+  chartNotes,backup,vHistoryKeys,sheetSource,universeSource,workerOrigin,marketQuotes,sectorQgv,dualQgv,qgv555,subscribe};
  // DeviceProfiles' preset list, read when asked (the old module loads before this one; tests swap modules).
  Object.defineProperty(api,'PRODUCT_PRESETS',{enumerable:true,get:()=>need('DeviceProfiles').PRODUCT_PRESETS});
  return Object.freeze(api);

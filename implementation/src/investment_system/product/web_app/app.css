@@ -356,3 +356,8 @@ svg[data-ring]{width:100%;max-width:280px;height:auto}
  .btn.reset{width:100%}
  .tbl td.qgv{text-align:right;font-weight:700}
 }
+/* 2.2.7 QGV 555 설정 (screen-qgv555-live.js, DC-49) */
+.sq-555{margin-top:16px;display:flex;flex-direction:column;gap:10px;min-width:0;overflow-wrap:anywhere}
+.sq-555 input[type=number]{width:6.5em;min-height:44px}
+.sq-555 input[type=search],.sq-555 select{min-height:44px;max-width:100%}
+.sq-555 [data-q5-axes]{flex-wrap:wrap}

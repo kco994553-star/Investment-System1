@@ -503,3 +503,32 @@ test('preflight: GET with the authorization header only, no read and no Google c
   assert.equal(r.status, 204); assert.equal(r.headers.get('Access-Control-Allow-Headers'), 'Authorization');
   assert.equal(s.calls.length, 0);
 });
+
+test('QGV 555 saved delivery (DC-49): stage receipt, manifest and named members of one scope, each with its schema, 2 MiB, owner auth', async () => {
+  for (const scope of ['operating504', 'held1057']) {
+    for (const [query, file, body] of [
+      ['q555_stage&scope=' + scope, 'stage', { schema_version: 'qgv-555-stage/1', scope }],
+      ['q555_manifest&scope=' + scope, 'manifest', { schema_version: 'qgv-555-delivery-manifest/1', files: [] }],
+      ['q555_file&scope=' + scope + '&name=index', 'index', { schema_version: 'qgv-555-delivery/1' }],
+      ['q555_file&scope=' + scope + '&name=group-index-0002', 'group-index-0002', { schema_version: 'qgv-555-groups-part/1' }],
+      ['q555_file&scope=' + scope + '&name=U1-555-detail-0026', 'U1-555-detail-0026', { schema_version: 'qgv-555-detail/1' }],
+      ['q555_file&scope=' + scope + '&name=distribution-00c9be2b69588a8172eccd0c-0000', 'distribution-00c9be2b69588a8172eccd0c-0000', { schema_version: 'qgv-555-distribution-part/1' }]]) {
+      const s = setup({ github: () => new Response(JSON.stringify(body), { status: 200 }) });
+      assert.equal((await s.run('/kis/classification?part=' + query)).status, 200, query);
+      assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/q555/' + scope + '/' + file + '.json?ref=data');
+    }
+  }
+  const wrong = (q, body) => setup({ github: () => new Response(JSON.stringify(body), { status: 200 }) }).run('/kis/classification?part=' + q);
+  assert.equal((await wrong('q555_stage&scope=operating504', { schema_version: 'qgv-555-stage/1', scope: 'held1057' })).status, 502, 'a receipt of another scope');
+  assert.equal((await wrong('q555_file&scope=operating504&name=U1-555-detail-0000', { schema_version: 'qgv-555-distribution-part/1' })).status, 502, 'a member with another schema');
+  for (const bad of ['q555_file&scope=operating504&name=U1-555-result', 'q555_file&scope=operating504&name=verification', 'q555_file&scope=operating504&name=..%2Fstage',
+    'q555_file&scope=other&name=index', 'q555_stage&scope=operating504&name=index', 'q555_file&scope=operating504&name=U2-555-detail-0000', 'q555_manifest&scope=operating504&set=333']) {
+    const s = setup();
+    assert.equal((await s.run('/kis/classification?part=' + bad)).status, 400, bad);
+    assert.equal(githubCalls(s).length, 0, 'nothing fetched for ' + bad);
+  }
+  const big = await setup({ github: () => new Response('{"schema_version":"qgv-555-detail/1","rows":[]}', { status: 200, headers: { 'Content-Length': String(2 * 1024 * 1024 + 1) } }) }).run('/kis/classification?part=q555_file&scope=operating504&name=S1-555-detail-0000');
+  assert.notEqual(big.status, 200, 'the same 2 MiB limit');
+  const anon = await setup({ authStatus: 401 }).run('/kis/classification?part=q555_stage&scope=operating504');
+  assert.notEqual(anon.status, 200, 'owner auth');
+});
