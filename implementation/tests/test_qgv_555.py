@@ -89,3 +89,11 @@ def test_replay_uses_exact_saved_inputs():
     assert replay(r,e,ref)['rows']==r['rows']
     e['rows'][0]['metrics']['roic']+=1
     with pytest.raises(ValueError,match='INPUT'):replay(r,e,ref)
+
+
+def test_fractional_weights_and_sector_axis_override():
+    c=configuration('S1-555');c['sector_axis_overrides']={'INFORMATION_TECHNOLOGY':dict(Q=40.5,G=20,V=39.5)}
+    c['roles']['q_profitability']['weight']=25.5
+    e,ref=fixture();r=run(c,e,ref)['rows'][0]
+    assert r['nominal_axis_weights']['Q']==40.5
+    assert sum(x['nominal'] for x in r['lineage'])==pytest.approx(1)

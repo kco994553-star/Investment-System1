@@ -78,7 +78,7 @@ def catalog():
 def configuration(candidate):
     if candidate not in IDS:raise ValueError('UNKNOWN_MODEL')
     return dict(schema_version='qgv-555-config/1',model_id=IDS[candidate],candidate=candidate,
-        version='0.1.0',axis_weights=dict(Q=34,G=33,V=33),
+        version='0.1.0',axis_weights=dict(Q=34,G=33,V=33),sector_axis_overrides={},
         roles={r:dict(axis=a,weight=w,metrics={m:1 for m,d in SPECS[r]}) for a,rs in WEIGHTS.items() for r,w in rs.items()},
         minimum=MIN_PEERS,missing_policy='available-role-weight-50/1',
         submetric_missing_policy='available-submetric-weight-renormalize/1',
@@ -97,6 +97,8 @@ def validate_configuration(c):
     def valid_weights(ws):
         return all(type(v) in (int,float) and math.isfinite(v) and v>=0 for v in ws) and sum(ws)>0
     if set(c['axis_weights'])!=set('QGV') or not valid_weights(c['axis_weights'].values()):raise ValueError('AXIS_WEIGHTS')
+    for sector,weights in c.get('sector_axis_overrides',{}).items():
+        if sector not in SECTORS or set(weights)!=set('QGV') or not valid_weights(weights.values()):raise ValueError('SECTOR_AXIS_WEIGHTS')
     if set(c['roles'])!=set(SPECS):raise ValueError('ROLE_IDS')
     cats=catalog()
     for a in 'QGV':
@@ -193,6 +195,7 @@ def run(c,e,ref,*,calculated_at=None):
                                 score=percentile(less,equal,n);break
                         if score is None:reason='PEER_SAMPLE_SMALL'
                 elif not supported:reason='ACCOUNTING_RECIPE_PREPARING'
+                elif mw==0:reason='DISABLED_IN_SETTING'
                 items.append(dict(metric=m,raw=value,raw_status=raw[m][1],score=score,reason=None if score is not None else reason,
                                   reference_n=n,reference_scope=basis,weight=mw))
                 if score is not None:vals.append((score,mw))
@@ -200,7 +203,7 @@ def run(c,e,ref,*,calculated_at=None):
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
             roles[role]=dict(score=score,metrics=items,selected=spec['weight']>0,
                              partial=len(vals)<sum(w>0 for w in spec['metrics'].values()))
-        weights=c['axis_weights'] if c['candidate']=='U1-555' else dict(zip('QGV',SECTORS.get(r.get('sector_id'),(34,33,33))))
+        weights=c['axis_weights'] if c['candidate']=='U1-555' else c.get('sector_axis_overrides',{}).get(r.get('sector_id'),dict(zip('QGV',SECTORS.get(r.get('sector_id'),(34,33,33)))))
         scores={k:v['score'] for k,v in roles.items()}
         axes={a:axis_score(scores,a,{role:spec['weight'] for role,spec in c['roles'].items() if spec['axis']==a}) for a in 'QGV'}
         gate=_gate(r,e);valid=[a for a in 'QGV' if axes[a]['score'] is not None]
@@ -214,7 +217,7 @@ def run(c,e,ref,*,calculated_at=None):
             metrics=roles[role]['metrics'];metric_total=sum(x['weight'] for x in metrics)
             metric_used=sum(x['weight'] for x in metrics if x['score'] is not None)
             for item in metrics:
-                nom=Fraction(str(weights[a]))/sum(weights.values())*Fraction(str(spec['weight']))/role_total*Fraction(str(item['weight']))/metric_total
+                nom=Fraction(str(weights[a]))/Fraction(str(sum(weights.values())))*Fraction(str(spec['weight']))/Fraction(str(role_total))*Fraction(str(item['weight']))/Fraction(str(metric_total))
                 eff=0.
                 if total is not None and a in included and scores[role] is not None and item['score'] is not None and metric_used:
                     eff=weights[a]/sum(weights[x] for x in included)*spec['weight']/role_used*item['weight']/metric_used
@@ -225,7 +228,8 @@ def run(c,e,ref,*,calculated_at=None):
             sector_id=r.get('sector_id'),accounting_template=r.get('accounting_template'),roles=roles,axes=axes,
             active_roles={a:sum(v['weight']>0 for v in c['roles'].values() if v['axis']==a) for a in 'QGV'},
             fifteen_roles_complete=all(roles[k]['score'] is not None for k in SPECS),
-            gate_status=gate,total=total,partial_total=total is not None and len(valid)<3,
+            gate_status=gate,gate_scope='OFFICIAL_INPUT_DECISION_INDEPENDENT_OF_MODEL_APPLICABILITY',
+            nominal_axis_weights=weights,total=total,partial_total=total is not None and len(valid)<3,
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
             status='READY' if supported else 'ACCOUNTING_RECIPE_PREPARING',lineage=lineage,
             input_family_contributions=dict(families)))
@@ -282,6 +286,7 @@ def validate_binding(result,*,expected_evaluation,expected_reference):
 
 def replay(saved,e,ref):
     if identity(e)!=saved['evaluation'] or identity(ref)!=saved['reference']:raise ValueError('SAVED_INPUT_MISMATCH')
+    if _bindings(saved['configuration'],e,ref)['code_hash']!=saved['bindings']['code_hash']:raise ValueError('SAVED_ENGINE_VERSION_REQUIRED')
     return run(saved['configuration'],e,ref,calculated_at=saved['calculated_at'])
 
 
