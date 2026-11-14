@@ -1,5 +1,120 @@
 # Owner-private retained price bridge — 2026-11-05
 
+## Current owner-use handoff — 2026-11-14
+
+This section is the current handoff; the older implementation history below is
+preserved. Owner-private **new KIS V binding is on hold** under the November14
+decision. The technical preprocessing path remains available. The personal sheet
+V contract is separately delivered in [#541](https://github.com/kco994553-star/Investment-System1/pull/541)
+at `eaf11777848adbc80ba819044bf572200220c646`; it does not turn KIS bars into
+personal or official V prices. No new collection or publication is activated.
+
+### Input and output for Main
+
+1. Reuse `normalize_page(body: bytes, receipt, request, evidence, basis)` below.
+   The receipt pins original SHA256, byte length, HTTP status and actual fetched_at.
+   Request is `SYMB/EXCD/MODP=0/GUBN=0/BYMD`. Retain original requests and receipts
+   separately per page. MODP1 never establishes split adjustment. USD and its
+   documentary reference are required; other currencies are rejected, not converted.
+2. Call `research.technical_handoff.prepare_technical(c, evaluation_day, series_id)`
+   with the validated `kis-bars/1` object. The existing offline CLI now dispatches
+   `mode="technical-handoff"` with those arguments. This is an owner-private
+   envelope over `analyze`, `measure_contract`, `chart_bars.normalize` and
+   `patterns.run`; none of their arithmetic or settings is replaced.
+3. Return `kis-technical-handoff/1`. Wire schema:
+   [kis-technical-handoff-contract.json](kis-technical-handoff-contract.json).
+   Its argument schema is a wrapper, not a replacement for `validate_contract`:
+   execute the semantic date/decimal/OHLC/source/evidence checks as well.
+
+| Output | Meaning and display rule |
+| --- | --- |
+| context.signal_day | Requested completed trading session S, never calculation/capture time |
+| context.chart_observation_day / measure_observation_day | Actual last retained session. The chart may show an older observation with STALE; exact-S measures do not substitute it for S |
+| context.collected_at / last_success_at / update_state | Original source capture, last successful capture and current update status. Failed refresh does not create a successful new observation |
+| context.timestamp_basis | Daily midnight is a calendar join key, not an actual trade or release timestamp |
+| provenance | Original source SHA, query, original contract digest and bounded identity/currency evidence. A contract digest is not an independent source-document proof |
+| sessions | Missing expected NYSE sessions from first retained session to S; no inserted/interpolated/forward-filled prices. This does not establish the unretained earlier pages or suspension reasons |
+| chart | Confirmed RAW or split-only OHLC path, decimal strings/nulls; no dividends. Split is new/old shares; before effective day OHLC is divided and volume multiplied; amount stays diagnostic |
+| components / measures | Existing13 components and5 measures, including original raw/value/reasons, units and initialization. Zero is a number; missing remains null |
+| availability[] | Main-ready metric_id, unit, VALUE/DIAGNOSTIC/NOT_COMPUTED, reasons, observation/signal days, stale state and readiness. DIAGNOSTIC is not adoption |
+| patterns | Existing RAW_CLOSE research pattern run, or NOT_JUDGEABLE with reasons. It uses actual retained raw_bars even when chart/indicators use adjusted bars. Split events divide segments. Future bars/events are excluded |
+| patterns.initialization | ATR14 minimum15-session seed for each raw segment; latest-segment READY/INSUFFICIENT is separate from engine execution. Empty objects with seed INSUFFICIENT is not a proven absence of patterns |
+| patterns.volume_scope | WITHHELD_SCOPE_UNCONFIRMED: KIS volume does not supply a verified volume confirmation. Price-only patterns may still run. Success probability remains null |
+| group | NOT_REQUESTED; no ranks/deciles/QGV join are inferred from company indicators. Use the existing board/join functions separately with fixed security links and a trusted complete group |
+| result_sha256 | SHA256 of UTF8 compact sorted JSON excluding only result_sha256. Actual serialized result plus newline is checked against existing1,800,000-byte bound |
+
+An engine `run_mode="OFFICIAL"` inside the inherited pattern result means its
+parameters equal the shipped research-default rules. It is **not** official
+investment-signal approval. Keep the outer
+`rules_scope=RESEARCH_DEFAULT_NOT_INVESTMENT_SIGNAL` label. Missing sessions,
+unconfirmed identity/action intervals or missing OHLC block pattern judgement;
+they are not silently removed from indices. No pattern formula or success
+definition is invented here. Underlying `pattern-rules/1` and its hash are retained.
+
+The wrapper returns raw chart prices for the authenticated chart; do not copy its
+actual retained response into public fixtures, public caches, logs or sharing.
+It never fetches or writes data. The existing CLI still requires a new output
+outside Git with0600 permissions and never overwrites a result. Main owns UI,
+authentication, transport, source rights, collection/scheduling and stale display.
+
+### Common synthetic cases, not actual KIS results
+
+`tools/kis_contract_fixture.py::handoff_fixtures()` supplies five full synthetic
+jobs/results and one expected-state object **in memory**, using the actual producer
+functions. Public compact expectations and canonical byte hashes are under
+`tests/fixtures/kis-technical-handoff/`. The memory-example manifest describes
+generated members, not retained KIS files or an already installed Worker batch.
+
+| Case at synthetic S=2026-11-13 |13 components raw/adopted |5 measures raw/adopted | Pattern / group |
+| --- | --- | --- | --- |
+| Normal100 sessions |12/12 (SMA120 lacks history) |1/1 (3-month momentum) | Research run / group not requested |
+| Confirmed2:1 split |12/12 on adjusted chart |1/1 | Actual raw inputs split into2 research segments; no duplicate adjustment |
+| One missing trading session |0/0 |0/0 | NOT_JUDGEABLE; missing date retained as a reason, not filled |
+| Identity evidence missing |12/0 |1/0 | NOT_JUDGEABLE; arithmetic and adoption separate |
+| Latest S missing |12/12 at prior observation, STALE |0/0 at exact S | NOT_JUDGEABLE, SIGNAL_SESSION_MISSING |
+
+These counts are invented-company tests, not new real adoption or coverage.
+Example retrieval without writing prices or calling a provider:
+
+```python
+import runpy
+examples = runpy.run_path("implementation/tools/kis_contract_fixture.py")["handoff_fixtures"]()
+job = examples["split-job.json"]
+expected_result = examples["split-result.json"]
+```
+
+Set `PYTHONPATH=implementation/src`. Where an approved outside-Git output exists,
+the existing generator can write the same bytes:
+
+```sh
+python implementation/tools/kis_contract_fixture.py --technical-handoff --output-dir <new-outside-Git-dir>
+```
+
+In the current Codex environment both writable roots `/workspace` and `/tmp` have
+Git metadata, so that disk-output check refuses those destinations. The guard is
+unchanged. In-memory examples, schema validation and public expected-state/hash
+files are verified; an actual private CLI write is not claimed for this environment.
+
+### Current calculation availability and UI reasons
+
+| Feature / current scope | Usable now | Reason to show for unavailable items |
+| --- | --- | --- |
+| Stored555 Q/G | Already calculated research rows at their frozen evaluation date; existing counts/results reused | ACCOUNTING_RECIPE_PREPARING, SECTOR_CLASSIFICATION_UNCONFIRMED, AXIS_WEIGHT_INSUFFICIENT; inspect per-role reasons |
+| Stored555 V/final total | No new price-bound real calculation in this handoff | Financial roles: FINANCIAL_PROFILE_V_NOT_DEFINED. RAW_MISSING alone does not prove a price-only gap; retain nonprice gaps too |
+| Current personal sheet V | Contract and Python/JS calculation support delivered in #541; no actual sheet input supplied here | MISSING, IDENTITY_UNCONFIRMED, PRICE_DAY_UNCONFIRMED, PRICE_ADJUSTMENT_UNCONFIRMED and independent anchor failures remain distinct |
+| Company price indicators | Existing eligible retained windows; short rolling windows may be usable while longer/recursive windows are not | WARMUP, ZERO_TOTAL_CHANGE, PRICE_WINDOW_INCOMPLETE, IDENTITY_RANGE_UNCONFIRMED, ACTION_BASIS_UNCONFIRMED, HELD_RANGE_IN_WINDOW |
+| 3/6/12-month momentum and6-month volatility | Each metric only in its own complete window; volume absence does not block price arithmetic | PRICE_WINDOW_INCOMPLETE_OR_INVALID, RETURN_WINDOW_INCOMPLETE_OR_INVALID, INSUFFICIENT_RETURNS |
+| ATR / OHLC patterns | Actual OHLC, full source identity/action coverage and original research rules required | OHLC_MISSING, PRICE_WINDOW_INCOMPLETE, SIGNAL_SESSION_MISSING, or initialization INSUFFICIENT |
+| Volume note / dollar volume | Raw diagnostics only while scope is unconfirmed | VOLUME_SCOPE_UNCONFIRMED, TRADE_SCOPE_UNCONFIRMED; no amount/volume VWAP or adopted close×volume surrogate |
+| Group ranks/median/deciles | Separate verified whole-group input required | FIXED_SECURITY_LINK_MISSING, GROUP_MEMBERSHIP_UNCONFIRMED; N<10 suppresses deciles. Volatility D10 means high volatility, not better quality |
+| Technical→QGV join | Same verified security, evaluation day and group context required | Existing join rejection reasons; company indicator success does not complete the join |
+
+For stored real KIS diagnostics see the already preserved dated results in
+[TECHNICAL_ADJUSTED_LINK_20261105.md](TECHNICAL_ADJUSTED_LINK_20261105.md).
+They are not current November13 inputs. No previously completed real calculation,
+NVDA conditional diagnostic, collection or adoption was rerun for this contract.
+Main must distinguish supplied/consumer-accepted/browser/deployed/live-used states.
+
 Owner decision: one screen, public default and authenticated private expansion. Both layers use the same calculation engine, weights, gates and missing-value rules. KIS plus eligible fundamentals may now produce private QGV, replacing the earlier prohibition in this scope. Public official results, ranks and TARGET remain independent. Main owns UI/auth/server/workflows/deployment; Codex owns these offline adapters. No new source request, workflow, permission or deployment is included.
 
 ## Implementation and reuse

@@ -1,0 +1,64 @@
+{
+  "data_kind": "SYNTHETIC",
+  "delivery_state": "IN_MEMORY_GENERATOR_VALUES",
+  "files": [
+    {
+      "bytes": 51609,
+      "generated_member_name": "normal-job.json",
+      "sha256": "3d2895d5b781d84ae9f2b7dfda1c0afa62b225aebf8a0811e3c1abaa82a0b8fa"
+    },
+    {
+      "bytes": 51829,
+      "generated_member_name": "normal-result.json",
+      "sha256": "cf2c93664d8fca4aa04377fc67393fe01ab7628ef1090d7d1e5617dae1cca911"
+    },
+    {
+      "bytes": 51680,
+      "generated_member_name": "split-job.json",
+      "sha256": "74f2f71a739ca682e37cd6cf1cf175cbaa5238903ddc61e365746d17798c6004"
+    },
+    {
+      "bytes": 52329,
+      "generated_member_name": "split-result.json",
+      "sha256": "345935425f040a2451ad17473693182c695c6ce5398632769693934eb0546d66"
+    },
+    {
+      "bytes": 51121,
+      "generated_member_name": "missing-session-job.json",
+      "sha256": "1e982d5a782c90cdd6eacb2c68ca1f741f98fb44dd00b524f8f6bffbc3d9e4d5"
+    },
+    {
+      "bytes": 52393,
+      "generated_member_name": "missing-session-result.json",
+      "sha256": "d0c27fb9cae54c5249a0dd70bd21504a0b9b319f78daf5e0b35596bc57e70191"
+    },
+    {
+      "bytes": 51607,
+      "generated_member_name": "missing-evidence-job.json",
+      "sha256": "d09bbb4a77abcfd5a9e77092aeacdad341856248c26fd48d5ee24ee7138154b9"
+    },
+    {
+      "bytes": 52205,
+      "generated_member_name": "missing-evidence-result.json",
+      "sha256": "9aeff9d8d6815187dba34ca9b053e6ba28d231ded8c79608bc05a2d5b096dbaf"
+    },
+    {
+      "bytes": 51105,
+      "generated_member_name": "stale-job.json",
+      "sha256": "542f3e9993d6ff870722b2709976665d50f89b230e4fbcf2ab4ac7d3b83ee673"
+    },
+    {
+      "bytes": 50935,
+      "generated_member_name": "stale-result.json",
+      "sha256": "fc729f7abe1aa38ac664f1aa67e2711c0f204076d832145d7acc9e11b2595728"
+    },
+    {
+      "bytes": 1686,
+      "generated_member_name": "expectations.json",
+      "sha256": "5d6f0eb232f7ee4f66050ff924cdbd09fcaf33923bdfa6d80e0f0429d3bb6a1a"
+    }
+  ],
+  "generator": "implementation/tools/kis_contract_fixture.py::handoff_fixtures",
+  "schema": "kis-technical-memory-examples/1",
+  "serialization": "UTF8_JSON_SORT_KEYS_COMPACT_ALLOW_NAN_FALSE_PLUS_LF"
+}
