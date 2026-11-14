@@ -33,21 +33,22 @@ def artifacts(boards,*,data_kind,max_bytes=MAX_BYTES):
         paths=bounded(key+'-detail',b['rows'],dict(schema_version='qgv-555-detail/1',model_id=b['model_id'],result_hash=b['result_hash']))
         models[key]=dict(model_id=b['model_id'],result_hash=b['result_hash'],bindings=b['bindings'],coverage=b['coverage'],
             calculated_at=b['calculated_at'],configuration=b['configuration'],files=paths)
-        for role in SPECS:
+        fields=[('roles',role) for role in SPECS]+[('factors',key) for key in (b['rows'][0].get('factors',{}) if b['rows'] else {})]
+        for field,role in fields:
             scopes=defaultdict(list)
             for r in b['rows']:
-                f=r['roles'][role]
+                f=r[field][role]
                 scopes[r['ranking_scope']].append(dict(company_id=r['company_id'],issuer_id=r['issuer_id'],
                     score=f['score'],rank=f['rank'],rank_n=f['rank_n'],decile=f['decile'],decile_status=f['decile_status'],
-                    reference_counts={x['metric']:x['reference_n'] for x in f['metrics']},
-                    missing_metrics=[dict(metric=x['metric'],reason=x['reason']) for x in f['metrics'] if x['score'] is None]))
+                    reference_counts={x['metric']:x['reference_n'] for x in f['metrics']} if field=='roles' else {role:f['reference_n']},
+                    missing_metrics=[dict(metric=x['metric'],reason=x['reason']) for x in f['metrics'] if x['score'] is None] if field=='roles' else ([dict(metric=role,reason=f['reason'])] if f['score'] is None else [])))
             for scope,rows in sorted(scopes.items()):
                 gid=digest([key,role,scope])[:24];valid=[r for r in rows if r['score'] is not None]
                 n=len(valid);counts=Counter(r['decile'] for r in valid)
                 require(sorted(r['rank'] for r in valid)==list(range(1,n+1)),'STORED_RANK')
                 if n>=10:require(sum(counts[d] for d in range(1,11))==n,'ALL_DECILES')
                 paths=bounded('distribution-'+gid,rows,dict(schema_version='qgv-555-distribution-part/1',group_id=gid,result_hash=b['result_hash']))
-                groups.append(dict(group_id=gid,model=key,role=role,ranking_scope=scope,evaluation_valid_n=n,
+                groups.append(dict(group_id=gid,model=key,role=role,kind=field,ranking_scope=scope,evaluation_valid_n=n,
                     original_code_rows=len(rows),unit='CODE_ROW',reference_n=None,reference_n_reason='COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS',
                     bins=[dict(decile=d,count=counts[d],top_percent_from=(10-d)*10,top_percent_to=(11-d)*10) for d in range(10,0,-1)],
                     minimum_decile_n=10,members_hash=digest(rows),files=paths))

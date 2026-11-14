@@ -127,6 +127,8 @@ def select_top500(job, *, previous=None):
         input_hash=digest(job),candidate_members_hash=digest(sorted(expected)),
         status='VALIDATED_RESEARCH_CANDIDATE' if good else 'UNCONFIRMED_CANDIDATE',
         official=False, target_count=475, denominator=500 if good else None,
+        availability_context='RETROSPECTIVE' if cutoff.date()>day else 'SAME_DAY_INPUT_CUTOFF',
+        historical_pit=False,
         members=members, members_hash=digest(members), ranked=ranked,
         unresolved=unresolved,excluded=excluded,reasons=reasons,boundary_uncertain=not good,
         selected_count=len(members), candidate_count=len(ids), unique_candidate_issuers=len(set(ids)),

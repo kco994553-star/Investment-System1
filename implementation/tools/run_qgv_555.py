@@ -4,6 +4,7 @@ import argparse,hashlib,json
 from pathlib import Path
 from investment_system.research.qgv_555 import run,configuration,catalog,accounting_recipes,fixture
 from investment_system.research.qgv_555_delivery import artifacts,validate
+from investment_system.research.qgv_555_additional import attach
 from investment_system.research.top500_selection import select_top500
 from investment_system.research.dual_qgv import json_bytes
 
@@ -26,7 +27,7 @@ def main():
             result=select_top500(read(job['input']),previous=read(job['previous']) if job.get('previous') else None)
             a.output.mkdir(parents=True);(a.output/'top500.json').write_bytes(json_bytes(result));return
         e=read(job['evaluation']);r=read(job['reference']);configs=job['configurations']
-    boards={k:run(c,e,r) for k,c in configs.items()}
+    boards={k:attach(run(c,e,r),e,r) for k,c in configs.items()}
     f=artifacts(boards,data_kind=job['data_kind'])
     pin=hashlib.sha256(json_bytes(f['manifest.json'])).hexdigest()
     validated=validate(f,manifest_sha256=pin,expected_evaluation=next(iter(boards.values()))['evaluation'],expected_references={k:b['reference'] for k,b in boards.items()})
