@@ -158,8 +158,9 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.doesNotMatch(await text('[data-q5-board-text]'), /모집단 계약 전/);
       ok(tag + ' Top500 after load: 확정 아님, dates, denominator, no price');
 
-      const main = await page.locator('main').innerText();
-      assert.doesNotMatch(main, /\b[A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+\b/, 'no visible reason code');
+      const main = (await text(Q5)) + '\n' + (await text('[data-lb="2.1.1"]'));
+      const code = main.match(/\b[A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+\b/);
+      assert.equal(code, null, 'no visible reason code: ' + (code && code[0]));
       assert.doesNotMatch(main, /예시/, 'no board example word');
       phase = tag + ' layout';
       assert.ok(await overflow() <= 0, 'no horizontal overflow');

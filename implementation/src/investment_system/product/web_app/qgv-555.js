@@ -38,6 +38,12 @@ const STATUS_TEXT=Object.freeze({IMPLEMENTED:'계산 구현됨',PENDING_DEFINITI
 const DIRECTION_TEXT=Object.freeze({HIGHER:'높을수록 좋음',LOWER:'낮을수록 좋음(점수는 좋은 쪽이 높게)'});
 const FAMILY_TEXT=Object.freeze({net_income:'순이익',forecast_eps:'예상 EPS',operating_income:'영업이익',revenue:'매출',gross_profit:'매출총이익',cfo:'영업현금흐름',
  book_equity:'보통주 자본',debt:'차입금',shareholder_payout:'주주환원',reit_ffo:'REIT FFO',operating_assets:'영업자산'});
+const PERIOD_TEXT=Object.freeze({TTM:'최근 12개월',LATEST_QUARTER:'최근 분기말',FY:'회계연도',FY1:'다음 회계연도 전망',FY_1Y:'회계연도 1년',FY_3Y:'회계연도 3년',FY_5Y:'회계연도 5년',
+ NTM:'향후 12개월 전망',ONE_YEAR:'1년',UNRESOLVED:'기간 미정'});
+const FORMULA_TEXT=Object.freeze({ratio:'비율',ratio_average:'평균 분모 비율',difference:'차이',difference_average:'평균 분모 차이',difference_ratio:'차이 비율',sum:'합',sum_ratio:'합의 비율',
+ one_minus_ratio:'1 − 비율',cagr3:'3년 연평균 성장률',cagr5:'5년 연평균 성장률',growth1:'1년 성장률',positive_growth_share:'성장한 해의 비율',peg:'PEG',composite:'복합',pending:'정의 확정 전'});
+const UNIT_TEXT=Object.freeze({decimal:'소수',multiple:'배수'});
+const word=(T,v)=>own(T,v)?T[v]:String(v).toLowerCase().replace(/_/g,' ');
 const DATA_KIND_TEXT=Object.freeze({SYNTHETIC:'합성 자료',PRIVATE:'비공개 실자료',PUBLIC:'공개'});
 
 class Refusal extends Error{constructor(code,path){super(code);this.code=code;this.path=path;}}
@@ -191,7 +197,7 @@ function card(cat,f,c){const scope=c?c.scope:'COMMON',s=selectable(f,scope),r=ca
  const fams=f.input_families.map(x=>FAMILY_TEXT[x]||x);
  const others=c?overlap(c,cat).filter(e=>e.factors.includes(f.variant_id)):[];
  return freeze({variant_id:f.variant_id,name:f.display_name,axis:f.axis,role:r?r.name:f.role_id,economic_role:r?r.economic_role:'',
-  formula:f.formula+' · '+f.period+' · 단위 '+f.unit+' · '+(DIRECTION_TEXT[f.direction]||f.direction),
+  formula:word(FORMULA_TEXT,f.formula)+' · '+word(PERIOD_TEXT,f.period)+' · 단위 '+word(UNIT_TEXT,f.unit)+' · '+(DIRECTION_TEXT[f.direction]||f.direction),
   templates:f.scope.map(t=>TEMPLATE_TEXT[t]||t).join('·'),
   badges:[f.is_default?'기본값':null,f.recommended?'추천':null,chosen?'현재 선택':null].filter(Boolean),
   status:s.ok?STATUS_TEXT.IMPLEMENTED:STATUS_TEXT[s.code==='NOT_FIT'?'NOT_FIT':'PENDING_DEFINITION'],selectable:s.ok,

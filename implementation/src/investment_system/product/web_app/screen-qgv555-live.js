@@ -127,7 +127,7 @@ function fill(route,{body}){const signal=route.signal;
     h('label',{class:'meta'},'역할 안 ',h('input',{type:'number',min:0,max:10000,step:100,value:share,inputmode:'numeric','aria-label':k.name+' 역할 안 비중(만분율)',dataset:{k:'q5-share-'+v},
      onchange:e=>act(()=>{S.edit=M.setShare(S.edit,a,r.role_id,v,Number(e.target.value));})()})),' ',
     variants.length?h('select',{'aria-label':k.name+' 기간·공식 변형',dataset:{k:'q5-var-'+v},onchange:e=>act(()=>{if(e.target.value)S.edit=M.chooseVariant(S.edit,cat,v,e.target.value);})()},
-     h('option',{value:''},'변형 선택'),...variants.map(g=>h('option',{value:g.variant_id},g.display_name+' · '+g.period))):null,' ',
+     h('option',{value:''},'변형 선택'),...variants.map(g=>h('option',{value:g.variant_id},g.display_name+' · '+M.card(cat,g,c).formula.split(' · ')[1]))):null,' ',
     h('button',{type:'button',class:'lk',dataset:{k:'q5-rm-'+v},onclick:act(()=>{S.edit=M.removeFactor(S.edit,a,r.role_id,v);})},'빼기'),
     h('div',{class:'meta'},k.weights),k.overlap.length?h('div',{class:'meta',dataset:{q5CardOverlap:''}},'중복 ',k.overlap.join(' · ')):null,
     k.composite?h('div',{class:'meta',dataset:{q5Composite:v}},'복합 내부 ',...f.composite.components.map(p=>h('label',null,p.variant_id+' ',
