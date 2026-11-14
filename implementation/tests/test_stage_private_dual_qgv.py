@@ -214,3 +214,50 @@ def test_projection_proof_refusals_keep_the_existing_copy(tmp_path, kind, code):
         tool.stage(delivery, scope, pin, data, lin, lpin)
     assert str(error.value) == code
     assert sorted(p.name for p in old.iterdir()) == ['kept.json']
+
+
+# The 3/3/3 delivery (owner 2026-11-13; Codex #534 qgv333-examples/boundary-delivery, pinned in its manifest): staged with --set 333
+# under classification/dual-333/<scope>/ only, never over the reduced delivery, and a set holds only its own boards.
+Q333 = ROOT / 'docs' / 'research' / 'sector_qgv' / 'qgv333-examples' / 'boundary-delivery' / 'core-missing'
+
+
+def _setup_333(tmp_path):
+    delivery = tmp_path / 'delivery333'
+    delivery.mkdir()
+    for p in Q333.iterdir():
+        (delivery / p.name).write_bytes(p.read_bytes())
+    ev = json.loads((Q333 / 'summary.json').read_text())['boards']['U2-333']['evaluation_population']
+    scopes = {'operating': {'context': {'valuation_date': ev['valuation_date'], 'result_identity': {'input_hash': ev['input_hash']},
+                                        'population': {'id': ev['id'], 'version': ev['version'], 'members_hash': ev['members_hash'], 'denominator': ev['code_rows']}}}}
+    data = tmp_path / 'data'
+    (data / 'classification' / 'expanded').mkdir(parents=True)
+    (data / 'classification' / 'expanded' / 'coverage.json').write_text(json.dumps({'scopes': scopes}))
+    return delivery, data, _sha((delivery / 'manifest.json').read_bytes())
+
+
+def test_333_set_stages_under_its_own_directory_and_keeps_the_reduced_delivery(tmp_path, capsys):
+    delivery, data, pin = _setup_333(tmp_path)
+    kept = data / 'classification' / 'dual' / 'operating504'
+    kept.mkdir(parents=True)
+    (kept / 'kept.json').write_text('{}')
+    assert tool.main(['--delivery', str(delivery), '--scope', 'operating504', '--manifest-sha256', pin, '--data-dir', str(data), '--set', '333']) == 0
+    out = data / 'classification' / 'dual-333' / 'operating504'
+    assert sorted(p.name for p in out.iterdir()) == sorted(p.name for p in Q333.iterdir())
+    for p in Q333.iterdir():
+        assert (out / p.name).read_bytes() == p.read_bytes(), 'byte for byte'
+    assert sorted(p.name for p in kept.iterdir()) == ['kept.json'], 'the reduced delivery is untouched'
+    line = capsys.readouterr().out
+    assert 'models=U2-333,U1-333,S1-333 code_rows=3 issuers=3 details=1 files=4' in line and line.rstrip().endswith(' set=333')
+
+
+def test_333_set_refuses_reduced_boards_and_the_reduced_set_refuses_333_boards(tmp_path):
+    delivery, data, pin = _setup_333(tmp_path)
+    with pytest.raises(tool.StageError, match='^SUMMARY_SCHEMA$'):
+        tool.stage(delivery, 'operating504', pin, data)
+    assert not (data / 'classification' / 'dual').exists()
+    (tmp_path / 'old').mkdir()
+    old, data2, pin2 = _setup(tmp_path / 'old')
+    with pytest.raises(tool.StageError, match='^SUMMARY_SCHEMA$'):
+        tool.stage(old, 'operating504', pin2, data2, set_='333')
+    with pytest.raises(tool.StageError, match='^SET_UNKNOWN$'):
+        tool.stage(delivery, 'operating504', pin, data, set_='334')

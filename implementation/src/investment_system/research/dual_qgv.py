@@ -47,6 +47,9 @@ def candidate_configs():
 
 
 def validate_model(config):
+    if config.get('schema_version')=='qgv-dual-config/2':
+        from .qgv_333 import validate_candidate
+        return validate_candidate(config)
     required={'schema_version':'qgv-dual-config/1','version':'0.1.0','minimum':20,
         'missing_policy':'strict/1','gate_policy':'official-q-percentile-required/1',
         'execution_version':VERSION,'additional_policy':'CATALOG_ZERO_CORE_WEIGHT'}
@@ -70,13 +73,15 @@ def _code_files():
         ('dual_qgv.py','sector_qgv.py','sector_qgv_registry.py','sector_qgv_reference.py')] + [Path(__file__).parent.parent/'qgv/qgv_v2.py']
 
 
-def _code_hash():
-    return digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in _code_files()})
+def _code_hash(config=None):
+    paths=_code_files()
+    if config and config.get('core_policy')=='FIXED_333':paths=paths+[Path(__file__).with_name('qgv_333.py')]
+    return digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})
 
 
 def _binding(config,evaluation,reference):
     return dict(model_hash=digest(config),evaluation=_identity(evaluation),reference=_identity(reference),
-        code_hash=_code_hash(),engine_version=ENGINE,adapter_version=VERSION)
+        code_hash=_code_hash(config),engine_version=ENGINE,adapter_version=config['execution_version'])
 
 
 def _classification_valid(row,snapshot):
@@ -189,6 +194,11 @@ def run_board(config,evaluation,reference,*,request_id):
         if r['company_id'] not in ev:continue
         r=deepcopy(r);r['ranking_scope']=_scope(r,config['kind']);r['rank']=None;r['rank_n']=0
         r['selected_variants']=([v for v,w in effective_weights(config['uniform_preset']).items() if w>0] if config['kind']=='COMMON' else r.get('selected_variants',[]));r['scoring_representative']=r['company_id'] in peers
+        if config.get('core_policy')=='FIXED_333':
+            from .qgv_333 import fractions
+            p=(config['uniform_preset'] if config['kind']=='COMMON' else config['scoped_presets'].get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template'))))
+            r['recipe_state']=p['recipe_state'] if p else 'MAPPING_UNRESOLVED'
+            if p and r.get('post_gate_axis_weights') is not None:r['weight_fractions']=fractions(p,r['post_gate_axis_weights'])
         for v,f in r['factors'].items():f['kind']='CORE' if v in r['selected_variants'] else 'ADDITIONAL'
         rows.append(r)
     groups=[]
@@ -209,12 +219,15 @@ def run_board(config,evaluation,reference,*,request_id):
         scope='FACTOR_INPUT_ELIGIBILITY_NOT_LISTING_OR_INVESTMENT_ELIGIBILITY')
     binding=_binding(config,evaluation,reference);key=digest(binding)
     result=dict(schema_version=SCHEMA,model_id=config['model_id'],model_version=config['version'],configuration=deepcopy(config),
-        engine_version=ENGINE,adapter_version=VERSION,normalization_version='common-midrank-strict20/1' if config['kind']=='COMMON' else NORMALIZATION,
+        engine_version=ENGINE,adapter_version=config['execution_version'],normalization_version='common-midrank-strict20/1' if config['kind']=='COMMON' else NORMALIZATION,
         evaluation_population=_identity(evaluation),reference_population=identity,groups=groups,
         bindings=binding,cache_key=key,request_id=request_id,rows=rows,coverage=_coverage(rows,evaluation),
         classification_mode='RETROSPECTIVE_RECONSTRUCTION' if any(timestamp(c['knowledge_as_of'])>timestamp(evaluation['as_of']) for c in
             (reference.get('classification_context',{}).get('source_contexts') or [reference.get('classification_context',{})]) if c.get('knowledge_as_of')) else 'AS_OF_CLASSIFICATION_NOT_SYSTEM_PIT_PROOF',
         performance_state='NOT_MEASURED',operating_adoption='NOT_ADOPTED',deployment_state='NOT_STARTED',visibility='PRIVATE_RESEARCH')
+    if config.get('core_policy')=='FIXED_333':
+        from .qgv_333 import extend_coverage
+        extend_coverage(result)
     result['result_hash']=digest({k:v for k,v in result.items() if k!='request_id'})
     return result
 

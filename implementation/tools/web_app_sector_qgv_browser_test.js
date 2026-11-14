@@ -39,9 +39,10 @@ let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
 
 (async () => {
-  const eng = E.start();
+  // The engine route can be restarted mid-test (2.2.7 저장 → 재시작 → 복원): the site always posts to the current engine process.
+  let eng = E.start();
   const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS } };
-  const s = await site.start({ fixtures, posts: { [E.ROUTE]: eng.route } });
+  const s = await site.start({ fixtures, posts: { [E.ROUTE]: (b) => eng.route(b) } });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   try {
     for (const width of [1440, 390]) {
@@ -283,8 +284,14 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
         assert.deepEqual(eng.calls.slice(c0).map((x) => x.op), ['preview', 'save'], phase + ': one click = the engine preview and its save_board record (nothing stored)');
         assert.equal(await page.evaluate((k) => localStorage.getItem(k), DKEY), null, phase + ': 계산 stores nothing');
-        const u1 = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'docs/research/sector_qgv/dual-synthetic/summary.json'), 'utf8')).boards.U1.result_hash;
-        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), u1, phase + ': the engine board, the same as Codex\'s synthetic result');
+        // The board shown is the engine's own: a second, separate engine process given the same request on the same pinned inputs
+        // returns the same result hash (Codex's run_board is deterministic). Codex's retained synthetic result was made at #529's code;
+        // its rows (the ranks below) are the same, while its hash moved with the code binding when #534 changed dual_qgv.py.
+        const e2 = E.start({ env: {} });
+        let u1;
+        try { const a = await e2.call({ schema_version: 'sector-qgv-engine-request/1', op: 'preview', request_id: 'DUAL-preview-U1-0', model: 'INTEGRATED', model_id: 'unified-roa-core/0.1.0', input_id: 'DUAL_BOTH_VALID' });
+          assert.equal(a.ok, true); u1 = a.board.result_hash; } finally { await e2.close(); }
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), u1, phase + ': the engine board, the same as an independent engine run');
         assert.deepEqual(await page.locator(DB + ' [data-de-rank]').allInnerTexts(), ['3 / 3 (평가 집단 전체)', '2 / 3 (평가 집단 전체)', '1 / 3 (평가 집단 전체)']);
         assert.match(await text(DB + ' [data-de-state]'), /^합성 실제 재계산/);
         // late answer: U1 is asked again, S1 is chosen before it answers → the U1 answer is dropped, no U1 board stays
@@ -313,6 +320,27 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.locator(DB + ' [data-k=de-restore]').click(); await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
         assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-kind'), 'EXACT_REPLAY');
         assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), shownHash, phase + ': the replay is the saved result');
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-source'), 'RETAINED_IN_PROCESS');
+        // 저장 → 엔진 경로 재시작(메모리 비움) → 고정 입력 다시 읽기 → 정확 재현 (owner 2026-11-13 「재시작 후 저장·복원」)
+        await eng.close(); eng = E.start();
+        await page.locator(DB + ' [data-k=de-cancel]').click();
+        const r0 = eng.calls.length; await page.locator(DB + ' [data-k=de-restore]').click(); await page.locator(DB + ' [data-de-state=READY]').waitFor({ timeout: 30000 });
+        assert.deepEqual(eng.calls.slice(r0).map((x) => [x.op, x.ok]), [['replay', true]], phase + ': one replay call to the restarted route');
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-kind'), 'EXACT_REPLAY');
+        assert.equal(await page.locator(DB + ' [data-de-state]').getAttribute('data-de-source'), 'PINNED_INPUT_REREAD');
+        assert.match(await text(DB + ' [data-de-state]'), /원래 입력을 고정 목록에서 다시 읽음\(재시작 뒤\)/);
+        assert.equal(await page.locator(DB + ' [data-de-board]').getAttribute('data-de-result'), shownHash, phase + ': after a restart the replay is still the saved result');
+        // A record whose original input is not pinned: the record stays, 정확 재현 불가, nothing computed on the latest input.
+        const keep = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), DKEY)), lost = JSON.parse(JSON.stringify(keep));
+        lost.records['sector-reduced-core/0.1.0'].bindings.evaluation.input_hash = 'e'.repeat(64);
+        await page.evaluate(([k, v]) => localStorage.setItem(k, v), [DKEY, JSON.stringify(lost)]);
+        await page.locator(DB + ' [data-k=de-cancel]').click();
+        const r1 = eng.calls.length; await page.locator(DB + ' [data-k=de-restore]').click(); await page.locator(DB + ' [data-de-state=ERROR]').waitFor({ timeout: 30000 });
+        assert.deepEqual(eng.calls.slice(r1).map((x) => [x.op, x.code]), [['replay', 'RETAINED_INPUT_NOT_FOUND']], phase + ': no latest-input run in its place');
+        assert.match(await text(DB + ' [data-de-state]'), /원래 입력이 이 실행 경로에 없음 · 정확 재현 불가 · 최신 입력으로 다시 계산하지 않음/);
+        assert.equal(await page.locator(DB + ' [data-de-board]').count(), 0);
+        assert.equal(await page.evaluate((k) => localStorage.getItem(k), DKEY), JSON.stringify(lost), phase + ': the saved record is kept as it was');
+        await page.evaluate(([k, v]) => localStorage.setItem(k, v), [DKEY, JSON.stringify(keep)]);
         assert.ok(!/\b(null|undefined|NaN)\b/.test(await text(DB)), phase + ': no null / undefined text');
       }
       ok(tag + ' 2.2.7 연구 후보: named candidate only; late answer dropped on switch, no previous-model result; Q/G with no total rank; save on its own key (sector record unchanged), cancel, exact replay');

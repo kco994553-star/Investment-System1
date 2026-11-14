@@ -1,0 +1,32 @@
+{
+  "schema_version": "qgv-dual-factor-distribution-manifest/1",
+  "scope": "operating504",
+  "data_kind": "SYNTHETIC",
+  "display_policy": "stored-evaluation-deciles/1",
+  "source_results": {
+    "U2-333": {
+      "result_hash": "7e07f8b13d2158612bca499937199cf1ec8dbeccb6b0ae85f1cefa41bbcc972d",
+      "sha256": "1145d450be18092cc1dda112843555f83c3072e12ab466fa09ccbf8a09ab3528"
+    },
+    "U1-333": {
+      "result_hash": "7dc5b1828739dccffe1d81e53a50337cc1901c170390f687754d44e937166c48",
+      "sha256": "bfd57c6373e539ec866edccedcfd345c822d671781276a0986742342163f1e74"
+    },
+    "S1-333": {
+      "result_hash": "758a4932703bffe250b9a8cf7d2f1ff1c11fb6ead1dfdd5748ab51969ccd876f",
+      "sha256": "50efe527f6299710fca01f48bded7edafa13d21ce0b8dd5a604fcbb9be0b4ce6"
+    }
+  },
+  "files": [
+    {
+      "path": "distribution-000.json",
+      "size": 1195285,
+      "sha256": "d7be9a697ca66c125dd4cd0304ab145813c4fc852c87a87fa5addaa9d237df93"
+    },
+    {
+      "path": "distribution-index.json",
+      "size": 258975,
+      "sha256": "aace96685a2fb4d94dc7e37f9df19fcdcd6658e8a02850c0d304df4d111d8aaf"
+    }
+  ]
+}

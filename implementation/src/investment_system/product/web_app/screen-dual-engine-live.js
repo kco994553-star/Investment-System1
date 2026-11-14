@@ -1,6 +1,7 @@
 /* 2.2.7 연구 후보 계산 · 저장 · 취소 · 복원 (owner 2026-11-11 「#530 후속 연결」 §3; IS2.dualEngine): under 1. QGV · 1.2, beside
    the sector QGV settings (which are not changed by anything here). It calls the development engine route with an explicitly named
-   research candidate (U1 unified-roa-core / U2 unified-sales-core = 통합 연구, S1 sector-reduced-core = 섹터 연구) and shows the
+   research candidate (U1 unified-roa-core / U2 unified-sales-core = 통합 연구, S1 sector-reduced-core = 섹터 연구; the 3/3/3
+   U2-333 unified-333-eps / U1-333 unified-333-persistence / S1-333 sector-333, qgv-dual-config/2, owner 2026-11-13) and shows the
    engine's own board; nothing is scored, ranked, filled or averaged here.
    - No candidate is preselected: the owner names one. Changing the candidate (or the input) starts a new generation: the shown
      result is cleared at once and any answer that comes back for an earlier request is dropped (늦은 응답), so a previous model's
@@ -12,6 +13,9 @@
      QGV record is never read or rewritten). 취소 drops an unsaved result. 복원 asks the engine to replay the saved record exactly
      (same configuration, code and original inputs); when the engine no longer holds the original inputs the answer is
      RETAINED_INPUT_NOT_FOUND and nothing is recalculated under that name — 최신 입력 재계산 is the separate 계산 button.
+   - After the engine route restarts (nothing held in its memory), 복원 still replays exactly: the route reads the original inputs
+     again from their fixed manifest and accepts only the pair the saved bindings name (원래 입력을 고정 목록에서 다시 읽음). When no
+     pinned input matches, the answer is RETAINED_INPUT_NOT_FOUND and the device record stays as it was.
    - The published site has no engine route: ENGINE_NOT_CONNECTED (계산 실행 경로 연결 전). */
 (function(){
 'use strict';
@@ -22,6 +26,9 @@ const ERR=Object.freeze({ENGINE_NOT_CONNECTED:'계산 실행 경로 연결 전(�
  MODEL_RESPONSE_MISMATCH:'요청한 모형과 다른 응답 · 쓰지 않음',ENGINE_ANSWER_OTHER_REQUEST:'다른 요청의 응답 · 쓰지 않음',SAVED_SCHEMA_MISMATCH:'연구 저장본이 아닌 기록 · 바꾸지 않음',
  MODEL_ID_REQUIRED:'후보를 먼저 고르세요',ENGINE_UNREACHABLE:'계산 경로 응답 없음'});
 const say=c=>ERR[c]||'오류 · '+c;
+// Where an exact replay's original inputs came from (owner 2026-11-13 「재시작 후 저장·복원」): kept by this run of the engine
+// route, or read again from their fixed manifest after a restart (only the pair the saved bindings name; never the latest input).
+const SOURCE=Object.freeze({RETAINED_IN_PROCESS:'원래 입력(이 실행 경로가 보관)',PINNED_INPUT_REREAD:'원래 입력을 고정 목록에서 다시 읽음(재시작 뒤)'});
 
 function block({signal}){
  const st={model_id:null,input:INPUTS[0][0],gen:0,busy:false,shown:null,code:null,msg:null};
@@ -43,7 +50,7 @@ function block({signal}){
   try{I.store.dualQgv.save(e,sh.record);st.shown={...sh,saved:true};st.msg='이 기기에 저장함 · '+D().MODEL_OF[st.model_id].key+' · 결과 '+sh.record.result_hash.slice(0,12)+'…';}
   catch(err){st.code=String(err&&err.message||'DUAL_QGV_SAVE_FAILED');}draw();}
  async function restore(){const r=saved(),rec=r&&r.state==='OK'?r.value.records[st.model_id]:null;if(!rec)return;
-  const v=await ask('replay',{saved:JSON.parse(JSON.stringify(rec))});if(!v)return;st.shown={kind:v.kind,board:v.board,input:v.input_id,saved:true};draw();}
+  const v=await ask('replay',{saved:JSON.parse(JSON.stringify(rec))});if(!v)return;st.shown={kind:v.kind,board:v.board,input:v.input_id,saved:true,source:v.input_source||null};draw();}
  function cancel(){reset();draw();}
 
  function paint(){const M=D(),r=saved(),rec=r&&r.state==='OK'&&st.model_id?r.value.records[st.model_id]:null;
@@ -57,12 +64,12 @@ function block({signal}){
   bCompute.onclick=()=>{void compute();};bSave.onclick=e=>{save(e);};bCancel.onclick=cancel;bRestore.onclick=()=>{void restore();};
   const state=st.busy?h('p',{class:'pending',role:'status',dataset:{deState:'LOADING'}},'계산 경로에 요청 중'):
    st.code?h('p',{class:'hand err',role:'alert',dataset:{deState:'ERROR',deCode:st.code}},say(st.code),' · ',st.code):
-   sh?h('p',{class:'reason',role:'status',dataset:{deState:'READY',deKind:sh.kind}},M.KIND_WORD[sh.kind],' · 입력 ',sh.input,' · ',M.MODELS[M.MODEL_OF[sh.board.model_id].key].label):
+   sh?h('p',{class:'reason',role:'status',dataset:{deState:'READY',deKind:sh.kind,deSource:sh.source||''}},M.KIND_WORD[sh.kind],' · 입력 ',sh.input,sh.source?' · '+SOURCE[sh.source]:'',' · ',M.MODELS[M.MODEL_OF[sh.board.model_id].key].label):
    h('p',{class:'reason',dataset:{deState:st.model_id?'IDLE':'CHOOSE'}},st.model_id?'계산을 누르면 개발 계산 경로에 이 후보로 한 번 요청합니다':'후보를 먼저 고르세요 · 기본·최적·채택 후보는 없음');
   const savedLine=r&&r.state==='INVALID'?h('p',{class:'hand err',dataset:{deSaved:'INVALID'}},'이 기기의 연구 저장본을 읽을 수 없음 · 덮어쓰지 않음'):
    rec?h('p',{class:'reason',dataset:{deSaved:'OK'}},'이 기기 저장본 · 결과 ',rec.result_hash.slice(0,12),'… · 설정 ',rec.bindings.model_hash.slice(0,12),'…'):
    st.model_id?h('p',{class:'reason',dataset:{deSaved:'EMPTY'}},'이 후보의 저장본 없음'):null;
-  root.replaceChildren(...[h('h4',null,'연구 후보 계산 (2.2.7 · 통합 U1·U2 / 섹터 S1 · 연구 · 운영 채택 안 됨)'),
+  root.replaceChildren(...[h('h4',null,'연구 후보 계산 (2.2.7 · 통합 U1·U2 / 섹터 S1 · 3/3/3 U2-333·U1-333 / S1-333 · 연구 · 운영 채택 안 됨)'),
    h('p',{class:'reason'},'섹터 QGV 설정(위)과 따로 · 이 칸은 위 저장 설정을 읽거나 바꾸지 않음 · 공식 QGV·포트폴리오 목표는 바뀌지 않음'),
    chips,h('div',{class:'sort-row'},h('label',{for:'de-input'},'입력(합성)'),inSel),
    h('div',{class:'load-row'},bCompute,bSave,bCancel,bRestore),state,savedLine,

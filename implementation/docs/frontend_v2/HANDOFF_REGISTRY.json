@@ -1,0 +1,519 @@
+{
+  "schema_version": "main-handoff-registry/1",
+  "note": "Main's record of producer handoffs it consumes (owner 2026-11-13 「3/3/3 화면 연결 우선, 전달·재현 병렬 작업 추가」 §2). Hashes, paths and comment ids only; no content. tools/handoff_status.py checks each stage against the files themselves. A stage with nothing to check is NOT_APPLICABLE, never assumed done. Each OK stage holds only for the entry's scope (what was handed over and checked); each deliverable is recorded apart (owner 2026-11-13 「새 Q 결과 전환·인수 상태 정리」 §2).",
+  "entries": [
+    {
+      "id": "qgv333-contract",
+      "title": "QGV 3/3/3 contract, synthetic and boundary examples",
+      "comments": [
+        6849630620,
+        6849892120,
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "f79e9776929144e12bd3001e2ba57ef89e8b2cf8"
+      },
+      "public": {
+        "manifest": "implementation/docs/research/sector_qgv/qgv333-examples/manifest.json",
+        "sha256": "18516bbb9cf8795c9caef4d55b9198b00eab34b98cb9a6fd20b96b07bfb2e622"
+      },
+      "reader": {
+        "contract": "implementation/docs/research/sector_qgv/qgv333-examples/qgv-333-contract.json",
+        "models": [
+          "U2-333",
+          "U1-333",
+          "S1-333"
+        ]
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": [],
+      "scope": "contract, synthetic and boundary examples registered in Main's reader (model ids, config/2, configuration hashes)",
+      "deliverables": [
+        {
+          "id": "reader",
+          "word": "판독기",
+          "state": "CONNECTED",
+          "note": ""
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_APPLICABLE",
+          "note": "public examples only"
+        }
+      ]
+    },
+    {
+      "id": "qgv333-results",
+      "title": "QGV 3/3/3 private results (real run cda233a4)",
+      "comments": [
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fa9b96d3b3ee995378dde025df41701e4218a2c9"
+      },
+      "raw": {
+        "commit": "6b4a5162db2e95b4dfdeb8ca2f801f82ca1cc6d9",
+        "path": "handoffs/qgv-333-20261113/handoff-manifest.json",
+        "sha256": "f024e121a082e78dd90457fa5b85d4b5c2f7c3cf6524c2878258d03db16467ad"
+      },
+      "reader": {
+        "slots": [
+          "operating504@333",
+          "held1057@333"
+        ]
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker &set=333 not deployed (owner approval)"
+      },
+      "missing": [],
+      "scope": "the ORIGINAL 3/3/3 input version (delivery, reference anchor / projection proof, full distribution and all-bin routing); on private data ade27160 the screen's 3/3/3 slots were switched to qgv333-qdelivery, this version stays in the raw handoff",
+      "deliverables": [
+        {
+          "id": "scores",
+          "word": "점수 결과",
+          "state": "REPLACED",
+          "note": "qgv333-qdelivery로 교체 (data ade27160)"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "REPLACED",
+          "note": "qgv333-qdelivery로 교체"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker &set=333 not deployed"
+        }
+      ]
+    },
+    {
+      "id": "qgv333-validator",
+      "title": "QGV 3/3/3 validator type fix (no data regeneration)",
+      "comments": [
+        6850174335
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "f79e9776929144e12bd3001e2ba57ef89e8b2cf8"
+      },
+      "raw": {
+        "commit": "a1c549fd13d9694aa61c2acf2bee08c695d7a1ee",
+        "path": "handoffs/qgv-333-20261113/validator-update.json",
+        "sha256": "d31a09b3edabbdcaa1d111747a66fe348d1a04de07a7cb69e6c37d4802b3fbd3"
+      },
+      "reader": {
+        "contract": "implementation/docs/research/sector_qgv/qgv333-examples/qgv-333-contract.json",
+        "models": [
+          "U2-333",
+          "U1-333",
+          "S1-333"
+        ]
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": [],
+      "scope": "validator type rule (no data regeneration)",
+      "deliverables": [
+        {
+          "id": "reader",
+          "word": "판독기 규칙",
+          "state": "CONNECTED",
+          "note": "exact integer-ratio configuration types"
+        }
+      ]
+    },
+    {
+      "id": "main533-recheck",
+      "title": "Codex recheck of #533 2dc1202c boundaries (accepted)",
+      "comments": [
+        6850109806
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fa9b96d3b3ee995378dde025df41701e4218a2c9"
+      },
+      "raw": {
+        "commit": "682f5c02b1fe79e2894a5ea6fd6953e76f343630",
+        "path": "handoffs/qgv-333-20261113/main533-recheck-2dc1202c.json",
+        "sha256": "833cb917caad282711970d72608b637d7a31ab418b5a39745f538471f03889cd"
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "missing": [],
+      "scope": "Codex's recheck of #533 boundaries, received",
+      "deliverables": [
+        {
+          "id": "receipt",
+          "word": "Codex 재검토",
+          "state": "RECEIVED",
+          "note": "no screen of its own"
+        }
+      ]
+    },
+    {
+      "id": "qgv333-eps",
+      "title": "QGV 3/3/3 annual EPS input connection follow-up (execution 8e9e5baf)",
+      "comments": [
+        6851188500,
+        6851482941
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "bfadb0127a7afc0dc2721f322bdcd08b3a55f67d"
+      },
+      "raw": {
+        "commit": "f8f693ad8cb4a23fa051f6cdf2eae6293763ce02",
+        "path": "handoffs/qgv-333-eps-20261113/handoff-manifest.json",
+        "sha256": "3dd6dcaa556a76150e6e7cf103349820740c68106ccda884c548c534c4dc3ddf"
+      },
+      "reader": {
+        "eps": true
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/eps/eps-index.json",
+          "sha256": "cabd99ddb99a8f45e205a11dc5c838ff5b7d2910beefa51056fccda020b8d3cf"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_eps_index",
+        "?part=dual_eps_diag",
+        "?part=dual_eps_compare",
+        "?part=dual_eps_inputs"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker dual_eps_* not deployed (owner approval)"
+      },
+      "missing": [
+        "new input version bounded result delivery: delivery/<scope>/ manifest (qgv-dual-delivery-manifest/1) + summary + index + details for the three boards",
+        "its full distribution and bins bound to the new result hashes",
+        "an anchor for the new evaluation input (operating 29514f1d…, held 3a422521…): the staged classification bundle names the previous input",
+        "a calculation time field (still absent in qgv333-qinput)",
+        "a reviewed historical common share basis: no adopted proof yet (0); its review clock field is now defined (sector-qgv-review-context/1, delivered with qgv333-qinput)"
+      ],
+      "scope": "the EPS input-connection progress record of the SECOND input version (diagnostic summary, run comparison, continuation inputs); not a result delivery",
+      "deliverables": [
+        {
+          "id": "diagnostic",
+          "word": "진단 화면",
+          "state": "CONNECTED",
+          "note": "EPS 다섯 단계 · 시각 · 입력 버전"
+        },
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "NOT_DELIVERED",
+          "note": "no scope delivery manifest for this input version"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "NOT_DELIVERED",
+          "note": "no distribution / bins for this input version"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker dual_eps_* not deployed"
+        }
+      ]
+    },
+    {
+      "id": "qgv333-qinput",
+      "title": "QGV 3/3/3 Q input recovery, retrospective review (execution 93a699ed)",
+      "comments": [
+        6852162939,
+        6852432156
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "4352c8ec206d41c40b29a4bd723b1fbb61d740a4"
+      },
+      "raw": {
+        "commit": "8cccae5e8f8aabf5967bfed7115367aca72fa80f",
+        "path": "handoffs/qgv-q-input-recovery-20261113/handoff-manifest.json",
+        "sha256": "c894737d4e09c9e5bc39c672d6628b273dcbff65e6423c80a30cbda5e831731b"
+      },
+      "reader": {
+        "qinput": true
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/qinput/q-index.json",
+          "sha256": "1be27c1e109eb927d88f986062e02cb2f737dbacce3836fe78c2c423805304ff"
+        },
+        {
+          "path": "classification/dual-333/qinput/diagnostic-summary.json",
+          "sha256": "562a495a5ca2e431c519452fb8b8c82052f1be8cfa915e2143ef7e0e59516ef5"
+        },
+        {
+          "path": "classification/dual-333/qinput/comparison.json",
+          "sha256": "dfb6ec361a98325fc55b3aaccf74e25ea6e59371108bd1721bf709a372d36d22"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_q_index",
+        "?part=dual_q_diag",
+        "?part=dual_q_compare"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker dual_q_* not deployed (owner approval)"
+      },
+      "missing": [],
+      "scope": "the Q input recovery progress record of the THIRD input version (diagnostic summary, comparison, review clocks); not a result delivery",
+      "deliverables": [
+        {
+          "id": "diagnostic",
+          "word": "진단 화면",
+          "state": "CONNECTED",
+          "note": "Q 결손 원인 · 관문 판정 상태 · 공식 입력 연결 · 네 단계 · 시각 7가지 · 버전 사슬"
+        },
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "CONNECTED",
+          "note": "qgv333-qdelivery (Codex fe29867c) switched in one step; result hashes = this comparison's after side"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "CONNECTED",
+          "note": "qgv333-qdelivery distribution + all-bin routing"
+        },
+        {
+          "id": "calc_time",
+          "word": "계산 시각",
+          "state": "RECEIVED",
+          "note": "qgv-dual-delivery-clocks/1: calculated_at null, reason EXECUTION_TIMESTAMP_NOT_RECORDED (8 execution records inspected); delivery_generated_at is projection time only"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker dual_q_* not deployed"
+        }
+      ]
+    },
+    {
+      "id": "qgv333-qdelivery",
+      "title": "QGV 3/3/3 Q recovery result delivery with two input anchors and clocks (Codex #534 fe29867c, frozen execution 93a699ed)",
+      "comments": [
+        6867195048,
+        6867395524
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fe29867cf1301e97912656ff03d3a9bf3a17fe64"
+      },
+      "raw": {
+        "commit": "7bdcae7c140d28a5d5d66138307d1db3c50ae658",
+        "path": "handoffs/qgv-q-result-delivery-20261113/handoff-manifest.json",
+        "sha256": "7107111e84be3ab0875c0c481a26c9e2e6bfa3a52b62445496a4a25e778eec67"
+      },
+      "reader": {
+        "slots": [
+          "operating504@333",
+          "held1057@333"
+        ]
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/operating504/manifest.json",
+          "sha256": "23970e417d24473fe29d16577c8db436636516946470b43f9bfa1e593b548c9d"
+        },
+        {
+          "path": "classification/dual-333/operating504/input-anchors.json",
+          "sha256": "748fce366387ed02f6215fae732556ffe5d235911185a476f814983486088cff"
+        },
+        {
+          "path": "classification/dual-333/operating504/delivery-clocks.json",
+          "sha256": "039722c2a3f0524c1bbc2803f13fef82bfb9bcf8a926a10d92cc6ca3e99d06f4"
+        },
+        {
+          "path": "classification/dual-333/operating504/distribution/distribution-manifest.json",
+          "sha256": "8744fbf5b5c0620905f2d36f1fbcf9423feab0cf7f9eb458b59d5d734e3bc96c"
+        },
+        {
+          "path": "classification/dual-333/operating504/bins/bin-manifest.json",
+          "sha256": "d8e5df0a727121e36761335c5d0a0d2c92aabbc39422f06c4c0d9073f35364e9"
+        },
+        {
+          "path": "classification/dual-333/operating504/switch.json",
+          "sha256": "23cbc6195c5611e5a8bb0e0e8d7a1dc424eb772fdc9447729f59cc7990e3d658"
+        },
+        {
+          "path": "classification/dual-333/held1057/manifest.json",
+          "sha256": "7fb412d05b2a388f23372e8e32b6323796fe9a952c44a083e23c3dd271b87ee4"
+        },
+        {
+          "path": "classification/dual-333/held1057/input-anchors.json",
+          "sha256": "b6804226404f0d2096433c8b47e07ff011c3a28d5a4c101e5a2fd8190f853d1d"
+        },
+        {
+          "path": "classification/dual-333/held1057/delivery-clocks.json",
+          "sha256": "71ec48c4719019a0a2006052fd3847284cc941e26d7a561080b49a7ef6c66e0a"
+        },
+        {
+          "path": "classification/dual-333/held1057/distribution/distribution-manifest.json",
+          "sha256": "e36b61c47606d0abf650906c3da79aad6b370cde93118586252a8728701dd329"
+        },
+        {
+          "path": "classification/dual-333/held1057/bins/bin-manifest.json",
+          "sha256": "414ff045292bae7576bef882d1e40801e8ee4bffb498f2d02c4a1eb6af8bbd00"
+        },
+        {
+          "path": "classification/dual-333/held1057/switch.json",
+          "sha256": "ef40daa11449f4e6224f6e07c7b35672023874d79e24bd99de051958ff7d4d8f"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_manifest&scope=operating504&set=333",
+        "?part=dual_input_anchors&scope=operating504&set=333",
+        "?part=dual_clocks&scope=held1057&set=333",
+        "?part=dual_dist_index&scope=held1057&set=333",
+        "?part=dual_bins_detail&scope=operating504&shard=000&set=333"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker &set=333 / dual_input_anchors / dual_clocks not deployed (owner approval)"
+      },
+      "scope": "the THIRD input version's results: per scope the three 3/3/3 boards (summary, index, details), full distribution and all-bin routing, two independent input anchors (qgv-dual-input-anchors/1, chain checked against the earlier pinned handoff c894737d) and the clock record; switched in one step on data ade27160",
+      "deliverables": [
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "CONNECTED",
+          "note": "504 / 1057 detail rows read; both inputs anchored"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "CONNECTED",
+          "note": "1071 / 969 groups (Codex consumer check); staged with its bins"
+        },
+        {
+          "id": "calc_time",
+          "word": "계산 시각",
+          "state": "RECEIVED",
+          "note": "null with reason EXECUTION_TIMESTAMP_NOT_RECORDED; never filled"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker not deployed"
+        }
+      ],
+      "missing": []
+    },
+    {
+      "id": "ownership-531",
+      "title": "Company relationship view (Codex #531)",
+      "comments": [],
+      "producer": {
+        "pr": 531,
+        "sha": null
+      },
+      "raw": {
+        "commit": "883893e4",
+        "path": "handoffs/company-ownership-20261111/handoff-manifest.json",
+        "sha256": "a2a0b820537c9be3ee55d342ac0468bec2edfc804d40d77135fecd6097815180"
+      },
+      "staged": [
+        {
+          "path": "classification/ownership/ownership-index.json",
+          "sha256": "d2a335c7c7d7e8f21622661a55cfcc9e552d4fde9446f642b794ee7806462a20"
+        }
+      ],
+      "screen_parts": [
+        "?part=ownership_index",
+        "?part=ownership_view&entity=0000002488"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker ownership_* not deployed (owner approval)"
+      },
+      "missing": [
+        "refresh receipt (none delivered)"
+      ],
+      "scope": "company relationship view (Codex #531), staged and connected",
+      "deliverables": [
+        {
+          "id": "view",
+          "word": "관계 화면",
+          "state": "CONNECTED",
+          "note": ""
+        },
+        {
+          "id": "refresh",
+          "word": "갱신 영수증",
+          "state": "NOT_DELIVERED",
+          "note": "none delivered"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker ownership_* not deployed"
+        }
+      ]
+    },
+    {
+      "id": "wrb-acquisition",
+      "title": "WRB 0000011544-26-000046 approved acquisition (owner 2026-11-07 A; Main is the producer)",
+      "comments": [],
+      "producer": {
+        "pr": null,
+        "sha": "8c946c42a46cfeda60aaa50147f36611680b25ca",
+        "run_id": "43524551717"
+      },
+      "raw": {
+        "commit": "df79e83cadf77177c56329d55270bcb325ffe0ea",
+        "path": "handoffs/main-acquisition-20261107/manifest.json",
+        "sha256": "c9f40ad7c823032313872f886c8ba1d6c7e2247680634e70389333531149102f"
+      },
+      "staged": [],
+      "screen_parts": [],
+      "real_env": null,
+      "scope": "two SEC GETs (body + the directly named Exhibit 99.1) preserved bytes unchanged with receipt and manifest in the private raw repository",
+      "deliverables": [
+        {
+          "id": "acquired",
+          "word": "원문·receipt",
+          "state": "RECEIVED",
+          "note": "2 GET 200 · 36,732 + 329,311 bytes · SHA-256 = receipt"
+        },
+        {
+          "id": "codex",
+          "word": "Codex 근거 검증",
+          "state": "NOT_CONFIRMED",
+          "note": "handed to Codex in #437; its validation is the producer's"
+        }
+      ],
+      "missing": []
+    }
+  ],
+  "deliverable_states": {
+    "CONNECTED": "checked and connected to the screen in code (not a deployment)",
+    "RECEIVED": "received and checked, no screen of its own",
+    "NOT_DELIVERED": "not part of any handoff yet",
+    "NOT_CONFIRMED": "needs a deployed, checked environment (or the consumer) first",
+    "NOT_APPLICABLE": "nothing of that kind",
+    "REPLACED": "was connected; the screen now reads a newer version of the same deliverable (kept in the raw handoff)"
+  }
+}
