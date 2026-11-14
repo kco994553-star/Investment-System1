@@ -237,6 +237,8 @@ def run(c,e,ref,*,calculated_at=None):
         role_config=deepcopy(c['roles'])
         if c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
         supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
+        unsupported_reason=('SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']=='0.2.0' and
+            r.get('accounting_template')=='GENERAL' else 'ACCOUNTING_RECIPE_PREPARING')
         raw={m:_usable(r,m,e) for m in cats};roles={};metric_scores={}
         for role,spec in role_config.items():
             vals=[];items=[]
@@ -259,14 +261,16 @@ def run(c,e,ref,*,calculated_at=None):
                             if n>=c['minimum']:
                                 score=percentile(less,equal,n);break
                         if score is None:reason='PEER_SAMPLE_SMALL'
-                elif not supported:reason='ACCOUNTING_RECIPE_PREPARING'
+                elif not supported:reason=unsupported_reason
                 elif mw==0:reason='DISABLED_IN_SETTING'
                 items.append(dict(metric=m,raw=value,raw_status=raw[m][1],score=score,reason=None if score is not None else reason,
                                   reference_n=n,reference_scope=basis,weight=mw))
                 if c['version']=='0.2.0':
                     items[-1].update(requested_metric=requested_metric,
                         selection_reason='PRIMARY_RAW_UNAVAILABLE_ROA_FALLBACK' if m!=requested_metric else 'PRIMARY',
-                        primary_raw_status=raw[requested_metric][1])
+                        primary_raw_status=raw[requested_metric][1],
+                        display_flags=['SUBSTITUTE_METRIC'] if m!=requested_metric and score is not None else [])
+                    if m!=requested_metric:items[-1]['substitute_for']=requested_metric
                 if score is not None:vals.append((score,mw))
                 metric_scores[role+'|'+m]=items[-1]
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
@@ -303,9 +307,18 @@ def run(c,e,ref,*,calculated_at=None):
             gate_status=gate,gate_scope='OFFICIAL_INPUT_DECISION_INDEPENDENT_OF_MODEL_APPLICABILITY',
             nominal_axis_weights=reported_weights,total=total,partial_total=total is not None and len(valid)<3,
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
-            status='READY' if supported else 'ACCOUNTING_RECIPE_PREPARING',lineage=lineage,
+            status='READY' if supported else unsupported_reason,lineage=lineage,
             input_family_contributions=dict(families)))
         if c['version']=='0.2.0':
+            temp=original.get('temporary_classification') or {}
+            flags=[]
+            if (temp.get('status')=='TEMPORARY_OFFICIAL_PROFILE' or
+                original.get('accounting_template') is None and original.get('owner_source_context')):
+                flags.append('CLASSIFICATION_PROVISIONAL')
+            if temp.get('status')=='TEMPORARY_REIT_GENERAL':flags.append('REIT_PROVISIONAL')
+            if original.get('financial_reference'):flags.append('TEMPORARY_OFFICIAL_PROXY')
+            if any('SUBSTITUTE_METRIC' in m.get('display_flags',[]) for v in roles.values() for m in v['metrics']):
+                flags.append('SUBSTITUTE_METRIC')
             out[-1].update(original_accounting_template=original.get('accounting_template'),
                 original_sector_id=original.get('sector_id'),
                 calculation_accounting_template=r.get('accounting_template'),
@@ -315,6 +328,8 @@ def run(c,e,ref,*,calculated_at=None):
                     selection_reason=x['selection_reason'],score_status=x['reason'])
                     for x in roles['g_growth_efficiency']['metrics']],
                 valuation_share_basis='WEIGHTED_AVERAGE_DILUTED_NOT_ACTUAL_CLASS_SHARES')
+            out[-1].update(display_flags=flags,display_label=temp.get('label'),
+                source_model=(original.get('financial_reference') or {}).get('model_id'))
     # Do not invent a new decile rule: the reusable stored order adapter below
     # uses the existing dual rule verbatim via its function (including tie splits).
     _rank(out)
@@ -341,6 +356,10 @@ def run(c,e,ref,*,calculated_at=None):
             all15_reference_only=True,
             growth_efficiency_choices={m:len({r['issuer_id'] for r in out
                 if r['roles']['g_growth_efficiency']['metrics'][0]['metric']==m})
+                for m in {r['roles']['g_growth_efficiency']['metrics'][0]['metric'] for r in out}},
+            growth_efficiency_scored={m:len({r['issuer_id'] for r in out
+                if r['roles']['g_growth_efficiency']['metrics'][0]['metric']==m
+                and r['roles']['g_growth_efficiency']['metrics'][0]['score'] is not None})
                 for m in {r['roles']['g_growth_efficiency']['metrics'][0]['metric'] for r in out}})
     result['result_hash']=digest(result)
     return result

@@ -200,3 +200,55 @@ def apply_reviewed_share_metrics(snapshot, review_file, *, review_sha256,
     out['source_anchors'] = [*deepcopy(snapshot.get('source_anchors', [])),
         dict(policy='owner-555-historical-share-review/2026-11-14.1', review_sha256=review_sha256)]
     return out, audit
+
+
+def apply_reviewed_roa_fallback(snapshot, review_file, *, review_sha256,
+                                reviewed_at, input_cutoff):
+    """Connect an existing GENERAL ROA-improvement observation when both paths
+    lacked input. It never replaces a valid primary or an existing ROA value.
+    """
+    from .qgv_555 import _usable, calculation_row, configuration
+    if not timestamp(snapshot['input_cutoff']) <= timestamp(reviewed_at) <= timestamp(input_cutoff):
+        raise ValueError('OWNER_ROA_REVIEW_TIME')
+    if not re.fullmatch('[0-9a-f]{64}', review_sha256):raise ValueError('OWNER_ROA_REVIEW_HASH')
+    metric='sector::roa_improvement_3y';out=deepcopy(snapshot);out['input_cutoff']=input_cutoff;audit=[]
+    for row in out['rows']:
+        if row.get('calculation_accounting_template')!='GENERAL':continue
+        view=calculation_row(configuration('U1-555',version='0.2.0'),row)
+        if _usable(view,'incremental_roic_3y',snapshot)[0] is not None:continue
+        old=row.get('metrics',{}).get(metric)
+        if type(old) in (int,float) and math.isfinite(old):continue
+        context=row.get('owner_source_context') or {};key=context.get('record_hash')
+        review=review_file['cache'].get(key)
+        item=dict(company_id=row['company_id'],issuer_id=row['issuer_id'],adopted=False)
+        if not review:
+            item['reason']='REVIEW_SOURCE_CONTEXT_NOT_LINKED';audit.append(item);continue
+        record=review['record'];obs=review['observation'];value=obs.get('value')
+        if (digest(record)!=key or record['cik']!=row['issuer_id'] or
+            review['source_sha256']!=context.get('companyfacts_sha256') or
+            record['acquired_at']!=context.get('acquired_at') or
+            record.get('fiscal_year_end')!=context.get('fiscal_year_end')):
+            raise ValueError('OWNER_ROA_SOURCE_CONTEXT')
+        item['observation_status']=obs.get('status')
+        if (obs.get('status') in ('VALID','VALID_NEGATIVE','VALID_ZERO') and
+            type(value) in (int,float) and math.isfinite(value)):
+            if (obs.get('issuer_id')!=row['issuer_id'] or obs.get('currency')!=record.get('currency') or
+                obs.get('variant_id')!='roa_improvement_3y' or obs.get('unit')!='decimal' or
+                not obs.get('provenance') or timestamp(obs['source_available_at'])>timestamp(reviewed_at)):
+                raise ValueError('OWNER_ROA_OBSERVATION_CONTEXT')
+            row['metrics'][metric]=value
+            row['metric_evidence'][metric]=dict(status='VERIFIED',variant=catalog()[metric]['variant'],
+                available_at=reviewed_at,reviewed_at=reviewed_at,retrieved_at=record['acquired_at'],
+                source_refs=[f'sha256:{review_sha256}#/cache/{key}/observation',*obs['provenance']],
+                period=deepcopy(obs.get('fiscal_period')),currency=obs['currency'],
+                original_observation=deepcopy(obs),reviewed_source_record_hash=key,
+                source_formula_version='sector_qgv.calculate_factor/1')
+            item['adopted']=True
+        else:item['reason']='HELD_COMPONENTS_NOT_VALID_FOR_EXISTING_ROA_VARIANT'
+        audit.append(item)
+    out['owner_roa_review']=dict(review_sha256=review_sha256,reviewed_at=reviewed_at,
+        original_input_hash=digest(snapshot),original_input_cutoff=snapshot['input_cutoff'],
+        historical_system_pit_complete=False,existing_kernel_only=True)
+    out['source_anchors']=[*deepcopy(snapshot.get('source_anchors',[])),
+        dict(policy='owner-555-existing-roa-fallback-inputs/2026-11-14.1',review_sha256=review_sha256)]
+    return out,audit

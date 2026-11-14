@@ -72,3 +72,51 @@ def test_positive_finance_lease_prevents_whole_debt_zero_claim():
     p['facts']['us-gaap']['FinanceLeaseLiability']['units']['USD'][0]['val']=5
     out=inspect_safety(p,r,'SYN')
     assert not out['no_debt_verified']
+
+
+def counterfactual_fixture(n=21,candidate='U1-555',isolate_sector=False):
+    from investment_system.research.qgv_555 import fixture,configuration,run
+    e,r=fixture(n);row=e['rows'][0]
+    context=dict(companyfacts_sha256='a'*64,acquired_at='2026-11-04T00:00:00Z',fiscal_year_end='2025-12-31')
+    row['owner_source_context']=context
+    for snap in (e,r):
+        for metric in ('net_debt_to_ebitda','interest_coverage','roic','gross_profit_to_assets','moat_proxy'):
+            snap['rows'][0]['metrics'][metric]=None
+    if isolate_sector:
+        for other in r['rows'][1:]:other['sector_id']='ENERGY'
+    c=configuration(candidate,version='0.2.0');board=run(c,e,r)
+    proof=dict(profile='GENERAL',highest_counterfactual_qualifier=True,raw_safety_unavailable=True,
+        no_debt_verified=True,explicit_interest_zero=False,components={'ebitda':None},
+        source_sha256=context['companyfacts_sha256'],acquired_at=context['acquired_at'],fiscal_year_end=context['fiscal_year_end'])
+    return board,e,r,{row['issuer_id']:proof}
+
+
+def test_highest_scenario_reuses_axis_policy_without_rescoring_or_mutation(monkeypatch):
+    from investment_system.research.qgv_555_safety_review import highest_safety_counterfactual
+    b,e,r,reviews=counterfactual_fixture();old=deepcopy(b)
+    monkeypatch.setattr('investment_system.research.qgv_555.run',lambda *a,**k:pytest.fail('full model rerun'))
+    out=highest_safety_counterfactual(b,e,r,reviews)
+    assert out['raw_candidates']==out['sample_ready']==out['role_new']==out['Q_new']==1
+    assert out['Q_lost']==0 and out['rows'][0]['role_after']==100
+    assert not out['ratio_zero_inserted'] and not out['total_recomputed']
+    assert b==old and e['rows'][0]['metrics']['net_debt_to_ebitda'] is None
+
+
+def test_highest_scenario_keeps_minimum_sample_and_source_context():
+    from investment_system.research.qgv_555_safety_review import highest_safety_counterfactual
+    b,e,r,reviews=counterfactual_fixture(7)
+    out=highest_safety_counterfactual(b,e,r,reviews)
+    assert out['raw_candidates']==1 and out['sample_ready']==out['role_new']==out['Q_new']==0
+    assert out['rows'][0]['reason']=='PEER_SAMPLE_SMALL'
+    b,e,r,reviews=counterfactual_fixture();next(iter(reviews.values()))['acquired_at']='2026-11-03T00:00:00Z'
+    out=highest_safety_counterfactual(b,e,r,reviews)
+    assert out['rows'][0]['reason']=='SOURCE_CONTEXT_MISMATCH' and out['role_new']==0
+
+
+def test_highest_s1_does_not_borrow_the_whole_market_when_its_sector_is_small():
+    from investment_system.research.qgv_555_safety_review import highest_safety_counterfactual
+    b,e,r,reviews=counterfactual_fixture(candidate='S1-555',isolate_sector=True)
+    out=highest_safety_counterfactual(b,e,r,reviews)
+    assert out['raw_candidates']==1 and out['sample_ready']==out['role_new']==out['Q_new']==0
+    assert out['rows'][0]['reason']=='PEER_SAMPLE_SMALL'
+    assert all(x['scope'].startswith('sector|') for x in out['rows'][0]['sample_checks'])

@@ -193,7 +193,8 @@ def highest_safety_counterfactual(board, evaluation, reference, reviews):
                     n=len(pool.values(metric,catalog()[metric]['direction']))
                     if pool.points.get(row['issuer_id'],{}).get(metric) is not None:n-=1
                     n+=1
-                    item['sample_checks'].append(dict(metric=metric,scope='|'.join(str(k) for k in key),reference_n=n))
+                    item['sample_checks'].append(dict(metric=metric,scope='|'.join(str(k) for k in key),reference_n=n,
+                        numeric_peer_n_excluding_own=n-1,categorical_own_point_included=True))
                     if n>=c['minimum']:
                         item['sample_ready']=True
                         break

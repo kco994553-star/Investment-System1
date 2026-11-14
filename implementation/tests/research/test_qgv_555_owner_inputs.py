@@ -1,6 +1,9 @@
 from copy import deepcopy
 import pytest
-from investment_system.research.qgv_555_owner_inputs import temporary_official_inputs, apply_reviewed_share_metrics
+from investment_system.research.qgv_555_owner_inputs import (temporary_official_inputs,
+    apply_reviewed_share_metrics, apply_reviewed_roa_fallback)
+from investment_system.research.qgv_555 import catalog
+from investment_system.research.sector_qgv import digest
 
 
 def fixture(template=None, profile='GENERAL'):
@@ -137,3 +140,47 @@ def test_share_context_mismatch_is_not_accepted(case):
     elif case=='acquired':s['rows'][0]['owner_source_context']['acquired_at']='2026-11-04T21:00:00Z'
     else:r['source_contexts']['duplicate']=deepcopy(review)
     with pytest.raises(ValueError):apply(s,r)
+
+
+def roa_fixture():
+    s,share=share_fixture();record=share['source_contexts']['synthetic/source~1']['source_record']
+    obs=dict(variant_id='roa_improvement_3y',formula_version='1',status='VALID',value=.05,
+        unit='decimal',fiscal_period=dict(kind='FY_3Y',end='2025-12-31'),issuer_id='SYN:ISSUER',
+        currency='USD',source_available_at=record['acquired_at'],retrieved_at=record['acquired_at'],
+        provenance=['synthetic-companyfacts'],validation_basis='VERIFIED_COMPONENTS')
+    r=dict(cache={digest(record):dict(record=record,source_sha256='c'*64,observation=obs)})
+    return s,r
+
+
+def apply_roa(s,r):
+    return apply_reviewed_roa_fallback(s,r,review_sha256='e'*64,
+        reviewed_at='2026-11-14T13:00:00Z',input_cutoff='2026-11-14T13:00:00Z')
+
+
+def test_missing_roa_fallback_connects_existing_kernel_observation_and_period():
+    s,r=roa_fixture();out,audit=apply_roa(s,r);metric='sector::roa_improvement_3y'
+    assert out['rows'][0]['metrics'][metric]==.05 and audit[0]['adopted']
+    proof=out['rows'][0]['metric_evidence'][metric]
+    assert proof['period']['kind']=='FY_3Y' and proof['retrieved_at']=='2026-11-04T20:00:00Z'
+    assert metric not in s['rows'][0]['metrics']
+
+
+@pytest.mark.parametrize('case',['valid_primary','existing_roa','financial','invalid_observation'])
+def test_roa_review_does_not_replace_primary_existing_value_or_financial_recipe(case):
+    s,r=roa_fixture();row=s['rows'][0];metric='sector::roa_improvement_3y'
+    if case=='valid_primary':
+        row['metrics']['incremental_roic_3y']=.1
+        row['metric_evidence']['incremental_roic_3y']=dict(status='VERIFIED',
+            variant=catalog()['incremental_roic_3y']['variant'],source_refs=['synthetic'],
+            available_at='2026-11-04T20:00:00Z')
+    elif case=='existing_roa':row['metrics'][metric]=.15
+    elif case=='financial':row['calculation_accounting_template']=None
+    else:next(iter(r['cache'].values()))['observation']['status']='MISSING_INPUT'
+    out,audit=apply_roa(s,r)
+    assert not any(x['adopted'] for x in audit)
+    assert out['rows'][0]['metrics'].get(metric)==(.15 if case=='existing_roa' else None)
+
+
+def test_roa_review_rejects_wrong_source_context():
+    s,r=roa_fixture();next(iter(r['cache'].values()))['source_sha256']='f'*64
+    with pytest.raises(ValueError,match='SOURCE_CONTEXT'):apply_roa(s,r)

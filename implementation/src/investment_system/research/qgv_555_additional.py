@@ -38,7 +38,7 @@ def attach(result,evaluation,reference):
                         p=pools.get(key,_Pool({}));less,equal,n=p.rank(m,spec['direction'],raw,r['issuer_id']);basis='|'.join(str(v) for v in key)
                         if n>=c['minimum']:score=percentile(less,equal,n);break
                     if score is None:reason='PEER_SAMPLE_SMALL'
-                elif outrow['status']!='READY':reason='ACCOUNTING_RECIPE_PREPARING'
+                elif outrow['status']!='READY':reason=outrow['status']
                 node=dict(metric=m,raw=raw,raw_status=reason,score=score,reason=None if score is not None else reason,
                     reference_n=n,reference_scope=basis,kind='ADDITIONAL',core_contribution=0)
             node['extra_score_contribution']=0;outrow['factors'][m]=node

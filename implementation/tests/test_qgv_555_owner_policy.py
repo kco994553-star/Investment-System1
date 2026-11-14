@@ -22,6 +22,7 @@ def test_growth_fallback_only_when_primary_raw_unavailable_and_records_variant()
     out=run(c,e,r);fallback=out['rows'][0]['roles']['g_growth_efficiency']['metrics'][0]
     assert fallback['metric']=='sector::roa_improvement_3y'
     assert fallback['selection_reason']=='PRIMARY_RAW_UNAVAILABLE_ROA_FALLBACK'
+    assert fallback['substitute_for']=='incremental_roic_3y' and 'SUBSTITUTE_METRIC' in fallback['display_flags']
     assert out['rows'][1]['roles']['g_growth_efficiency']['metrics'][0]['metric']=='incremental_roic_3y'
     for x in r['rows'][1:]:x['metrics'].pop('incremental_roic_3y')
     e['rows'][0]['metrics']['incremental_roic_3y']=1
@@ -54,16 +55,19 @@ def test_reit_general_is_explicit_and_financial_stays_reference_only():
             row.update(accounting_template='EQUITY_REIT',calculation_accounting_template='GENERAL',
                 calculation_sector_id=row['sector_id'],calculation_industry_group=row['industry_group'],
                 owner_source_context={'source_hash':'synthetic'},
-                temporary_classification={'label':'REIT 임시(일반기업 식)','source_refs':['SYNTHETIC']})
+                temporary_classification={'status':'TEMPORARY_REIT_GENERAL',
+                    'label':'REIT 임시(일반기업 식)','source_refs':['SYNTHETIC']})
     out=run(c,e,r)
     assert out['rows'][0]['original_accounting_template']=='EQUITY_REIT'
     assert out['rows'][0]['accounting_template']=='GENERAL'
     assert out['rows'][0]['axes']['Q']['score'] is not None
+    assert 'REIT_PROVISIONAL' in out['rows'][0]['display_flags']
     e['rows'][0]['calculation_accounting_template']=None
     e['rows'][0]['financial_reference']={'source_model':'official23.1','Q':99}
     out=run(c,e,r)
     assert out['rows'][0]['axes']['Q']['score'] is None
     assert out['rows'][0]['financial_reference']['Q']==99
+    assert 'TEMPORARY_OFFICIAL_PROXY' in out['rows'][0]['display_flags']
 
 
 def test_temporary_sector_missing_blocks_s1_but_not_u1():
@@ -71,7 +75,13 @@ def test_temporary_sector_missing_blocks_s1_but_not_u1():
     for s in (e,r):
         for row in s['rows']:row['sector_id']=None
     assert run(configuration('U1-555',version='0.2.0'),e,r)['coverage']['axes']['Q']==21
-    assert run(configuration('S1-555',version='0.2.0'),e,r)['coverage']['axes']['Q']==0
+    out=run(configuration('S1-555',version='0.2.0'),e,r)
+    assert out['coverage']['axes']['Q']==0
+    assert out['rows'][0]['status']=='SECTOR_CLASSIFICATION_UNCONFIRMED'
+    assert out['coverage']['growth_efficiency_scored']['incremental_roic_3y']==0
+    from investment_system.research.qgv_555_additional import attach
+    attached=attach(out,e,r)
+    assert attached['rows'][0]['factors']['sector::roa_ttm']['reason']=='SECTOR_CLASSIFICATION_UNCONFIRMED'
 
 
 def test_central_v_share_basis_does_not_accept_actual_outstanding_label():
