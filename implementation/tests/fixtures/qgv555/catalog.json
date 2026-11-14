@@ -435,7 +435,7 @@
       "GENERAL"
     ],
     "input_family": "enterprise_earnings",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": "validated TTM EBIT / positive EV",
     "source": "EXISTING_CODE_DEFINITION",
     "implementation_status": "EXISTING_KERNEL",
@@ -463,7 +463,7 @@
       "GENERAL"
     ],
     "input_family": "enterprise_cash",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": "(TTM CFO - positive cash CAPEX) / positive EV",
     "source": "EXISTING_CODE_DEFINITION",
     "implementation_status": "EXISTING_KERNEL",
@@ -527,7 +527,7 @@
   "sector::operating_margin_ttm": {
     "canonical_id": "sector::operating_margin_ttm",
     "variant": "operating_margin_ttm/sector-1",
-    "display_name": "operating_margin_ttm",
+    "display_name": "영업이익률",
     "aliases": [],
     "formula": "ratio",
     "period": "TTM",
@@ -540,7 +540,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "operating_margin_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "operating_income",
@@ -563,7 +563,7 @@
   "sector::accruals_assets_ttm": {
     "canonical_id": "sector::accruals_assets_ttm",
     "variant": "accruals_assets_ttm/sector-1",
-    "display_name": "accruals_assets_ttm",
+    "display_name": "발생액/평균자산",
     "aliases": [],
     "formula": "difference_average",
     "period": "TTM",
@@ -576,7 +576,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "accruals_assets_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "net_income",
@@ -609,7 +609,7 @@
   "sector::debt_assets": {
     "canonical_id": "sector::debt_assets",
     "variant": "debt_assets/sector-1",
-    "display_name": "debt_assets",
+    "display_name": "차입금/자산",
     "aliases": [],
     "formula": "ratio",
     "period": "LATEST_QUARTER",
@@ -623,7 +623,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "debt_assets",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "debt",
@@ -646,7 +646,7 @@
   "sector::roa_ttm": {
     "canonical_id": "sector::roa_ttm",
     "variant": "roa_ttm/sector-1",
-    "display_name": "roa_ttm",
+    "display_name": "ROA",
     "aliases": [],
     "formula": "ratio_average",
     "period": "TTM",
@@ -663,7 +663,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "roa_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "net_income",
@@ -691,7 +691,7 @@
   "sector::roe_common_ttm": {
     "canonical_id": "sector::roe_common_ttm",
     "variant": "roe_common_ttm/sector-1",
-    "display_name": "roe_common_ttm",
+    "display_name": "보통주 ROE",
     "aliases": [],
     "formula": "ratio_average",
     "period": "TTM",
@@ -706,7 +706,7 @@
       "MORTGAGE_REIT"
     ],
     "input_family": "roe_common_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "net_income_common",
@@ -734,7 +734,7 @@
   "sector::common_equity_assets": {
     "canonical_id": "sector::common_equity_assets",
     "variant": "common_equity_assets/sector-1",
-    "display_name": "common_equity_assets",
+    "display_name": "보통주자본/자산",
     "aliases": [],
     "formula": "ratio",
     "period": "LATEST_QUARTER",
@@ -749,7 +749,7 @@
       "MORTGAGE_REIT"
     ],
     "input_family": "common_equity_assets",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "common_equity_end",
@@ -772,7 +772,7 @@
   "sector::cfo_assets_ttm": {
     "canonical_id": "sector::cfo_assets_ttm",
     "variant": "cfo_assets_ttm/sector-1",
-    "display_name": "cfo_assets_ttm",
+    "display_name": "CFO/평균자산",
     "aliases": [],
     "formula": "ratio_average",
     "period": "TTM",
@@ -786,7 +786,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "cfo_assets_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "cfo",
@@ -814,7 +814,7 @@
   "sector::interest_coverage_ttm": {
     "canonical_id": "sector::interest_coverage_ttm",
     "variant": "interest_coverage_ttm/sector-1",
-    "display_name": "interest_coverage_ttm",
+    "display_name": "이자보상배율",
     "aliases": [],
     "formula": "ratio",
     "period": "TTM",
@@ -828,7 +828,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "interest_coverage_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "ebit",
@@ -851,7 +851,7 @@
   "sector::revenue_cagr_3y": {
     "canonical_id": "sector::revenue_cagr_3y",
     "variant": "revenue_cagr_3y/sector-1",
-    "display_name": "revenue_cagr_3y",
+    "display_name": "매출 3년 CAGR",
     "aliases": [],
     "formula": "cagr3",
     "period": "FY_3Y",
@@ -865,7 +865,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "revenue_cagr_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue_fy",
@@ -898,7 +898,7 @@
   "sector::roa_improvement_3y": {
     "canonical_id": "sector::roa_improvement_3y",
     "variant": "roa_improvement_3y/sector-1",
-    "display_name": "roa_improvement_3y",
+    "display_name": "3년 ROA 개선",
     "aliases": [],
     "formula": "difference",
     "period": "FY_3Y",
@@ -916,7 +916,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "roa_improvement_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "roa_fy",
@@ -939,7 +939,7 @@
   "sector::common_bps_cagr_3y": {
     "canonical_id": "sector::common_bps_cagr_3y",
     "variant": "common_bps_cagr_3y/sector-1",
-    "display_name": "common_bps_cagr_3y",
+    "display_name": "보통주 BPS 3년 CAGR",
     "aliases": [],
     "formula": "cagr3",
     "period": "FY_3Y",
@@ -954,7 +954,7 @@
       "MORTGAGE_REIT"
     ],
     "input_family": "common_bps_cagr_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "common_bps_fy",
@@ -987,7 +987,7 @@
   "sector::cfo_assets_improvement_3y": {
     "canonical_id": "sector::cfo_assets_improvement_3y",
     "variant": "cfo_assets_improvement_3y/sector-1",
-    "display_name": "cfo_assets_improvement_3y",
+    "display_name": "CFO/자산 3년 개선",
     "aliases": [],
     "formula": "difference",
     "period": "FY_3Y",
@@ -999,7 +999,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "cfo_assets_improvement_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "cfo_assets_fy",
@@ -1022,8 +1022,13 @@
   "sector::ep_ttm_diluted": {
     "canonical_id": "sector::ep_ttm_diluted",
     "variant": "ep_ttm_diluted/sector-1",
-    "display_name": "ep_ttm_diluted",
-    "aliases": [],
+    "display_name": "PER / E/P (TTM 희석)",
+    "aliases": [
+      "PER_TTM_DILUTED",
+      "EP_TTM_DILUTED",
+      "sector::PER_TTM_DILUTED",
+      "sector::EP_TTM_DILUTED"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1040,7 +1045,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ep_ttm_diluted",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_ttm_diluted",
@@ -1063,8 +1068,11 @@
   "sector::ep_fy_diluted": {
     "canonical_id": "sector::ep_fy_diluted",
     "variant": "ep_fy_diluted/sector-1",
-    "display_name": "ep_fy_diluted",
-    "aliases": [],
+    "display_name": "연간 PER / E/P",
+    "aliases": [
+      "PER_FY_DILUTED",
+      "sector::PER_FY_DILUTED"
+    ],
     "formula": "ratio",
     "period": "FY",
     "unit": "decimal",
@@ -1081,7 +1089,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ep_fy_diluted",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_fy_diluted",
@@ -1104,8 +1112,11 @@
   "sector::ep_fy1": {
     "canonical_id": "sector::ep_fy1",
     "variant": "ep_fy1/sector-1",
-    "display_name": "ep_fy1",
-    "aliases": [],
+    "display_name": "예상 PER FY1",
+    "aliases": [
+      "PER_FY1",
+      "sector::PER_FY1"
+    ],
     "formula": "ratio",
     "period": "FY1",
     "unit": "decimal",
@@ -1122,7 +1133,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ep_fy1",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_fy1",
@@ -1145,8 +1156,11 @@
   "sector::ep_ntm": {
     "canonical_id": "sector::ep_ntm",
     "variant": "ep_ntm/sector-1",
-    "display_name": "ep_ntm",
-    "aliases": [],
+    "display_name": "예상 PER NTM",
+    "aliases": [
+      "PER_NTM",
+      "sector::PER_NTM"
+    ],
     "formula": "ratio",
     "period": "NTM",
     "unit": "decimal",
@@ -1163,7 +1177,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ep_ntm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_ntm",
@@ -1186,7 +1200,7 @@
   "sector::net_income_mcap": {
     "canonical_id": "sector::net_income_mcap",
     "variant": "net_income_mcap/sector-1",
-    "display_name": "net_income_mcap",
+    "display_name": "순이익/현재 시총",
     "aliases": [],
     "formula": "ratio",
     "period": "TTM",
@@ -1204,7 +1218,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "net_income_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "net_income_common",
@@ -1227,8 +1241,11 @@
   "sector::common_bp": {
     "canonical_id": "sector::common_bp",
     "variant": "common_bp/sector-1",
-    "display_name": "common_bp",
-    "aliases": [],
+    "display_name": "PBR / 보통주 B/P",
+    "aliases": [
+      "PBR_COMMON",
+      "sector::PBR_COMMON"
+    ],
     "formula": "ratio",
     "period": "LATEST_QUARTER",
     "unit": "decimal",
@@ -1245,7 +1262,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "common_bp",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "common_bps",
@@ -1268,8 +1285,11 @@
   "sector::tangible_common_bp": {
     "canonical_id": "sector::tangible_common_bp",
     "variant": "tangible_common_bp/sector-1",
-    "display_name": "tangible_common_bp",
-    "aliases": [],
+    "display_name": "P/TBV",
+    "aliases": [
+      "PTBV_COMMON",
+      "sector::PTBV_COMMON"
+    ],
     "formula": "ratio",
     "period": "LATEST_QUARTER",
     "unit": "decimal",
@@ -1286,7 +1306,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "tangible_common_bp",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "tangible_common_bps",
@@ -1309,8 +1329,11 @@
   "sector::sales_mcap": {
     "canonical_id": "sector::sales_mcap",
     "variant": "sales_mcap/sector-1",
-    "display_name": "sales_mcap",
-    "aliases": [],
+    "display_name": "PSR / 매출수익률",
+    "aliases": [
+      "PSR_TTM",
+      "sector::PSR_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1327,7 +1350,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "sales_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue",
@@ -1350,8 +1373,11 @@
   "sector::cfo_mcap": {
     "canonical_id": "sector::cfo_mcap",
     "variant": "cfo_mcap/sector-1",
-    "display_name": "cfo_mcap",
-    "aliases": [],
+    "display_name": "PCR / CFO 수익률",
+    "aliases": [
+      "PCR_CFO_TTM",
+      "sector::PCR_CFO_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1368,7 +1394,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "cfo_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "cfo",
@@ -1391,8 +1417,11 @@
   "sector::ni_da_mcap": {
     "canonical_id": "sector::ni_da_mcap",
     "variant": "ni_da_mcap/sector-1",
-    "display_name": "ni_da_mcap",
-    "aliases": [],
+    "display_name": "PCR (NI+D&A)",
+    "aliases": [
+      "PCR_NI_DA_TTM",
+      "sector::PCR_NI_DA_TTM"
+    ],
     "formula": "sum_ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1409,7 +1438,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ni_da_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "net_income",
@@ -1437,8 +1466,11 @@
   "sector::ebitda_ev": {
     "canonical_id": "sector::ebitda_ev",
     "variant": "ebitda_ev/sector-1",
-    "display_name": "ebitda_ev",
-    "aliases": [],
+    "display_name": "EV/EBITDA",
+    "aliases": [
+      "EV_EBITDA_TTM",
+      "sector::EV_EBITDA_TTM"
+    ],
     "formula": "sum_ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1455,7 +1487,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ebitda_ev",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "ebit",
@@ -1483,8 +1515,10 @@
   "sector::ebit_ev": {
     "canonical_id": "sector::ebit_ev",
     "variant": "ebit_ev/sector-1",
-    "display_name": "ebit_ev",
-    "aliases": [],
+    "display_name": "EV/EBIT",
+    "aliases": [
+      "sector::EV_EBIT_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1501,7 +1535,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "ebit_ev",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "ebit",
@@ -1524,8 +1558,11 @@
   "sector::sales_ev": {
     "canonical_id": "sector::sales_ev",
     "variant": "sales_ev/sector-1",
-    "display_name": "sales_ev",
-    "aliases": [],
+    "display_name": "EV/Sales",
+    "aliases": [
+      "EV_SALES_TTM",
+      "sector::EV_SALES_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1542,7 +1579,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "sales_ev",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue",
@@ -1565,8 +1602,11 @@
   "sector::fcf_mcap": {
     "canonical_id": "sector::fcf_mcap",
     "variant": "fcf_mcap/sector-1",
-    "display_name": "fcf_mcap",
-    "aliases": [],
+    "display_name": "P/FCF (CFO−CAPEX)",
+    "aliases": [
+      "P_FCF_CFO_CAPEX_TTM",
+      "sector::P_FCF_CFO_CAPEX_TTM"
+    ],
     "formula": "difference_ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1583,7 +1623,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "fcf_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "cfo",
@@ -1611,8 +1651,11 @@
   "sector::fcf_ev": {
     "canonical_id": "sector::fcf_ev",
     "variant": "fcf_ev/sector-1",
-    "display_name": "fcf_ev",
-    "aliases": [],
+    "display_name": "EV/FCF (CFO−CAPEX)",
+    "aliases": [
+      "EV_FCF_CFO_CAPEX_TTM",
+      "sector::EV_FCF_CFO_CAPEX_TTM"
+    ],
     "formula": "difference_ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1629,7 +1672,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "fcf_ev",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "cfo",
@@ -1657,8 +1700,11 @@
   "sector::dividend_yield_ttm": {
     "canonical_id": "sector::dividend_yield_ttm",
     "variant": "dividend_yield_ttm/sector-1",
-    "display_name": "dividend_yield_ttm",
-    "aliases": [],
+    "display_name": "배당수익률",
+    "aliases": [
+      "DIVIDEND_YIELD_TTM",
+      "sector::DIVIDEND_YIELD_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1675,7 +1721,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "dividend_yield_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "common_dps_ttm",
@@ -1698,7 +1744,7 @@
   "sector::net_share_reduction": {
     "canonical_id": "sector::net_share_reduction",
     "variant": "net_share_reduction/sector-1",
-    "display_name": "net_share_reduction",
+    "display_name": "순주식수 감소율",
     "aliases": [],
     "formula": "one_minus_ratio",
     "period": "ONE_YEAR",
@@ -1716,7 +1762,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "net_share_reduction",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "adjusted_shares_now",
@@ -1739,7 +1785,7 @@
   "sector::shareholder_yield": {
     "canonical_id": "sector::shareholder_yield",
     "variant": "shareholder_yield/sector-1",
-    "display_name": "shareholder_yield",
+    "display_name": "주주환원수익률",
     "aliases": [],
     "formula": "sum",
     "period": "TTM",
@@ -1757,7 +1803,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "shareholder_yield",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "dividend_yield",
@@ -1780,7 +1826,7 @@
   "sector::peg_historical": {
     "canonical_id": "sector::peg_historical",
     "variant": "peg_historical/sector-1",
-    "display_name": "peg_historical",
+    "display_name": "PEG (과거 3년)",
     "aliases": [],
     "formula": "peg",
     "period": "TTM",
@@ -1798,7 +1844,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "peg_historical",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_ttm_diluted",
@@ -1826,8 +1872,11 @@
   "sector::nareit_ffo_mcap": {
     "canonical_id": "sector::nareit_ffo_mcap",
     "variant": "nareit_ffo_mcap/sector-1",
-    "display_name": "nareit_ffo_mcap",
-    "aliases": [],
+    "display_name": "P/FFO (Nareit)",
+    "aliases": [
+      "P_FFO_NAREIT_TTM",
+      "sector::P_FFO_NAREIT_TTM"
+    ],
     "formula": "ratio",
     "period": "TTM",
     "unit": "decimal",
@@ -1838,7 +1887,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "nareit_ffo_mcap",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "nareit_ffo",
@@ -1861,7 +1910,7 @@
   "sector::gross_profit_assets_ttm": {
     "canonical_id": "sector::gross_profit_assets_ttm",
     "variant": "gross_profit_assets_ttm/sector-1",
-    "display_name": "gross_profit_assets_ttm",
+    "display_name": "매출총이익/평균자산",
     "aliases": [],
     "formula": "ratio_average",
     "period": "TTM",
@@ -1874,7 +1923,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "gross_profit_assets_ttm",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "gross_profit",
@@ -1902,7 +1951,7 @@
   "sector::net_debt_assets": {
     "canonical_id": "sector::net_debt_assets",
     "variant": "net_debt_assets/sector-1",
-    "display_name": "net_debt_assets",
+    "display_name": "순차입금/자산",
     "aliases": [],
     "formula": "difference_ratio",
     "period": "LATEST_QUARTER",
@@ -1915,7 +1964,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "net_debt_assets",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "debt",
@@ -1943,7 +1992,7 @@
   "sector::revenue_growth_1y": {
     "canonical_id": "sector::revenue_growth_1y",
     "variant": "revenue_growth_1y/sector-1",
-    "display_name": "revenue_growth_1y",
+    "display_name": "매출 1년 증가율",
     "aliases": [],
     "formula": "growth1",
     "period": "FY_1Y",
@@ -1957,7 +2006,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "revenue_growth_1y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue_fy",
@@ -1980,7 +2029,7 @@
   "sector::revenue_cagr_5y": {
     "canonical_id": "sector::revenue_cagr_5y",
     "variant": "revenue_cagr_5y/sector-1",
-    "display_name": "revenue_cagr_5y",
+    "display_name": "매출 5년 CAGR",
     "aliases": [],
     "formula": "cagr5",
     "period": "FY_5Y",
@@ -1994,7 +2043,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "revenue_cagr_5y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue_fy",
@@ -2037,7 +2086,7 @@
   "sector::operating_income_cagr_3y": {
     "canonical_id": "sector::operating_income_cagr_3y",
     "variant": "operating_income_cagr_3y/sector-1",
-    "display_name": "operating_income_cagr_3y",
+    "display_name": "영업이익 3년 CAGR",
     "aliases": [],
     "formula": "cagr3",
     "period": "FY_3Y",
@@ -2050,7 +2099,7 @@
       "ASSET_MANAGER"
     ],
     "input_family": "operating_income_cagr_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "operating_income_fy",
@@ -2083,7 +2132,7 @@
   "sector::eps_diluted_cagr_3y": {
     "canonical_id": "sector::eps_diluted_cagr_3y",
     "variant": "eps_diluted_cagr_3y/sector-1",
-    "display_name": "eps_diluted_cagr_3y",
+    "display_name": "희석 EPS 3년 CAGR",
     "aliases": [],
     "formula": "cagr3",
     "period": "FY_3Y",
@@ -2101,7 +2150,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "eps_diluted_cagr_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "eps_diluted_fy",
@@ -2134,7 +2183,7 @@
   "sector::revenue_growth_consistency_3y": {
     "canonical_id": "sector::revenue_growth_consistency_3y",
     "variant": "revenue_growth_consistency_3y/sector-1",
-    "display_name": "revenue_growth_consistency_3y",
+    "display_name": "매출 성장 지속성",
     "aliases": [],
     "formula": "positive_growth_share",
     "period": "FY_3Y",
@@ -2148,7 +2197,7 @@
       "EQUITY_REIT"
     ],
     "input_family": "revenue_growth_consistency_3y",
-    "formula_source": "sector_qgv.calculate_raw",
+    "formula_source": "sector_qgv.calculate_factor",
     "required_inputs": [
       {
         "field": "revenue_fy",
