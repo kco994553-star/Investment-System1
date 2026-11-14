@@ -1,5 +1,12 @@
 # 현재 인수인계 — 2026-11-01
 
+> **2026-11-14 새 세션 기준 문서 (병합 전 — 이 블록을 먼저 읽는다).** 오너 2026-11-14 통합 지시(Main·Codex 공통)가 오늘 앞선 지시를 대체한다. 기준 문서의 위치:
+> - 결정 기록 정본 반영: 이 문서 PR(가지 `claude/records-1114-canon`, 기본 가지 `ab6a83c3be2276abdcf855c71c5f273926e2dcc4` 위) — `docs/SPEC/DIRECTION_CHANGES.md` DC-49 개정·DC-50·DC-51, 2절 이름표, 2-1절 Top500 전환 상태; `START_HERE.md` 2절; `implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md` §1·P3.
+> - DC-44~DC-48 원문과 화면 작업: Draft 묶음 #522 `f680c7192924ce4726afd7a3f59acf8517de087f` → #526 `7b4a805b081e4ceffc185b935e59ec167c0202b4` → #530 `a8ef3fb77516a06ede37cbcc915eefe47fa43a6d` → #533 `2dc1202c320b810a29197f4751286c50475ccbae` → #536 `307dddd59ddd2ecefbd84cddc58f6ad38a35d5f9` → #538 `9f1fdd584a02419db3eb34485819875c6c9268d3`(가지 `ccr-263267c9-f5ng5h`). 모두 미병합.
+> - Top500·555 상세: #538의 `implementation/docs/frontend_v2/TOP500_QGV555_20261114.md`. 내 시트 V 결정 대장: #538의 `implementation/docs/pages_cockpit_owner/GOOGLE_SHEET_QUOTES_DECISION_REGISTER.md` GSQ-028. IEX 장애: #538의 `implementation/docs/qgv_scoring_standard/IEX_HIST_ACCESS_20261114.md`.
+> - 새 앱 공개 미리보기 게시안: 가지 `claude/web-app-preview`(Draft PR, 배포 승인 대기), `implementation/docs/frontend_v2/PUBLIC_PREVIEW_20261114.md`.
+> - 계산·자료 인계: #437(Codex 인계 PR 댓글). 아래 11/01 본문은 그 뒤 갱신 전이다(전체 갱신은 통합 지시 6순위).
+
 기준 **2026-11-01 07:10 UTC GitHub 조회**, canonical **`9a4e249d`**(#447). **11/02 09:45 UTC: #463 병합으로 canonical `ddcb2925`**(아래 2절 첫 줄). **11/03 08:43 UTC: #456 병합으로 canonical `fb0ffcab`**(2절). 앞 판(`1465260e`, #446) 뒤 병합은 아래 11/01 다섯 건뿐이다(첫 부모 이력으로 확인). 10/31 저녁 오너 승인으로 병합: #448 `ef0e90cb`(Worker 배포 run 41252518944) → #438 `f8e9a4ef` → #440 `edb11b1c` → #442 `70d0e447` → #441 `37b7ddc4` → #445 `1c73cb9b` → #450 `c33ec071` → #446 `1465260e`. 11/01 병합: #436 `c86be9b9` → #449 `111f86c7` → #451 `d8fe9bc8` → #453 `428b417e` → #447 `9a4e249d`(워크플로 ① `private-boundary-push.yml` 포함). 실제 기본 브랜치는 **`claude/investment-system-top500-validation-alrugm`**.
 
 읽기: [START_HERE](START_HERE.md) → [방향 전환 대장](docs/SPEC/DIRECTION_CHANGES.md) → [WORKING_RULES](WORKING_RULES.md) → [기능 현황](docs/SPEC/FUNCTION_STATUS.md) → [결정 원문](implementation/docs/USER_DECISIONS_PENDING.md). 11/01 이행은 오너 결정 네 묶음(DC-40 두 흐름·연구 인계 / 11/01 2차 15항목 / 보완 지시: NAV 정정·점수화 모집단 검토, DC-41 / **역할 확대·계산·자료 구현 인계, DC-42** / **2025년 실질가치 시총 문턱·점수화 기준 C2, DC-43**)이다. 원문은 결정 기록 2026-11-01 블록.
