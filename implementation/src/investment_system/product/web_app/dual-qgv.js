@@ -37,7 +37,8 @@ const INPUT_CHECK=Object.freeze({evaluation:'EVALUATION_INPUT_MATCHED',reference
 const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력은 독립 기준과 대조 안 됨',
  REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED:'참조 원천 입력만 일치 · 평가 입력 연결 미확인(투영 증명 파일 없음)',
  EVALUATION_INPUT_PROJECTION_ATTESTED:'평가 입력 = 참조 원천의 투영 · 생산자 투영 증명과 대조됨(화면이 다시 계산한 것 아님)',
- EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력 = 생산자 독립 기준(참조 후보 스냅숏의 전체 신원)과 일치'});
+ EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED:'평가 입력 = 지금 받은 결과의 입력(해시 일치) · 참조 입력 = 생산자 독립 기준(참조 후보 스냅숏의 전체 신원)과 일치',
+ EVALUATION_AND_REFERENCE_INPUTS_ANCHORED:'평가·참조 입력 = 생산자 독립 기준 고정(보존된 두 스냅숏의 바이트 → 전체 신원)과 각각 일치 · 분류 묶음의 원래 입력과 다른 회고 검토 입력 버전'});
 // operating504's reference input against Codex's independent anchor (qgv-dual-reference-anchor/1, #437 6819835921): the full identity
 // of the retained reference candidate snapshot, pinned at staging with its byte SHA and the staged #528 view's SHA. Every board's
 // reference binding and its candidate population must be exactly that identity. The #528 view's selected-reference members are a
@@ -45,7 +46,43 @@ const INPUT_WORD=Object.freeze({EVALUATION_INPUT_MATCHED:'평가 입력 = 지금
 // Both sides of the input checked against an independent producer file: held1057 by its projection proof, operating504 by its
 // reference anchor (its evaluation input is the result's own). Any other state is an unverified view, said so on every screen that
 // shows the delivery's results, and never taken as verified.
-const INPUT_VERIFIED=Object.freeze(['EVALUATION_INPUT_PROJECTION_ATTESTED','EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED']);
+const INPUT_VERIFIED=Object.freeze(['EVALUATION_INPUT_PROJECTION_ATTESTED','EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED','EVALUATION_AND_REFERENCE_INPUTS_ANCHORED']);
+// Both inputs of a 3/3/3 delivery bound to the producer's independent anchors (Codex #534 fe29867c, qgv-dual-input-anchors/1,
+// Q_INPUT_DELIVERY.md, #437 6867395524): the pinned preservation chain was checked at staging (stage_private_dual_333_switch.py);
+// here each full identity must be every board's evaluation / bindings / candidate population and the index's evaluation, exactly as the
+// producer's validate_input_bindings. The run's input-lineage or an older reference view is never accepted as this anchor.
+const INPUT_ANCHORS_SCHEMA='qgv-dual-input-anchors/1';
+const INPUT_ANCHORS_KEYS=['schema_version','scope','expected_evaluation','expected_reference','preservation','source_files','execution_sha','projection','generation_rule',
+ 'runtime_lineage_used_as_proof','new_score_calculations','whole_market_denominator'];
+const IDENTITY_KEYS=['id','version','members_hash','input_hash','valuation_date','as_of','code_rows','issuers','snapshot_id'];
+const SHA_40=/^[0-9a-f]{40}$/;
+const fileDesc=(f,at)=>{exact(f,['path','size','sha256'],at);if(typeof f.path!=='string'||!Number.isInteger(f.size)||f.size<0||!HEX.test(f.sha256))refuse('INPUT_ANCHORS_INVALID',at);};
+function inputAnchorsCheck(x,scope,boards,index){const at='input_anchors';exact(x,INPUT_ANCHORS_KEYS,at);
+ if(x.schema_version!==INPUT_ANCHORS_SCHEMA)refuse('INPUT_ANCHORS_SCHEMA',at+'.schema_version');if(x.scope!==scope)refuse('SCOPE_MISMATCH',at+'.scope');
+ if(x.runtime_lineage_used_as_proof!==false||x.new_score_calculations!==0||x.whole_market_denominator!==null||!SHA_40.test(String(x.execution_sha))||typeof x.generation_rule!=='string')
+  refuse('INPUT_ANCHORS_INVALID',at);
+ exact(x.preservation,['repo','ref','path','commit','handoff_manifest_sha256','bundle_manifest'],at+'.preservation');
+ if(!HEX.test(x.preservation.handoff_manifest_sha256)||!SHA_40.test(String(x.preservation.commit)))refuse('INPUT_ANCHORS_INVALID',at+'.preservation');
+ fileDesc(x.preservation.bundle_manifest,at+'.preservation.bundle_manifest');exact(x.source_files,['evaluation','reference'],at+'.source_files');
+ fileDesc(x.source_files.evaluation,at+'.source_files.evaluation');fileDesc(x.source_files.reference,at+'.source_files.reference');
+ if(!isObj(x.projection)||x.projection.rows_equal_source_projection!==true||typeof x.projection.claim!=='string')refuse('INPUT_ANCHORS_INVALID',at+'.projection');
+ const E=x.expected_evaluation,R=x.expected_reference;
+ for(const[l,v]of[['evaluation',E],['reference',R]])if(!isObj(v)||IDENTITY_KEYS.some(k=>!own(v,k)))refuse('INPUT_ANCHORS_INVALID',at+'.expected_'+l);
+ if(!same(index.evaluation_population,E))refuse('EVALUATION_INPUT_BINDING','index.evaluation_population');
+ for(const[k,b]of Object.entries(boards)){
+  if(!same(b.evaluation_population,E)||!same(b.bindings.evaluation,E))refuse('EVALUATION_INPUT_BINDING','summary.boards.'+k+'.evaluation_population');
+  const ref=b.reference_population;
+  if(!same(b.bindings.reference,R)||!same(ref.candidate_population,R)||['input_hash','valuation_date','as_of'].some(q=>ref[q]!==R[q]))
+   refuse('REFERENCE_INPUT_BINDING','summary.boards.'+k+'.reference_population');}}
+// The producer's calculation clock record (qgv-dual-delivery-clocks/1): calculated_at null only with its recorded reason (never filled
+// here from a commit, a file time or the delivery time); delivery_generated_at is the projection time, not the calculation time.
+const CLOCKS_SCHEMA='qgv-dual-delivery-clocks/1';
+function clocksCheck(x){const at='clocks';exact(x,['schema_version','execution_sha','calculated_at','calculated_at_reason','inspected_execution_records','delivery_generated_at','new_score_calculations'],at);
+ if(x.schema_version!==CLOCKS_SCHEMA)refuse('CLOCKS_SCHEMA',at+'.schema_version');if(!SHA_40.test(String(x.execution_sha))||x.new_score_calculations!==0)refuse('CLOCKS_INVALID',at);
+ if(x.calculated_at===null?(typeof x.calculated_at_reason!=='string'||!x.calculated_at_reason):typeof x.calculated_at!=='string')refuse('CLOCKS_NULL_WITHOUT_REASON',at+'.calculated_at');
+ if(!Array.isArray(x.inspected_execution_records)||!x.inspected_execution_records.length||x.inspected_execution_records.some(r=>!isObj(r)||typeof r.path!=='string'||!HEX.test(r.sha256)))
+  refuse('CLOCKS_INVALID',at+'.inspected_execution_records');
+ if(typeof x.delivery_generated_at!=='string'||!x.delivery_generated_at)refuse('CLOCKS_INVALID',at+'.delivery_generated_at');}
 const inputVerified=d=>!!d&&CHECKED.has(d)&&INPUT_VERIFIED.includes(d.input_check);
 const inputLine=d=>(inputVerified(d)?'입력 검증 완료 · ':'입력 검증 미완료 · 미검증 조회 · ')+INPUT_WORD[d.input_check];
 const REF_ANCHOR_SCHEMA='qgv-dual-reference-anchor/1';
@@ -228,10 +265,12 @@ function manifestOf(m,scope){exact(m,['schema_version','data_kind','scope','file
   if(!FILE.test(f.path)||entries.has(f.path)||!int(f.size)||f.size<1||f.size>MAX_BYTES||!HEX.test(f.sha256))refuse('FILES_INVALID','manifest.files['+i+']');entries.set(f.path,f);});
  if(!entries.has('summary.json')||!entries.has('index.json')||![...entries.keys()].some(p=>DETAIL_FILE.test(p)))refuse('FILES_INVALID','manifest.files');return entries;}
 
-function anchorCheck(scope,ev,boards,anchor){const S=SCOPES[scope];
+function anchorCheck(scope,ev,boards,anchor,inputAnchored){const S=SCOPES[scope];
  if(!isObj(anchor)||!Array.isArray(anchor.scopes))refuse('ANCHOR_REQUIRED','$');const a=anchor.scopes.find(s=>s&&s.scope===S.anchor);if(!a)refuse('ANCHOR_REQUIRED','$');
  if(a.population_id!==ev.id||a.population_version!==ev.version||a.members_hash!==ev.members_hash||a.denominator!==ev.code_rows)refuse('DUAL_POPULATION_MISMATCH','evaluation_population');
  if(a.valuation_date!==ev.valuation_date)refuse('DUAL_DATE_MISMATCH','evaluation_population.valuation_date');
+ // a delivery whose two inputs carry their own independent anchors keeps the bundle's population and day; its input version is its own
+ if(inputAnchored)return;
  for(const[k,b]of Object.entries(boards)){const input=S.input==='evaluation'?b.evaluation_population.input_hash:b.reference_population.input_hash;
   if(input!==a.input_hash)refuse('DUAL_INPUT_MISMATCH','boards.'+k+'.'+(S.input==='evaluation'?'evaluation_population':'reference_population')+'.input_hash');}}
 
@@ -279,7 +318,10 @@ async function checkDelivery(parts,opts){
   for(const k of keys)board(k,s.boards[k],'summary.boards.'+k);
   const ev=s.boards[keys[0]].evaluation_population;
   for(const k of keys)if(!same(s.boards[k].evaluation_population,ev))refuse('EVALUATION_MISMATCH','summary.boards.'+k+'.evaluation_population');
-  anchorCheck(scope,ev,s.boards,o.anchor);
+  const anchored=p.input_anchors!==undefined&&p.input_anchors!==null;
+  if(anchored&&SLOTS[slot].gen!=='Q333')refuse('INPUT_ANCHORS_NOT_APPLICABLE','input_anchors');
+  if(anchored&&((p.lineage!==undefined&&p.lineage!==null)||(p.reference_anchor!==undefined&&p.reference_anchor!==null)))refuse('INPUT_BASIS_MIXED','input_anchors');
+  anchorCheck(scope,ev,s.boards,o.anchor,anchored);
   const x=await bytesMatch(p.index,'index.json',entries,o.sha256,'index');const rows=indexRows(x,s,entries);
   // held1057's evaluation input: attested only by a matching projection proof; a proof that does not match refuses the delivery.
   let input_check=INPUT_CHECK[SCOPES[scope].input];
@@ -289,8 +331,12 @@ async function checkDelivery(parts,opts){
   if(p.reference_anchor!==undefined&&p.reference_anchor!==null){if(SCOPES[scope].input!=='evaluation')refuse('REFERENCE_ANCHOR_NOT_APPLICABLE','reference_anchor');
    if(!isObj(p.reference_anchor)||!isObj(p.reference_anchor.body))refuse('REFERENCE_ANCHOR_SCHEMA','reference_anchor');
    referenceAnchorCheck(p.reference_anchor.body,scope,s.boards);input_check='EVALUATION_INPUT_MATCHED_REFERENCE_ANCHORED';}
+  if(anchored){if(!isObj(p.input_anchors.body))refuse('INPUT_ANCHORS_SCHEMA','input_anchors');inputAnchorsCheck(p.input_anchors.body,scope,s.boards,x);input_check='EVALUATION_AND_REFERENCE_INPUTS_ANCHORED';}
+  let clocks=null;if(p.clocks!==undefined&&p.clocks!==null){if(!isObj(p.clocks.body))refuse('CLOCKS_SCHEMA','clocks');clocksCheck(p.clocks.body);clocks=p.clocks.body;
+   if(anchored&&clocks.execution_sha!==p.input_anchors.body.execution_sha)refuse('CLOCKS_OTHER_EXECUTION','clocks.execution_sha');}
   if(!(p.manifest.bytes instanceof Uint8Array))refuse('BYTES_REQUIRED','manifest');const manifest_sha256=await o.sha256(p.manifest.bytes);
-  const value=freeze({scope,slot,gen:SLOTS[slot].gen,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check});CHECKED.add(value);
+  const value=freeze({scope,slot,gen:SLOTS[slot].gen,data_kind:p.manifest.body.data_kind,manifest_sha256,entries:Object.fromEntries(entries),summary:s,rows,models:keys,input_check,clocks,
+   input_version:anchored?Object.freeze({evaluation:p.input_anchors.body.expected_evaluation.input_hash,reference:p.input_anchors.body.expected_reference.input_hash,as_of:p.input_anchors.body.expected_evaluation.as_of}):null});CHECKED.add(value);
   return{ok:true,value};}
  catch(e){if(e instanceof Refusal)return{ok:false,code:e.code,path:e.path};throw e;}}
 
@@ -401,6 +447,9 @@ async function checkEps(parts,sha256){
 const ENDPOINT_WORD=Object.freeze({NUMERIC_ENDPOINT_CANDIDATE:'양 끝값 수치 진단 후보(미채택)',NONPOSITIVE_ENDPOINT:'끝값이 0 이하(CAGR 불가)',SHARE_NORMALIZATION_UNCONFIRMED:'주식 정규화 미확인',
  EPS_CONCEPT_ABSENT:'EPS 항목 없음',ENDPOINT_NOT_EXTRACTED:'끝값 추출 안 됨',SOURCE_NOT_CONNECTED:'원천 연결 안 됨'});
 const sh12=h=>h.slice(0,12)+'…';
+// The delivery's clock line (its checked qgv-dual-delivery-clocks/1), or that the delivery carried none.
+const clockLine=d=>!d.clocks?'계산 시각 · 이 전달에 시각 기록 파일 없음':d.clocks.calculated_at!==null?'계산 시각 '+d.clocks.calculated_at+' · 전달 생성 '+d.clocks.delivery_generated_at
+ :'계산 시각 미기록 · '+d.clocks.calculated_at_reason+' · 실행 기록 '+d.clocks.inspected_execution_records.length+'개 확인 · 실행 코드 '+d.clocks.execution_sha.slice(0,12)+' · 전달 생성 '+d.clocks.delivery_generated_at+'(계산 시각 아님)';
 // One scope's EPS progress, line by line, as the producer counted it. delivery: the checked 3/3/3 delivery of that scope in RAM
 // (or null); its boards' result hashes say which side of this comparison the screen's results are.
 function epsView(E,scope,delivery){const x=E.index,d=E.diag[EPS_SCOPES[scope]],c=E.cmp[scope],den=d.denominator_issuers,u2=c['U2-333'];
@@ -411,7 +460,7 @@ function epsView(E,scope,delivery){const x=E.index,d=E.diag[EPS_SCOPES[scope]],c
  const kn=ea.evaluation.classification_context&&ea.evaluation.classification_context.knowledge_as_of;
  return freeze({scope,label:SCOPES[scope].label,onScreen,
   screen:{BEFORE:'지금 화면의 3/3/3 결과 = 이 비교의 「이전」 결과(이전 입력 버전) · 새 입력 버전 결과는 화면에 없음',NOT_LOADED:'이 범위의 3/3/3 결과를 아직 불러오지 않음 · 불러오면 어느 입력 버전인지 대조함',
-   OTHER:'지금 화면의 3/3/3 결과는 이 비교의 이전·새 결과 어느 쪽도 아님 · 서로 다른 결과이니 함께 읽지 않음',MIXED:'후보마다 다른 입력 버전 · 함께 읽지 않음'}[onScreen],
+   OTHER:'지금 화면의 3/3/3 결과는 이 비교의 이전·새 결과 어느 쪽도 아님 · 서로 다른 결과이니 함께 읽지 않음 · 그 뒤 입력 버전(Q 입력 복구)인지는 Q 입력 복구 칸에서 대조함',MIXED:'후보마다 다른 입력 버전 · 함께 읽지 않음'}[onScreen],
   times:[['평가일',x.valuation_date],['입력 마감(재무 스냅숏)',x.input_as_of],
    ['분류 지식 시점',(kn||'칸 없음')+' · 평가일 뒤 지식으로 회고 재구성 · 당시 시스템 보유 증명 아님'],
    ['역사 주식 기준 검토 시각','검토된 근거가 있어야 생기는 칸 · 이번 전달에 검토 시각 칸 없음'],
@@ -1004,5 +1053,5 @@ function ramStore(){let held=new Map();const ls=new Set();const tell=()=>{for(co
   drop(){if(!held.size)return;held=new Map();tell();},subscribe(f){ls.add(f);return()=>ls.delete(f);}});}
 const ram=ramStore();
 
-return Object.freeze({Q_CAUSE_WORD,GATE_DIAG_WORD,LINK_WORD,STATUS_WORD,QIN,checkQinput,qinputView,EPS,checkEps,epsView,SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
+return Object.freeze({INPUT_ANCHORS_SCHEMA,CLOCKS_SCHEMA,clockLine,Q_CAUSE_WORD,GATE_DIAG_WORD,LINK_WORD,STATUS_WORD,QIN,checkQinput,qinputView,EPS,checkEps,epsView,SLOTS,GEN,EVIDENCE_333,STAGES_333,stagesOf,RECIPE_WORD,evidenceText,INPUT_VERIFIED,inputVerified,inputLine,BINS,checkBins,checkBinsPart,binsMatchGroup,REF_ANCHOR_SCHEMA,DIST,DIST_PAGE,checkDistribution,checkDistributionSynthetic,checkDistributionPart,distributionGroup,distributionView,BAND,DECILE_RULE,bandText,SELECTION,checkSelection,selectionMatchesShard,LEADERS,checkLeaders,checkLeaderShard,leaderGroups,leaderView,LINEAGE_SCHEMA,PROJECTION_FIELDS,ENGINE,MODEL_OF,KIND_WORD,engineRequest,validateSaved,checkAnswer,boardRowsView,SCHEMA,SCOPES,INPUT_CHECK,INPUT_WORD,MODELS,KIND,STAGES,RULES,word,checkDelivery,checkDetail,boardView,rowsView,compareView,ram,ramStore,MAX_BYTES});
 });

@@ -32,8 +32,8 @@ REGISTRY = REPO / 'implementation' / 'docs' / 'frontend_v2' / 'HANDOFF_REGISTRY.
 WEB = REPO / 'implementation' / 'src' / 'investment_system' / 'product' / 'web_app'
 WORKER = REPO / 'implementation' / 'worker' / 'src' / 'index.js'
 STAGES = ('DELIVERED', 'RECEIPT_CHECKED', 'READER_VERIFIED', 'STAGED', 'SCREEN_CONNECTED', 'REAL_ENV')
-DELIVERABLE_STATES = ('CONNECTED', 'RECEIVED', 'NOT_DELIVERED', 'NOT_CONFIRMED', 'NOT_APPLICABLE')
-STATE_WORD = {'CONNECTED': '연결', 'RECEIVED': '수령', 'NOT_DELIVERED': '전달 전', 'NOT_CONFIRMED': '미확인', 'NOT_APPLICABLE': '해당 없음'}
+DELIVERABLE_STATES = ('CONNECTED', 'RECEIVED', 'REPLACED', 'NOT_DELIVERED', 'NOT_CONFIRMED', 'NOT_APPLICABLE')
+STATE_WORD = {'CONNECTED': '연결', 'RECEIVED': '수령', 'REPLACED': '교체됨', 'NOT_DELIVERED': '전달 전', 'NOT_CONFIRMED': '미확인', 'NOT_APPLICABLE': '해당 없음'}
 WORD = {'DELIVERED': '전달됨', 'RECEIPT_CHECKED': '수령 확인', 'READER_VERIFIED': '판독 검증', 'STAGED': '배치됨', 'SCREEN_CONNECTED': '화면 연결', 'REAL_ENV': '실환경 확인'}
 
 

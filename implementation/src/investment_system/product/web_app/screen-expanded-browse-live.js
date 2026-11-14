@@ -139,11 +139,18 @@ function block(anchor){
   const btns=Object.keys(DQ.SLOTS).map(scope=>{const S=DQ.SCOPES[DQ.SLOTS[scope].scope],b=h('button',{type:'button',class:'btn',dataset:{dualOpen:scope}},slotWord(scope)+' 결과 불러오기');
    // held1057 (평가 입력 = 참조 원천의 투영) also reads the producer's projection proof when staged (OPTIONAL: absent = 평가 입력 미검증).
    // operating504 (평가 입력 = 결과의 입력) also reads the producer's independent reference anchor when staged (OPTIONAL: absent = 참조 입력 대조 안 됨).
-   const proof=S.input==='reference',reads=[...['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]),['classification',(proof?'dual_lineage/':'dual_reference_anchor/')+scope,'OPTIONAL']];
+   // A 3/3/3 slot also reads the producer's two independent input anchors and its clock record (OPTIONAL: a delivery staged with
+   // them has its own input version; without them the older single-side basis is read and shown as before).
+   const q333=DQ.SLOTS[scope].gen==='Q333',proof=S.input==='reference',
+    reads=[...['dual_manifest','dual_summary','dual_index'].map(x=>['classification',x+'/'+scope]),
+     ...(q333?[['classification','dual_input_anchors/'+scope,'OPTIONAL'],['classification','dual_clocks/'+scope,'OPTIONAL']]:[]),
+     ['classification',(proof?'dual_lineage/':'dual_reference_anchor/')+scope,'OPTIONAL']];
    b.addEventListener('click',e=>{if(busy||st.busy)return;busy=true;b.disabled=true;set('LOADING','불러오는 중 · '+slotWord(scope)+' 목록표·요약·색인'+(proof?'·투영 증명 ':'·참조 기준 ')+reads.length+'개 · 서버 요청 간격 5초');
     let p;try{p=I.prices.kisRead(e,reads);}catch(err){p=Promise.reject(err);}
-    Promise.resolve(p).then(async([manifest,summary,index,extra])=>{const r=await DQ.checkDelivery({manifest,summary,index,...(extra?(proof?{lineage:extra}:{reference_anchor:extra}):{})},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
-     if(!r.ok){set('ERROR',slotWord(scope)+' 연구 결과를 쓰지 않음 · '+(r.code==='MODEL_GENERATION_MIXED'?'옛 후보와 3/3/3 후보가 한 묶음에 섞여 있습니다':r.code==='MODEL_GENERATION_SLOT'?'이 자리에 넣을 세대의 후보가 아닙니다':r.code==='CONFIG_VERSION_MISMATCH'||r.code==='MODEL_VERSION_UNKNOWN'?'등록된 모형 설정·버전과 다릅니다':r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':/^LINEAGE_/.test(r.code)?'평가 입력 투영 증명이 이 결과와 맞지 않습니다':/^REFERENCE_ANCHOR_/.test(r.code)?'참조 입력 독립 기준이 이 결과와 맞지 않습니다':'형식 오류')
+    Promise.resolve(p).then(async(got)=>{const[manifest,summary,index]=got,anchors=q333?got[3]:null,clocks=q333?got[4]:null,extra=got[got.length-1];
+     const basis=anchors?{input_anchors:anchors}:extra?(proof?{lineage:extra}:{reference_anchor:extra}):{};
+     const r=await DQ.checkDelivery({manifest,summary,index,...basis,...(clocks?{clocks}:{})},{scope,anchor:RV.anchorOf(st.bundle),sha256:E().sha256});
+     if(!r.ok){set('ERROR',slotWord(scope)+' 연구 결과를 쓰지 않음 · '+(r.code==='MODEL_GENERATION_MIXED'?'옛 후보와 3/3/3 후보가 한 묶음에 섞여 있습니다':r.code==='MODEL_GENERATION_SLOT'?'이 자리에 넣을 세대의 후보가 아닙니다':r.code==='CONFIG_VERSION_MISMATCH'||r.code==='MODEL_VERSION_UNKNOWN'?'등록된 모형 설정·버전과 다릅니다':r.code==='DUAL_POPULATION_MISMATCH'||r.code==='DUAL_INPUT_MISMATCH'?'지금 받은 결과와 다른 평가 집단·입력의 연구입니다':r.code==='DUAL_DATE_MISMATCH'?'평가일이 다릅니다':r.code==='BYTES_MISMATCH'?'파일이 목록표의 해시와 다릅니다':/^LINEAGE_/.test(r.code)?'평가 입력 투영 증명이 이 결과와 맞지 않습니다':/^REFERENCE_ANCHOR_/.test(r.code)?'참조 입력 독립 기준이 이 결과와 맞지 않습니다':/INPUT_BINDING$|^INPUT_ANCHORS_/.test(r.code)?'평가·참조 입력 독립 기준 고정이 이 결과와 맞지 않습니다':/^CLOCKS_/.test(r.code)?'계산 시각 기록이 계약과 다릅니다':'형식 오류')
       +' · '+r.code+' · '+r.path+' · 위 묶음은 그대로');b.disabled=false;return;}
      DQ.ram.set(scope,r.value);b.hidden=true;paint();},
     err=>{const c=codeOf(err);set('ERROR',(c==='KIS_SERIES_NOT_FOUND'?slotWord(scope)+' 결과가 전달 위치에 없습니다(배치 전)':say(c))+' · 위 묶음은 그대로');b.disabled=false;})
@@ -155,6 +162,8 @@ function block(anchor){
     h('ul',{class:'news-lines',dataset:{dualRules:''}},DQ.RULES.map(t=>h('li',{class:'reason'},t))),...held.map(scopeCard));}
   function scopeCard(scope){const d=DQ.ram.get(scope).delivery,L=DQ.SLOTS[scope],S=DQ.SCOPES[L.scope],q=L.gen==='Q333';
    return h('div',{class:'cc-wrap',dataset:{dualScope:scope}},h('h4',null,S.label,q?' · 3/3/3':'',' · ',S.text),h('p',{class:'meta',dataset:{dualGeneration:L.gen}},DQ.GEN[L.gen]),
+    q?h('p',{class:'reason',dataset:{dualInputVersion:d.input_version?'ANCHORED':'BUNDLE'}},d.input_version?'입력 버전 · 평가 '+d.input_version.evaluation.slice(0,12)+'… · 참조 '+d.input_version.reference.slice(0,12)+'… · 입력 마감 '+d.input_version.as_of+' · 생산자 독립 기준 고정 두 개와 대조':'입력 버전 · 분류 묶음의 입력(원래 3/3/3)'):null,
+    q?h('p',{class:'meta',dataset:{dualClocks:d.clocks?(d.clocks.calculated_at===null?'NULL_WITH_REASON':'RECORDED'):'ABSENT'}},DQ.clockLine(d)):null,
     L.scope==='operating504'?h('p',{class:'meta',dataset:{dualLeaderboard:''}},'2.1 리더보드의 QGV 모형에서 '+(q?'U2-333·U1-333·S1-333':'U1·U2·S1')+'을 고를 수 있음(이 결과를 RAM에서 읽음)'):null,
     ...d.models.map(k=>{const v=DQ.boardView(d,k);
      return h('details',{class:'why',dataset:{dualBoard:scope+':'+k}},h('summary',null,v.head,' ▸'),

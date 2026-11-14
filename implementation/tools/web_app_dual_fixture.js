@@ -296,4 +296,23 @@ function qinput(epsCase, edit) {
   files['q-index.json'] = json(index);
   return { files, docs, index };
 }
-module.exports = { qinput, eps, q333, D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor, bins };
+// Codex's two independent input anchors (qgv-dual-input-anchors/1, #534 fe29867c) and clock record (qgv-dual-delivery-clocks/1),
+// test-made from a delivery's own bindings (the real anchor comes from pinned retained snapshots, never from the delivery).
+function inputAnchors(d, edit) {
+  const b = JSON.parse(d.files['summary.json'].toString('utf8')).boards['U2-333'];
+  const x = { schema_version: 'qgv-dual-input-anchors/1', scope: JSON.parse(d.files['manifest.json'].toString('utf8')).scope,
+    expected_evaluation: JSON.parse(JSON.stringify(b.evaluation_population)), expected_reference: JSON.parse(JSON.stringify(b.bindings.reference)),
+    preservation: { repo: 'test/raw', ref: 'test', path: 'handoffs/test', commit: '5'.repeat(40), handoff_manifest_sha256: '6'.repeat(64), bundle_manifest: { path: 'bundle-manifest.json', size: 1, sha256: '7'.repeat(64) } },
+    source_files: { evaluation: { path: 'transformed/e/snapshot.json', size: 1, sha256: '8'.repeat(64) }, reference: { path: 'transformed/r/snapshot.json', size: 1, sha256: '9'.repeat(64) } },
+    execution_sha: '4'.repeat(40), projection: { rows_equal_source_projection: true, changed_top_level_fields: ['rows'], review_context_equal: false, claim: 'ROW_PROJECTION_ONLY;INPUT_IDENTITIES_INDEPENDENTLY_BOUND' },
+    generation_rule: 'synthetic', runtime_lineage_used_as_proof: false, new_score_calculations: 0, whole_market_denominator: null };
+  if (edit) edit(x);
+  return json(x);
+}
+function clocks(edit) {
+  const x = { schema_version: 'qgv-dual-delivery-clocks/1', execution_sha: '4'.repeat(40), calculated_at: null, calculated_at_reason: 'EXECUTION_TIMESTAMP_NOT_RECORDED',
+    inspected_execution_records: [{ path: 'runs/x/manifest.json', sha256: 'a'.repeat(64), timestamp_field: null }], delivery_generated_at: '2026-02-04T12:30:00Z', new_score_calculations: 0 };
+  if (edit) edit(x);
+  return json(x);
+}
+module.exports = { inputAnchors, clocks, qinput, eps, q333, D, FILES, raw, pinned, parse, delivery, anchor, coverageContext, lineage, leaders, selection, sha, distCase, distribution, referenceAnchor, bins };

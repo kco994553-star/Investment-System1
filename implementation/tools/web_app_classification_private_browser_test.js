@@ -84,6 +84,9 @@ Object.assign(DIST, DF.bins(DIST)); // its all-bin routing (test-made, Codex's q
 // operating evaluation (the reference study's) without a reference anchor. Served only for &set=333.
 const Q333 = { held1057: DF.q333('held1057'), operating504: DF.q333(null, 'core-missing', null, { evaluation: REFVIEW.evaluation_population }) };
 Q333.held1057.files['input-lineage.json'] = DF.lineage();
+// operating504's 3/3/3 delivery carries Codex's two input anchors and the clock record (owner 2026-11-13 「새 Q 결과 전환」 §1).
+Q333.operating504.files['input-anchors.json'] = DF.inputAnchors(Q333.operating504);
+Q333.operating504.files['delivery-clocks.json'] = DF.clocks();
 const Q333_DIST = { ...DF.distribution(Q333.held1057) };
 // The 3/3/3 EPS input connection follow-up (test-made counts, Codex #534's file shapes) bound to these two deliveries.
 const Q333_EPS = DF.eps({ operating504: Q333.operating504, held1057: Q333.held1057 });
@@ -138,7 +141,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         if (url.searchParams.get('set') === '333') {
           const slot = scope + '@333', qkey = /_detail$/.test(part) ? part + '/' + slot + '/' + shard : part + '/' + slot;
           const name = part === 'dual_detail' ? 'detail-' + shard + '.json' : part === 'dual_dist_detail' ? 'distribution-' + shard + '.json' : part === 'dual_bins_detail' ? 'bins-' + shard + '.json'
-            : part === 'dual_lineage' ? 'input-lineage.json' : DUAL_FILE[part] || DIST_FILE[part];
+            : part === 'dual_lineage' ? 'input-lineage.json' : part === 'dual_input_anchors' ? 'input-anchors.json' : part === 'dual_clocks' ? 'delivery-clocks.json' : DUAL_FILE[part] || DIST_FILE[part];
           const src = DIST_FILE[part] || part === 'dual_dist_detail' || part === 'dual_bins_detail' ? (scope === 'held1057' ? Q333_DIST : {}) : (Q333[scope] || { files: {} }).files, b = name ? src[name] : undefined;
           const d = (w.answers[qkey] || (() => (b === undefined ? { status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } } : { status: 200, text: b.toString('utf8') })))();
           await route.fulfill({ status: d.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: d.text !== undefined ? d.text : JSON.stringify(d.body) }); return;
@@ -578,7 +581,7 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.waitForTimeout(5200);
         const q0 = w.log.length; await page.locator('[data-dual-open="held1057@333"]').focus(); await page.keyboard.press('Enter');
         await page.locator('[data-dual-scope="held1057@333"]').waitFor({ timeout: 40000 });
-        assert.deepEqual(w.log.slice(q0).map((x) => x.path), ['manifest', 'summary', 'index', 'lineage'].map((p) => Q('dual_' + p + '&scope=held1057&set=333')), phase + ': four reads with set=333');
+        assert.deepEqual(w.log.slice(q0).map((x) => x.path), ['manifest', 'summary', 'index', 'input_anchors', 'clocks', 'lineage'].map((p) => Q('dual_' + p + '&scope=held1057&set=333')), phase + ': six reads with set=333 (anchors and clocks optional, 404 here)');
         assert.match(await text(page, '[data-dual-state]'), /^연구 후보 결과 · 보유1057 두 모형 · 보유1057 3\/3\/3 · 목록표·요약·색인 검증됨/);
         assert.equal(await count(page, '[data-dual-scope=held1057]'), 1, phase + ': the reduced delivery stays beside it');
         assert.deepEqual(await page.locator('[data-dual-scope="held1057@333"] [data-dual-board]').evaluateAll((e) => e.map((x) => x.dataset.dualBoard)), ['U2-333', 'U1-333', 'S1-333'].map((k) => 'held1057@333:' + k));
@@ -618,7 +621,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.waitForTimeout(5200);
         const o0 = w.log.length; await page.locator('[data-dual-open="operating504@333"]').click();
         await page.locator('[data-dual-scope="operating504@333"]').waitFor({ timeout: 40000 });
-        assert.deepEqual(w.log.slice(o0).map((x) => x.path), ['manifest', 'summary', 'index', 'reference_anchor'].map((p) => Q('dual_' + p + '&scope=operating504&set=333')), phase + ': the anchor optional (404 here)');
+        assert.deepEqual(w.log.slice(o0).map((x) => x.path), ['manifest', 'summary', 'index', 'input_anchors', 'clocks', 'reference_anchor'].map((p) => Q('dual_' + p + '&scope=operating504&set=333')), phase + ': the old anchor optional (404 here)');
+        assert.equal(await page.locator('[data-dual-scope="operating504@333"] [data-dual-input-version]').getAttribute('data-dual-input-version'), 'ANCHORED', phase + ': both inputs anchored');
+        assert.match(await text(page, '[data-dual-scope="operating504@333"] [data-dual-input-version]'), /^입력 버전 · 평가 .+… · 참조 .+… · 입력 마감 .+ · 생산자 독립 기준 고정 두 개와 대조$/);
+        assert.equal(await page.locator('[data-dual-scope="operating504@333"] [data-dual-clocks]').getAttribute('data-dual-clocks'), 'NULL_WITH_REASON');
+        assert.match(await text(page, '[data-dual-scope="operating504@333"] [data-dual-clocks]'), /^계산 시각 미기록 · EXECUTION_TIMESTAMP_NOT_RECORDED · .*\(계산 시각 아님\)$/);
+        assert.equal(await page.locator('[data-dual-scope="held1057@333"] [data-dual-input-version]').getAttribute('data-dual-input-version'), 'BUNDLE', phase + ': the held delivery keeps its earlier basis');
+        assert.equal(await page.locator('[data-dual-scope="held1057@333"] [data-dual-clocks]').getAttribute('data-dual-clocks'), 'ABSENT');
         assert.match(await text(page, '[data-dual-scope="operating504@333"] [data-dual-leaderboard]'), /U2-333·U1-333·S1-333을 고를 수 있음/);
         // EPS 입력 연결 단계 (owner 2026-11-13 「3/3/3 화면 연결 우선」 §1, §3): its own click, four reads; a progress record, not results.
         await page.waitForTimeout(5200);

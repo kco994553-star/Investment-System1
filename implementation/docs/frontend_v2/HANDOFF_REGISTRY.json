@@ -67,66 +67,26 @@
           "held1057@333"
         ]
       },
-      "staged": [
-        {
-          "path": "classification/dual-333/operating504/manifest.json",
-          "sha256": "9ba52310600318b239c785c9f2982fff89a59d524c0417da96bd8da841dc5fac"
-        },
-        {
-          "path": "classification/dual-333/operating504/reference-anchor.json",
-          "sha256": "3f911c10f046a5d794bd2c08507ceef3df8036ead657acaa319602998d0e013c"
-        },
-        {
-          "path": "classification/dual-333/operating504/distribution/distribution-manifest.json",
-          "sha256": "9bee936d8c875a0cf438fa79c84a0085d0d7e80ed800128b29d4d876b7c6919f"
-        },
-        {
-          "path": "classification/dual-333/operating504/bins/bin-manifest.json",
-          "sha256": "36f777fdd6a701589436fd7b98553e7ee70c99283e0350e6ab37e901a15dff8b"
-        },
-        {
-          "path": "classification/dual-333/held1057/manifest.json",
-          "sha256": "d4ce02f767da939a50a0b368cda28f6cd199268f8190873667de1fc0dcf1a6b8"
-        },
-        {
-          "path": "classification/dual-333/held1057/input-lineage.json",
-          "sha256": "fc7a3a0f5dba3e76f79a3a6153dbb7958557d16d3c9367b8d68dd99fe52b9a8f"
-        },
-        {
-          "path": "classification/dual-333/held1057/distribution/distribution-manifest.json",
-          "sha256": "323c741e2daa176529fbfea217443b6c0935bb3c16a761eedea873bd8b8c84d5"
-        },
-        {
-          "path": "classification/dual-333/held1057/bins/bin-manifest.json",
-          "sha256": "b32ea361018296eb252ad8fe1a97ebefd74f63c3a0ebe77c8396853d8c15e18a"
-        }
-      ],
-      "screen_parts": [
-        "?part=dual_manifest&scope=operating504&set=333",
-        "?part=dual_detail&scope=held1057&shard=000&set=333",
-        "?part=dual_dist_index&scope=operating504&set=333",
-        "?part=dual_bins_detail&scope=held1057&shard=000&set=333",
-        "?part=dual_reference_anchor&scope=operating504&set=333",
-        "?part=dual_lineage&scope=held1057&set=333"
-      ],
+      "staged": [],
+      "screen_parts": [],
       "real_env": {
         "confirmed": false,
         "reason": "Worker &set=333 not deployed (owner approval)"
       },
       "missing": [],
-      "scope": "the ORIGINAL 3/3/3 input version: delivery (summary, index, details), reference anchor / projection proof, full distribution and all-bin routing",
+      "scope": "the ORIGINAL 3/3/3 input version (delivery, reference anchor / projection proof, full distribution and all-bin routing); on private data ade27160 the screen's 3/3/3 slots were switched to qgv333-qdelivery, this version stays in the raw handoff",
       "deliverables": [
         {
           "id": "scores",
           "word": "점수 결과",
-          "state": "CONNECTED",
-          "note": "0. 기업 검색 3/3/3 카드 · 기업 상세 · 2.1 리더보드"
+          "state": "REPLACED",
+          "note": "qgv333-qdelivery로 교체 (data ade27160)"
         },
         {
           "id": "deciles",
           "word": "전체 10분위",
-          "state": "CONNECTED",
-          "note": "분포 + 구간 색인"
+          "state": "REPLACED",
+          "note": "qgv333-qdelivery로 교체"
         },
         {
           "id": "real_env",
@@ -314,12 +274,7 @@
         "confirmed": false,
         "reason": "Worker dual_q_* not deployed (owner approval)"
       },
-      "missing": [
-        "a scope delivery manifest (qgv-dual-delivery-manifest/1) for each of operating504 / held1057 combining the three new runs: the per-candidate runs (archive runs/<scope>-<candidate>/, qgv-dual-delivery/1 summary + index + details) are delivered, the scope manifest is not, and Main does not assemble it",
-        "the new results' full distribution and bins",
-        "an anchor for the new evaluation input (the staged classification bundle names the original input)",
-        "a calculation time field (calculation is pinned only by execution 93a699ed)"
-      ],
+      "missing": [],
       "scope": "the Q input recovery progress record of the THIRD input version (diagnostic summary, comparison, review clocks); not a result delivery",
       "deliverables": [
         {
@@ -331,20 +286,20 @@
         {
           "id": "scores",
           "word": "새 점수 결과",
-          "state": "NOT_DELIVERED",
-          "note": "per-candidate runs in the archive, but no scope delivery manifest; Main does not assemble it"
+          "state": "CONNECTED",
+          "note": "qgv333-qdelivery (Codex fe29867c) switched in one step; result hashes = this comparison's after side"
         },
         {
           "id": "deciles",
           "word": "전체 10분위",
-          "state": "NOT_DELIVERED",
-          "note": "no distribution / bins for the new results"
+          "state": "CONNECTED",
+          "note": "qgv333-qdelivery distribution + all-bin routing"
         },
         {
           "id": "calc_time",
           "word": "계산 시각",
-          "state": "NOT_DELIVERED",
-          "note": "producer contract: calculation time belongs to the run manifest / execution receipt; the six run manifests (qgv-dual-run/1) carry no time field; pinned by execution 93a699ed only"
+          "state": "RECEIVED",
+          "note": "qgv-dual-delivery-clocks/1: calculated_at null, reason EXECUTION_TIMESTAMP_NOT_RECORDED (8 execution records inspected); delivery_generated_at is projection time only"
         },
         {
           "id": "real_env",
@@ -353,6 +308,118 @@
           "note": "Worker dual_q_* not deployed"
         }
       ]
+    },
+    {
+      "id": "qgv333-qdelivery",
+      "title": "QGV 3/3/3 Q recovery result delivery with two input anchors and clocks (Codex #534 fe29867c, frozen execution 93a699ed)",
+      "comments": [
+        6867195048,
+        6867395524
+      ],
+      "producer": {
+        "pr": 534,
+        "sha": "fe29867cf1301e97912656ff03d3a9bf3a17fe64"
+      },
+      "raw": {
+        "commit": "7bdcae7c140d28a5d5d66138307d1db3c50ae658",
+        "path": "handoffs/qgv-q-result-delivery-20261113/handoff-manifest.json",
+        "sha256": "7107111e84be3ab0875c0c481a26c9e2e6bfa3a52b62445496a4a25e778eec67"
+      },
+      "reader": {
+        "slots": [
+          "operating504@333",
+          "held1057@333"
+        ]
+      },
+      "staged": [
+        {
+          "path": "classification/dual-333/operating504/manifest.json",
+          "sha256": "23970e417d24473fe29d16577c8db436636516946470b43f9bfa1e593b548c9d"
+        },
+        {
+          "path": "classification/dual-333/operating504/input-anchors.json",
+          "sha256": "748fce366387ed02f6215fae732556ffe5d235911185a476f814983486088cff"
+        },
+        {
+          "path": "classification/dual-333/operating504/delivery-clocks.json",
+          "sha256": "039722c2a3f0524c1bbc2803f13fef82bfb9bcf8a926a10d92cc6ca3e99d06f4"
+        },
+        {
+          "path": "classification/dual-333/operating504/distribution/distribution-manifest.json",
+          "sha256": "8744fbf5b5c0620905f2d36f1fbcf9423feab0cf7f9eb458b59d5d734e3bc96c"
+        },
+        {
+          "path": "classification/dual-333/operating504/bins/bin-manifest.json",
+          "sha256": "d8e5df0a727121e36761335c5d0a0d2c92aabbc39422f06c4c0d9073f35364e9"
+        },
+        {
+          "path": "classification/dual-333/operating504/switch.json",
+          "sha256": "23cbc6195c5611e5a8bb0e0e8d7a1dc424eb772fdc9447729f59cc7990e3d658"
+        },
+        {
+          "path": "classification/dual-333/held1057/manifest.json",
+          "sha256": "7fb412d05b2a388f23372e8e32b6323796fe9a952c44a083e23c3dd271b87ee4"
+        },
+        {
+          "path": "classification/dual-333/held1057/input-anchors.json",
+          "sha256": "b6804226404f0d2096433c8b47e07ff011c3a28d5a4c101e5a2fd8190f853d1d"
+        },
+        {
+          "path": "classification/dual-333/held1057/delivery-clocks.json",
+          "sha256": "71ec48c4719019a0a2006052fd3847284cc941e26d7a561080b49a7ef6c66e0a"
+        },
+        {
+          "path": "classification/dual-333/held1057/distribution/distribution-manifest.json",
+          "sha256": "e36b61c47606d0abf650906c3da79aad6b370cde93118586252a8728701dd329"
+        },
+        {
+          "path": "classification/dual-333/held1057/bins/bin-manifest.json",
+          "sha256": "414ff045292bae7576bef882d1e40801e8ee4bffb498f2d02c4a1eb6af8bbd00"
+        },
+        {
+          "path": "classification/dual-333/held1057/switch.json",
+          "sha256": "ef40daa11449f4e6224f6e07c7b35672023874d79e24bd99de051958ff7d4d8f"
+        }
+      ],
+      "screen_parts": [
+        "?part=dual_manifest&scope=operating504&set=333",
+        "?part=dual_input_anchors&scope=operating504&set=333",
+        "?part=dual_clocks&scope=held1057&set=333",
+        "?part=dual_dist_index&scope=held1057&set=333",
+        "?part=dual_bins_detail&scope=operating504&shard=000&set=333"
+      ],
+      "real_env": {
+        "confirmed": false,
+        "reason": "Worker &set=333 / dual_input_anchors / dual_clocks not deployed (owner approval)"
+      },
+      "scope": "the THIRD input version's results: per scope the three 3/3/3 boards (summary, index, details), full distribution and all-bin routing, two independent input anchors (qgv-dual-input-anchors/1, chain checked against the earlier pinned handoff c894737d) and the clock record; switched in one step on data ade27160",
+      "deliverables": [
+        {
+          "id": "scores",
+          "word": "새 점수 결과",
+          "state": "CONNECTED",
+          "note": "504 / 1057 detail rows read; both inputs anchored"
+        },
+        {
+          "id": "deciles",
+          "word": "전체 10분위",
+          "state": "CONNECTED",
+          "note": "1071 / 969 groups (Codex consumer check); staged with its bins"
+        },
+        {
+          "id": "calc_time",
+          "word": "계산 시각",
+          "state": "RECEIVED",
+          "note": "null with reason EXECUTION_TIMESTAMP_NOT_RECORDED; never filled"
+        },
+        {
+          "id": "real_env",
+          "word": "실환경",
+          "state": "NOT_CONFIRMED",
+          "note": "Worker not deployed"
+        }
+      ],
+      "missing": []
     },
     {
       "id": "ownership-531",
@@ -446,6 +513,7 @@
     "RECEIVED": "received and checked, no screen of its own",
     "NOT_DELIVERED": "not part of any handoff yet",
     "NOT_CONFIRMED": "needs a deployed, checked environment (or the consumer) first",
-    "NOT_APPLICABLE": "nothing of that kind"
+    "NOT_APPLICABLE": "nothing of that kind",
+    "REPLACED": "was connected; the screen now reads a newer version of the same deliverable (kept in the raw handoff)"
   }
 }

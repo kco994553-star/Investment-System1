@@ -88,7 +88,7 @@ def _json(data: bytes, name: str):
         raise StageError('NOT_JSON:' + name) from None
 
 
-def check(delivery: Path, scope: str, pin: str, data_dir: Path, set_: str = 'reduced') -> tuple:
+def check(delivery: Path, scope: str, pin: str, data_dir: Path, set_: str = 'reduced', input_anchored: bool = False) -> tuple:
     if scope not in SCOPES:
         raise StageError('SCOPE_UNKNOWN')
     if set_ not in SETS:
@@ -154,7 +154,9 @@ def check(delivery: Path, scope: str, pin: str, data_dir: Path, set_: str = 'red
         raise StageError('POPULATION_MISMATCH')
     if context.get('valuation_date') != ev.get('valuation_date'):
         raise StageError('DATE_MISMATCH')
-    for key, b in boards.items():
+    # A 3/3/3 delivery with the producer's two independent input anchors (qgv-dual-input-anchors/1, checked by the switch tool)
+    # carries its own input version: the population and day above stay the bundle's, the input hash is the anchors' to bind.
+    for key, b in ({} if input_anchored else boards).items():
         side = b.get('evaluation_population') if input_side == 'evaluation' else b.get('reference_population')
         if not isinstance(side, dict) or side.get('input_hash') != identity.get('input_hash'):
             raise StageError('INPUT_MISMATCH:' + key)
@@ -195,17 +197,19 @@ def check_lineage(path: Path, pin: str, scope: str, summary: dict) -> bytes:
 
 
 def stage(delivery: Path, scope: str, pin: str, data_dir: Path, lineage: Path = None, lineage_pin: str = None, unverified: bool = False,
-          set_: str = 'reduced') -> tuple:
+          set_: str = 'reduced', input_anchored: bool = False) -> tuple:
     if _inside(data_dir, REPO_ROOT):
         raise StageError('DATA_DIR_INSIDE_PUBLIC_REPOSITORY')
     if not (data_dir / 'classification').is_dir():
         raise StageError('CLASSIFICATION_NOT_STAGED')
     if (lineage is None) != (lineage_pin is None):
         raise StageError('LINEAGE_PIN_REQUIRED')
-    files, manifest, summary = check(delivery, scope, pin, data_dir, set_)
+    if input_anchored and (set_ != '333' or lineage is not None):
+        raise StageError('INPUT_ANCHORS_NOT_APPLICABLE')
+    files, manifest, summary = check(delivery, scope, pin, data_dir, set_, input_anchored)
     # held1057's evaluation input: the strict path needs the producer's projection proof; staging without it is an explicit choice
     # (--unverified) and the delivery stays REFERENCE_INPUT_MATCHED_EVALUATION_UNVERIFIED on every screen (owner 2026-11-12 §2).
-    if SCOPES[scope][1] == 'reference' and lineage is None and not unverified:
+    if SCOPES[scope][1] == 'reference' and lineage is None and not unverified and not input_anchored:
         raise StageError('LINEAGE_REQUIRED')
     if lineage is not None:
         files = {**files, LINEAGE_FILE: check_lineage(lineage, lineage_pin, scope, summary)}

@@ -406,6 +406,20 @@ test('classification dual set=333: the 3/3/3 delivery reads classification/dual-
   }
 });
 
+test('classification 3/3/3 input anchors and clocks: set=333 only, at classification/dual-333/<scope>/, each with its own shape', async () => {
+  for (const [part, file, body] of [['dual_input_anchors', 'input-anchors', { schema_version: 'qgv-dual-input-anchors/1', scope: 'held1057' }],
+    ['dual_clocks', 'delivery-clocks', { schema_version: 'qgv-dual-delivery-clocks/1' }]]) {
+    const s = setup({ github: () => new Response(JSON.stringify(body), { status: 200 }) });
+    const r0 = await s.run('/kis/classification?part=' + part + '&scope=held1057&set=333'); assert.equal(r0.status, 200, part + ' ' + await r0.clone().text());
+    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/classification/dual-333/held1057/' + file + '.json?ref=data');
+    assert.equal((await setup({ github: () => new Response(JSON.stringify({ schema_version: 'other' }), { status: 200 }) }).run('/kis/classification?part=' + part + '&scope=held1057&set=333')).status, 502, part + ': another shape');
+    const t = setup({ github: () => new Response('{}', { status: 200 }) }), r = await t.run('/kis/classification?part=' + part + '&scope=held1057');
+    assert.equal(r.status, 400, part + ' without set=333'); assert.equal(githubCalls(t).length, 0);
+  }
+  assert.equal((await setup({ github: () => new Response(JSON.stringify({ schema_version: 'qgv-dual-input-anchors/1', scope: 'operating504' }), { status: 200 }) })
+    .run('/kis/classification?part=dual_input_anchors&scope=held1057&set=333')).status, 502, 'the anchor names the scope asked for');
+});
+
 test('classification 3/3/3 Q input recovery: the three staged files at classification/dual-333/qinput/, each with its own shape', async () => {
   for (const [part, file, body] of [['dual_q_index', 'q-index', { schema_version: 'qgv-333-q-input-delivery/1' }], ['dual_q_diag', 'diagnostic-summary', { operating504: {}, held1057: {} }],
     ['dual_q_compare', 'comparison', { operating504: {}, held1057: {} }]]) {

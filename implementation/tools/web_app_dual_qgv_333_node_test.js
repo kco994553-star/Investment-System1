@@ -258,3 +258,38 @@ test('status words follow the reason codes: no shared word, no recipe word for a
   assert.equal(DQ.STATUS_WORD.PASS, '관문 통과'); assert.ok(!/통과/.test(DQ.LINK_WORD.PERCENTILE_LINKED) && !/판정/.test(DQ.LINK_WORD.PERCENTILE_LINKED));
   assert.ok(!/총점/.test(Object.values(DQ.GATE_DIAG_WORD).join(' ')), 'a gate state is never a total');
 });
+
+// Codex's two independent input anchors (owner 2026-11-13 「새 Q 결과 전환」 §1; #534 fe29867c, Q_INPUT_DELIVERY.md): a 3/3/3 delivery of a
+// new input version is verified on both sides only through them (every board's evaluation / bindings / candidate population and the
+// index's evaluation, as the producer's validate_input_bindings); without them the same delivery is refused against the bundle's input;
+// the run's lineage or a reduced slot never takes them; the clock record keeps calculated_at null only with its reason.
+test('input anchors: both inputs bound, a new input version only through them, clocks null with a reason', async () => {
+  const base = DF.q333(null, 'core-missing'), bundle = anchorOf(base);
+  const shift = (docs) => { for (const b of Object.values(docs['summary.json'].boards)) { b.evaluation_population.input_hash = 'c'.repeat(64); b.bindings.evaluation.input_hash = 'c'.repeat(64); }
+    docs['index.json'].evaluation_population.input_hash = 'c'.repeat(64); };
+  const d = DF.q333(null, 'core-missing', shift);
+  const run = (anchors, extra = {}, slot = 'operating504@333') => DQ.checkDelivery({ manifest: P(d.files, 'manifest.json'), summary: P(d.files, 'summary.json'), index: P(d.files, 'index.json'),
+    ...(anchors ? { input_anchors: P({ a: anchors }, 'a') } : {}), ...extra }, { scope: slot, anchor: bundle, sha256 });
+  assert.equal((await run(null)).code, 'DUAL_INPUT_MISMATCH', 'a new input version is not the bundle\'s input');
+  const ok = await run(DF.inputAnchors(d), { clocks: P({ c: DF.clocks() }, 'c') });
+  assert.equal(ok.ok, true, JSON.stringify(ok)); assert.equal(ok.value.input_check, 'EVALUATION_AND_REFERENCE_INPUTS_ANCHORED'); assert.equal(DQ.inputVerified(ok.value), true);
+  assert.equal(ok.value.input_version.evaluation, 'c'.repeat(64));
+  assert.match(DQ.clockLine(ok.value), /^계산 시각 미기록 · EXECUTION_TIMESTAMP_NOT_RECORDED · 실행 기록 1개 확인 · 실행 코드 444444444444 · 전달 생성 2026-02-04T12:30:00Z\(계산 시각 아님\)$/);
+  assert.match(DQ.inputLine(ok.value), /^입력 검증 완료 · 평가·참조 입력 = 생산자 독립 기준 고정/);
+  const cases = [
+    ['EVALUATION_INPUT_BINDING', DF.inputAnchors(d, (x) => { x.expected_evaluation.members_hash = 'f'.repeat(64); })],
+    ['EVALUATION_INPUT_BINDING', DF.inputAnchors(d, (x) => { x.expected_evaluation.as_of = '2026-02-05T00:00:00Z'; })],
+    ['REFERENCE_INPUT_BINDING', DF.inputAnchors(d, (x) => { x.expected_reference.input_hash = 'f'.repeat(64); })],
+    ['INPUT_ANCHORS_INVALID', DF.inputAnchors(d, (x) => { x.runtime_lineage_used_as_proof = true; })],
+    ['INPUT_ANCHORS_SCHEMA', DF.inputAnchors(d, (x) => { x.schema_version = 'qgv-dual-input-projection-proof/1'; })],
+    ['SCOPE_MISMATCH', DF.inputAnchors(d, (x) => { x.scope = 'held1057'; })],
+    ['INPUT_ANCHORS_INVALID', DF.inputAnchors(d, (x) => { delete x.expected_reference.snapshot_id; })],
+  ];
+  for (const [code, a] of cases) assert.equal((await run(a)).code, code, code);
+  assert.equal((await run(DF.inputAnchors(d), { reference_anchor: P({ r: Buffer.from('{}') }, 'r') })).code, 'INPUT_BASIS_MIXED');
+  assert.equal((await run(DF.inputAnchors(d), { clocks: P({ c: DF.clocks((x) => { x.calculated_at_reason = ''; }) }, 'c') })).code, 'CLOCKS_NULL_WITHOUT_REASON');
+  assert.equal((await run(DF.inputAnchors(d), { clocks: P({ c: DF.clocks((x) => { x.execution_sha = '3'.repeat(40); }) }, 'c') })).code, 'CLOCKS_OTHER_EXECUTION');
+  const reduced = await DQ.checkDelivery({ manifest: P(DF.delivery('operating504').files, 'manifest.json'), summary: P(DF.delivery('operating504').files, 'summary.json'),
+    index: P(DF.delivery('operating504').files, 'index.json'), input_anchors: P({ a: DF.inputAnchors(d) }, 'a') }, { scope: 'operating504', anchor: bundle, sha256 });
+  assert.equal(reduced.code, 'INPUT_ANCHORS_NOT_APPLICABLE');
+});

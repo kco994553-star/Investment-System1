@@ -341,8 +341,12 @@ const DUAL_PARTS = Object.freeze({ dual_manifest: ['manifest', 'qgv-dual-deliver
   dual_dist_index: ['distribution/distribution-index', 'qgv-dual-factor-distribution/1'], dual_dist_detail: [null, 'qgv-dual-factor-distribution-part/1'],
   // Its optional all-bin routing (Codex qgv-dual-factor-bins/1): manifest, index and numbered bins files under bins/.
   dual_bins_manifest: ['bins/bin-manifest', 'qgv-dual-factor-bins-manifest/1'], dual_bins_index: ['bins/bin-index', 'qgv-dual-factor-bins/1'],
-  dual_bins_detail: [null, 'qgv-dual-factor-bins-part/1'] });
-const DUAL_SCOPED = Object.freeze(['dual_manifest', 'dual_reference_anchor', 'dual_leaders_manifest', 'dual_leaders_index', 'dual_leaders_selection_manifest', 'dual_leaders_selection',
+  dual_bins_detail: [null, 'qgv-dual-factor-bins-part/1'],
+  // 3/3/3 only (&set=333; owner 2026-11-13, Codex #534 fe29867c): the producer's two independent input anchors and its calculation
+  // clock record, staged beside the delivery by stage_private_dual_333_switch.py.
+  dual_input_anchors: ['input-anchors', 'qgv-dual-input-anchors/1'], dual_clocks: ['delivery-clocks', 'qgv-dual-delivery-clocks/1'] });
+const SET_333_ONLY = Object.freeze(['dual_input_anchors', 'dual_clocks']);
+const DUAL_SCOPED = Object.freeze(['dual_manifest', 'dual_reference_anchor', 'dual_input_anchors', 'dual_leaders_manifest', 'dual_leaders_index', 'dual_leaders_selection_manifest', 'dual_leaders_selection',
   'dual_dist_manifest', 'dual_dist_index', 'dual_bins_manifest', 'dual_bins_index']);
 // …?part=dual_eps_index|dual_eps_diag|dual_eps_compare|dual_eps_inputs (owner 2026-11-13): Codex #534's 3/3/3 EPS input connection
 // follow-up staged byte for byte at classification/dual-333/eps/ (stage_private_qgv333_eps.py): Main's index and the producer's
@@ -371,8 +375,8 @@ export function kisClassificationPart(url) {
   if (url.hash) throw new Failure('REQUEST_INVALID', 400);
   const shard = /^\?part=expanded_detail&shard=([0-9a-f]{2})$/.exec(url.search);
   if (shard) return 'expanded_detail/' + shard[1];
-  const dual = /^\?part=(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)&scope=([a-z0-9]{1,16})(&set=333)?$/.exec(url.search);
-  if (dual) { if (!DUAL_SCOPES.includes(dual[2])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2] + (dual[3] ? '@333' : ''); }
+  const dual = /^\?part=(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index|dual_input_anchors|dual_clocks)&scope=([a-z0-9]{1,16})(&set=333)?$/.exec(url.search);
+  if (dual) { if (!DUAL_SCOPES.includes(dual[2]) || (SET_333_ONLY.includes(dual[1]) && !dual[3])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2] + (dual[3] ? '@333' : ''); }
   const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})(&set=333)?$/.exec(url.search);
   if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + (dualDetail[4] ? '@333' : '') + '/' + dualDetail[3]; }
   const own = /^\?part=(ownership_view|ownership_receipt)&entity=([A-Z0-9-]{1,32})$/.exec(url.search);

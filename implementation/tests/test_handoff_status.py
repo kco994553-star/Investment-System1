@@ -31,13 +31,14 @@ def test_the_registry_checks_against_this_checkout_without_private_inputs(tmp_pa
     rows = {r['id']: r['stages'] for r in tool.run(tool.REGISTRY, None, None)}
     c = rows['qgv333-contract']
     assert [c[s][0] for s in tool.STAGES[:3]] == ['OK', 'OK', 'OK'], c
-    r = rows['qgv333-results']
+    r = rows['qgv333-qdelivery']
     assert r['DELIVERED'][0] == r['RECEIPT_CHECKED'][0] == 'NOT_CHECKED' and r['STAGED'][0] == 'NOT_CHECKED', 'no private input given: never OK'
     assert r['READER_VERIFIED'][0] == 'OK' and r['SCREEN_CONNECTED'][0] == 'OK' and r['REAL_ENV'][0] == 'NOT_CONFIRMED'
     assert rows['qgv333-eps']['READER_VERIFIED'][0] == 'OK' and rows['qgv333-eps']['SCREEN_CONNECTED'][0] == 'OK'
     assert rows['qgv333-qinput']['READER_VERIFIED'] == ('OK', 'Q input') and rows['qgv333-qinput']['SCREEN_CONNECTED'][0] == 'OK'
     assert rows['qgv333-qinput']['STAGED'][0] == 'NOT_CHECKED'
-    assert next(r for r in tool.run(tool.REGISTRY, None, None) if r['id'] == 'qgv333-qinput')['missing'], 'the missing producer items are listed'
+    reg = {r['id']: r for r in tool.run(tool.REGISTRY, None, None)}
+    assert reg['qgv333-eps']['missing'] and reg['qgv333-qinput']['missing'] == [], 'open items listed; delivered ones not asked again'
 
 
 def test_differences_are_failed_with_what_differs(tmp_path):
@@ -79,13 +80,14 @@ def test_a_raw_handoff_is_checked_in_the_local_clone(tmp_path):
 def test_each_ok_states_its_scope_and_deliverables_apart(tmp_path):
     rows = {r['id']: r for r in tool.run(tool.REGISTRY, None, None)}
     q = {d['id']: d['state'] for d in rows['qgv333-qinput']['deliverables']}
-    assert q == {'diagnostic': 'CONNECTED', 'scores': 'NOT_DELIVERED', 'deciles': 'NOT_DELIVERED', 'calc_time': 'NOT_DELIVERED', 'real_env': 'NOT_CONFIRMED'}
+    assert q == {'diagnostic': 'CONNECTED', 'scores': 'CONNECTED', 'deciles': 'CONNECTED', 'calc_time': 'RECEIVED', 'real_env': 'NOT_CONFIRMED'}
     assert 'not a result delivery' in rows['qgv333-qinput']['scope'] and 'ORIGINAL' in rows['qgv333-results']['scope']
-    assert {d['id']: d['state'] for d in rows['qgv333-results']['deliverables']}['deciles'] == 'CONNECTED'
+    assert {d['id']: d['state'] for d in rows['qgv333-results']['deliverables']}['deciles'] == 'REPLACED'
+    assert {d['id']: d['state'] for d in rows['qgv333-qdelivery']['deliverables']} == {'scores': 'CONNECTED', 'deciles': 'CONNECTED', 'calc_time': 'RECEIVED', 'real_env': 'NOT_CONFIRMED'}
     assert all(r['scope'] and r['deliverables'] for r in rows.values())
     bad = dict(_entry('qgv333-contract'), deliverables=[{'id': 'x', 'word': 'x', 'state': 'OK'}])
     with pytest.raises(SystemExit, match='REGISTRY_SCOPE'):
         tool.run(_reg(tmp_path, [bad]), None, None)
     md = tool.markdown(list(rows.values()))
-    assert '  - OK 범위: ' in md and '  - 산출물 새 점수 결과: NOT_DELIVERED' in md
-    assert '진단 화면 연결 · 새 점수 결과 전달 전 · 전체 10분위 전달 전 · 계산 시각 전달 전 · 실환경 미확인' in md
+    assert '  - OK 범위: ' in md and '  - 산출물 새 점수 결과: CONNECTED' in md
+    assert '진단 화면 연결 · 새 점수 결과 연결 · 전체 10분위 연결 · 계산 시각 수령 · 실환경 미확인' in md and '점수 결과 교체됨' in md

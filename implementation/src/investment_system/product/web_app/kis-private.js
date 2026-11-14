@@ -39,7 +39,7 @@ const EXPANDED_DETAIL=/^expanded_detail\/([0-9a-f]{2})$/;
 // The dual research delivery (Codex #529, owner 2026-11-11): 'dual_manifest|dual_summary|dual_index/<scope>' and
 // 'dual_detail/<scope>/<3 digits>', each with its bytes (the reader checks them against the delivery manifest). '<scope>@333' (owner
 // 2026-11-13) reads the 3/3/3 candidates' own delivery of that scope (&set=333), never the reduced one.
-const DUAL_PART=/^(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index)\/(operating504|held1057)(@333)?$/,DUAL_DETAIL=/^(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)\/(operating504|held1057)(@333)?\/(\d{3})$/;
+const DUAL_PART=/^(dual_manifest|dual_summary|dual_index|dual_lineage|dual_reference_anchor|dual_leaders_manifest|dual_leaders_index|dual_leaders_selection_manifest|dual_leaders_selection|dual_dist_manifest|dual_dist_index|dual_bins_manifest|dual_bins_index|dual_input_anchors|dual_clocks)\/(operating504|held1057)(@333)?$/,DUAL_DETAIL=/^(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)\/(operating504|held1057)(@333)?\/(\d{3})$/;
 const dualPart=x=>typeof x==='string'&&(DUAL_PART.test(x)||DUAL_DETAIL.test(x));
 // The company relationship delivery (owner 2026-11-13, Codex #531): 'ownership_index', and 'ownership_view|ownership_receipt/<entity id>'
 // (one entity at a time), each with its bytes (the reader checks them against the index Main staged).
