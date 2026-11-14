@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Generate deterministic SYNTHETIC owner-private contract fixtures outside Git."""
 from pathlib import Path
+from copy import deepcopy
 from datetime import date
 from decimal import Decimal
 import argparse,hashlib,json,os,sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from investment_system.research.kis_price_bridge import normalize_page
 from investment_system.research.technical_handoff import prepare_technical
+from investment_system.research.kis_split_evidence import assess_splits
 from investment_system.research.exp_deciles.technical_measures import sessions
 
 
@@ -64,18 +66,72 @@ def handoff_fixtures():
     return out
 
 
+
+def split_evidence_fixtures():
+    """Metadata-only split cases; no prices or source bodies leave memory."""
+    supplied = fixtures()
+    names = ('declared-reference', 'matching-source-metadata', 'future-event',
+             'empty-events-unconfirmed', 'raw-window-with-split', 'ratio-conflict',
+             'effective-date-conflict', 'identity-conflict', 'provider-modp1',
+             'already-adjusted-raw', 'unconfirmed-event', 'invalid-ratio', 'double-adjusted-bars')
+    examples = []
+    for name in names:
+        c = deepcopy(supplied['synthetic-split-held.json'])
+        c['held_ranges'] = []; day = '2026-10-23'
+        if name == 'matching-source-metadata':
+            c['splits'][0]['source_record'] = dict(ratio='2.0', effective_date='2026-10-22',
+                symbol='SYN', security_id='SYNTHETIC-SECURITY-1')
+        if name == 'future-event': day = '2026-10-21'
+        if name == 'empty-events-unconfirmed':
+            c = deepcopy(supplied['synthetic-raw.json']); c['confirmed_ranges'] = []
+        if name == 'raw-window-with-split':
+            c['basis'] = 'RAW'; c['bars'] = deepcopy(c['raw_bars'])
+        if name == 'ratio-conflict': c['splits'][0]['source_record'] = dict(ratio='3')
+        if name == 'effective-date-conflict':
+            c['splits'][0]['source_record'] = dict(effective_date='2026-10-21')
+        if name == 'identity-conflict':
+            c['splits'][0]['source_record'] = dict(security_id='SYNTHETIC:OTHER')
+        if name == 'provider-modp1': c['source_query']['MODP'] = '1'
+        if name == 'already-adjusted-raw': c['raw_bars'][0]['price_basis'] = 'SPLIT_ADJUSTED'
+        if name == 'unconfirmed-event': c['splits'][0]['status'] = 'UNCONFIRMED'
+        if name == 'invalid-ratio': c['splits'][0]['ratio'] = '0'
+        if name == 'double-adjusted-bars':
+            for key in ('open', 'high', 'low', 'close'):
+                c['bars'][0][key] = str(Decimal(c['bars'][0][key]) / 2)
+        item = dict(case=name, evaluation_day=day, error=None,
+                    independently_verified=False, source_document_verification='NOT_PERFORMED')
+        try:
+            proof = assess_splits(c, day)
+            item.update(state=proof['state'], block_reasons=proof['block_reasons'],
+                confirmed_count=len(proof['confirmed_events']), future_count=len(proof['excluded_future_events']),
+                full_retained_state=proof['full_retained_interval']['state'],
+                event_states=[e['state'] for e in proof['events']],
+                source_record_states=[e['source_record_state'] for e in proof['events']],
+                adjustment_applied=[e['adjustment_applied'] for e in proof['events']])
+        except ValueError as error:
+            item.update(error=str(error), state='REJECTED_INPUT')
+        examples.append(item)
+    return {'split-evidence-expectations.json': dict(
+        schema='synthetic-kis-split-evidence/1', data_kind='SYNTHETIC',
+        examples_scope='DECLARATION_AND_CONFLICT_METADATA_NOT_SOURCE_DOCUMENT_VERIFICATION',
+        cases=examples)}
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output-dir',type=Path,required=True)
     p.add_argument('--technical-handoff',action='store_true',help='Generate five synthetic Main handoff cases')
+    p.add_argument('--split-evidence',action='store_true',help='Generate metadata-only split evidence cases')
     a=p.parse_args();out=a.output_dir.resolve()
+    if a.technical_handoff and a.split_evidence: p.error('CHOOSE_ONE_FIXTURE_SCOPE')
     if any((d/'.git').exists() for d in (out,*out.parents)):p.error('OUTPUT_MUST_BE_OUTSIDE_GIT')
     out.mkdir(parents=True,exist_ok=True,mode=0o700);manifest=[]
-    for name,data in (handoff_fixtures() if a.technical_handoff else fixtures()).items():
+    values = split_evidence_fixtures() if a.split_evidence else handoff_fixtures() if a.technical_handoff else fixtures()
+    for name,data in values.items():
         b=json.dumps(data,sort_keys=True,separators=(',',':'),allow_nan=False).encode()+b'\n'
         with os.fdopen(os.open(out/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'wb') as f:f.write(b)
         manifest.append({'file':name,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
     result=dict(schema='kis-synthetic-manifest/1',synthetic_only=True,files=manifest)
-    if a.technical_handoff:
+    if a.technical_handoff or a.split_evidence:
         data=json.dumps(result,sort_keys=True,separators=(',',':')).encode()+b'\n'
         with os.fdopen(os.open(out/'manifest.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600),'wb') as f:f.write(data)
     print(json.dumps(result))

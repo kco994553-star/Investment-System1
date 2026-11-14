@@ -15,6 +15,7 @@ from .exp_deciles.technical_measures import sessions, _identity
 from .sector_qgv import digest
 from .dual_qgv_delivery import MAX_BYTES
 from .technical_display import _INITIALIZATION
+from .kis_split_evidence import assess_splits as split_readiness
 
 
 def _pattern_result(c, rows, day, missing):
@@ -64,14 +65,19 @@ def _pattern_result(c, rows, day, missing):
     return out
 
 
-def prepare_technical(c, *, evaluation_day, series_id):
+def prepare_technical(c, *, evaluation_day, series_id, include_split_assessment=False):
     """kis-bars/1 -> existing components/measures plus explicit Main-ready reasons.
 
     Call on newly received inputs. Previously stored outputs need no recomputation.
     Results and chart prices are owner-private RAM values; this function never writes.
     """
+    if type(include_split_assessment) is not bool: raise ValueError('INVALID_SPLIT_ASSESSMENT_OPTION')
     if c.get('schema') != 'kis-bars/1': raise ValueError('KIS_DAILY_CONTRACT_REQUIRED')
-    validate_contract(c)
+    if include_split_assessment:
+        split_assessment = split_readiness(c, evaluation_day)
+        if split_assessment['block_reasons']: raise ValueError(split_assessment['block_reasons'][0])
+    else:
+        validate_contract(c)
     components = analyze(c, evaluation_day=evaluation_day)
     measures = measure_contract(c, evaluation_day=evaluation_day, series_id=series_id)
     raw = [r for r in c['raw_bars'] if r['date'] <= evaluation_day]
@@ -116,6 +122,7 @@ def prepare_technical(c, *, evaluation_day, series_id):
         group=dict(state='NOT_REQUESTED', reason='DATED_GROUP_AND_FIXED_SECURITY_LINK_REQUIRED',
                    rank=None, decile=None, qgv_join_status='NOT_REQUESTED'),
         coverage_claim=None)
+    if include_split_assessment: result['split_assessment'] = split_assessment
     encoded = json.dumps(result, ensure_ascii=False, allow_nan=False, sort_keys=True,
                          separators=(',', ':')).encode()
     result['result_sha256'] = hashlib.sha256(encoded).hexdigest()

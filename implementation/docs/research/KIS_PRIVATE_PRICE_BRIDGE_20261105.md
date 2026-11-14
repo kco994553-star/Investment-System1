@@ -1,5 +1,66 @@
 # Owner-private retained price bridge — 2026-11-05
 
+## Split evidence follow-up (2026-11-14, opt-in)
+
+This follow-up preserves the frozen five handoff examples and their existing
+manifest. The default call remains
+`prepare_technical(c, evaluation_day=..., series_id=..., include_split_assessment=False)`.
+Only an explicit boolean `True` adds `split_assessment` and checks the added
+source-metadata conflicts before indicator adoption. The result remains the
+owner-private `kis-technical-handoff/1` contract; the optional explanation has its
+own `kis-split-evidence/1` policy version. Older consumers can keep the frozen
+projection, but cannot claim that an omitted assessment performed these checks.
+
+The shared pure function
+`research.kis_split_evidence.assess_splits(c, evaluation_day)`
+is reused by the technical adapter and may be reused by an eligible private V
+adapter. It calls the existing retained contract validation; it does not fetch a
+document, adjust prices, infer a split or create a separate corporate-action
+engine. `confirmed_events` means accepted by the existing caller-declaration plus
+reference policy. Each event preserves the original record, record hash,
+date/ratio/evidence, optional source_record and its separate hash. Its
+`independently_verified` is always false and
+`source_document_verification` remains `NOT_PERFORMED`.
+A matching supplied hash/location/review clock is provenance metadata, not proof
+that this function opened or verified an original filing.
+
+| Condition | Output / handling |
+| --- | --- |
+| Existing CONFIRMED event plus reference | DECLARED_CONFIRMED_WITH_REFERENCE, not independent source verification |
+| Supplied source_record ratio/date/known symbol or issuer/security differs | SPLIT_RATIO_CONFLICT / SPLIT_EFFECTIVE_DATE_CONFLICT / SPLIT_SUBJECT_MISMATCH; relevant-window adoption is rejected |
+| Source identity exists but the contract identity is unknown | PARTIAL_IDENTITY_UNCONFIRMED; never populate a security or issuer ID from it |
+| MODP1 or non-daily source | RAW_DAILY_SOURCE_REQUIRED; no adjusted-response relabelling |
+| Raw row explicitly marked adjusted | RAW_INPUT_ALREADY_ADJUSTED; do not adjust twice |
+| Tampered double-adjusted bars | Existing ADJUSTED_ROWS_DO_NOT_MATCH_CONFIRMED_SPLITS |
+| Empty split list | Not independent evidence of split-free history |
+| Coverage shorter than full retained history | Explain UNCONFIRMED; keep each existing rolling/recursive dependency-window gate |
+| Split after S | Preserve in excluded_future_events; do not rebase or block an earlier price window with a later conflict |
+| Actual split inside a RAW price window | Existing CORPORATE_ACTION_IN_RAW_WINDOW; pattern detection uses actual RAW bars and separate split segments |
+
+The `block_reasons` field covers explicit source-metadata conflicts inside the
+current retained price window. A V caller whose financial share-basis interval
+starts earlier must also inspect event dates/reasons and its own complete
+corporate-action coverage; this metadata check does not establish that longer
+continuity. Confirmed events are not a substitute for missing full-period
+identity, share-class, ADR or financial inputs.
+
+New metadata-only cases come from
+`tools/kis_contract_fixture.py::split_evidence_fixtures()`.
+The tracked `split-evidence-expectations.json` contains invented status/count
+expectations only. The generator keeps all synthetic source bodies and prices in
+memory. `--split-evidence` uses the same existing outside-Git output restriction;
+no guard, workflow, authentication or file-size limit is relaxed.
+The original `handoff_fixtures()` defaults and stored five-case metadata hashes
+are unchanged. New cases include declared/matching/future/empty/raw-window events,
+ratio/date/identity conflicts, MODP1, already-adjusted raw input, unconfirmed
+events, invalid ratios and double adjustment.
+
+The runtime became unavailable during this follow-up. An earlier local form of
+thirteen new synthetic cases passed before the outage; the remote opt-in version
+is a distinct unexecuted revision until automatic CI runs. No retained real KIS
+input was collected or recalculated, and no new indicator adoption, publication,
+deployment or investment-performance claim is made.
+
 ## Current owner-use handoff — 2026-11-14
 
 This section is the current handoff; the older implementation history below is

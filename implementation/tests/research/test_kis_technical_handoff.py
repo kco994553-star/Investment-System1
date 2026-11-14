@@ -188,3 +188,152 @@ def test_empty_retained_response_is_missing_and_other_source_is_not_kis():
     c['schema'] = 'retained-daily-price/1'
     with pytest.raises(ValueError, match='KIS_DAILY_CONTRACT_REQUIRED'):
         prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST')
+
+
+def test_declared_split_reference_is_not_independent_source_document_verification():
+    c = case(); before = deepcopy(c)
+    out = prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+    proof = out['split_assessment']
+    assert c == before
+    assert proof['policy_version'] == 'kis-split-evidence/1'
+    assert proof['source_document_verification'] == 'NOT_PERFORMED'
+    assert proof['full_retained_interval']['state'] == 'COVERED_BY_DECLARED_REFERENCE'
+    assert proof['events'][0]['state'] == 'DECLARED_CONFIRMED_WITH_REFERENCE'
+    assert proof['events'][0]['source_record_state'] == 'NOT_PROVIDED'
+    assert proof['events'][0]['adjustment_applied'] is True
+    assert proof['events'][0]['ratio_definition'] == 'NEW_SHARES_PER_OLD_SHARE'
+    assert proof['block_reasons'] == []
+
+
+def test_empty_events_do_not_prove_split_free_history_or_create_global_rolling_gate():
+    c = case(False)
+    c['confirmed_ranges'] = [dict(**{'from': c['raw_bars'][-20]['date'], 'to': S}, evidence='SYNTHETIC_LAST_20')]
+    out = prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+    proof = out['split_assessment']
+    assert proof['events'] == []
+    assert proof['empty_event_list_is_no_split_evidence'] is False
+    assert proof['full_retained_interval']['state'] == 'UNCONFIRMED'
+    assert proof['full_retained_interval']['reasons'] == ['ACTION_BASIS_UNCONFIRMED']
+    assert out['components']['metrics']['SMA_20']['value'] == 100
+    assert out['components']['metrics']['EMA_20']['value'] is None
+
+
+@pytest.mark.parametrize('field,value,reason', [
+    ('ratio', '3', 'SPLIT_RATIO_CONFLICT'),
+    ('effective_date', '2016-07-05', 'SPLIT_EFFECTIVE_DATE_CONFLICT'),
+    ('symbol', 'OTHER', 'SPLIT_SUBJECT_MISMATCH'),
+    ('issuer_id', 'OTHER', 'SPLIT_SUBJECT_MISMATCH'),
+    ('security_id', 'OTHER', 'SPLIT_SUBJECT_MISMATCH'),
+])
+def test_explicit_source_event_conflict_is_rejected_before_adoption(field, value, reason):
+    from investment_system.research.technical_handoff import split_readiness
+    c = case(); c['issuer_id'] = 'SYNTHETIC:ISSUER'
+    c['splits'][0]['source_record'] = {field: value}
+    proof = split_readiness(c, evaluation_day=S)
+    assert proof['events'][0]['state'] == 'CONFLICT'
+    assert reason in proof['block_reasons']
+    with pytest.raises(ValueError, match=reason):
+        prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+
+
+def test_matching_source_metadata_is_not_original_document_confirmation():
+    c = case()
+    c['splits'][0]['source_record'] = dict(ratio='2.0', effective_date='2016-07-01',
+        symbol=c['symbol'], security_id=c['security_id'], source_sha256='1'*64,
+        document_location='SYNTHETIC filing paragraph', reviewed_at='2026-11-14T12:00:00Z')
+    out = prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+    proof = out['split_assessment']
+    assert proof['events'][0]['source_record_state'] == 'SUPPLIED_FIELDS_MATCH'
+    assert proof['source_document_verification'] == 'NOT_PERFORMED'
+    assert out['components']['metrics']['SMA_20']['value'] == 100
+
+
+def test_future_conflicting_event_does_not_rebase_or_block_prior_evaluation():
+    c = case(); c['splits'][0]['source_record'] = dict(ratio='3')
+    out = prepare_technical(c, evaluation_day='2016-06-30', series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+    proof = out['split_assessment']
+    assert proof['block_reasons'] == []
+    assert proof['events'][0]['state'] == 'EXCLUDED_FUTURE_EVENT'
+    assert proof['events'][0]['adjustment_applied'] is False
+    assert 'SPLIT_RATIO_CONFLICT' in proof['events'][0]['reasons']
+    assert out['components']['metrics']['SMA_20']['value'] == 200
+
+
+@pytest.mark.parametrize('change,reason', [('provider', 'RAW_DAILY_SOURCE_REQUIRED'),
+    ('raw_row', 'RAW_INPUT_ALREADY_ADJUSTED')])
+def test_provider_adjustment_is_not_treated_as_raw_or_adjusted_twice(change, reason):
+    c = case()
+    if change == 'provider': c['source_query']['MODP'] = '1'
+    else: c['raw_bars'][0]['price_basis'] = 'SPLIT_ADJUSTED'
+    with pytest.raises(ValueError, match=reason):
+        prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+
+
+def test_raw_split_window_reason_and_independent_adjusted_basis_remain_visible():
+    c = case(); c['basis'] = 'RAW'; c['bars'] = deepcopy(c['raw_bars'])
+    out = prepare_technical(c, evaluation_day=S, series_id='SYNTHETIC:REQUEST', include_split_assessment=True)
+    proof = out['split_assessment']
+    assert proof['events'][0]['adjustment_applied'] is False
+    assert proof['raw_window_split_dates'] == ['2016-07-01']
+    assert 'CORPORATE_ACTION_IN_RAW_WINDOW' in out['measures']['metrics']['momentum_12m']['null_reasons']
+    assert out['patterns']['basis'] == 'RAW_CLOSE'
+
+
+def test_shared_split_assessment_pins_original_record_and_keeps_future_events_separate():
+    from investment_system.research.kis_split_evidence import assess_splits
+    from investment_system.research.sector_qgv import digest
+    c = case(); before = deepcopy(c)
+    event = deepcopy(c['splits'][0])
+    proof = assess_splits(c, S)
+    assert c == before
+    assert proof['independently_verified'] is False
+    assert proof['confirmed_events'][0]['record'] == event
+    assert proof['confirmed_events'][0]['record_hash'] == digest(event)
+    assert proof['confirmed_events'][0]['date'] == event['date']
+    assert proof['confirmed_events'][0]['ratio'] == '2'
+    assert proof['confirmed_events'][0]['independently_verified'] is False
+    assert proof['excluded_future_events'] == []
+    earlier = assess_splits(c, '2016-06-30')
+    assert earlier['confirmed_events'] == []
+    assert earlier['excluded_future_events'][0]['record_hash'] == digest(event)
+    assert earlier['excluded_future_events'][0]['state'] == 'EXCLUDED_FUTURE_EVENT'
+
+
+def test_opt_in_assessment_preserves_default_wire_output_and_rejects_nonboolean_option():
+    args = dict(c=case(False, 20), evaluation_day=S, series_id='SYNTHETIC:REQUEST')
+    legacy = prepare_technical(**args)
+    assert prepare_technical(**args, include_split_assessment=False) == legacy
+    assert 'split_assessment' not in legacy
+    enhanced = prepare_technical(**args, include_split_assessment=True)
+    assert {k: v for k, v in enhanced.items() if k not in ('split_assessment', 'result_sha256')} == {
+        k: v for k, v in legacy.items() if k != 'result_sha256'}
+    assert enhanced['result_sha256'] != legacy['result_sha256']
+    with pytest.raises(ValueError, match='INVALID_SPLIT_ASSESSMENT_OPTION'):
+        prepare_technical(**args, include_split_assessment='true')
+
+
+def test_split_metadata_examples_match_manual_expectations_without_changing_frozen_examples():
+    import importlib.util
+    from pathlib import Path
+    import jsonschema
+    root = Path(__file__).parents[2]
+    spec = importlib.util.spec_from_file_location('kis_split_examples', root / 'tools/kis_contract_fixture.py')
+    tool = importlib.util.module_from_spec(spec); spec.loader.exec_module(tool)
+    expected = json.loads((root / 'tests/fixtures/kis-technical-handoff/split-evidence-expectations.json').read_text())
+    assert tool.split_evidence_fixtures()['split-evidence-expectations.json'] == expected
+    assert len(expected['cases']) == 13
+    assert not any(c['independently_verified'] for c in expected['cases'])
+    schema = json.loads((root / 'docs/research/kis-technical-handoff-contract.json').read_text())
+    enhanced = prepare_technical(case(), evaluation_day=S, series_id='SYNTHETIC:REQUEST',
+                                include_split_assessment=True)
+    jsonschema.validate(enhanced, {**schema, '$ref': '#/$defs/result'})
+    jsonschema.validate(dict(c=case(), evaluation_day=S, series_id='SYNTHETIC:REQUEST',
+                            include_split_assessment=True), {**schema, '$ref': '#/$defs/arguments'})
+    assert tool.handoff_fixtures()['normal-result.json'].get('split_assessment') is None
+
+    import hashlib
+    manifest = json.loads((root / 'tests/fixtures/kis-technical-handoff/split-evidence-manifest.json').read_text())
+    for item in manifest['files']:
+        body = (root / 'tests/fixtures/kis-technical-handoff' / item['path']).read_bytes()
+        assert len(body) == item['bytes']
+        assert hashlib.sha256(body).hexdigest() == item['sha256']

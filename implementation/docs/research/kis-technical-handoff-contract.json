@@ -4,51 +4,527 @@
   "$defs": {
     "arguments": {
       "type": "object",
-      "required": ["c", "evaluation_day", "series_id"],
+      "required": [
+        "c",
+        "evaluation_day",
+        "series_id"
+      ],
       "additionalProperties": false,
       "properties": {
-        "c": {"type": "object", "required": ["schema", "raw_bars", "bars"], "properties": {"schema": {"const": "kis-bars/1"}, "raw_bars": {"type": "array"}, "bars": {"type": "array"}}},
-        "evaluation_day": {"type": "string", "format": "date"},
-        "series_id": {"type": "string", "minLength": 1}
+        "c": {
+          "type": "object",
+          "required": [
+            "schema",
+            "raw_bars",
+            "bars"
+          ],
+          "properties": {
+            "schema": {
+              "const": "kis-bars/1"
+            },
+            "raw_bars": {
+              "type": "array"
+            },
+            "bars": {
+              "type": "array"
+            }
+          }
+        },
+        "evaluation_day": {
+          "type": "string",
+          "format": "date"
+        },
+        "series_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "include_split_assessment": {
+          "type": "boolean",
+          "default": false
+        }
       }
     },
     "availability_row": {
       "type": "object",
-      "required": ["metric_id", "kind", "unit", "value", "state", "reasons", "signal_day", "observation_day", "stale_status", "raw_available", "rank", "decile", "group_status"],
+      "required": [
+        "metric_id",
+        "kind",
+        "unit",
+        "value",
+        "state",
+        "reasons",
+        "signal_day",
+        "observation_day",
+        "stale_status",
+        "raw_available",
+        "rank",
+        "decile",
+        "group_status"
+      ],
       "properties": {
-        "metric_id": {"type": "string"},
-        "kind": {"enum": ["CHART_COMPONENT", "COMPANY_MEASURE"]},
-        "unit": {"type": "string"},
-        "value": {"type": ["number", "string", "null"]},
-        "state": {"enum": ["VALUE", "DIAGNOSTIC", "NOT_COMPUTED"]},
-        "reasons": {"type": "array", "items": {"type": "string"}},
-        "signal_day": {"type": "string", "format": "date"},
-        "observation_day": {"type": ["string", "null"]},
-        "stale_status": {"enum": ["NORMAL", "STALE", "MISSING"]},
-        "raw_available": {"type": "boolean"},
-        "rank": {"type": "null"},
-        "decile": {"type": "null"},
-        "group_status": {"const": "NOT_REQUESTED"}
+        "metric_id": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "CHART_COMPONENT",
+            "COMPANY_MEASURE"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "enum": [
+            "VALUE",
+            "DIAGNOSTIC",
+            "NOT_COMPUTED"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "signal_day": {
+          "type": "string",
+          "format": "date"
+        },
+        "observation_day": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stale_status": {
+          "enum": [
+            "NORMAL",
+            "STALE",
+            "MISSING"
+          ]
+        },
+        "raw_available": {
+          "type": "boolean"
+        },
+        "rank": {
+          "type": "null"
+        },
+        "decile": {
+          "type": "null"
+        },
+        "group_status": {
+          "const": "NOT_REQUESTED"
+        }
       }
     },
     "result": {
       "type": "object",
-      "required": ["schema", "publication_scope", "data_kind", "context", "provenance", "sessions", "chart", "components", "measures", "patterns", "availability", "group", "coverage_claim", "result_sha256"],
+      "required": [
+        "schema",
+        "publication_scope",
+        "data_kind",
+        "context",
+        "provenance",
+        "sessions",
+        "chart",
+        "components",
+        "measures",
+        "patterns",
+        "availability",
+        "group",
+        "coverage_claim",
+        "result_sha256"
+      ],
       "properties": {
-        "schema": {"const": "kis-technical-handoff/1"},
-        "publication_scope": {"const": "OWNER_PRIVATE_ONLY"},
-        "data_kind": {"enum": ["SYNTHETIC", "RETAINED_INPUT"]},
-        "context": {"type": "object", "required": ["signal_day", "chart_observation_day", "measure_observation_day", "collected_at", "historical_available_at", "timestamp_basis", "excluded_future_rows", "pit_status", "update_state", "last_success_at"], "properties": {"signal_day": {"type": "string", "format": "date"}, "pit_status": {"const": "NOT_VERIFIED"}, "excluded_future_rows": {"type": "integer", "minimum": 0}}},
-        "provenance": {"type": "object", "required": ["contract_hash", "source_sha256", "source_query", "source", "identity", "currency_reference"]},
-        "sessions": {"type": "object", "required": ["checked_from", "checked_to", "expected_count", "retained_count", "missing", "gap_fill", "scope"], "properties": {"gap_fill": {"const": "NONE"}, "missing": {"type": "array", "items": {"type": "string", "format": "date"}}}},
-        "chart": {"type": "object", "required": ["basis", "currency", "dividend_adjustment", "bars"], "properties": {"basis": {"enum": ["RAW", "SPLIT_ADJUSTED"]}, "currency": {"const": "USD"}, "dividend_adjustment": {"const": "NONE"}, "bars": {"type": "array"}}},
-        "components": {"type": "object"},
-        "measures": {"type": "object"},
-        "patterns": {"type": "object", "required": ["state", "basis", "reasons", "rule_version", "params_sha256", "rules_scope", "volume_scope", "initialization", "applied_splits", "success_probability", "result"], "properties": {"state": {"enum": ["CALCULATED_RESEARCH", "NOT_JUDGEABLE"]}, "basis": {"const": "RAW_CLOSE"}, "rules_scope": {"const": "RESEARCH_DEFAULT_NOT_INVESTMENT_SIGNAL"}, "volume_scope": {"const": "WITHHELD_SCOPE_UNCONFIRMED"}, "success_probability": {"type": "null"}}},
-        "availability": {"type": "array", "items": {"$ref": "#/$defs/availability_row"}},
-        "group": {"type": "object", "required": ["state", "reason", "rank", "decile", "qgv_join_status"], "properties": {"state": {"const": "NOT_REQUESTED"}, "rank": {"type": "null"}, "decile": {"type": "null"}, "qgv_join_status": {"const": "NOT_REQUESTED"}}},
-        "coverage_claim": {"type": "null"},
-        "result_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        "schema": {
+          "const": "kis-technical-handoff/1"
+        },
+        "publication_scope": {
+          "const": "OWNER_PRIVATE_ONLY"
+        },
+        "data_kind": {
+          "enum": [
+            "SYNTHETIC",
+            "RETAINED_INPUT"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "required": [
+            "signal_day",
+            "chart_observation_day",
+            "measure_observation_day",
+            "collected_at",
+            "historical_available_at",
+            "timestamp_basis",
+            "excluded_future_rows",
+            "pit_status",
+            "update_state",
+            "last_success_at"
+          ],
+          "properties": {
+            "signal_day": {
+              "type": "string",
+              "format": "date"
+            },
+            "pit_status": {
+              "const": "NOT_VERIFIED"
+            },
+            "excluded_future_rows": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "required": [
+            "contract_hash",
+            "source_sha256",
+            "source_query",
+            "source",
+            "identity",
+            "currency_reference"
+          ]
+        },
+        "sessions": {
+          "type": "object",
+          "required": [
+            "checked_from",
+            "checked_to",
+            "expected_count",
+            "retained_count",
+            "missing",
+            "gap_fill",
+            "scope"
+          ],
+          "properties": {
+            "gap_fill": {
+              "const": "NONE"
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "chart": {
+          "type": "object",
+          "required": [
+            "basis",
+            "currency",
+            "dividend_adjustment",
+            "bars"
+          ],
+          "properties": {
+            "basis": {
+              "enum": [
+                "RAW",
+                "SPLIT_ADJUSTED"
+              ]
+            },
+            "currency": {
+              "const": "USD"
+            },
+            "dividend_adjustment": {
+              "const": "NONE"
+            },
+            "bars": {
+              "type": "array"
+            }
+          }
+        },
+        "components": {
+          "type": "object"
+        },
+        "measures": {
+          "type": "object"
+        },
+        "patterns": {
+          "type": "object",
+          "required": [
+            "state",
+            "basis",
+            "reasons",
+            "rule_version",
+            "params_sha256",
+            "rules_scope",
+            "volume_scope",
+            "initialization",
+            "applied_splits",
+            "success_probability",
+            "result"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "CALCULATED_RESEARCH",
+                "NOT_JUDGEABLE"
+              ]
+            },
+            "basis": {
+              "const": "RAW_CLOSE"
+            },
+            "rules_scope": {
+              "const": "RESEARCH_DEFAULT_NOT_INVESTMENT_SIGNAL"
+            },
+            "volume_scope": {
+              "const": "WITHHELD_SCOPE_UNCONFIRMED"
+            },
+            "success_probability": {
+              "type": "null"
+            }
+          }
+        },
+        "availability": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/availability_row"
+          }
+        },
+        "group": {
+          "type": "object",
+          "required": [
+            "state",
+            "reason",
+            "rank",
+            "decile",
+            "qgv_join_status"
+          ],
+          "properties": {
+            "state": {
+              "const": "NOT_REQUESTED"
+            },
+            "rank": {
+              "type": "null"
+            },
+            "decile": {
+              "type": "null"
+            },
+            "qgv_join_status": {
+              "const": "NOT_REQUESTED"
+            }
+          }
+        },
+        "coverage_claim": {
+          "type": "null"
+        },
+        "result_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "split_assessment": {
+          "$ref": "#/$defs/split_assessment"
+        }
+      }
+    },
+    "split_assessment": {
+      "type": "object",
+      "required": [
+        "policy_version",
+        "state",
+        "source_document_verification",
+        "independently_verified",
+        "empty_event_list_is_no_split_evidence",
+        "full_retained_interval",
+        "events",
+        "confirmed_events",
+        "excluded_future_events",
+        "block_reasons"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "kis-split-evidence/1"
+        },
+        "state": {
+          "enum": [
+            "WITHHELD_CONFLICT",
+            "EXISTING_DECLARED_EVIDENCE_POLICY"
+          ]
+        },
+        "source_document_verification": {
+          "const": "NOT_PERFORMED"
+        },
+        "independently_verified": {
+          "const": false
+        },
+        "empty_event_list_is_no_split_evidence": {
+          "const": false
+        },
+        "adjustment_method": {
+          "enum": [
+            "CONFIRMED_SPLITS_ONLY",
+            "NONE_RAW"
+          ]
+        },
+        "duplicate_adjustment_policy": {
+          "const": "ORIGINAL_MODP0_REQUIRED_EXISTING_EXACT_BAR_VALIDATION"
+        },
+        "full_retained_interval": {
+          "type": "object",
+          "required": [
+            "start_day",
+            "end_day",
+            "state",
+            "reasons",
+            "evidence_reference",
+            "adoption_policy"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "COVERED_BY_DECLARED_REFERENCE",
+                "UNCONFIRMED"
+              ]
+            },
+            "adoption_policy": {
+              "const": "EACH_EXISTING_METRIC_DEPENDENCY_WINDOW"
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "effective_date",
+              "ratio",
+              "ratio_definition",
+              "declared_status",
+              "evidence_reference",
+              "state",
+              "reasons",
+              "relevant_to_prices",
+              "adjustment_applied",
+              "source_record_state",
+              "compared_fields",
+              "unconfirmed_fields",
+              "source_record_reference"
+            ],
+            "properties": {
+              "ratio_definition": {
+                "const": "NEW_SHARES_PER_OLD_SHARE"
+              },
+              "state": {
+                "enum": [
+                  "EXCLUDED_FUTURE_EVENT",
+                  "CONFLICT",
+                  "OUTSIDE_RETAINED_PRICE_WINDOW",
+                  "DECLARED_CONFIRMED_WITH_REFERENCE"
+                ]
+              },
+              "source_record_state": {
+                "enum": [
+                  "NOT_PROVIDED",
+                  "INVALID",
+                  "CONFLICT",
+                  "PARTIAL_IDENTITY_UNCONFIRMED",
+                  "SUPPLIED_FIELDS_MATCH",
+                  "NO_COMPARABLE_FIELDS"
+                ]
+              }
+            }
+          }
+        },
+        "confirmed_events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/confirmed_split_event"
+          }
+        },
+        "excluded_future_events": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/confirmed_split_event"
+              },
+              {
+                "required": [
+                  "state",
+                  "reasons"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "EXCLUDED_FUTURE_EVENT"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "block_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "raw_window_split_dates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "confirmed_split_event": {
+      "type": "object",
+      "required": [
+        "date",
+        "ratio",
+        "evidence",
+        "record",
+        "record_hash",
+        "source_record",
+        "source_record_hash",
+        "independently_verified",
+        "adoption_basis"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "ratio": {
+          "type": "string"
+        },
+        "record": {
+          "type": "object"
+        },
+        "record_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source_record": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "source_record_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "independently_verified": {
+          "const": false
+        },
+        "adoption_basis": {
+          "const": "EXISTING_CALLER_DECLARATION_WITH_REFERENCE"
+        }
       }
     }
   }
