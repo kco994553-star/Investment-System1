@@ -28,12 +28,14 @@ def main():
             a.output.mkdir(parents=True);(a.output/'top500.json').write_bytes(json_bytes(result));return
         e=read(job['evaluation']);r=read(job['reference']);configs=job['configurations']
     boards={k:attach(run(c,e,r),e,r) for k,c in configs.items()}
+    # Save reproducible calculation output before projection. A projection failure
+    # can then resume through project_qgv_555_additional without recalculating QGV.
+    a.output.mkdir(parents=True)
+    for key,b in boards.items():(a.output/(key+'-result.json')).write_bytes(json_bytes(b))
     f=artifacts(boards,data_kind=job['data_kind'])
     pin=hashlib.sha256(json_bytes(f['manifest.json'])).hexdigest()
     validated=validate(f,manifest_sha256=pin,expected_evaluation=next(iter(boards.values()))['evaluation'],expected_references={k:b['reference'] for k,b in boards.items()})
-    a.output.mkdir(parents=True)
     for name,value in f.items():(a.output/name).write_bytes(json_bytes(value))
-    for key,b in boards.items():(a.output/(key+'-result.json')).write_bytes(json_bytes(b))
     (a.output/'verification.json').write_bytes(json_bytes(validated))
     if a.synthetic:
         (a.output/'catalog.json').write_bytes(json_bytes(catalog()));(a.output/'accounting-recipes.json').write_bytes(json_bytes(accounting_recipes()))

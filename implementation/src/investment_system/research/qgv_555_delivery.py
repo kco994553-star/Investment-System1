@@ -14,15 +14,18 @@ def artifacts(boards,*,data_kind,max_bytes=MAX_BYTES):
     require(set(boards)<=set(IDS) and bool(boards),'BOARDS')
     files={};groups=[];models={};evaluation=None
     def bounded(name,rows,header):
-        out=[];part=[];seq=0
+        out=[];part=[];seq=0;empty_size=len(json_bytes(dict(header,rows=[])));estimate=empty_size
         def flush():
-            nonlocal part,seq
+            nonlocal part,seq,estimate
             value=dict(header,rows=part);path=f'{name}-{seq:04}.json'
             require(len(json_bytes(value))<=max_bytes,'ROW_SIZE')
-            files[path]=value;out.append(path);part=[];seq+=1
+            files[path]=value;out.append(path);part=[];seq+=1;estimate=empty_size
         for row in rows:
-            if part and len(json_bytes(dict(header,rows=part+[row])))>max_bytes:flush()
-            part.append(row)
+            # Conservative accounting avoids repeatedly serializing the growing
+            # part; actual bytes are still checked in flush before publication.
+            cost=2*len(json_bytes(row))+256
+            if part and estimate+cost>max_bytes:flush()
+            part.append(row);estimate+=cost
         if part:flush()
         return out
     for key,b in boards.items():
@@ -48,17 +51,35 @@ def artifacts(boards,*,data_kind,max_bytes=MAX_BYTES):
                 require(sorted(r['rank'] for r in valid)==list(range(1,n+1)),'STORED_RANK')
                 if n>=10:require(sum(counts[d] for d in range(1,11))==n,'ALL_DECILES')
                 paths=bounded('distribution-'+gid,rows,dict(schema_version='qgv-555-distribution-part/1',group_id=gid,result_hash=b['result_hash']))
+                ordered=sorted(valid,key=lambda r:r['rank'])
+                tie_splits=[dict(score=a['score'],last_rank=a['rank'],next_rank=z['rank'],from_decile=a['decile'],to_decile=z['decile']) for a,z in zip(ordered,ordered[1:]) if a['score']==z['score'] and a['decile']!=z['decile']]
                 groups.append(dict(group_id=gid,model=key,role=role,kind=field,ranking_scope=scope,evaluation_valid_n=n,
                     original_code_rows=len(rows),unit='CODE_ROW',reference_n=None,reference_n_reason='COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS',
                     bins=[dict(decile=d,count=counts[d],top_percent_from=(10-d)*10,top_percent_to=(11-d)*10) for d in range(10,0,-1)],
-                    minimum_decile_n=10,members_hash=digest(rows),files=paths))
+                    minimum_decile_n=10,tie_splits=tie_splits,members_hash=digest(rows),files=paths))
     index=dict(schema_version='qgv-555-delivery/1',data_kind=data_kind,evaluation=evaluation,models=models,groups=groups,
         rank_policy='STORED_DUAL_ORDINAL_SCORE_DESC_CODE_ASC',tie_policy='EXISTING_FIXED_COUNT_BINS_WITH_REPORTED_TIE_SPLITS',
-        official=False,whole_market_denominator=None,filter_recalculates=False,additional_factor_contribution=0)
+        official=False,whole_market_denominator=None,filter_recalculates=False,additional_factor_contribution=0,
+        groups_layout='INLINE',groups_count=len(groups),group_files=[])
+    if len(json_bytes(index))>max_bytes:
+        index['group_files']=bounded('group-index',groups,dict(schema_version='qgv-555-groups-part/1',evaluation_input_hash=evaluation['input_hash']))
+        index['groups']=[];index['groups_layout']='SHARDED'
     require(len(json_bytes(index))<=max_bytes,'INDEX_SIZE');files['index.json']=index
     files['manifest.json']=dict(schema_version='qgv-555-delivery-manifest/1',data_kind=data_kind,
         files=[dict(path=p,size=len(json_bytes(v)),sha256=hashlib.sha256(json_bytes(v)).hexdigest()) for p,v in sorted(files.items())])
     return files
+
+
+def read_groups(files):
+    index=files['index.json']
+    if index.get('groups_layout','INLINE')=='INLINE':return index['groups']
+    require(index.get('groups_layout')=='SHARDED' and not index['groups'],'GROUP_INDEX_LAYOUT')
+    groups=[]
+    for path in index['group_files']:
+        p=files[path];require(p['schema_version']=='qgv-555-groups-part/1' and p['evaluation_input_hash']==index['evaluation']['input_hash'],'GROUP_INDEX_CONTEXT')
+        groups.extend(p['rows'])
+    require(len(groups)==index['groups_count'] and len({g['group_id'] for g in groups})==len(groups),'GROUP_INDEX_MEMBERS')
+    return groups
 
 
 def validate(files,*,manifest_sha256,expected_evaluation,expected_references):
@@ -72,7 +93,8 @@ def validate(files,*,manifest_sha256,expected_evaluation,expected_references):
     require(set(expected_references)==set(idx['models']),'REFERENCE_MODELS')
     for key,m in idx['models'].items():
         require(m['bindings']['reference']==expected_references[key],'REFERENCE_ANCHOR')
-    for g in idx['groups']:
+    groups=read_groups(files)
+    for g in groups:
         rows=[]
         for path in g['files']:
             p=files[path];require(p['group_id']==g['group_id'],'GROUP_SCOPE');rows.extend(p['rows'])
@@ -80,4 +102,4 @@ def validate(files,*,manifest_sha256,expected_evaluation,expected_references):
         require(digest(rows)==g['members_hash'],'GROUP_MEMBER_HASH')
         counts=Counter(r['decile'] for r in rows if r['score'] is not None)
         require(all(counts[x['decile']]==x['count'] for x in g['bins']),'BIN_COUNT')
-    return dict(status='VALIDATED',groups=len(idx['groups']),files=len(files),independent_pins_required=True)
+    return dict(status='VALIDATED',groups=len(groups),files=len(files),independent_pins_required=True)
