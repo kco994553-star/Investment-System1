@@ -141,7 +141,7 @@ def build_web_app(out: Path) -> Path:
     from build_pages_cockpit import build_public_cockpit
     out = Path(out)
     keep = reused_old_files()  # before building, so a bad index.html or LOAD_ORDER fails without a half-made output
-    build_public_cockpit(out)
+    build_public_cockpit(out, preview=False)
     # Frontend files only: page, styles, scripts, fonts and their licence texts, icons, manifest. JSON is public data and stays.
     old = {p.name for p in OLD.iterdir() if p.is_file() and p.suffix in FRONTEND_SUFFIXES} | set(GENERATED_OLD_PAGES) | {'manifest.json'}
     for p in out.iterdir():
