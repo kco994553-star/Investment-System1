@@ -43,6 +43,7 @@ def test_alias_duplicate_and_custom_three_roles():
     c=configuration('U1-555');c['roles']['q_moat_proxy']['weight']=0;c['roles']['q_capital_allocation']['weight']=0
     e,ref=fixture();r=run(c,e,ref)['rows'][0]
     assert r['active_roles']['Q']==3
+    assert r['fifteen_roles_complete'] is False
 
 
 def test_financial_never_inherits_general():

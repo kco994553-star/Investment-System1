@@ -247,7 +247,7 @@ def run(c,e,ref,*,calculated_at=None):
         out.append(dict(company_id=r['company_id'],issuer_id=r['issuer_id'],security_id=r.get('security_id'),
             sector_id=r.get('sector_id'),accounting_template=r.get('accounting_template'),roles=roles,axes=axes,
             active_roles={a:sum(v['weight']>0 for v in role_config.values() if v['axis']==a) for a in 'QGV'},
-            fifteen_roles_complete=all(roles[k]['score'] is not None for k in SPECS),
+            fifteen_roles_complete=all(roles[k]['score'] is not None and role_config[k]['weight']>0 for k in SPECS),
             gate_status=gate,gate_scope='OFFICIAL_INPUT_DECISION_INDEPENDENT_OF_MODEL_APPLICABILITY',
             nominal_axis_weights=reported_weights,total=total,partial_total=total is not None and len(valid)<3,
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
