@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "owner-price-v-contract/1",
+  "description": "Common source-profile wire extension of personal-sheet-v/1; exact formula engine unchanged. KIS private-only EOD-as-of is distinct from Google current prices.",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "namespace",
+        "context",
+        "configuration"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "owner-price-v-request/1"
+        },
+        "namespace": {
+          "enum": [
+            "PERSONAL_SHEET_V",
+            "OWNER_PRIVATE_KIS_V"
+          ]
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "context_id",
+            "evaluation_day",
+            "evaluated_at",
+            "input_cutoff",
+            "provider",
+            "price_definition",
+            "evaluation_mode"
+          ],
+          "properties": {
+            "context_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evaluation_day": {
+              "type": "string",
+              "format": "date"
+            },
+            "evaluated_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "input_cutoff": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "provider": {
+              "enum": [
+                "GOOGLEFINANCE",
+                "KIS"
+              ]
+            },
+            "price_definition": {
+              "enum": [
+                "GOOGLEFINANCE_CURRENT",
+                "KIS_DAILY_CLOSE"
+              ]
+            },
+            "evaluation_mode": {
+              "enum": [
+                "CURRENT",
+                "EXPLICIT_EOD_ASOF"
+              ]
+            }
+          }
+        },
+        "configuration": {
+          "type": "object",
+          "$comment": "Validated by existing qgv_555.validate_configuration; supported price variants 0.2-0.5 central WAD."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "OWNER_PRIVATE_KIS_V"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "context": {
+                "properties": {
+                  "provider": {
+                    "const": "KIS"
+                  },
+                  "price_definition": {
+                    "const": "KIS_DAILY_CLOSE"
+                  },
+                  "evaluation_mode": {
+                    "const": "EXPLICIT_EOD_ASOF"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "context": {
+                "properties": {
+                  "provider": {
+                    "const": "GOOGLEFINANCE"
+                  },
+                  "price_definition": {
+                    "const": "GOOGLEFINANCE_CURRENT"
+                  },
+                  "evaluation_mode": {
+                    "const": "CURRENT"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "price_row": {
+      "type": "object",
+      "required": [
+        "company_id",
+        "issuer_id",
+        "provider_symbol",
+        "status",
+        "provider",
+        "price_definition",
+        "adjustment_status",
+        "currency",
+        "price",
+        "trade_day",
+        "price_timestamp",
+        "time_status",
+        "query_started_at",
+        "received_at",
+        "source_refs"
+      ],
+      "properties": {
+        "company_id": {
+          "type": "string"
+        },
+        "issuer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provider_symbol": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "MISSING",
+            "INVALID",
+            "READ_FAILED",
+            "NO_TRADE"
+          ]
+        },
+        "provider": {
+          "enum": [
+            "GOOGLEFINANCE",
+            "KIS"
+          ]
+        },
+        "price_definition": {
+          "enum": [
+            "GOOGLEFINANCE_CURRENT",
+            "KIS_DAILY_CLOSE"
+          ]
+        },
+        "adjustment_status": {
+          "enum": [
+            "AS_TRADED",
+            "SPLIT_ADJUSTED",
+            "UNKNOWN"
+          ]
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "trade_day": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "price_timestamp": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "time_status": {
+          "enum": [
+            "CONFIRMED",
+            "DATE_ONLY",
+            "UNCONFIRMED"
+          ]
+        },
+        "query_started_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "received_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "qualification_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "$comment": "KIS normalized rows are produced from independently pinned kis-bars/1 retained contracts, never caller numeric-price overrides."
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "namespace",
+        "storage",
+        "model_id",
+        "evaluation",
+        "reference",
+        "evaluation_effective",
+        "reference_effective",
+        "counts",
+        "counts_unit",
+        "denominator",
+        "rows",
+        "groups",
+        "result_hash",
+        "availability_context"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "owner-price-v-result/1"
+        },
+        "namespace": {
+          "enum": [
+            "PERSONAL_SHEET_V",
+            "OWNER_PRIVATE_KIS_V"
+          ]
+        },
+        "storage": {
+          "const": "EPHEMERAL_ONLY"
+        },
+        "counts_unit": {
+          "const": "UNIQUE_ISSUER"
+        },
+        "research_coverage_claim": {
+          "const": false
+        },
+        "official": {
+          "const": false
+        },
+        "filter_recalculates": {
+          "const": false
+        }
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "target"
+            ]
+          },
+          {
+            "required": [
+              "coverage"
+            ]
+          }
+        ]
+      }
+    },
+    "capitalization_basis": {
+      "type": "object",
+      "required": [
+        "share_count_definition",
+        "capital_basis",
+        "actual_class_outstanding_status",
+        "actual_all_class_market_cap",
+        "actual_all_class_ev"
+      ],
+      "properties": {
+        "share_count_definition": {
+          "const": "WEIGHTED_AVERAGE_DILUTED"
+        },
+        "capital_basis": {
+          "const": "WEIGHTED_AVERAGE_DILUTED_PROXY"
+        },
+        "share_period_end": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "share_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "share_class_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "actual_class_outstanding_status": {
+          "const": "NOT_CONNECTED"
+        },
+        "actual_class_outstanding_variant": {
+          "const": "SEPARATE_VARIANT_REQUIRED"
+        },
+        "actual_all_class_market_cap": {
+          "const": false
+        },
+        "actual_all_class_ev": {
+          "const": false
+        }
+      }
+    }
+  },
+  "input_boundary": {
+    "KIS": {
+      "accepted": "kis-bars/1 normalized retained contract",
+      "independent_pin": "digest(normalized_contract) supplied independently after raw receipt/manifest verification",
+      "raw_body_hash": "raw_bars[].source_sha256 remains separate; normalized-contract digest does not verify raw-body bytes alone",
+      "exact_trade_day_required": true,
+      "price_timestamp": null,
+      "time_status": "DATE_ONLY",
+      "price_definition": "KIS_DAILY_CLOSE",
+      "adjustment_status": "AS_TRADED",
+      "query_time": "nullable when not retained; receipt is not query start",
+      "financial_normalization": "known split requires record-bound evidence; no automatic multiplication"
+    },
+    "GOOGLEFINANCE": {
+      "accepted": "normalized common price_row",
+      "evaluation_mode": "CURRENT",
+      "trade_time": "source tradetime with explicit timezone; missing is not retrieval time",
+      "marketcap": "not an input"
+    }
+  },
+  "invariants": {
+    "financial_engine": "reported_raw and qgv_555 existing kernels",
+    "minimum_and_missing_policy": "unchanged configured model version",
+    "no_network": true,
+    "no_persistence": true,
+    "official": false,
+    "official_top500_eligible": false,
+    "research_coverage_claim": false,
+    "all_deciles": true,
+    "fixed_roster": true
+  }
+}

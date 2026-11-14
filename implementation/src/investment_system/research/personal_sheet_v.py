@@ -28,6 +28,14 @@ VERSION='personal-sheet-price/1'
 KEYS=tuple('central::'+k for k in ('ebit_yield','fcf_yield','own_history','gap'))
 SOURCES={'GOOGLEFINANCE':'GOOGLEFINANCE_CURRENT','IEX_HIST':'IEX_LAST_REGULAR_SESSION_TRADE'}
 NY=ZoneInfo('America/New_York')
+OWNER_SCHEMA='owner-price-v-request/1'
+OWNER_VERSION='owner-price/1'
+KIS_NAMESPACE='OWNER_PRIVATE_KIS_V'
+OWNER_PROFILES={
+    'GOOGLEFINANCE':(NAMESPACE,'GOOGLEFINANCE_CURRENT','CURRENT'),
+    'KIS':(KIS_NAMESPACE,'KIS_DAILY_CLOSE','EXPLICIT_EOD_ASOF'),
+}
+
 
 
 def _need(ok, reason):
@@ -109,15 +117,26 @@ def _quote(q, row, context):
         m['reasons']=['PRICE_STATUS_INVALID'];return None,m
     try:
         received=_stamp(q.get('received_at'),'PRICE_RECEIPT_TIME')
-        started=_stamp(q.get('query_started_at'),'PRICE_QUERY_TIME')
-        _need(started<=received<=timestamp(context['input_cutoff']),'PRICE_AFTER_CUTOFF')
+        if context['provider']=='KIS' and q.get('query_started_at') is None:
+            started=None
+            m['query_time_status']='UNRECORDED'
+        else:
+            started=_stamp(q.get('query_started_at'),'PRICE_QUERY_TIME')
+            m['query_time_status']='RECORDED'
+        _need((started is None or started<=received) and received<=timestamp(context['input_cutoff']),'PRICE_AFTER_CUTOFF')
     except ValueError as ex:m['reasons']=[str(ex)];return None,m
-    if q['status']!='AVAILABLE':m['reasons']=[q['status']];return None,m
+    if q['status']!='AVAILABLE':m['reasons']=[q.get('qualification_reason') or q['status']];return None,m
     if not _finite(q.get('price')) or q['price']<=0:m['reasons']=['INVALID_PRICE'];return None,m
     if not _refs(q.get('source_refs')):m['reasons']=['PRICE_SOURCE_UNCONFIRMED'];return None,m
     m['price_available']=True
     if not _day(q.get('trade_day')):m['reasons']=['PRICE_DAY_UNCONFIRMED'];return None,m
     if q['trade_day']>context['evaluation_day']:m['reasons']=['FUTURE_PRICE_DAY'];return None,m
+    if context['provider']=='KIS' and q['trade_day']!=context['evaluation_day']:
+        m['reasons']=['PRICE_DAY_MISMATCH'];return None,m
+    if context['provider']=='KIS':
+        m['price_source_metadata']=deepcopy(q.get('price_source_metadata') or {})
+        if q.get('time_status')!='DATE_ONLY' or q.get('price_timestamp') is not None:
+            m['reasons']=['KIS_DAILY_TIME_NOT_TRADE_TIMESTAMP'];return None,m
     if q.get('time_status')=='CONFIRMED':
         try:
             t=_stamp(q.get('price_timestamp'),'PRICE_TIME_INVALID')
@@ -133,6 +152,8 @@ def _quote(q, row, context):
     if q.get('adjustment_status')!='AS_TRADED':m['reasons']=['PRICE_ADJUSTMENT_UNCONFIRMED'];return None,m
     if not isinstance(q.get('currency'),str) or len(q['currency'])!=3:
         m['reasons']=['CURRENCY_BASIS_UNCONFIRMED'];return None,m
+    if q.get('qualification_reason'):
+        m['reasons']=[q['qualification_reason']];return None,m
     return dict(price=q['price'],currency=q['currency']),m
 
 
@@ -165,8 +186,8 @@ def _entry(row, snapshot, wrapped, q, context, c, params):
                 period_failures.update({k:'EV_COMPONENT_PERIOD_UNCONFIRMED' for k in KEYS[:2]})
             if not period_ok('ebit'):period_failures.update({'central::ebit_yield':'EBIT_PERIOD_UNCONFIRMED','central::own_history':'EBIT_PERIOD_UNCONFIRMED'})
             if not period_ok('fcf'):period_failures.update({'central::fcf_yield':'FCF_PERIOD_UNCONFIRMED','central::gap':'FCF_PERIOD_UNCONFIRMED'})
-            source_reason=_basis(row,wrapped,q,context,normalized)
-            if source_reason:meta['reasons'].append(source_reason)
+            source_reason=_basis(row,wrapped,q,context,normalized) or (q or {}).get('nonprice_reason')
+            if source_reason and source_reason not in meta['reasons']:meta['reasons'].append(source_reason)
             if quote and (quote['currency']!=record.get('currency') or quote['currency']!=normalized.get('currency')):
                 meta['reasons'].append('CURRENCY_BASIS_UNCONFIRMED');quote=None
             if not source_reason and profile!='FINANCIAL':
@@ -214,7 +235,7 @@ def _entry(row, snapshot, wrapped, q, context, c, params):
     basis=(wrapped or {}).get('basis_evidence') or (q or {}).get('basis_evidence') or {}
     allowed=('status','record_id','company_id','issuer_id','security_id','share_class_id','provider_symbol','currency','share_basis',
         'security_type','valid_from','valid_to','available_at','source_refs','definition','period_end','unit',
-        'from_day','through_day','basis','underlying_per_receipt','normalized_share_unit')
+        'from_day','through_day','basis','underlying_per_receipt','normalized_share_unit','provider','exchange')
     provenance=dict(financial=dict(record_hash=(row.get('owner_source_context') or {}).get('record_hash'),
         companyfacts_sha256=(row.get('owner_source_context') or {}).get('companyfacts_sha256'),
         source_refs=deepcopy((wrapped or {}).get('source_refs',[])),
@@ -234,17 +255,55 @@ def _entry(row, snapshot, wrapped, q, context, c, params):
 
 
 def prepare_personal(request,evaluation,reference,financial_records,prices,*,expected_evaluation,expected_reference):
+    """Unchanged legacy Google/IEX wire entry point."""
     _need(request.get('schema_version')==SCHEMA,'PERSONAL_REQUEST_SCHEMA')
+    return _prepare(request,evaluation,reference,financial_records,prices,
+        expected_evaluation=expected_evaluation,expected_reference=expected_reference)
+
+
+def prepare_owner(request,evaluation,reference,financial_records,prices=None,*,expected_evaluation,
+                  expected_reference,contracts=None,expected_contract_hashes=None):
+    """Same 555/raw engine; explicit source profile, RAM-only private result.
+
+    KIS numeric quotes can only come from pinned retained contracts. Google uses
+    the existing normalized quote rows. Neither path opens a network connection.
+    """
+    _need(request.get('schema_version')==OWNER_SCHEMA,'OWNER_REQUEST_SCHEMA')
+    _need(set(request)=={'schema_version','namespace','context','configuration'},'OWNER_REQUEST_FIELDS')
+    context=request.get('context') or {}
+    profile=OWNER_PROFILES.get(context.get('provider'))
+    _need(profile is not None and (request['namespace'],context.get('price_definition'),
+        context.get('evaluation_mode'))==profile,'OWNER_PRICE_PROFILE')
+    if context['provider']=='KIS':
+        from .kis_owner_price import prepare_kis_quotes
+        _need(prices is None,'KIS_RETAINED_CONTRACT_REQUIRED')
+        prices=prepare_kis_quotes(context,evaluation,reference,financial_records,contracts or {},
+            expected_contract_hashes=expected_contract_hashes or {})
+    else:
+        _need(contracts is None and expected_contract_hashes is None,'GOOGLE_PRICE_ROWS_REQUIRED')
+        _need(isinstance(prices,list),'GOOGLE_PRICE_ROWS_REQUIRED')
+    return _prepare(request,evaluation,reference,financial_records,prices,
+        expected_evaluation=expected_evaluation,expected_reference=expected_reference,owner=True)
+
+
+def _prepare(request,evaluation,reference,financial_records,prices,*,expected_evaluation,expected_reference,owner=False):
     _need(engine.identity(evaluation)==expected_evaluation,'PERSONAL_EVALUATION_ANCHOR')
     _need(engine.identity(reference)==expected_reference,'PERSONAL_REFERENCE_ANCHOR')
     c=deepcopy(request['configuration']);engine.validate_configuration(c)
     _need(c['version'] in ('0.2.0','0.3.0','0.4.0','0.5.0'),'PERSONAL_MODEL_VARIANT_UNSUPPORTED')
     context=deepcopy(request['context'])
-    _need(set(context)=={'context_id','evaluation_day','evaluated_at','input_cutoff','provider','price_definition'},'PERSONAL_CONTEXT_FIELDS')
+    fields={'context_id','evaluation_day','evaluated_at','input_cutoff','provider','price_definition'}
+    _need(set(context)==fields|({'evaluation_mode'} if owner else set()),'PERSONAL_CONTEXT_FIELDS')
+    namespace=request['namespace'] if owner else NAMESPACE
+    adapter_version=OWNER_VERSION if owner else VERSION
     _need(isinstance(context['context_id'],str) and context['context_id'] and _day(context['evaluation_day']),'PERSONAL_CONTEXT')
     now=_stamp(context['evaluated_at'],'PERSONAL_EVALUATION_TIME');cutoff=_stamp(context['input_cutoff'],'PERSONAL_INPUT_CUTOFF')
-    _need(cutoff<=now and now.astimezone(NY).date().isoformat()==context['evaluation_day'],'CURRENT_EVALUATION_CONTEXT')
-    _need(context['provider'] in SOURCES and SOURCES[context['provider']]==context['price_definition'],'PERSONAL_PRICE_DEFINITION')
+    _need(cutoff<=now,'CURRENT_EVALUATION_CONTEXT')
+    if owner and context['provider']=='KIS':
+        _need(context['evaluation_day']<=now.astimezone(NY).date().isoformat(),'FUTURE_EOD_CONTEXT')
+    else:
+        _need(now.astimezone(NY).date().isoformat()==context['evaluation_day'],'CURRENT_EVALUATION_CONTEXT')
+        _need(context['provider'] in SOURCES and SOURCES[context['provider']]==context['price_definition'],'PERSONAL_PRICE_DEFINITION')
     for s in (evaluation,reference):
         _need(s['evaluation_day']==context['evaluation_day'] and timestamp(s['input_cutoff'])==cutoff,'CURRENT_EVALUATION_CONTEXT')
         for row in s['rows']:
@@ -256,7 +315,7 @@ def prepare_personal(request,evaluation,reference,financial_records,prices,*,exp
         quotes[cid]=q
     try:price_hash=digest(prices)
     except (ValueError,TypeError):raise ValueError('NON_FINITE_OR_INVALID_PRICE_PAYLOAD') from None
-    params=load_default_dcf_parameters();ctx=dict(namespace=NAMESPACE,adapter_version=VERSION,context_id=context['context_id'],
+    params=load_default_dcf_parameters();ctx=dict(namespace=namespace,adapter_version=adapter_version,context_id=context['context_id'],
         price_snapshot_hash=price_hash,original_evaluation=deepcopy(expected_evaluation),original_reference=deepcopy(expected_reference))
     ev,ref=deepcopy(evaluation),deepcopy(reference);entries={}
     for label,s in (('evaluation',ev),('reference',ref)):
@@ -275,7 +334,7 @@ def prepare_personal(request,evaluation,reference,financial_records,prices,*,exp
                 row['metric_evidence'][key]=dict(status='VERIFIED',variant=key.split('::')[1]+'/central-wad-reported-1',
                     source_refs=['PERSONAL_CURRENT_BASIS_VALIDATED'],available_at=context['input_cutoff'],
                     valuation_day=context['evaluation_day'],share_basis='WEIGHTED_AVERAGE_DILUTED',
-                    security_and_actions='VERIFIED',scope=NAMESPACE,adapter_version=VERSION)
+                    security_and_actions='VERIFIED',scope=namespace,adapter_version=adapter_version)
     peers={}
     for entry in entries['reference']:
         if not entry['reference_included']:continue
@@ -283,17 +342,39 @@ def prepare_personal(request,evaluation,reference,financial_records,prices,*,exp
         issuer=entry['issuer_id']
         _need(issuer not in peers or peers[issuer]==signature,'PERSONAL_ISSUER_POINT_CONFLICT')
         peers[issuer]=signature
-    core=engine.run(c,ev,ref,calculated_at=context['evaluated_at'],calculation_scope=NAMESPACE)
+    if owner:
+        for collection in entries.values():
+            for entry in collection:
+                wrapped=financial_records.get(entry['company_id']) or {}
+                share=((wrapped.get('record') or {}).get('v_inputs_v2') or {}).get('diluted_shares') or {}
+                basis=wrapped.get('basis_evidence') or {}
+                entry['capitalization_basis']=dict(
+                    share_count_definition='WEIGHTED_AVERAGE_DILUTED',
+                    capital_basis='WEIGHTED_AVERAGE_DILUTED_PROXY',
+                    share_period_end=share.get('period_end'),
+                    share_unit=(basis.get('share_basis') or {}).get('unit'),
+                    share_class_id=(basis.get('mapping') or {}).get('share_class_id'),
+                    actual_class_outstanding_status='NOT_CONNECTED',
+                    actual_class_outstanding_variant='SEPARATE_VARIANT_REQUIRED',
+                    actual_all_class_market_cap=False,actual_all_class_ev=False,
+                    label='기간 가중평균 희석주식수 기반 proxy · 실제 종류별 시총/EV 아님')
+    core=engine.run(c,ev,ref,calculated_at=context['evaluated_at'],calculation_scope=namespace)
     lookup={r['company_id']:r for r in core['rows']}
     for entry in entries['evaluation']:entry['base_axes']={a:lookup[entry['company_id']]['axes'][a]['score'] for a in 'QG'};entry['gate_status']=lookup[entry['company_id']]['gate_status']
     for entry in entries['reference']:entry.update(base_axes=dict(Q=None,G=None),gate_status='UNKNOWN')
-    packet=dict(schema_version='personal-sheet-v-packet/1',namespace=NAMESPACE,context=context,configuration=c,
+    packet=dict(schema_version='owner-price-v-packet/1' if owner else 'personal-sheet-v-packet/1',namespace=namespace,context=context,configuration=c,
         configuration_hash=digest(c),evaluation_original=expected_evaluation,reference_original=expected_reference,
         evaluation_effective=engine.identity(ev),reference_effective=engine.identity(ref),
         evaluation=entries['evaluation'],reference=entries['reference'],parameters=params)
     sources=[Path(__file__),Path(engine.__file__),Path(qgv2_inputs.__file__),
         Path(__file__).with_name('qgv_555_central_v.py'),Path(__file__).with_suffix('.js'),
         Path(__file__).parent.parent/'product/web_assets/qgv-v2.js']
+    if owner:
+        sources.extend([Path(__file__).with_name('kis_owner_price.py'),Path(__file__).with_name('kis_split_evidence.py')])
+        packet['availability_context']=dict(evaluation_mode=context['evaluation_mode'],
+            historical_pit_proven=False,
+            reconstruction='ACTUAL_INPUT_CUTOFF_NOT_HISTORICAL_SYSTEM_HOLDINGS',
+            official_top500_eligible=False,research_coverage_claim=False)
     packet['engine_source_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sources}
     payload=json_bytes(packet).decode();pin=hashlib.sha256(payload.encode()).hexdigest()
     return dict(configuration=c,evaluation=ev,reference=ref,core_result=core,packet=packet,packet_text=payload,
@@ -310,7 +391,9 @@ def _rank_metrics(rows):
 
 
 def personal_result(prepared):
-    core=prepared['core_result'];packet=prepared['packet'];_need(core.get('namespace')==NAMESPACE,'PERSONAL_RESULT_SCOPE')
+    core=prepared['core_result'];packet=prepared['packet']
+    namespace=packet.get('namespace');owner=packet.get('schema_version')=='owner-price-v-packet/1'
+    _need(namespace in (NAMESPACE,KIS_NAMESPACE) and core.get('namespace')==namespace,'PERSONAL_RESULT_SCOPE')
     _need(core['result_hash']==digest({k:v for k,v in core.items() if k!='result_hash'}),'PERSONAL_CORE_HASH')
     rows=[];raw_entries={e['company_id']:e for e in packet['evaluation']}
     fields=('metric','raw','score','reason','reference_n','reference_scope','weight')
@@ -331,6 +414,8 @@ def personal_result(prepared):
             partial_total=row['partial_total'],rank=row['rank'],rank_n=row['rank_n'],
             price_metadata=deepcopy(entry['price_metadata']),financial_periods=deepcopy(entry['financial_periods']),
             provenance=deepcopy(entry['provenance'])))
+    if owner:
+        for row in rows:row['capitalization_basis']=deepcopy(raw_entries[row['company_id']]['capitalization_basis'])
     _rank_metrics(rows)
     for row in rows:
         for key,item in row['metrics'].items():
@@ -347,7 +432,7 @@ def personal_result(prepared):
             for scope,rr in sorted(scopes.items()):
                 valid=[r for r in rr if r[kind][key]['score'] is not None];bins=Counter(r[kind][key]['decile'] for r in valid)
                 gid=digest([prepared['payload_sha256'],core['model_id'],kind,key,scope])
-                groups.append(dict(group_id='personal:'+gid,kind=kind,key=key,ranking_scope=scope,minimum_decile_n=10,
+                groups.append(dict(group_id=('owner:' if owner else 'personal:')+gid,kind=kind,key=key,ranking_scope=scope,minimum_decile_n=10,
                     evaluation_valid_n=len(valid),original_code_rows=len(rr),unit='CODE_ROW',
                     bins=[dict(decile=d,count=bins[d],top_percent_from=(10-d)*10,top_percent_to=(11-d)*10) for d in range(10,0,-1)]))
     variants={k:dict(nonprice_complete=len({e['issuer_id'] for e in packet['evaluation'] if e['issuer_id'] and e['nonprice'][k]}),
@@ -364,7 +449,15 @@ def personal_result(prepared):
         V_axis=count(lambda r:r['axes']['V'] is not None),
         personal_partial_total=count(lambda r:r['total'] is not None and r['partial_total']),
         personal_eligible_total=count(lambda r:r['total'] is not None and not r['partial_total']))
-    out=dict(schema_version='personal-sheet-v-result/1',namespace=NAMESPACE,storage='EPHEMERAL_ONLY',
+    if owner:
+        counts['owner_partial_total']=counts.pop('personal_partial_total')
+        counts['owner_eligible_total']=counts.pop('personal_eligible_total')
+        counts['V_roles_complete']=count(lambda r:all(v['score'] is not None for v in r['roles'].values()))
+        counts['three_axes']=count(lambda r:all(r['axes'][a] is not None for a in 'QGV'))
+        counts['gate_judgeable']=count(lambda r:r['gate_status']!='UNKNOWN')
+        counts['gate_pass']=count(lambda r:r['gate_status']=='PASS')
+        counts['gate_value_excluded']=count(lambda r:r['gate_status']=='VALUE_EXCLUDED')
+    out=dict(schema_version='owner-price-v-result/1' if owner else 'personal-sheet-v-result/1',namespace=namespace,storage='EPHEMERAL_ONLY',
         model_id=core['model_id'],configuration_hash=packet['configuration_hash'],context=packet['context'],
         engine_source_sha256=deepcopy(packet['engine_source_sha256']),
         evaluation=packet['evaluation_original'],reference=packet['reference_original'],
@@ -374,17 +467,24 @@ def personal_result(prepared):
         counts=counts,counts_unit='UNIQUE_ISSUER',variants=variants,rows=rows,groups=groups,official=False,filter_recalculates=False,
         comparison_scope='PERSONAL_SESSION_NOT_OFFICIAL_RANK',research_coverage_claim=False,
         rank_policy='STORED_DUAL_ORDINAL_SCORE_DESC_CODE_ASC',tie_policy='EXISTING_FIXED_COUNT_BINS_WITH_REPORTED_TIE_SPLITS')
+    if owner:
+        out.update(availability_context=deepcopy(packet['availability_context']),
+            comparison_scope='OWNER_PRIVATE_SESSION_NOT_OFFICIAL_OR_RESEARCH_RANK')
     out['result_hash']=digest(out);return out
 
 
-def _checked(result):_need(result.get('namespace')==NAMESPACE and result.get('result_hash')==digest({k:v for k,v in result.items() if k!='result_hash'}),'PERSONAL_RESULT_HASH')
+def _checked(result):
+    namespace=result.get('namespace');schema=result.get('schema_version')
+    _need((namespace==NAMESPACE and schema=='personal-sheet-v-result/1' or
+           namespace in (NAMESPACE,KIS_NAMESPACE) and schema=='owner-price-v-result/1') and
+          result.get('result_hash')==digest({k:v for k,v in result.items() if k!='result_hash'}),'PERSONAL_RESULT_HASH')
 
 
 def personal_page(result,*,offset=0,limit=20,company_ids=None):
     _checked(result);_need(type(offset) is int and offset>=0 and type(limit) is int and 1<=limit<=50,'PERSONAL_PAGE_RANGE')
     rows=result['rows'] if company_ids is None else [r for r in result['rows'] if r['company_id'] in company_ids]
     out={k:deepcopy(v) for k,v in result.items() if k not in ('rows','groups','result_hash')}
-    out.update(schema_version='personal-sheet-v-page/1',source_result_hash=result['result_hash'],rows=deepcopy(rows[offset:offset+limit]),
+    out.update(schema_version='owner-price-v-page/1' if result['schema_version']=='owner-price-v-result/1' else 'personal-sheet-v-page/1',source_result_hash=result['result_hash'],rows=deepcopy(rows[offset:offset+limit]),
         offset=offset,filtered_rows=len(rows),next_offset=offset+limit if offset+limit<len(rows) else None)
     _need(len(json_bytes(out))<=MAX_BYTES,'PERSONAL_PAGE_SIZE');return out
 
@@ -396,8 +496,14 @@ def personal_group_page(result,group_id,*,decile=None,offset=0,limit=50):
     rows=[r for r in result['rows'] if r['ranking_scope']==g['ranking_scope'] and g['key'] in r[g['kind']] and
         (decile is None or r[g['kind']][g['key']]['decile']==decile)]
     rows.sort(key=lambda r:(r[g['kind']][g['key']]['rank'] is None,r[g['kind']][g['key']]['rank'] or 0,r['company_id']))
-    out=dict(schema_version='personal-sheet-v-group-page/1',namespace=NAMESPACE,group=deepcopy(g),
+    out=dict(schema_version='owner-price-v-group-page/1' if result['schema_version']=='owner-price-v-result/1' else 'personal-sheet-v-group-page/1',namespace=result['namespace'],group=deepcopy(g),
         denominator=deepcopy(result['denominator']),source_result_hash=result['result_hash'],filter_recalculates=False,
         decile=decile,rows=[dict(company_id=r['company_id'],issuer_id=r['issuer_id'],**r[g['kind']][g['key']]) for r in rows[offset:offset+limit]],
         next_offset=offset+limit if offset+limit<len(rows) else None)
     _need(len(json_bytes(out))<=MAX_BYTES,'PERSONAL_PAGE_SIZE');return out
+
+
+# Common result and projections: aliases, not a second calculation engine.
+owner_result=personal_result
+owner_page=personal_page
+owner_group_page=personal_group_page

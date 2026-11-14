@@ -10,7 +10,7 @@
   const api = factory(node ? require('../product/web_assets/qgv-v2.js') : root.QgvV2,
     node ? require('node:crypto') : null, root.crypto);
   if (node) module.exports = api;
-  else root.PersonalSheetV = api;
+  else { root.PersonalSheetV = api; root.OwnerPriceV = api; }
 })(typeof globalThis === 'object' ? globalThis : this, function(V2, nodeCrypto, browserCrypto) {
   'use strict';
   const NAMESPACE = 'PERSONAL_SHEET_V';
@@ -66,13 +66,66 @@
       typeof reason === 'string' && reason.length > 0), 'PERSONAL_PACKET_RAW_REASONS');
   }
 
+  function ownerWire(packet) {
+    return packet.schema_version === 'owner-price-v-packet/1';
+  }
+
+  function validateOwnerProfile(packet) {
+    need(['OWNER_PRIVATE_KIS_V', NAMESPACE].includes(packet.namespace), 'OWNER_PACKET_SCOPE');
+    const context = packet.context;
+    const fields = ['context_id', 'evaluation_day', 'evaluated_at', 'input_cutoff',
+      'provider', 'price_definition', 'evaluation_mode'];
+    need(Object.keys(context).length === fields.length && fields.every(key => own(context, key)),
+      'OWNER_PACKET_CONTEXT');
+    const kis = packet.namespace === 'OWNER_PRIVATE_KIS_V';
+    need(kis ? context.provider === 'KIS' && context.price_definition === 'KIS_DAILY_CLOSE' &&
+      context.evaluation_mode === 'EXPLICIT_EOD_ASOF' :
+      context.provider === 'GOOGLEFINANCE' && context.price_definition === 'GOOGLEFINANCE_CURRENT' &&
+      context.evaluation_mode === 'CURRENT', 'OWNER_PACKET_PROVIDER');
+    const availability = packet.availability_context;
+    need(object(availability) && availability.evaluation_mode === context.evaluation_mode &&
+      availability.historical_pit_proven === false &&
+      availability.reconstruction === 'ACTUAL_INPUT_CUTOFF_NOT_HISTORICAL_SYSTEM_HOLDINGS' &&
+      availability.official_top500_eligible === false && availability.research_coverage_claim === false,
+      'OWNER_AVAILABILITY_CONTEXT');
+  }
+
+  // Disclosures come from the validated preparer. Never echo embedded quoted
+  // prices/market values if a malformed packet places them inside metadata.
+  function disclosureCopy(value) {
+    if (Array.isArray(value)) return value.map(disclosureCopy);
+    if (!object(value)) return value;
+    const forbidden = new Set(['price', 'prices', 'quote', 'quotes', 'close', 'open',
+      'high', 'low', 'month_closes', 'raw_bars', 'price_e4', 'close_e4',
+      'market_cap', 'marketcap', 'issuer_mcap', 'ev', 'enterprise_value']);
+    const out = {};
+    for (const [key, item] of Object.entries(value)) {
+      need(!forbidden.has(key.toLowerCase()), 'OWNER_METADATA_PRICE_FIELD');
+      Object.defineProperty(out, key, {value: disclosureCopy(item), enumerable: true,
+        configurable: true, writable: true});
+    }
+    return out;
+  }
+
   function validatePacket(packet) {
-    need(object(packet) && packet.schema_version === 'personal-sheet-v-packet/1' &&
-      packet.namespace === NAMESPACE && object(packet.context) && object(packet.configuration) &&
+    need(object(packet) && object(packet.context) && object(packet.configuration) &&
       ['U1-555', 'S1-555'].includes(packet.configuration.candidate) && packet.configuration.minimum === 8 &&
       object(packet.evaluation_original) && object(packet.reference_original) &&
       object(packet.evaluation_effective) && object(packet.reference_effective) &&
       Array.isArray(packet.evaluation) && Array.isArray(packet.reference), 'PERSONAL_PACKET_SCHEMA');
+    if (ownerWire(packet)) validateOwnerProfile(packet);
+    else {
+      need(packet.schema_version === 'personal-sheet-v-packet/1' &&
+        packet.namespace === NAMESPACE, 'PERSONAL_PACKET_SCHEMA');
+      const context = packet.context;
+      // Older hand-built packets have no supplier fields. Preserve those while
+      // rejecting a supplied source pair that the legacy preparer never allows.
+      if (own(context, 'provider') || own(context, 'price_definition')) {
+        need(context.provider === 'GOOGLEFINANCE' && context.price_definition === 'GOOGLEFINANCE_CURRENT' ||
+          context.provider === 'IEX_HIST' && context.price_definition === 'IEX_LAST_REGULAR_SESSION_TRADE',
+          'PERSONAL_PACKET_PROVIDER');
+      }
+    }
     for (const entries of [packet.evaluation, packet.reference]) {
       const ids = new Set();
       for (const entry of entries) {
@@ -262,9 +315,24 @@
       packet.configuration_hash === expected_configuration_hash, 'PERSONAL_CONFIGURATION_ANCHOR');
     need(V2 && typeof V2.scoreUniverse === 'function' && typeof V2.percentile === 'function' &&
       typeof V2.axisScore === 'function', 'PERSONAL_COMMON_ENGINE_UNAVAILABLE');
-    return {schema_version: 'personal-sheet-v-js-result/1', namespace: NAMESPACE,
-      evaluation_original: packet.evaluation_original, reference_original: packet.reference_original,
-      rows: calculateRows(packet)};
+    const result = {schema_version: ownerWire(packet) ? 'owner-price-v-js-result/1' : 'personal-sheet-v-js-result/1',
+      namespace: packet.namespace, evaluation_original: packet.evaluation_original,
+      reference_original: packet.reference_original, rows: calculateRows(packet)};
+    if (ownerWire(packet)) {
+      result.storage = 'EPHEMERAL_ONLY';
+      result.official = false;
+      result.research_coverage_claim = false;
+      result.filter_recalculates = false;
+      result.availability_context = disclosureCopy(packet.availability_context);
+      const entries = new Map(packet.evaluation.map(entry => [entry.company_id, entry]));
+      for (const row of result.rows) {
+        const entry = entries.get(row.company_id);
+        for (const key of ['capitalization_basis', 'price_metadata', 'provenance', 'nonprice']) {
+          if (own(entry, key)) row[key] = disclosureCopy(entry[key]);
+        }
+      }
+    }
+    return result;
   }
 
   return Object.freeze({calculate});
