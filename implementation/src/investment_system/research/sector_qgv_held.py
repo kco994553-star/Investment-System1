@@ -11,11 +11,149 @@ import tarfile
 from datetime import date, timedelta
 from pathlib import Path
 from investment_system.qgv import v2_factors as vf
-from .sector_qgv import calculate_factor
+from .sector_qgv import calculate_factor, digest
 from .sector_qgv_registry import CATALOG, MAPPING
 from .financial_v import _balance_observations
 
 ADAPTER_VERSION = 'held-sec-sector-adapter/2'
+EPS_ADAPTER_VERSION = 'held-sec-annual-eps/1'
+Q_ADAPTER_VERSION = 'held-sec-q-inputs/1'
+Q_VARIANTS = ('roa_ttm', 'accruals_assets_ttm', 'debt_assets')
+EXPLICIT_DEBT_TOTALS = ('DebtLongtermAndShorttermCombinedAmount', 'DebtAndCapitalLeaseObligations')
+
+
+def _connect_explicit_debt(payload, fields, reasons, cutoff):
+    """Connect a reported carrying-value total; never sum overlapping totals.
+
+    These existing debt-evidence concepts describe combined borrowings, not
+    total liabilities, fair value, an individual instrument or future maturities.
+    Missing current/noncurrent lines are not evidence of zero.
+    """
+    if 'debt' in fields or 'assets_end' not in fields:
+        return
+    anchor = fields['assets_end']; end = date.fromisoformat(anchor['period_end'])
+    currency = anchor['currency']; tax = payload.get('facts', {}).get('us-gaap', {})
+    accepted, rejected, present = _balance_observations(payload, EXPLICIT_DEBT_TOTALS, currency, cutoff)
+    # Include invalid/latest records in the frontier: a conflict/wrong unit must
+    # not expose an older accepted total after the balance parser rejects it.
+    frontier = []
+    for tag in EXPLICIT_DEBT_TOTALS:
+        for unit, rows in tax.get(tag, {}).get('units', {}).items():
+            for r in rows:
+                filed = vf._day(r.get('filed'))
+                if r.get('end') == str(end) and filed and filed <= cutoff:
+                    frontier.append((filed, r.get('accn'), unit, r.get('start')))
+    latest = max((r[0] for r in frontier), default=None)
+    keys = {k for k in accepted if k[0] == end and k[1] == latest}
+    current = [r for r in frontier if r[0] == latest]
+    selected = accepted[next(iter(keys))] if len(keys) == 1 else None
+    coherent = (selected is not None and current and
+                all(r[1] == next(iter(keys))[2] and r[2] == currency and r[3] is None for r in current))
+    if not coherent or selected['value'] < 0:
+        reasons['debt'] = dict(cause='VALIDATION_FAILED' if present else 'VALUE_ABSENT_IN_EXAMINED_SOURCE',
+            detail='EXACT_EXPLICIT_TOTAL_REQUIRED_NO_LIABILITIES_OR_ZERO_FILL',
+            period_end=str(end), rejected=rejected)
+        return
+    key = next(iter(keys))
+    fields['debt'] = {**anchor, 'value': selected['value'],
+        'source_detail': dict(definition='REPORTED_INTEREST_BEARING_DEBT_TOTAL',
+            accession=key[2], filed=str(key[1]), filed_precision='DATE',
+            json_pointers=selected['json_pointers'], adapter_version=Q_ADAPTER_VERSION)}
+    reasons['debt'] = dict(cause='HELD_EXPLICIT_TOTAL_CONNECTED', period_end=str(end))
+
+
+def held_q_observations(payload, record, reference, *, as_of, valuation_date, accounting_template=None):
+    """Only the three unified Q variants, using the shared extraction/kernel."""
+    if str(payload.get('cik')).zfill(10) != record.get('cik'):
+        raise ValueError('Q_SOURCE_ISSUER_MISMATCH')
+    fields, reasons = _components(payload, record, reference)
+    ctx = dict(as_of=as_of, valuation_date=valuation_date, issuer_id=record['cik'], security_id=None,
+        accounting_template=accounting_template, raw_only_accounting_unconfirmed=accounting_template is None)
+    observations = {v: calculate_factor(v, fields, ctx) for v in Q_VARIANTS}
+    return observations, dict(component_reasons=reasons, adapter_version=Q_ADAPTER_VERSION), fields
+
+
+def held_eps_observation(payload, record, reference, *, as_of, valuation_date,
+                         accounting_template=None):
+    """Connect reported annual diluted EPS, never synthesize TTM EPS or identity.
+
+    The existing fiscal picker/split engine supplies numeric observations. Its
+    issuer-level normalization is a diagnostic until a separately reviewed
+    class/attribution/history proof is supplied. No valuation-date price needed.
+    """
+    if str(payload.get('cik')).zfill(10) != record.get('cik'):
+        raise ValueError('EPS_SOURCE_ISSUER_MISMATCH')
+    acquired = record['acquired_at']; cutoff = date.fromisoformat(acquired[:10])
+    taxonomy, currency = vf._taxonomy_and_currency(payload, cutoff)
+    fields = {}; annual = {}; diagnostic = {'annual': annual, 'adapter_version': EPS_ADAPTER_VERSION}
+    endpoint = dict(status='PERIOD_INPUT_MISSING', value=None, adopted=False,
+                    scope='ISSUER_REPORTED_ENDPOINTS_NOT_CLASS_VERIFIED')
+    if taxonomy and record.get('fiscal_year_end'):
+        facts = vf._Facts(payload, taxonomy, currency, cutoff)
+        company = vf._Company(facts, date.fromisoformat(record['fiscal_year_end']),
+                              sic=record.get('sic'), profile=record.get('profile'))
+        tax = payload['facts'][taxonomy]
+        diagnostic['eps_concept_present'] = any(c in tax for c in facts.concepts['eps_diluted'])
+        for k in range(4):
+            field = 'eps_diluted_fy' + (str(k) if k else '')
+            target = company.end(k); conflict = False
+            # _Facts drops same-filed conflicts. Do not let a secondary concept
+            # or an older annual span hide the latest primary conflict.
+            for concept in facts.concepts['eps_diluted']:
+                candidates = []
+                for x in tax.get(concept, {}).get('units', {}).get(currency+'/shares', []):
+                    start, end, filed = (vf._day(x.get(n)) for n in ('start', 'end', 'filed'))
+                    if (None in (start, end, filed) or filed > cutoff or
+                        x.get('form') not in vf.ANNUAL_FORMS or not vf._finite(x.get('val')) or
+                        not vf.ANNUAL_DAYS[0] <= (end-start).days <= vf.ANNUAL_DAYS[1] or
+                        abs((end-target).days) > vf.YEAR_TOLERANCE_DAYS):
+                        continue
+                    candidates.append(x)
+                if not candidates: continue
+                newest = max(x['filed'] for x in candidates)
+                latest = [x for x in candidates if x['filed'] == newest]
+                conflict = len({(x['start'], x['end'], x['val']) for x in latest}) != 1
+                break
+            if conflict:
+                annual[field] = dict(status='LATEST_FILING_CONFLICT', target_end=str(target)); continue
+            hit = facts.annual('eps_diluted', target)
+            if not hit:
+                annual[field] = dict(status='ANNUAL_DILUTED_EPS_NOT_EXTRACTED', target_end=str(target)); continue
+            filing = facts.annual_filing('eps_diluted', target)
+            factor = company.share_factor(filing)
+            value = company.eps(k)
+            if value is None or factor is None:
+                annual[field] = dict(status='SHARE_NORMALIZATION_UNCONFIRMED', target_end=str(target),
+                                     accession=filing[0] if filing else None); continue
+            concept = next(c for c, table in zip(facts.concepts['eps_diluted'], facts.items['eps_diluted'])
+                           if (hit[1], hit[2]) in table)
+            state = 'STALE' if record.get('state') == 'STALE' or 'STALE_INPUT' in record.get('reason_codes', []) else (
+                'SOURCE_NOT_AVAILABLE' if record.get('state') == 'NOT_AVAILABLE' else 'VALID')
+            fields[field] = dict(value=value, period_kind='FY' if k == 0 else 'FY_MINUS_'+str(k),
+                period_start=str(hit[1]), period_end=str(hit[2]), unit=currency+'/share', currency=currency,
+                issuer_id=record['cik'], security_id=None, share_basis=None, corporate_action_basis=None,
+                scope='CONSOLIDATED', available_at=acquired, retrieved_at=acquired,
+                availability_basis='OBSERVED_BY_ACQUISITION_NOT_FIRST_RELEASE', provenance=[reference], status=state,
+                source_detail=dict(taxonomy=taxonomy, concept=concept, accession=filing[0],
+                    filed=str(filing[1]), filed_precision='DATE', raw_value=hit[0], normalization_factor=factor,
+                    normalization_basis='EXISTING_CALC_23_1_FY0_RESTATEMENT_NOT_CLASS_VERIFICATION',
+                    basis_accession=company._basis()[0] if company._basis() else None))
+            annual[field] = dict(status='EXTRACTED', target_end=str(target), accession=filing[0])
+        ends = [fields.get(f) for f in ('eps_diluted_fy', 'eps_diluted_fy3')]
+        if all(ends):
+            if any(x['value'] <= 0 for x in ends): endpoint['status'] = 'NONPOSITIVE_ENDPOINT'
+            else: endpoint.update(status='NUMERIC_CANDIDATE', value=vf._cagr(ends[0]['value'], ends[1]['value'], 3))
+    else:
+        diagnostic['eps_concept_present'] = None
+        diagnostic['source_reason'] = 'TAXONOMY_OR_FISCAL_ANCHOR_UNCONFIRMED'
+    diagnostic['endpoint_diagnostic'] = endpoint
+    ctx = dict(as_of=as_of, valuation_date=valuation_date, issuer_id=record['cik'], security_id=None,
+               accounting_template=accounting_template, raw_only_accounting_unconfirmed=accounting_template is None,
+               historical_share_basis=record.get('historical_share_basis'))
+    observation = calculate_factor('eps_diluted_cagr_3y', fields, ctx)
+    diagnostic['normalized_components_hash'] = digest(fields)
+    diagnostic['missing_fields'] = [s['field'] for s in CATALOG['eps_diluted_cagr_3y']['inputs'] if s['field'] not in fields]
+    return observation, diagnostic, fields
 
 
 def _common_components(payload, record, reference, facts, company, fields, reasons, put):
@@ -154,6 +292,7 @@ def _components(payload,record,reference):
                 put(name+'_fy'+(str(k) if k else ''),hit[0]/((a+b)/2),'FY' if k==0 else 'FY_MINUS_'+str(k),hit[2],unit='decimal',start=hit[1])
     reasons['eps_ttm_diluted']='VERIFIED_TTM_EPS_COMPOSITION_NOT_CONNECTED; generic monetary-flow YTD arithmetic not used for EPS'
     _common_components(payload,record,reference,facts,c,fields,reasons,put)
+    _connect_explicit_debt(payload, fields, reasons, cutoff)
     return fields,reasons
 
 
@@ -175,6 +314,11 @@ def held_observations(payload, record, reference, *, as_of, valuation_date, acco
         'revenue_growth_consistency_3y','roa_improvement_3y',
         'roe_common_ttm','common_equity_assets','common_bps_cagr_3y','cfo_assets_improvement_3y'}
     result={v:calculate_factor(v,fields,ctx) for v in sorted(allowed)}
+    eps, eps_diagnostics, eps_fields = held_eps_observation(payload, record, reference, as_of=as_of,
+        valuation_date=valuation_date, accounting_template=accounting_template)
+    result['eps_diluted_cagr_3y'] = eps
+    reasons['eps_diluted_cagr_3y'] = eps_diagnostics
+    fields.update(eps_fields)
     return (result,reasons,fields) if include_components else (result,reasons)
 
 
