@@ -94,7 +94,7 @@ function storedBlock(M,redraw){const scope=M.STORED_SCOPE[S.pop],key=S.model;if(
  const td=v=>h('td',null,v),th=t=>h('th',{scope:'col'},t);
  const table=rows?h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{q5StoredTable:key}},h('caption',null,'보관 결과 묶음 '+(rows.i+1)+'/'+n+' · 생산자 순서 그대로 · 화면 재정렬 없음'),
   h('thead',null,h('tr',null,th('기업'),th('Q'),th('G'),th('V'),th('총점'),th('순위'),th('활성 역할'),th('15역할'),th('관문'))),
-  h('tbody',null,...rows.list.map(r=>h('tr',{dataset:{q5StoredRow:r.company_id}},td(r.company_id),td(M.score(r.Q)),td(M.score(r.G)),td(M.score(r.V)),
+  h('tbody',null,...rows.list.map(r=>h('tr',{dataset:{q5StoredRow:r.company_id}},td([r.company_id,...r.flags.map(f=>h('span',{class:'chip',dataset:{q5Flag:f.code}},f.text))]),td(M.score(r.Q)),td(M.score(r.G)),td(M.score(r.V)),
    td(r.total===null?'없음':M.score(r.total)+(r.partial?' · 부분 합계(순위 제외)':' · 완전')),td(r.rank?r.rank+'/'+r.rank_n:'순위 없음'),
    td('Q'+r.active.Q+'/G'+r.active.G+'/V'+r.active.V),td(r.complete?'완결':'미완결'),td(M.GATE_TEXT[r.gate]||r.gate)))))):null;
  const scopes=T.groups?M.storedScopes(T.groups,key,S.storedModelRole):[],rs=scopes.includes(T.rankScope)?T.rankScope:scopes[0];
@@ -253,13 +253,13 @@ function fill(route,{body}){const signal=route.signal;
     D?h('p',{class:'meta'},'D10 = 상위 · 유효 '+D.valid+'/'+D.n+' · 구간 밖 '+D.other+' · 상위 20개로 대신하지 않음 · 동점은 엔진의 저장 순서 규칙'):null));}
  function detailBlock(M,id){const pr=S.preview.rows.find(r=>r.company_id===id),d=S.detail?M.detail(S.detail,pr):null;
   if(!d)return h('p',{class:'meta',dataset:{q5Detail:'PENDING'}},id,' 상세 불러오는 중');
-  const metricLine=m=>h('li',null,m.metric,' ',M.score(m.score),' · ',m.reason?(M.REASON_TEXT[m.reason]||m.reason):'참조 '+m.reference_n,' · 설정 '+m.weight,
+  const metricLine=m=>h('li',null,m.metric,m.substitute_for?h('span',{class:'chip',dataset:{q5Flag:'SUBSTITUTE_METRIC'}},'대체 지표 · '+m.substitute_for+' 대신'):'',...m.flags.map(f=>h('span',{class:'chip',dataset:{q5Flag:f.code}},f.text)),' ',M.score(m.score),' · ',m.reason?(M.REASON_TEXT[m.reason]||m.reason):'참조 '+m.reference_n,' · 설정 '+m.weight,
    m.w?' · 명목 '+M.pct(m.w.nominal)+' · 결측 재배분 뒤 '+M.pct(m.w.missing_redistributed_before_gate)+' · 관문 뒤 '+M.pct(m.w.after_gate):'');
   const roleLine=r=>h('li',{dataset:{q5DetailRole:r.role}},h('b',null,r.name),' ',M.score(r.score),r.decile_status==='VALID'?' · D'+r.decile:'',r.selected?'':' · 제외',r.partial?' · 일부 지표만':'',
    h('ul',null,...r.metrics.map(metricLine)));
   const axisBox=x=>h('details',{class:'why',open:x.axis===S.axis},h('summary',null,x.axis,' ',M.score(x.score),' ▸'),h('ul',{class:'news-lines'},...x.roles.map(roleLine)));
   return h('div',{class:'lb',dataset:{q5Detail:id}},
-   h('div',{class:'lb-head'},h('b',null,id),h('span',{class:'meta'},'총점 ',M.score(d.total),d.partial?' 부분 합계':'',' · ',M.GATE_TEXT[d.gate]||d.gate,d.complete?' · 15역할 모두':'',' · 활성 Q',d.active.Q,'/G',d.active.G,'/V',d.active.V)),
+   h('div',{class:'lb-head'},h('b',null,id),...d.flags.map(f=>h('span',{class:'chip',dataset:{q5Flag:f.code}},f.text)),h('span',{class:'meta'},'총점 ',M.score(d.total),d.partial?' 부분 합계':'',' · ',M.GATE_TEXT[d.gate]||d.gate,d.complete?' · 15역할 모두':'',' · 활성 Q',d.active.Q,'/G',d.active.G,'/V',d.active.V)),
    ...d.axes.map(axisBox));}
  changed();}
 function subscribe(fn,signal){listeners.add(fn);if(signal)signal.addEventListener('abort',()=>listeners.delete(fn),{once:true});}

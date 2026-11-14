@@ -48,6 +48,14 @@ const PERIOD_TEXT=Object.freeze({FY:'회계연도',TTM:'최근 12개월',LATEST_
  FY_5Y:'회계연도 5년',FY_5Y_MIN3:'회계연도 5년(최소 3년)',HISTORY_MIN3:'과거 3개 이상',DCF_AND_FY3:'역DCF와 3년 실적'});
 const UNIT_TEXT=Object.freeze({decimal:'소수',percentile:'백분위',multiple:'배수'});
 const STATUS_TEXT=Object.freeze({EXISTING_KERNEL:'계산 구현됨'});
+// Display flags (owner 2026-11-14: 임시 분류·REIT 임시·대체 지표 사용 표시). Read only when the producer's row / metric carries
+// `display_flags` (codes) or a metric carries `substitute_for` (the default metric it replaces); names proposed to Codex in #437 and
+// fixed when Codex confirms them. A code this table does not know is still shown (never hidden), as 「표시 규칙 확인 전」.
+const FLAG_TEXT=Object.freeze({CLASSIFICATION_PROVISIONAL:'임시 분류',REIT_PROVISIONAL:'REIT 임시 처리',SUBSTITUTE_METRIC:'대체 지표 사용',
+ TEMPORARY_OFFICIAL_PROXY:'공식 모형 임시 대리값 · 555 미완결'});
+function flagsOf(x){const f=x&&typeof x==='object'&&Array.isArray(x.display_flags)?x.display_flags:[];
+ return Object.freeze(f.filter(c=>typeof c==='string'&&c).map(c=>Object.freeze({code:c,text:FLAG_TEXT[c]||'표시 규칙 확인 전 표시'})));}
+function substituteOf(m){return m&&typeof m==='object'&&typeof m.substitute_for==='string'&&m.substitute_for?m.substitute_for:null;}
 const REC_TEXT=Object.freeze({OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM:'555 기본 구성(성과 최적값 아님)',SUITABLE_OPTION_NOT_DEFAULT:'적합한 선택지(기본값 아님)'});
 const GATE_TEXT=Object.freeze({PASS:'관문 통과',VALUE_EXCLUDED:'관문: V 총점 반영 제외',UNKNOWN:'관문 판정 불가(총점 없음)'});
 const REASON_TEXT=Object.freeze({RAW_MISSING:'원값 없음',DEFINITION_OR_SOURCE_UNVERIFIED:'정의·출처 미검증',NOT_AVAILABLE_AT_CUTOFF:'입력 마감 시점에 없음',
@@ -209,8 +217,8 @@ function deciles(ans){const bands=Array(10).fill(0);let valid=0,other=0;
 function detail(row,pageRow){if(!isObj(row))return null;const W=pageRow&&pageRow.after?pageRow.after.weights:[];
  return freeze({company_id:row.company_id,issuer_id:row.issuer_id,total:row.total,partial:row.partial_total,rank:row.rank,rank_n:row.rank_n,gate:row.gate_status,complete:row.fifteen_roles_complete,active:row.active_roles,
   axes:AXES.map(a=>({axis:a,score:row.axes[a].score,state:row.axes[a].state,roles:Object.entries(row.roles).filter(([k])=>k[0]===a.toLowerCase()).map(([k,x])=>({role:k,name:roleText(k),score:x.score,rank:x.rank,rank_n:x.rank_n,decile:x.decile,decile_status:x.decile_status,selected:x.selected,partial:x.partial,
-   metrics:x.metrics.map(m=>({metric:m.metric,raw_status:m.raw_status,score:m.score,reason:m.reason,reference_n:m.reference_n,reference_scope:m.reference_scope,weight:m.weight,
-    w:W.find(l=>l.role===k&&l.metric===m.metric)||null}))}))})),families:row.input_family_contributions||{}});}
+   metrics:x.metrics.map(m=>({metric:m.metric,raw_status:m.raw_status,score:m.score,reason:m.reason,reference_n:m.reference_n,reference_scope:m.reference_scope,weight:m.weight,flags:flagsOf(m),substitute_for:substituteOf(m),
+    w:W.find(l=>l.role===k&&l.metric===m.metric)||null}))}))})),families:row.input_family_contributions||{},flags:flagsOf(row)});}
 
 /* ---- saved record (Main's projection of the engine's result for replay) */
 function validateSaved(x){try{if(!isObj(x)||x.schema_version!==SCHEMA.SAVED||Object.keys(x).sort().join()!==[...SAVED_KEYS].sort().join())return{ok:false,code:'SAVED_SHAPE'};
@@ -276,7 +284,7 @@ function storedBoard(st,key){const m=st.index.models[key],e=st.index.evaluation;
    '평가 입력 '+e.input_hash.slice(0,12)+'… · 참조 입력 '+m.bindings.reference.input_hash.slice(0,12)+'… · 둘 다 원입력에서 따로 계산한 기준과 같음',
    '결과 '+m.result_hash.slice(0,12)+'… · 설정 '+m.bindings.configuration_hash.slice(0,12)+'… · 분류 '+e.classification_version+' · 전체시장 분모 없음']});}
 function storedRows(detail){return detail.rows.map(r=>({company_id:r.company_id,Q:r.axes.Q.score,G:r.axes.G.score,V:r.axes.V.score,total:r.total,partial:r.partial_total,rank:r.rank,rank_n:r.rank_n,
- active:r.active_roles,complete:r.fifteen_roles_complete,gate:r.gate_status,status:r.status}));}
+ active:r.active_roles,complete:r.fifteen_roles_complete,gate:r.gate_status,status:r.status,flags:flagsOf(r)}));}
 // Ranking scopes of one model's role groups (U1: COMMON; S1: one per SECTOR|TEMPLATE, never joined into one ranking).
 function storedScopes(groups,model,role){return groups.filter(x=>x.model===model&&x.kind==='roles'&&x.role===role).map(x=>x.ranking_scope);}
 function storedDeciles(groups,model,role,scope){const g=groups.find(x=>x.model===model&&x.kind==='roles'&&x.role===role&&(scope===undefined||x.ranking_scope===scope));if(!g)return null;
@@ -295,5 +303,5 @@ function boardState(pop,model,{officialLoaded=false,saved=null,selection=null}={
 
 return Object.freeze({SCHEMA,AXES,ROLE_TEXT,POPULATIONS,MODELS,CANDIDATE_OF,KIND_TEXT,TEMPLATE_TEXT,GATE_TEXT,REASON_TEXT,SELECTION_TEXT,DATA_KIND_TEXT,
  checkContext,canonical,roleText,templateOf,sectorOf,scopes,recipeLine,start,rolesOf,axisOf,setAxis,setRole,excludeRole,setMetric,blocked,addMetric,removeMetric,replaceMetric,
- restore,restoreScope,activeCount,problems,sums,families,card,search,previewAnswer,pageAnswer,savedMatches,TRANSITION,STORED_SCOPE,SCOPE_TEXT,checkStored,checkStoredFile,storedGroups,storedBoard,storedRows,storedScopes,storedDeciles,compare,stages,deciles,detail,validateSaved,checkView,populationView,boardState,pct,score});
+ restore,restoreScope,FLAG_TEXT,flagsOf,activeCount,problems,sums,families,card,search,previewAnswer,pageAnswer,savedMatches,TRANSITION,STORED_SCOPE,SCOPE_TEXT,checkStored,checkStoredFile,storedGroups,storedBoard,storedRows,storedScopes,storedDeciles,compare,stages,deciles,detail,validateSaved,checkView,populationView,boardState,pct,score});
 });

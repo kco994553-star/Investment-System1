@@ -244,6 +244,16 @@ const copy = (v) => JSON.parse(JSON.stringify(v));
       throws(() => Q.storedGroups(st2, []), 'GROUP_FILES');
     });
 
+    await ok('display flags (owner 2026-11-14): 임시 분류 · REIT 임시 · 대체 지표 read only when the producer sends them; unknown codes shown, never hidden', async () => {
+      assert.deepEqual(Q.flagsOf({}), []);
+      assert.deepEqual(Q.flagsOf({ display_flags: ['CLASSIFICATION_PROVISIONAL', 'REIT_PROVISIONAL', 'SUBSTITUTE_METRIC', 'TEMPORARY_OFFICIAL_PROXY', 'NEW_CODE', 3] }).map((f) => f.text),
+        ['임시 분류', 'REIT 임시 처리', '대체 지표 사용', '공식 모형 임시 대리값 · 555 미완결', '표시 규칙 확인 전 표시']);
+      const row = { company_id: 'X', issuer_id: 'I', axes: { Q: { score: 1 }, G: { score: null }, V: { score: null } }, total: null, partial_total: false, rank: null, rank_n: null,
+        active_roles: { Q: 5, G: 5, V: 5 }, fifteen_roles_complete: false, gate_status: 'UNKNOWN', status: 'X', display_flags: ['REIT_PROVISIONAL'] };
+      assert.deepEqual(Q.storedRows({ rows: [row] })[0].flags.map((f) => f.code), ['REIT_PROVISIONAL']);
+      assert.deepEqual(Q.storedRows({ rows: [{ ...row, display_flags: undefined }] })[0].flags, []);
+    });
+
     await ok('board state: every population × model pair says what it is; only 기존504 × 기존 공식 is SHOWN', async () => {
       for (const p of Object.keys(Q.POPULATIONS)) for (const m of Object.keys(Q.MODELS)) {
         const s = Q.boardState(p, m, { officialLoaded: true });
