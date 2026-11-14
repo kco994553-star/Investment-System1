@@ -102,3 +102,15 @@ def test_fractional_weights_and_sector_axis_override():
 def test_dictionary_not_confused_with_legacy_adapter_mapping():
     c=configuration('U1-555');e,ref=fixture();ref['classification_context']['dictionary_version']='book-sector-map/1'
     with pytest.raises(ValueError,match='CLASSIFICATION_CONTEXT'):run(c,e,ref)
+
+
+def test_verified_period_aliases_and_scoped_user_override():
+    c=configuration('U1-555');c['roles']['v_earnings_yield']['metrics']={'PER_TTM_DILUTED':1,'sector::ep_ttm_diluted':1}
+    with pytest.raises(ValueError,match='DUPLICATE'):validate_configuration(c)
+    c['roles']['v_earnings_yield']['metrics']={'PER_TTM_DILUTED':1,'PER_FY_DILUTED':1}
+    validate_configuration(c)
+    c=configuration('S1-555');r=deepcopy(c['roles']['q_moat_proxy']);r['weight']=0
+    c['scoped_role_overrides']={'INFORMATION_TECHNOLOGY|GENERAL':{'q_moat_proxy':r}}
+    e,ref=fixture();out=run(c,e,ref)
+    assert out['rows'][0]['active_roles']['Q']==4
+    assert c['roles']['q_moat_proxy']['weight']==20

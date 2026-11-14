@@ -13,7 +13,7 @@ import math
 from ..qgv.qgv_v2 import WEIGHTS, axis_score, GATE_PERCENTILE
 from ..qgv.v2_scoring import SUBMETRICS, _Pool, percentile, MIN_PEERS
 from .sector_qgv import digest, timestamp
-from .sector_qgv_registry import SECTORS, TEMPLATES
+from .sector_qgv_registry import SECTORS, TEMPLATES, ALIASES as SECTOR_ALIASES
 
 IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
 V_SPECS={'v_earnings_yield':(('ebit_yield',1),),'v_fcf_yield':(('fcf_yield',1),),
@@ -21,6 +21,8 @@ V_SPECS={'v_earnings_yield':(('ebit_yield',1),),'v_fcf_yield':(('fcf_yield',1),)
     'v_expectation_check':(('gap',-1),)}
 SPECS={**SUBMETRICS['GENERAL'],**V_SPECS}
 ALIASES={'EV_EBIT_TTM':'ebit_yield','EV_FCF_TTM':'fcf_yield'}
+ALIASES.update({alias:'sector::'+v for alias,v in SECTOR_ALIASES.items() if alias not in ALIASES})
+ALIASES.update({'sector::'+alias:'sector::'+v for alias,v in SECTOR_ALIASES.items()})
 SHARE_METRICS={'eps_cagr_3y','fcf_per_share_cagr_3y','dilution_3y'}
 FORMULAS={
  'roic':('NOPAT / mean(FY opening, closing invested capital)','FY','return_level','v2_factors._Company.roic'),
@@ -39,8 +41,8 @@ FORMULAS={
  'revenue_positive_growth_share':('positive annual revenue changes / available changes; >=3 of 5','FY_5Y_MIN3','revenue_growth','v2_factors._growth_common'),
  'revenue_growth_volatility':('population std annual revenue changes; >=3 of 5','FY_5Y_MIN3','revenue_growth','v2_factors._growth_common'),
  'revenue_acceleration':('TTM revenue YoY growth - FY3 revenue CAGR','TTM_AND_FY3','revenue_growth','v2_factors._growth_common'),
- 'ebit_yield':('validated TTM EBIT / positive EV','TTM','enterprise_earnings','sector_qgv.calculate_raw'),
- 'fcf_yield':('(TTM CFO - positive cash CAPEX) / positive EV','TTM','enterprise_cash','sector_qgv.calculate_raw'),
+ 'ebit_yield':('validated TTM EBIT / positive EV','TTM','enterprise_earnings','sector_qgv.calculate_factor'),
+ 'fcf_yield':('(TTM CFO - positive cash CAPEX) / positive EV','TTM','enterprise_cash','sector_qgv.calculate_factor'),
  'own_history':('current EBIT/share/price percentile in eligible own historical values','HISTORY_MIN3','enterprise_earnings','qgv_v2.percentile'),
  'gap':('reverse DCF implied growth - realized FY3 revenue CAGR','DCF_AND_FY3','revenue_growth','qgv_v2.reverse_dcf'),
 }
@@ -65,11 +67,11 @@ def catalog():
     from .sector_qgv_registry import CATALOG
     for key,v in CATALOG.items():
         if v['calculator_status']!='IMPLEMENTED':continue
-        out['sector::'+key]=dict(canonical_id='sector::'+key,variant=key+'/sector-1',display_name=v.get('name',key),
-            aliases=[],formula=v.get('formula',v.get('formula_id')),period=v.get('period'),unit=v.get('unit'),
+        out['sector::'+key]=dict(canonical_id='sector::'+key,variant=key+'/sector-1',display_name=v['display_name'],
+            aliases=[a for a,m in ALIASES.items() if m=='sector::'+key],formula=v.get('formula',v.get('formula_id')),period=v.get('period'),unit=v.get('unit'),
             direction=1 if v['direction']=='HIGHER' else -1,axis=v['axis'],roles=[],
             accounting_scope=v['scope'],input_family=v.get('overlap_group',v['role']),
-            formula_source='sector_qgv.calculate_raw',required_inputs=v['inputs'],source='SECTOR_CATALOG',
+            formula_source='sector_qgv.calculate_factor',required_inputs=v['inputs'],source='SECTOR_CATALOG',
             implementation_status='EXISTING_KERNEL',availability='PER_INPUT',validation='REQUIRES_EVIDENCE',
             default=False,recommendation='SUITABLE_OPTION_NOT_DEFAULT')
     return out
@@ -107,8 +109,16 @@ def validate_configuration(c):
         if r['axis']!=role[0].upper():raise ValueError('ROLE_AXIS')
         ids=[ALIASES.get(m,m) for m in r['metrics']]
         if len(ids)!=len(set(ids)):raise ValueError('DUPLICATE_CANONICAL_METRIC')
+        equivalent={'sector::ebit_ev':'ebit_yield','sector::fcf_ev':'fcf_yield'}
+        if len({equivalent.get(m,m) for m in ids})!=len(ids):raise ValueError('DUPLICATE_SAME_FORMULA_METRIC')
         if not valid_weights(r['metrics'].values()):raise ValueError('METRIC_WEIGHTS')
         if any(m not in cats or cats[m]['axis']!=r['axis'] for m in ids):raise ValueError('UNSUPPORTED_METRIC_VARIANT')
+    overrides=c.get('scoped_role_overrides',{})
+    if overrides and c['candidate']!='S1-555':raise ValueError('UNIFIED_SCOPE_OVERRIDE')
+    for scope,roles in overrides.items():
+        if scope.count('|')!=1 or scope.split('|')[0] not in SECTORS or scope.split('|')[1] not in TEMPLATES:raise ValueError('SETTING_SCOPE')
+        if not set(roles)<=set(SPECS):raise ValueError('ROLE_IDS')
+        local=deepcopy(c);local['scoped_role_overrides']={};local['roles'].update(roles);validate_configuration(local)
     return c
 
 
@@ -180,9 +190,11 @@ def run(c,e,ref,*,calculated_at=None):
         pools.update({k:_Pool(v) for k,v in groups.items()})
     out=[]
     for r in sorted(e['rows'],key=lambda x:x['company_id']):
+        role_config=deepcopy(c['roles'])
+        if c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
         supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
         raw={m:_usable(r,m,e) for m in cats};roles={};metric_scores={}
-        for role,spec in c['roles'].items():
+        for role,spec in role_config.items():
             vals=[];items=[]
             for name,mw in spec['metrics'].items():
                 m=ALIASES.get(name,name);value,reason=raw[m];score=None;n=0;basis=None
@@ -210,15 +222,15 @@ def run(c,e,ref,*,calculated_at=None):
                              partial=len(vals)<sum(w>0 for w in spec['metrics'].values()))
         weights=c['axis_weights'] if c['candidate']=='U1-555' else c.get('sector_axis_overrides',{}).get(r.get('sector_id'),dict(zip('QGV',SECTORS.get(r.get('sector_id'),(34,33,33)))))
         scores={k:v['score'] for k,v in roles.items()}
-        axes={a:axis_score(scores,a,{role:spec['weight'] for role,spec in c['roles'].items() if spec['axis']==a}) for a in 'QGV'}
+        axes={a:axis_score(scores,a,{role:spec['weight'] for role,spec in role_config.items() if spec['axis']==a}) for a in 'QGV'}
         gate=_gate(r,e);valid=[a for a in 'QGV' if axes[a]['score'] is not None]
         included=[a for a in valid if not (a=='V' and gate=='VALUE_EXCLUDED')]
         enough=sum(weights[a] for a in valid)>=sum(weights.values())*.5
         total=sum(weights[a]*axes[a]['score'] for a in included)/sum(weights[a] for a in included) if included and enough and gate!='UNKNOWN' else None
         lineage=[];families=defaultdict(lambda:dict(nominal=0.,effective=0.))
-        for role,spec in c['roles'].items():
-            a=spec['axis'];role_total=sum(v['weight'] for v in c['roles'].values() if v['axis']==a)
-            role_used=sum(v['weight'] for k,v in c['roles'].items() if v['axis']==a and scores[k] is not None)
+        for role,spec in role_config.items():
+            a=spec['axis'];role_total=sum(v['weight'] for v in role_config.values() if v['axis']==a)
+            role_used=sum(v['weight'] for k,v in role_config.items() if v['axis']==a and scores[k] is not None)
             metrics=roles[role]['metrics'];metric_total=sum(x['weight'] for x in metrics)
             metric_used=sum(x['weight'] for x in metrics if x['score'] is not None)
             for item in metrics:
@@ -234,7 +246,7 @@ def run(c,e,ref,*,calculated_at=None):
             lineage=[];families={};reported_weights=None
         out.append(dict(company_id=r['company_id'],issuer_id=r['issuer_id'],security_id=r.get('security_id'),
             sector_id=r.get('sector_id'),accounting_template=r.get('accounting_template'),roles=roles,axes=axes,
-            active_roles={a:sum(v['weight']>0 for v in c['roles'].values() if v['axis']==a) for a in 'QGV'},
+            active_roles={a:sum(v['weight']>0 for v in role_config.values() if v['axis']==a) for a in 'QGV'},
             fifteen_roles_complete=all(roles[k]['score'] is not None for k in SPECS),
             gate_status=gate,gate_scope='OFFICIAL_INPUT_DECISION_INDEPENDENT_OF_MODEL_APPLICABILITY',
             nominal_axis_weights=reported_weights,total=total,partial_total=total is not None and len(valid)<3,
