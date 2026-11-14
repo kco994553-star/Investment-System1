@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kis-technical-handoff-contract/1",
+  "$defs": {
+    "arguments": {
+      "type": "object",
+      "required": ["c", "evaluation_day", "series_id"],
+      "additionalProperties": false,
+      "properties": {
+        "c": {"type": "object", "required": ["schema", "raw_bars", "bars"], "properties": {"schema": {"const": "kis-bars/1"}, "raw_bars": {"type": "array"}, "bars": {"type": "array"}}},
+        "evaluation_day": {"type": "string", "format": "date"},
+        "series_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "availability_row": {
+      "type": "object",
+      "required": ["metric_id", "kind", "unit", "value", "state", "reasons", "signal_day", "observation_day", "stale_status", "raw_available", "rank", "decile", "group_status"],
+      "properties": {
+        "metric_id": {"type": "string"},
+        "kind": {"enum": ["CHART_COMPONENT", "COMPANY_MEASURE"]},
+        "unit": {"type": "string"},
+        "value": {"type": ["number", "string", "null"]},
+        "state": {"enum": ["VALUE", "DIAGNOSTIC", "NOT_COMPUTED"]},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "signal_day": {"type": "string", "format": "date"},
+        "observation_day": {"type": ["string", "null"]},
+        "stale_status": {"enum": ["NORMAL", "STALE", "MISSING"]},
+        "raw_available": {"type": "boolean"},
+        "rank": {"type": "null"},
+        "decile": {"type": "null"},
+        "group_status": {"const": "NOT_REQUESTED"}
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": ["schema", "publication_scope", "data_kind", "context", "provenance", "sessions", "chart", "components", "measures", "patterns", "availability", "group", "coverage_claim", "result_sha256"],
+      "properties": {
+        "schema": {"const": "kis-technical-handoff/1"},
+        "publication_scope": {"const": "OWNER_PRIVATE_ONLY"},
+        "data_kind": {"enum": ["SYNTHETIC", "RETAINED_INPUT"]},
+        "context": {"type": "object", "required": ["signal_day", "chart_observation_day", "measure_observation_day", "collected_at", "historical_available_at", "timestamp_basis", "excluded_future_rows", "pit_status", "update_state", "last_success_at"], "properties": {"signal_day": {"type": "string", "format": "date"}, "pit_status": {"const": "NOT_VERIFIED"}, "excluded_future_rows": {"type": "integer", "minimum": 0}}},
+        "provenance": {"type": "object", "required": ["contract_hash", "source_sha256", "source_query", "source", "identity", "currency_reference"]},
+        "sessions": {"type": "object", "required": ["checked_from", "checked_to", "expected_count", "retained_count", "missing", "gap_fill", "scope"], "properties": {"gap_fill": {"const": "NONE"}, "missing": {"type": "array", "items": {"type": "string", "format": "date"}}}},
+        "chart": {"type": "object", "required": ["basis", "currency", "dividend_adjustment", "bars"], "properties": {"basis": {"enum": ["RAW", "SPLIT_ADJUSTED"]}, "currency": {"const": "USD"}, "dividend_adjustment": {"const": "NONE"}, "bars": {"type": "array"}}},
+        "components": {"type": "object"},
+        "measures": {"type": "object"},
+        "patterns": {"type": "object", "required": ["state", "basis", "reasons", "rule_version", "params_sha256", "rules_scope", "volume_scope", "initialization", "applied_splits", "success_probability", "result"], "properties": {"state": {"enum": ["CALCULATED_RESEARCH", "NOT_JUDGEABLE"]}, "basis": {"const": "RAW_CLOSE"}, "rules_scope": {"const": "RESEARCH_DEFAULT_NOT_INVESTMENT_SIGNAL"}, "volume_scope": {"const": "WITHHELD_SCOPE_UNCONFIRMED"}, "success_probability": {"type": "null"}}},
+        "availability": {"type": "array", "items": {"$ref": "#/$defs/availability_row"}},
+        "group": {"type": "object", "required": ["state", "reason", "rank", "decile", "qgv_join_status"], "properties": {"state": {"const": "NOT_REQUESTED"}, "rank": {"type": "null"}, "decile": {"type": "null"}, "qgv_join_status": {"const": "NOT_REQUESTED"}}},
+        "coverage_claim": {"type": "null"},
+        "result_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  }
+}
