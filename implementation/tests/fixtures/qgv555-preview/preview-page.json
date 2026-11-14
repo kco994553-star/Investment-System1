@@ -1,0 +1,1749 @@
+{
+  "schema_version": "qgv-555-preview-page/1",
+  "request_id": "synthetic-setting-change",
+  "request_hash": "051a0881528c9716e5ccf9e24e14b8aa76f26649eecf4173431df1851b2e2010",
+  "evaluation": {
+    "population_id": "synthetic-evaluation",
+    "population_version": "1",
+    "unit": "CODE_ROW",
+    "code_rows": 21,
+    "issuers": 21,
+    "evaluation_day": "2026-11-04",
+    "input_cutoff": "2026-11-04T22:00:00Z",
+    "input_hash": "ef35fbb3851a1793673f03c93c25abb4030a95c2fabd692bd72eed9e75ee9401",
+    "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+    "classification_version": "synthetic-adapter-map/1",
+    "classification_context": {
+      "dictionary_version": "common-industry-dictionary/2",
+      "mapping_version": "common-classification-map/2",
+      "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source_anchors": [
+      "SYNTHETIC"
+    ]
+  },
+  "reference": {
+    "population_id": "synthetic-reference",
+    "population_version": "1",
+    "unit": "CODE_ROW",
+    "code_rows": 21,
+    "issuers": 21,
+    "evaluation_day": "2026-11-04",
+    "input_cutoff": "2026-11-04T22:00:00Z",
+    "input_hash": "64c7d8724fc9293599cfb6d4ac969dd2efc82a95f052960def661cf41bcb4feb",
+    "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+    "classification_version": "synthetic-adapter-map/1",
+    "classification_context": {
+      "dictionary_version": "common-industry-dictionary/2",
+      "mapping_version": "common-classification-map/2",
+      "classification_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "source_anchors": [
+      "SYNTHETIC"
+    ]
+  },
+  "effect_scope": "SETTINGS_ONLY_FIXED_INPUT_AND_POPULATIONS",
+  "population_effect": "NOT_EVALUATED",
+  "before_result_hash": "ff705a530733738e9022313e6ed1a55122e9031fffa4ccf53fff4b3e3172e1e8",
+  "after_result_hash": "38cae01d20b0a48cf0ffa1d407459186c89d47a25a0af8241a4095b01719c087",
+  "before_calculated_at": "2026-11-14T02:14:04.224178+00:00",
+  "after_calculated_at": "2026-11-14T02:14:04.258759+00:00",
+  "before_coverage": {
+    "denominator": 21,
+    "target": 20,
+    "axes": {
+      "Q": 21,
+      "G": 21,
+      "V": 21
+    },
+    "roles": {
+      "q_profitability": 21,
+      "q_moat_proxy": 21,
+      "q_earnings_quality": 21,
+      "q_financial_safety": 21,
+      "q_capital_allocation": 21,
+      "g_revenue_growth": 21,
+      "g_per_share_growth": 21,
+      "g_growth_efficiency": 21,
+      "g_consistency": 21,
+      "g_recent_acceleration": 21,
+      "v_earnings_yield": 21,
+      "v_fcf_yield": 21,
+      "v_vs_industry": 21,
+      "v_vs_own_history": 21,
+      "v_expectation_check": 21
+    },
+    "all15": 21,
+    "joint": 21,
+    "gate_known": 21,
+    "gate_pass": 21,
+    "total": 21,
+    "eligible_total": 21,
+    "role_stages": {
+      "q_profitability": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_moat_proxy": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_earnings_quality": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_financial_safety": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_capital_allocation": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_revenue_growth": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_per_share_growth": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_growth_efficiency": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_consistency": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_recent_acceleration": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_earnings_yield": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_fcf_yield": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_vs_industry": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_vs_own_history": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_expectation_check": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      }
+    }
+  },
+  "after_coverage": {
+    "denominator": 21,
+    "target": 20,
+    "axes": {
+      "Q": 21,
+      "G": 21,
+      "V": 21
+    },
+    "roles": {
+      "q_profitability": 21,
+      "q_moat_proxy": 21,
+      "q_earnings_quality": 21,
+      "q_financial_safety": 21,
+      "q_capital_allocation": 21,
+      "g_revenue_growth": 21,
+      "g_per_share_growth": 21,
+      "g_growth_efficiency": 21,
+      "g_consistency": 21,
+      "g_recent_acceleration": 21,
+      "v_earnings_yield": 21,
+      "v_fcf_yield": 21,
+      "v_vs_industry": 21,
+      "v_vs_own_history": 21,
+      "v_expectation_check": 21
+    },
+    "all15": 21,
+    "joint": 21,
+    "gate_known": 21,
+    "gate_pass": 21,
+    "total": 21,
+    "eligible_total": 21,
+    "role_stages": {
+      "q_profitability": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_moat_proxy": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_earnings_quality": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_financial_safety": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "q_capital_allocation": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_revenue_growth": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_per_share_growth": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_growth_efficiency": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_consistency": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "g_recent_acceleration": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_earnings_yield": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_fcf_yield": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_vs_industry": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_vs_own_history": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      },
+      "v_expectation_check": {
+        "raw_any": 21,
+        "raw_all": 21,
+        "score": 21
+      }
+    }
+  },
+  "visibility": "AUTHENTICATED_RESEARCH",
+  "official": false,
+  "source_preview_hash": "7c264a8d1cfbc5b248b16b5283fab7cf16910cd2e88f05eed419cb540a79b4aa",
+  "offset": 0,
+  "rows": [
+    {
+      "company_id": "SYN:000",
+      "issuer_id": "synthetic-issuer-000",
+      "axes": {
+        "Q": {
+          "before": 27.5,
+          "after": 27.5,
+          "difference": 0.0,
+          "transition": "COMMON"
+        },
+        "G": {
+          "before": 7.5,
+          "after": 7.5,
+          "difference": 0.0,
+          "transition": "COMMON"
+        },
+        "V": {
+          "before": 22.5,
+          "after": 22.5,
+          "difference": 0.0,
+          "transition": "COMMON"
+        }
+      },
+      "before": {
+        "total": 19.25,
+        "partial_total": false,
+        "rank": 21,
+        "active_roles": {
+          "Q": 5,
+          "G": 5,
+          "V": 5
+        },
+        "weights": [
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "roic",
+            "input_family": "return_level",
+            "nominal": 0.0425,
+            "nominal_ratio": [
+              17,
+              400
+            ],
+            "effective": 0.0425,
+            "missing_redistributed_before_gate": 0.0425,
+            "after_gate": 0.0425
+          },
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "gross_profit_to_assets",
+            "input_family": "gross_profit",
+            "nominal": 0.0425,
+            "nominal_ratio": [
+              17,
+              400
+            ],
+            "effective": 0.0425,
+            "missing_redistributed_before_gate": 0.0425,
+            "after_gate": 0.0425
+          },
+          {
+            "axis": "Q",
+            "role": "q_moat_proxy",
+            "metric": "moat_proxy",
+            "input_family": "return_level",
+            "nominal": 0.068,
+            "nominal_ratio": [
+              17,
+              250
+            ],
+            "effective": 0.068,
+            "missing_redistributed_before_gate": 0.068,
+            "after_gate": 0.068
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "accruals_to_assets",
+            "input_family": "cash_conversion",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "fcf_to_net_income",
+            "input_family": "cash_conversion",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "net_debt_to_ebitda",
+            "input_family": "debt_capacity",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "interest_coverage",
+            "input_family": "interest_capacity",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "dilution_3y",
+            "input_family": "share_basis",
+            "nominal": 0.0255,
+            "nominal_ratio": [
+              51,
+              2000
+            ],
+            "effective": 0.025500000000000002,
+            "missing_redistributed_before_gate": 0.0255,
+            "after_gate": 0.025500000000000002
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "incremental_roic_5y",
+            "input_family": "incremental_return",
+            "nominal": 0.0255,
+            "nominal_ratio": [
+              51,
+              2000
+            ],
+            "effective": 0.025500000000000002,
+            "missing_redistributed_before_gate": 0.0255,
+            "after_gate": 0.025500000000000002
+          },
+          {
+            "axis": "G",
+            "role": "g_revenue_growth",
+            "metric": "revenue_cagr_3y",
+            "input_family": "revenue_growth",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "eps_cagr_3y",
+            "input_family": "earnings_growth",
+            "nominal": 0.04125,
+            "nominal_ratio": [
+              33,
+              800
+            ],
+            "effective": 0.04125,
+            "missing_redistributed_before_gate": 0.04125,
+            "after_gate": 0.04125
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "fcf_per_share_cagr_3y",
+            "input_family": "cash_growth",
+            "nominal": 0.04125,
+            "nominal_ratio": [
+              33,
+              800
+            ],
+            "effective": 0.04125,
+            "missing_redistributed_before_gate": 0.04125,
+            "after_gate": 0.04125
+          },
+          {
+            "axis": "G",
+            "role": "g_growth_efficiency",
+            "metric": "incremental_roic_3y",
+            "input_family": "incremental_return",
+            "nominal": 0.066,
+            "nominal_ratio": [
+              33,
+              500
+            ],
+            "effective": 0.066,
+            "missing_redistributed_before_gate": 0.066,
+            "after_gate": 0.066
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_positive_growth_share",
+            "input_family": "revenue_growth",
+            "nominal": 0.02475,
+            "nominal_ratio": [
+              99,
+              4000
+            ],
+            "effective": 0.02475,
+            "missing_redistributed_before_gate": 0.02475,
+            "after_gate": 0.02475
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_growth_volatility",
+            "input_family": "revenue_growth",
+            "nominal": 0.02475,
+            "nominal_ratio": [
+              99,
+              4000
+            ],
+            "effective": 0.02475,
+            "missing_redistributed_before_gate": 0.02475,
+            "after_gate": 0.02475
+          },
+          {
+            "axis": "G",
+            "role": "g_recent_acceleration",
+            "metric": "revenue_acceleration",
+            "input_family": "revenue_growth",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          },
+          {
+            "axis": "V",
+            "role": "v_earnings_yield",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "V",
+            "role": "v_fcf_yield",
+            "metric": "fcf_yield",
+            "input_family": "enterprise_cash",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_industry",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.066,
+            "nominal_ratio": [
+              33,
+              500
+            ],
+            "effective": 0.066,
+            "missing_redistributed_before_gate": 0.066,
+            "after_gate": 0.066
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_own_history",
+            "metric": "own_history",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          },
+          {
+            "axis": "V",
+            "role": "v_expectation_check",
+            "metric": "gap",
+            "input_family": "revenue_growth",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          }
+        ],
+        "families": {
+          "return_level": {
+            "nominal": 0.11050000000000001,
+            "effective": 0.11050000000000001
+          },
+          "gross_profit": {
+            "nominal": 0.0425,
+            "effective": 0.0425
+          },
+          "cash_conversion": {
+            "nominal": 0.068,
+            "effective": 0.068
+          },
+          "debt_capacity": {
+            "nominal": 0.034,
+            "effective": 0.034
+          },
+          "interest_capacity": {
+            "nominal": 0.034,
+            "effective": 0.034
+          },
+          "share_basis": {
+            "nominal": 0.0255,
+            "effective": 0.025500000000000002
+          },
+          "incremental_return": {
+            "nominal": 0.0915,
+            "effective": 0.0915
+          },
+          "revenue_growth": {
+            "nominal": 0.23099999999999998,
+            "effective": 0.23099999999999998
+          },
+          "earnings_growth": {
+            "nominal": 0.04125,
+            "effective": 0.04125
+          },
+          "cash_growth": {
+            "nominal": 0.04125,
+            "effective": 0.04125
+          },
+          "enterprise_earnings": {
+            "nominal": 0.198,
+            "effective": 0.198
+          },
+          "enterprise_cash": {
+            "nominal": 0.0825,
+            "effective": 0.0825
+          }
+        }
+      },
+      "after": {
+        "total": 21.25,
+        "partial_total": false,
+        "rank": 21,
+        "active_roles": {
+          "Q": 5,
+          "G": 5,
+          "V": 5
+        },
+        "weights": [
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "roic",
+            "input_family": "return_level",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "gross_profit_to_assets",
+            "input_family": "gross_profit",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "Q",
+            "role": "q_moat_proxy",
+            "metric": "moat_proxy",
+            "input_family": "return_level",
+            "nominal": 0.1,
+            "nominal_ratio": [
+              1,
+              10
+            ],
+            "effective": 0.1,
+            "missing_redistributed_before_gate": 0.10000000000000002,
+            "after_gate": 0.1
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "accruals_to_assets",
+            "input_family": "cash_conversion",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "fcf_to_net_income",
+            "input_family": "cash_conversion",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "net_debt_to_ebitda",
+            "input_family": "debt_capacity",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "interest_coverage",
+            "input_family": "interest_capacity",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "dilution_3y",
+            "input_family": "share_basis",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "incremental_roic_5y",
+            "input_family": "incremental_return",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "G",
+            "role": "g_revenue_growth",
+            "metric": "revenue_cagr_3y",
+            "input_family": "revenue_growth",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "eps_cagr_3y",
+            "input_family": "earnings_growth",
+            "nominal": 0.03125,
+            "nominal_ratio": [
+              1,
+              32
+            ],
+            "effective": 0.03125,
+            "missing_redistributed_before_gate": 0.03125,
+            "after_gate": 0.03125
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "fcf_per_share_cagr_3y",
+            "input_family": "cash_growth",
+            "nominal": 0.03125,
+            "nominal_ratio": [
+              1,
+              32
+            ],
+            "effective": 0.03125,
+            "missing_redistributed_before_gate": 0.03125,
+            "after_gate": 0.03125
+          },
+          {
+            "axis": "G",
+            "role": "g_growth_efficiency",
+            "metric": "incremental_roic_3y",
+            "input_family": "incremental_return",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_positive_growth_share",
+            "input_family": "revenue_growth",
+            "nominal": 0.01875,
+            "nominal_ratio": [
+              3,
+              160
+            ],
+            "effective": 0.01875,
+            "missing_redistributed_before_gate": 0.01875,
+            "after_gate": 0.01875
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_growth_volatility",
+            "input_family": "revenue_growth",
+            "nominal": 0.01875,
+            "nominal_ratio": [
+              3,
+              160
+            ],
+            "effective": 0.01875,
+            "missing_redistributed_before_gate": 0.01875,
+            "after_gate": 0.01875
+          },
+          {
+            "axis": "G",
+            "role": "g_recent_acceleration",
+            "metric": "revenue_acceleration",
+            "input_family": "revenue_growth",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "V",
+            "role": "v_earnings_yield",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "V",
+            "role": "v_fcf_yield",
+            "metric": "fcf_yield",
+            "input_family": "enterprise_cash",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_industry",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_own_history",
+            "metric": "own_history",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "V",
+            "role": "v_expectation_check",
+            "metric": "gap",
+            "input_family": "revenue_growth",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          }
+        ],
+        "families": {
+          "return_level": {
+            "nominal": 0.1625,
+            "effective": 0.1625
+          },
+          "gross_profit": {
+            "nominal": 0.0625,
+            "effective": 0.0625
+          },
+          "cash_conversion": {
+            "nominal": 0.1,
+            "effective": 0.1
+          },
+          "debt_capacity": {
+            "nominal": 0.05,
+            "effective": 0.05
+          },
+          "interest_capacity": {
+            "nominal": 0.05,
+            "effective": 0.05
+          },
+          "share_basis": {
+            "nominal": 0.0375,
+            "effective": 0.0375
+          },
+          "incremental_return": {
+            "nominal": 0.0875,
+            "effective": 0.0875
+          },
+          "revenue_growth": {
+            "nominal": 0.17500000000000002,
+            "effective": 0.17500000000000002
+          },
+          "earnings_growth": {
+            "nominal": 0.03125,
+            "effective": 0.03125
+          },
+          "cash_growth": {
+            "nominal": 0.03125,
+            "effective": 0.03125
+          },
+          "enterprise_earnings": {
+            "nominal": 0.15,
+            "effective": 0.15
+          },
+          "enterprise_cash": {
+            "nominal": 0.0625,
+            "effective": 0.0625
+          }
+        }
+      }
+    },
+    {
+      "company_id": "SYN:001",
+      "issuer_id": "synthetic-issuer-001",
+      "axes": {
+        "Q": {
+          "before": 29.75,
+          "after": 29.75,
+          "difference": 0.0,
+          "transition": "COMMON"
+        },
+        "G": {
+          "before": 11.75,
+          "after": 11.75,
+          "difference": 0.0,
+          "transition": "COMMON"
+        },
+        "V": {
+          "before": 25.25,
+          "after": 25.25,
+          "difference": 0.0,
+          "transition": "COMMON"
+        }
+      },
+      "before": {
+        "total": 22.325,
+        "partial_total": false,
+        "rank": 20,
+        "active_roles": {
+          "Q": 5,
+          "G": 5,
+          "V": 5
+        },
+        "weights": [
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "roic",
+            "input_family": "return_level",
+            "nominal": 0.0425,
+            "nominal_ratio": [
+              17,
+              400
+            ],
+            "effective": 0.0425,
+            "missing_redistributed_before_gate": 0.0425,
+            "after_gate": 0.0425
+          },
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "gross_profit_to_assets",
+            "input_family": "gross_profit",
+            "nominal": 0.0425,
+            "nominal_ratio": [
+              17,
+              400
+            ],
+            "effective": 0.0425,
+            "missing_redistributed_before_gate": 0.0425,
+            "after_gate": 0.0425
+          },
+          {
+            "axis": "Q",
+            "role": "q_moat_proxy",
+            "metric": "moat_proxy",
+            "input_family": "return_level",
+            "nominal": 0.068,
+            "nominal_ratio": [
+              17,
+              250
+            ],
+            "effective": 0.068,
+            "missing_redistributed_before_gate": 0.068,
+            "after_gate": 0.068
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "accruals_to_assets",
+            "input_family": "cash_conversion",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "fcf_to_net_income",
+            "input_family": "cash_conversion",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "net_debt_to_ebitda",
+            "input_family": "debt_capacity",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "interest_coverage",
+            "input_family": "interest_capacity",
+            "nominal": 0.034,
+            "nominal_ratio": [
+              17,
+              500
+            ],
+            "effective": 0.034,
+            "missing_redistributed_before_gate": 0.034,
+            "after_gate": 0.034
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "dilution_3y",
+            "input_family": "share_basis",
+            "nominal": 0.0255,
+            "nominal_ratio": [
+              51,
+              2000
+            ],
+            "effective": 0.025500000000000002,
+            "missing_redistributed_before_gate": 0.0255,
+            "after_gate": 0.025500000000000002
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "incremental_roic_5y",
+            "input_family": "incremental_return",
+            "nominal": 0.0255,
+            "nominal_ratio": [
+              51,
+              2000
+            ],
+            "effective": 0.025500000000000002,
+            "missing_redistributed_before_gate": 0.0255,
+            "after_gate": 0.025500000000000002
+          },
+          {
+            "axis": "G",
+            "role": "g_revenue_growth",
+            "metric": "revenue_cagr_3y",
+            "input_family": "revenue_growth",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "eps_cagr_3y",
+            "input_family": "earnings_growth",
+            "nominal": 0.04125,
+            "nominal_ratio": [
+              33,
+              800
+            ],
+            "effective": 0.04125,
+            "missing_redistributed_before_gate": 0.04125,
+            "after_gate": 0.04125
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "fcf_per_share_cagr_3y",
+            "input_family": "cash_growth",
+            "nominal": 0.04125,
+            "nominal_ratio": [
+              33,
+              800
+            ],
+            "effective": 0.04125,
+            "missing_redistributed_before_gate": 0.04125,
+            "after_gate": 0.04125
+          },
+          {
+            "axis": "G",
+            "role": "g_growth_efficiency",
+            "metric": "incremental_roic_3y",
+            "input_family": "incremental_return",
+            "nominal": 0.066,
+            "nominal_ratio": [
+              33,
+              500
+            ],
+            "effective": 0.066,
+            "missing_redistributed_before_gate": 0.066,
+            "after_gate": 0.066
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_positive_growth_share",
+            "input_family": "revenue_growth",
+            "nominal": 0.02475,
+            "nominal_ratio": [
+              99,
+              4000
+            ],
+            "effective": 0.02475,
+            "missing_redistributed_before_gate": 0.02475,
+            "after_gate": 0.02475
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_growth_volatility",
+            "input_family": "revenue_growth",
+            "nominal": 0.02475,
+            "nominal_ratio": [
+              99,
+              4000
+            ],
+            "effective": 0.02475,
+            "missing_redistributed_before_gate": 0.02475,
+            "after_gate": 0.02475
+          },
+          {
+            "axis": "G",
+            "role": "g_recent_acceleration",
+            "metric": "revenue_acceleration",
+            "input_family": "revenue_growth",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          },
+          {
+            "axis": "V",
+            "role": "v_earnings_yield",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "V",
+            "role": "v_fcf_yield",
+            "metric": "fcf_yield",
+            "input_family": "enterprise_cash",
+            "nominal": 0.0825,
+            "nominal_ratio": [
+              33,
+              400
+            ],
+            "effective": 0.0825,
+            "missing_redistributed_before_gate": 0.0825,
+            "after_gate": 0.0825
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_industry",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.066,
+            "nominal_ratio": [
+              33,
+              500
+            ],
+            "effective": 0.066,
+            "missing_redistributed_before_gate": 0.066,
+            "after_gate": 0.066
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_own_history",
+            "metric": "own_history",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          },
+          {
+            "axis": "V",
+            "role": "v_expectation_check",
+            "metric": "gap",
+            "input_family": "revenue_growth",
+            "nominal": 0.0495,
+            "nominal_ratio": [
+              99,
+              2000
+            ],
+            "effective": 0.0495,
+            "missing_redistributed_before_gate": 0.0495,
+            "after_gate": 0.0495
+          }
+        ],
+        "families": {
+          "return_level": {
+            "nominal": 0.11050000000000001,
+            "effective": 0.11050000000000001
+          },
+          "gross_profit": {
+            "nominal": 0.0425,
+            "effective": 0.0425
+          },
+          "cash_conversion": {
+            "nominal": 0.068,
+            "effective": 0.068
+          },
+          "debt_capacity": {
+            "nominal": 0.034,
+            "effective": 0.034
+          },
+          "interest_capacity": {
+            "nominal": 0.034,
+            "effective": 0.034
+          },
+          "share_basis": {
+            "nominal": 0.0255,
+            "effective": 0.025500000000000002
+          },
+          "incremental_return": {
+            "nominal": 0.0915,
+            "effective": 0.0915
+          },
+          "revenue_growth": {
+            "nominal": 0.23099999999999998,
+            "effective": 0.23099999999999998
+          },
+          "earnings_growth": {
+            "nominal": 0.04125,
+            "effective": 0.04125
+          },
+          "cash_growth": {
+            "nominal": 0.04125,
+            "effective": 0.04125
+          },
+          "enterprise_earnings": {
+            "nominal": 0.198,
+            "effective": 0.198
+          },
+          "enterprise_cash": {
+            "nominal": 0.0825,
+            "effective": 0.0825
+          }
+        }
+      },
+      "after": {
+        "total": 24.125,
+        "partial_total": false,
+        "rank": 20,
+        "active_roles": {
+          "Q": 5,
+          "G": 5,
+          "V": 5
+        },
+        "weights": [
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "roic",
+            "input_family": "return_level",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "Q",
+            "role": "q_profitability",
+            "metric": "gross_profit_to_assets",
+            "input_family": "gross_profit",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "Q",
+            "role": "q_moat_proxy",
+            "metric": "moat_proxy",
+            "input_family": "return_level",
+            "nominal": 0.1,
+            "nominal_ratio": [
+              1,
+              10
+            ],
+            "effective": 0.1,
+            "missing_redistributed_before_gate": 0.10000000000000002,
+            "after_gate": 0.1
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "accruals_to_assets",
+            "input_family": "cash_conversion",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_earnings_quality",
+            "metric": "fcf_to_net_income",
+            "input_family": "cash_conversion",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "net_debt_to_ebitda",
+            "input_family": "debt_capacity",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_financial_safety",
+            "metric": "interest_coverage",
+            "input_family": "interest_capacity",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "dilution_3y",
+            "input_family": "share_basis",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "Q",
+            "role": "q_capital_allocation",
+            "metric": "incremental_roic_5y",
+            "input_family": "incremental_return",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "G",
+            "role": "g_revenue_growth",
+            "metric": "revenue_cagr_3y",
+            "input_family": "revenue_growth",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "eps_cagr_3y",
+            "input_family": "earnings_growth",
+            "nominal": 0.03125,
+            "nominal_ratio": [
+              1,
+              32
+            ],
+            "effective": 0.03125,
+            "missing_redistributed_before_gate": 0.03125,
+            "after_gate": 0.03125
+          },
+          {
+            "axis": "G",
+            "role": "g_per_share_growth",
+            "metric": "fcf_per_share_cagr_3y",
+            "input_family": "cash_growth",
+            "nominal": 0.03125,
+            "nominal_ratio": [
+              1,
+              32
+            ],
+            "effective": 0.03125,
+            "missing_redistributed_before_gate": 0.03125,
+            "after_gate": 0.03125
+          },
+          {
+            "axis": "G",
+            "role": "g_growth_efficiency",
+            "metric": "incremental_roic_3y",
+            "input_family": "incremental_return",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_positive_growth_share",
+            "input_family": "revenue_growth",
+            "nominal": 0.01875,
+            "nominal_ratio": [
+              3,
+              160
+            ],
+            "effective": 0.01875,
+            "missing_redistributed_before_gate": 0.01875,
+            "after_gate": 0.01875
+          },
+          {
+            "axis": "G",
+            "role": "g_consistency",
+            "metric": "revenue_growth_volatility",
+            "input_family": "revenue_growth",
+            "nominal": 0.01875,
+            "nominal_ratio": [
+              3,
+              160
+            ],
+            "effective": 0.01875,
+            "missing_redistributed_before_gate": 0.01875,
+            "after_gate": 0.01875
+          },
+          {
+            "axis": "G",
+            "role": "g_recent_acceleration",
+            "metric": "revenue_acceleration",
+            "input_family": "revenue_growth",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "V",
+            "role": "v_earnings_yield",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "V",
+            "role": "v_fcf_yield",
+            "metric": "fcf_yield",
+            "input_family": "enterprise_cash",
+            "nominal": 0.0625,
+            "nominal_ratio": [
+              1,
+              16
+            ],
+            "effective": 0.0625,
+            "missing_redistributed_before_gate": 0.0625,
+            "after_gate": 0.0625
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_industry",
+            "metric": "ebit_yield",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.05,
+            "nominal_ratio": [
+              1,
+              20
+            ],
+            "effective": 0.05,
+            "missing_redistributed_before_gate": 0.05000000000000001,
+            "after_gate": 0.05
+          },
+          {
+            "axis": "V",
+            "role": "v_vs_own_history",
+            "metric": "own_history",
+            "input_family": "enterprise_earnings",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          },
+          {
+            "axis": "V",
+            "role": "v_expectation_check",
+            "metric": "gap",
+            "input_family": "revenue_growth",
+            "nominal": 0.0375,
+            "nominal_ratio": [
+              3,
+              80
+            ],
+            "effective": 0.0375,
+            "missing_redistributed_before_gate": 0.0375,
+            "after_gate": 0.0375
+          }
+        ],
+        "families": {
+          "return_level": {
+            "nominal": 0.1625,
+            "effective": 0.1625
+          },
+          "gross_profit": {
+            "nominal": 0.0625,
+            "effective": 0.0625
+          },
+          "cash_conversion": {
+            "nominal": 0.1,
+            "effective": 0.1
+          },
+          "debt_capacity": {
+            "nominal": 0.05,
+            "effective": 0.05
+          },
+          "interest_capacity": {
+            "nominal": 0.05,
+            "effective": 0.05
+          },
+          "share_basis": {
+            "nominal": 0.0375,
+            "effective": 0.0375
+          },
+          "incremental_return": {
+            "nominal": 0.0875,
+            "effective": 0.0875
+          },
+          "revenue_growth": {
+            "nominal": 0.17500000000000002,
+            "effective": 0.17500000000000002
+          },
+          "earnings_growth": {
+            "nominal": 0.03125,
+            "effective": 0.03125
+          },
+          "cash_growth": {
+            "nominal": 0.03125,
+            "effective": 0.03125
+          },
+          "enterprise_earnings": {
+            "nominal": 0.15,
+            "effective": 0.15
+          },
+          "enterprise_cash": {
+            "nominal": 0.0625,
+            "effective": 0.0625
+          }
+        }
+      }
+    }
+  ],
+  "row_count": 21,
+  "next_offset": 2
+}

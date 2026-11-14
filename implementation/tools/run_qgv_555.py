@@ -23,6 +23,15 @@ def main():
         e,r=fixture();job=dict(data_kind='SYNTHETIC');configs={k:configuration(k) for k in ('U1-555','S1-555')}
     else:
         job=json.loads(a.job.read_bytes())
+        if job.get('mode')=='preview':
+            from investment_system.research.qgv_555_preview import preview,preview_page
+            result=preview(job['request'],read(job['evaluation']),read(job['reference']),
+                expected_evaluation=job['expected_evaluation'],expected_reference=job['expected_reference'],
+                saved_before=read(job['saved_before']) if job.get('saved_before') else None)
+            a.output.mkdir(parents=True)
+            (a.output/'preview-result.json').write_bytes(json_bytes(result))
+            (a.output/'preview-page.json').write_bytes(json_bytes(preview_page(result,**job.get('page',{}))))
+            return
         if job.get('mode')=='top500':
             result=select_top500(read(job['input']),previous=read(job['previous']) if job.get('previous') else None)
             a.output.mkdir(parents=True);(a.output/'top500.json').write_bytes(json_bytes(result));return
