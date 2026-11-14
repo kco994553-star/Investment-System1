@@ -97,3 +97,8 @@ def test_fractional_weights_and_sector_axis_override():
     e,ref=fixture();r=run(c,e,ref)['rows'][0]
     assert r['nominal_axis_weights']['Q']==40.5
     assert sum(x['nominal'] for x in r['lineage'])==pytest.approx(1)
+
+
+def test_dictionary_not_confused_with_legacy_adapter_mapping():
+    c=configuration('U1-555');e,ref=fixture();ref['classification_context']['dictionary_version']='book-sector-map/1'
+    with pytest.raises(ValueError,match='CLASSIFICATION_CONTEXT'):run(c,e,ref)

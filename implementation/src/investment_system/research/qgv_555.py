@@ -84,7 +84,7 @@ def configuration(candidate):
         submetric_missing_policy='available-submetric-weight-renormalize/1',
         reference_policy='legacy-general-industry-fallback8/1' if candidate=='U1-555' else 'sector-accounting-no-fallback8/1',
         gate_policy='official-q-percentile-required/1',duplicate_policy='DISCLOSE_ONLY',
-        classification_version='common-sector-dictionary/2',type_multiplier=False,
+        classification_dictionary_version='common-industry-dictionary/2',type_multiplier=False,
         additional_factor_weight=0,official=False)
 
 
@@ -92,7 +92,7 @@ def validate_configuration(c):
     if c.get('candidate') not in IDS or c.get('model_id')!=IDS[c['candidate']]:raise ValueError('MODEL_ID')
     base=configuration(c['candidate'])
     for k in ('schema_version','version','minimum','missing_policy','submetric_missing_policy',
-              'reference_policy','gate_policy','duplicate_policy','type_multiplier','additional_factor_weight'):
+              'reference_policy','gate_policy','duplicate_policy','type_multiplier','additional_factor_weight','classification_dictionary_version'):
         if c.get(k)!=base[k]:raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
     def valid_weights(ws):
         return all(type(v) in (int,float) and math.isfinite(v) and v>=0 for v in ws) and sum(ws)>0
@@ -119,6 +119,7 @@ def identity(s):
         unit='CODE_ROW',code_rows=len(ids),issuers=len({r['issuer_id'] for r in s['rows'] if r.get('issuer_id')}),
         evaluation_day=s['evaluation_day'],input_cutoff=s['input_cutoff'],input_hash=digest(s),
         members_hash=digest(sorted(ids)),classification_version=s['classification_version'],
+        classification_context=deepcopy(s.get('classification_context')),
         source_anchors=deepcopy(s.get('source_anchors',[])))
 
 
@@ -161,6 +162,10 @@ def run(c,e,ref,*,calculated_at=None):
         identity(s);date.fromisoformat(s['evaluation_day']);timestamp(s['input_cutoff'])
     for k in ('evaluation_day','input_cutoff','classification_version'):
         if e[k]!=ref[k]:raise ValueError('INPUT_CONTEXT:'+k)
+    for s in (e,ref):
+        ctx=s.get('classification_context') or {};contexts=ctx.get('source_contexts') or [ctx]
+        if not contexts or any(x.get('dictionary_version')!=c['classification_dictionary_version'] or not x.get('mapping_version') or not x.get('classification_hash') for x in contexts):
+            raise ValueError('CLASSIFICATION_CONTEXT_REQUIRED')
     cats=catalog();points={};ref_rows={}
     for r in sorted(ref['rows'],key=lambda x:x['company_id']):
         if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
@@ -224,12 +229,15 @@ def run(c,e,ref,*,calculated_at=None):
                 family=cats[item['metric']]['input_family']
                 lineage.append(dict(axis=a,role=role,metric=item['metric'],input_family=family,nominal=float(nom),nominal_ratio=[nom.numerator,nom.denominator],effective=eff))
                 families[family]['nominal']+=float(nom);families[family]['effective']+=eff
+        reported_weights=weights
+        if c['candidate']=='S1-555' and r.get('sector_id') not in SECTORS:
+            lineage=[];families={};reported_weights=None
         out.append(dict(company_id=r['company_id'],issuer_id=r['issuer_id'],security_id=r.get('security_id'),
             sector_id=r.get('sector_id'),accounting_template=r.get('accounting_template'),roles=roles,axes=axes,
             active_roles={a:sum(v['weight']>0 for v in c['roles'].values() if v['axis']==a) for a in 'QGV'},
             fifteen_roles_complete=all(roles[k]['score'] is not None for k in SPECS),
             gate_status=gate,gate_scope='OFFICIAL_INPUT_DECISION_INDEPENDENT_OF_MODEL_APPLICABILITY',
-            nominal_axis_weights=weights,total=total,partial_total=total is not None and len(valid)<3,
+            nominal_axis_weights=reported_weights,total=total,partial_total=total is not None and len(valid)<3,
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
             status='READY' if supported else 'ACCOUNTING_RECIPE_PREPARING',lineage=lineage,
             input_family_contributions=dict(families)))
@@ -300,7 +308,8 @@ def fixture(n=21):
                 historical_share_basis='VERIFIED',valuation_day='2026-11-04',security_and_actions='VERIFIED') for m,v in cats.items()},
             gate=dict(percentile=80,calc_version='qgv2-calc/2026-10-23.1',evaluation_day='2026-11-04',source_refs=['SYNTHETIC_OFFICIAL_GATE'])))
     e=dict(schema_version='qgv-555-input/1',population_id='synthetic-evaluation',population_version='1',
-        evaluation_day='2026-11-04',input_cutoff=ts,classification_version='common-sector-dictionary/2',
+        evaluation_day='2026-11-04',input_cutoff=ts,classification_version='synthetic-adapter-map/1',
+        classification_context=dict(dictionary_version='common-industry-dictionary/2',mapping_version='common-classification-map/2',classification_hash='a'*64),
         members=[r['company_id'] for r in rows],rows=rows,source_anchors=['SYNTHETIC'])
     ref=deepcopy(e);ref['population_id']='synthetic-reference'
     return e,ref

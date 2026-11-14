@@ -61,6 +61,7 @@ def held_input(snapshot, sources, *, source_anchors):
     return dict(schema_version='qgv-555-input/1',population_id=snapshot['universe_id'],population_version=snapshot['universe_version'],
         members=deepcopy(snapshot['members']),rows=rows,evaluation_day=snapshot['valuation_date'],
         input_cutoff=snapshot['as_of'],classification_version=snapshot['mapping_version'],
+        classification_context=deepcopy(snapshot.get('classification_context')),
         source_anchors=deepcopy(source_anchors),source_snapshot_hash=digest(snapshot),
         construction_rule='HELD_FORMULA_VERSIONED_RAW_PROJECTION/1',historical_pit=False,
         share_metrics_policy='NO_ADOPTION_WITHOUT_HISTORICAL_BASIS_PROOF')
