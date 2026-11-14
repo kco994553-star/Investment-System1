@@ -1,7 +1,7 @@
 from copy import deepcopy
 import pytest
 from investment_system.research.qgv_555_owner_inputs import (temporary_official_inputs,
-    apply_reviewed_share_metrics, apply_reviewed_roa_fallback)
+    apply_reviewed_share_metrics, apply_reviewed_roa_fallback, apply_two_stage_share_review)
 from investment_system.research.qgv_555 import catalog
 from investment_system.research.sector_qgv import digest
 
@@ -184,3 +184,144 @@ def test_roa_review_does_not_replace_primary_existing_value_or_financial_recipe(
 def test_roa_review_rejects_wrong_source_context():
     s,r=roa_fixture();next(iter(r['cache'].values()))['source_sha256']='f'*64
     with pytest.raises(ValueError,match='SOURCE_CONTEXT'):apply_roa(s,r)
+
+
+def two_stage_fixture():
+    s,old_review=share_fixture()
+    s,_=apply(s,old_review)
+    review=deepcopy(old_review)
+    x=review['source_contexts']['synthetic/source~1']
+    x['adapter_version']='held-555-share-eligibility/2'
+    x['source_input_cutoff']=x['source_record']['acquired_at']
+    x['review_input_cutoff']='2026-11-14T13:00:00Z'
+    formulas=dict(eps_cagr_3y='REPORTED_DILUTED_EPS_CAGR_3Y',
+        fcf_per_share_cagr_3y='FCF_OVER_WEIGHTED_DILUTED_SHARES_CAGR_3Y',
+        dilution_3y='WEIGHTED_DILUTED_SHARES_CAGR_3Y')
+    x['metrics']={m:dict(raw_value=v,value=v,basis_status='VERIFIED',
+        denominator_definition='WEIGHTED_AVERAGE_DILUTED_SHARES',
+        formula_variant=formulas[m],
+        stage1=dict(status='CONSISTENT'),
+        stage2=dict(status='FINAL_ELIGIBLE',all_used_years_linked=True,
+                    documented_common_basis=True,evidence_refs=['SYNTHETIC_EXPLICIT_COMMON_BASIS']),
+        corporate_action=dict(status='UNKNOWN',adjustment_applied=False))
+        for m,v in [('eps_cagr_3y',.12),('fcf_per_share_cagr_3y',.15),('dilution_3y',0)]}
+    return s,review
+
+
+def apply_two(s,r):
+    return apply_two_stage_share_review(s,r,review_sha256='f'*64,
+        reviewed_at='2026-11-14T14:00:00Z',input_cutoff='2026-11-14T14:00:00Z')
+
+
+def test_two_stage_quarantines_every_old_proof_even_without_new_review():
+    s,r=two_stage_fixture();prior=deepcopy(s)
+    out,a=apply_two(s,dict(source_contexts={}))
+    row=out['rows'][0]
+    assert row['metrics']['eps_cagr_3y']==.12 and row['metrics']['dilution_3y']==0
+    assert all(row['metric_evidence'][m]['status']=='QUARANTINED'
+               for m in ('eps_cagr_3y','fcf_per_share_cagr_3y','dilution_3y'))
+    assert all(row['metric_evidence'][m]['historical_share_basis']=='UNKNOWN'
+               for m in ('eps_cagr_3y','fcf_per_share_cagr_3y','dilution_3y'))
+    assert len(a)==3 and not any(x['adopted'] for x in a)
+    assert s==prior and out['members']==s['members']
+
+
+def test_two_stage_uses_individual_final_stage_and_preserves_zero_as_value():
+    s,r=two_stage_fixture();claims=r['source_contexts']['synthetic/source~1']['metrics']
+    claims['fcf_per_share_cagr_3y']['stage2']['status']='UNCONFIRMED_PERIOD_BASIS'
+    out,a=apply_two(s,r);row=out['rows'][0]
+    assert row['metric_evidence']['eps_cagr_3y']['share_eligibility_stage']=='FINAL_ELIGIBLE'
+    assert row['metric_evidence']['dilution_3y']['historical_share_basis']=='VERIFIED'
+    assert row['metrics']['dilution_3y']==0
+    assert row['metric_evidence']['fcf_per_share_cagr_3y']['status']=='QUARANTINED'
+    assert sum(x['adopted'] for x in a)==2
+    p=row['metric_evidence']['eps_cagr_3y']
+    assert p['available_at']=='2026-11-14T14:00:00Z'
+    assert p['retrieved_at']=='2026-11-04T20:00:00Z'
+    assert p['validation_stages']['final_eligibility']=='FINAL_ELIGIBLE'
+    assert p['denominator_definition']=='WEIGHTED_AVERAGE_DILUTED_SHARES'
+    assert 'evidence_refs' not in p['validation_stages']
+    assert '/source_contexts/synthetic~1source~01/' in p['source_refs'][0]
+
+
+@pytest.mark.parametrize('status',['CONSISTENT','SPLIT_CANDIDATE'])
+def test_cross_filing_consistency_or_ratio_candidate_alone_is_not_final(status):
+    s,r=two_stage_fixture()
+    for c in r['source_contexts']['synthetic/source~1']['metrics'].values():
+        c['stage1']['status']=status
+        c['stage2']=dict(status='UNCONFIRMED_PERIOD_BASIS')
+        c['corporate_action']=dict(status='CANDIDATE',adjustment_applied=False)
+    out,a=apply_two(s,r)
+    assert not any(x['adopted'] for x in a)
+    assert all(p['status']=='QUARANTINED' for p in out['rows'][0]['metric_evidence'].values()
+               if p.get('two_stage_review_version'))
+
+
+@pytest.mark.parametrize('field',['all_used_years_linked','documented_common_basis','evidence_refs'])
+def test_final_label_without_complete_period_evidence_is_rejected(field):
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']['metrics']['eps_cagr_3y']
+    c['stage2'].pop(field)
+    with pytest.raises(ValueError,match='FINAL_EVIDENCE'):apply_two(s,r)
+
+
+@pytest.mark.parametrize('case',['basic','actual','wrong_formula','unverified'])
+def test_two_stage_metric_requires_its_exact_existing_denominator_and_formula(case):
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']['metrics']['eps_cagr_3y']
+    if case=='basic':c['denominator_definition']='WEIGHTED_AVERAGE_BASIC_SHARES'
+    elif case=='actual':c['denominator_definition']='END_OF_PERIOD_ACTUAL_SHARES'
+    elif case=='wrong_formula':c['formula_variant']='FCF_OVER_WEIGHTED_DILUTED_SHARES_CAGR_3Y'
+    else:c['basis_status']='UNKNOWN'
+    with pytest.raises(ValueError,match='METRIC_DEFINITION|FINAL_EVIDENCE'):apply_two(s,r)
+
+
+def test_confirmed_adjustment_is_not_reapplied_to_an_already_adjusted_value():
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']['metrics']['eps_cagr_3y']
+    c.update(value=.25,corporate_action=dict(status='CONFIRMED',adjustment_applied=True,
+                                           evidence_refs=['SYNTHETIC_RETROSPECTIVE_ADJUSTMENT']))
+    out,a=apply_two(s,r)
+    assert out['rows'][0]['metrics']['eps_cagr_3y']==.25
+    assert next(x for x in a if x['metric']=='eps_cagr_3y')['corporate_action']['adjustment_applied']
+    c['corporate_action']['status']='CANDIDATE'
+    with pytest.raises(ValueError,match='UNCONFIRMED_ADJUSTMENT'):apply_two(s,r)
+
+
+def test_two_stage_proof_stays_reference_only_for_financial_and_domain_none():
+    s,r=two_stage_fixture();s['rows'][0]['calculation_accounting_template']=None
+    out,a=apply_two(s,r)
+    assert not any(x['adopted'] for x in a)
+    assert {x['reason'] for x in a}=={'FINANCIAL_REFERENCE_ONLY'}
+    s['rows'][0]['calculation_accounting_template']='GENERAL'
+    r['source_contexts']['synthetic/source~1']['metrics']['eps_cagr_3y']['value']=None
+    out,a=apply_two(s,r)
+    assert not next(x for x in a if x['metric']=='eps_cagr_3y')['adopted']
+
+
+@pytest.mark.parametrize('case',['version','hash','row_source','acquired','duplicate'])
+def test_two_stage_source_context_mismatch_never_adopts(case):
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']
+    if case=='version':c['adapter_version']='held-555-cross-filing-share-review/1'
+    elif case=='hash':c['source_sha256']='e'*64
+    elif case=='row_source':s['rows'][0]['owner_source_context']['companyfacts_sha256']='e'*64
+    elif case=='acquired':s['rows'][0]['owner_source_context']['acquired_at']='2026-11-04T21:00:00Z'
+    else:r['source_contexts']['duplicate']=deepcopy(c)
+    with pytest.raises(ValueError):apply_two(s,r)
+
+
+@pytest.mark.parametrize('case',['future','future_offset','source_mismatch','missing_source','missing_review'])
+def test_source_review_clock_cannot_be_relabelled_as_an_earlier_review(case):
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']
+    if case=='future':c['review_input_cutoff']='2026-11-14T14:00:00.000001Z'
+    elif case=='future_offset':c['review_input_cutoff']='2026-11-14T15:00:01+01:00'
+    elif case=='source_mismatch':c['source_input_cutoff']='2026-11-04T20:00:01Z'
+    elif case=='missing_source':c.pop('source_input_cutoff')
+    else:c.pop('review_input_cutoff')
+    with pytest.raises(ValueError,match='REVIEW_CLOCK'):apply_two(s,r)
+
+
+def test_review_clock_utc_equivalent_instant_is_preserved_without_retiming_source():
+    s,r=two_stage_fixture();c=r['source_contexts']['synthetic/source~1']
+    c['source_input_cutoff']='2026-11-04T21:00:00+01:00'
+    c['review_input_cutoff']='2026-11-14T15:00:00+01:00'
+    out,a=apply_two(s,r)
+    assert sum(x['adopted'] for x in a)==3
+    assert out['rows'][0]['metric_evidence']['eps_cagr_3y']['retrieved_at']=='2026-11-04T20:00:00Z'

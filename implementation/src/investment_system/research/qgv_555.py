@@ -17,6 +17,9 @@ from .sector_qgv_registry import SECTORS, TEMPLATES, ALIASES as SECTOR_ALIASES
 
 IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
 OWNER_IDS={'U1-555':'unified-555/0.2.0','S1-555':'sector-555/0.2.0'}
+TWO_STAGE_IDS={'U1-555':'unified-555/0.3.0','S1-555':'sector-555/0.3.0'}
+REGISTERED_IDS={'0.1.0':IDS,'0.2.0':OWNER_IDS,'0.3.0':TWO_STAGE_IDS}
+TWO_STAGE_POLICY='cross-filing-consistency-full-period/2'
 OWNER_POLICIES=dict(classification_policy='official-profile-sic-provisional/1',
     accounting_policy='reit-general-financial-reference-only/1',
     historical_share_policy='cross-filing-annual-duplicates/1',
@@ -31,6 +34,7 @@ ALIASES={'EV_EBIT_TTM':'ebit_yield','EV_FCF_TTM':'fcf_yield'}
 ALIASES.update({alias:'sector::'+v for alias,v in SECTOR_ALIASES.items() if alias not in ALIASES})
 ALIASES.update({'sector::'+alias:'sector::'+v for alias,v in SECTOR_ALIASES.items()})
 SHARE_METRICS={'eps_cagr_3y','fcf_per_share_cagr_3y','dilution_3y'}
+SHARE_DENOMINATOR='WEIGHTED_AVERAGE_DILUTED_SHARES'
 FORMULAS={
  'roic':('NOPAT / mean(FY opening, closing invested capital)','FY','return_level','v2_factors._Company.roic'),
  'gross_profit_to_assets':('FY gross profit / FY closing assets','FY','gross_profit','v2_factors._metrics_general'),
@@ -89,13 +93,20 @@ def catalog():
             period='CENTRAL_SELECTED_REPORTED_FLOW_PERIOD',
             valuation_share_basis='WEIGHTED_AVERAGE_DILUTED',default=False,
             recommendation='OWNER_RESEARCH_20261114_NOT_ACTUAL_CLASS_MARKET_CAP')
+    for key in SHARE_METRICS:
+        out[key].update(denominator_definition=SHARE_DENOMINATOR,
+            share_basis_validation='METRIC_SPECIFIC_FULL_USED_PERIOD',
+            actual_issuance_interpretation=False,
+            numerator_definition=('REPORTED_DILUTED_EPS_WITH_ATTRIBUTABLE_DILUTED_NUMERATOR_EVIDENCE'
+                if key=='eps_cagr_3y' else 'FY_CFO_MINUS_CASH_CAPEX'
+                if key=='fcf_per_share_cagr_3y' else 'WEIGHTED_AVERAGE_DILUTED_SHARE_COUNT_CHANGE'))
     return out
 
 
 def configuration(candidate, *, version='0.1.0'):
     if candidate not in IDS:raise ValueError('UNKNOWN_MODEL')
-    if version not in ('0.1.0','0.2.0'):raise ValueError('UNKNOWN_MODEL_VERSION')
-    out=dict(schema_version='qgv-555-config/1',model_id=(OWNER_IDS if version=='0.2.0' else IDS)[candidate],candidate=candidate,
+    if version not in REGISTERED_IDS:raise ValueError('UNKNOWN_MODEL_VERSION')
+    out=dict(schema_version='qgv-555-config/1',model_id=REGISTERED_IDS[version][candidate],candidate=candidate,
         version=version,axis_weights=dict(Q=34,G=33,V=33),sector_axis_overrides={},
         roles={r:dict(axis=a,weight=w,metrics={m:1 for m,d in SPECS[r]}) for a,rs in WEIGHTS.items() for r,w in rs.items()},
         minimum=MIN_PEERS,missing_policy='available-role-weight-50/1',
@@ -104,8 +115,9 @@ def configuration(candidate, *, version='0.1.0'):
         gate_policy='official-q-percentile-required/1',duplicate_policy='DISCLOSE_ONLY',
         classification_dictionary_version='common-industry-dictionary/2',type_multiplier=False,
         additional_factor_weight=0,official=False)
-    if version=='0.2.0':
+    if version!='0.1.0':
         out.update(OWNER_POLICIES)
+        if version=='0.3.0':out['historical_share_policy']=TWO_STAGE_POLICY
         for role in V_SPECS:out['roles'][role]['metrics']={'central::'+k:v for k,v in out['roles'][role]['metrics'].items()}
     return out
 
@@ -156,10 +168,16 @@ def identity(s):
         source_anchors=deepcopy(s.get('source_anchors',[])))
 
 
-def _usable(r,metric,s):
+def _usable(r,metric,s,*,share_policy=None):
     proof=(r.get('metric_evidence') or {}).get(metric)
     x=r.get('metrics',{}).get(metric)
     if type(x) not in (int,float) or not math.isfinite(x):return None,'RAW_MISSING'
+    if metric in SHARE_METRICS and share_policy==TWO_STAGE_POLICY and (not proof or
+        proof.get('share_eligibility_stage')!='FINAL_ELIGIBLE' or
+        proof.get('two_stage_review_version')!='held-555-share-eligibility/2'):
+        return None,'SHARE_PERIOD_ELIGIBILITY_UNVERIFIED'
+    if metric in SHARE_METRICS and share_policy==TWO_STAGE_POLICY and proof.get('denominator_definition')!=SHARE_DENOMINATOR:
+        return None,'SHARE_DENOMINATOR_DEFINITION_MISMATCH'
     if not proof or proof.get('status')!='VERIFIED' or not proof.get('source_refs') or proof.get('variant')!=catalog()[metric]['variant']:
         return None,'DEFINITION_OR_SOURCE_UNVERIFIED'
     if timestamp(proof['available_at'])>timestamp(s['input_cutoff']):return None,'NOT_AVAILABLE_AT_CUTOFF'
@@ -173,7 +191,7 @@ def _usable(r,metric,s):
 
 def calculation_row(c, row):
     """Owner-approved research view; preserve the original classification record."""
-    if c['version']!='0.2.0':return row
+    if c['version']=='0.1.0':return row
     out=deepcopy(row)
     if 'calculation_accounting_template' in row:
         context=row.get('owner_source_context') or {}
@@ -225,7 +243,7 @@ def run(c,e,ref,*,calculated_at=None):
         if r['issuer_id'] in points:
             if r.get('metrics')!=ref_rows[r['issuer_id']].get('metrics'):raise ValueError('ISSUER_POINT_CONFLICT')
             continue
-        points[r['issuer_id']]={m:_usable(r,m,ref)[0] for m in cats};ref_rows[r['issuer_id']]=r
+        points[r['issuer_id']]={m:_usable(r,m,ref,share_policy=c.get('historical_share_policy'))[0] for m in cats};ref_rows[r['issuer_id']]=r
     pools={('all',):_Pool(points)}
     for keyfun in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
         groups=defaultdict(dict)
@@ -237,14 +255,14 @@ def run(c,e,ref,*,calculated_at=None):
         role_config=deepcopy(c['roles'])
         if c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
         supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
-        unsupported_reason=('SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']=='0.2.0' and
+        unsupported_reason=('SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']!='0.1.0' and
             r.get('accounting_template')=='GENERAL' else 'ACCOUNTING_RECIPE_PREPARING')
-        raw={m:_usable(r,m,e) for m in cats};roles={};metric_scores={}
+        raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy')) for m in cats};roles={};metric_scores={}
         for role,spec in role_config.items():
             vals=[];items=[]
             for name,mw in spec['metrics'].items():
                 m=ALIASES.get(name,name);requested_metric=m;value,reason=raw[m];score=None;n=0;basis=None
-                if (c['version']=='0.2.0' and role=='g_growth_efficiency' and
+                if (c['version']!='0.1.0' and role=='g_growth_efficiency' and
                     m=='incremental_roic_3y' and value is None and
                     'sector::roa_improvement_3y' not in {ALIASES.get(k,k) for k in spec['metrics']}):
                     m='sector::roa_improvement_3y';value,reason=raw[m]
@@ -265,12 +283,24 @@ def run(c,e,ref,*,calculated_at=None):
                 elif mw==0:reason='DISABLED_IN_SETTING'
                 items.append(dict(metric=m,raw=value,raw_status=raw[m][1],score=score,reason=None if score is not None else reason,
                                   reference_n=n,reference_scope=basis,weight=mw))
-                if c['version']=='0.2.0':
+                if c['version']!='0.1.0':
                     items[-1].update(requested_metric=requested_metric,
                         selection_reason='PRIMARY_RAW_UNAVAILABLE_ROA_FALLBACK' if m!=requested_metric else 'PRIMARY',
                         primary_raw_status=raw[requested_metric][1],
                         display_flags=['SUBSTITUTE_METRIC'] if m!=requested_metric and score is not None else [])
                     if m!=requested_metric:items[-1]['substitute_for']=requested_metric
+                    if c['version']=='0.3.0' and m in SHARE_METRICS:
+                        proof=(r.get('metric_evidence') or {}).get(m) or {}
+                        items[-1]['share_validation']=dict(
+                            final_eligibility=proof.get('share_eligibility_stage','UNCONFIRMED'),
+                            review_version=proof.get('two_stage_review_version'),
+                            denominator_definition=proof.get('denominator_definition'),
+                            stages=deepcopy(proof.get('validation_stages')),
+                            diagnostic_raw=(r.get('metrics',{}).get(m) if
+                                type(r.get('metrics',{}).get(m)) in (int,float) and
+                                math.isfinite(r['metrics'][m]) else None),
+                            source_refs=deepcopy(proof.get('source_refs',[])),
+                            reviewed_at=proof.get('reviewed_at'),retrieved_at=proof.get('retrieved_at'))
                 if score is not None:vals.append((score,mw))
                 metric_scores[role+'|'+m]=items[-1]
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
@@ -309,7 +339,7 @@ def run(c,e,ref,*,calculated_at=None):
             ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
             status='READY' if supported else unsupported_reason,lineage=lineage,
             input_family_contributions=dict(families)))
-        if c['version']=='0.2.0':
+        if c['version']!='0.1.0':
             temp=original.get('temporary_classification') or {}
             flags=[]
             if (temp.get('status')=='TEMPORARY_OFFICIAL_PROFILE' or
@@ -350,7 +380,7 @@ def run(c,e,ref,*,calculated_at=None):
         raw_any=count(lambda r:any(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         raw_all=count(lambda r:all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         score=count(lambda r:r['roles'][role]['score'] is not None)) for role in SPECS}
-    if c['version']=='0.2.0':
+    if c['version']!='0.1.0':
         result['coverage'].update(axis_target=math.ceil(.9*b['evaluation']['issuers']),
             target_criteria='ALL_THREE_AXES_EACH_ROLE_WEIGHT_AT_LEAST_50_AND_ELIGIBLE_TOTAL',
             all15_reference_only=True,
@@ -406,6 +436,10 @@ def fixture(n=21):
             metrics={m:(50 if m=='own_history' else i+1) for m in cats},
             metric_evidence={m:dict(status='VERIFIED',variant=v['variant'],source_refs=['SYNTHETIC_ONLY'],available_at=ts,
                 historical_share_basis='VERIFIED',valuation_day='2026-11-04',security_and_actions='VERIFIED',
+                share_eligibility_stage='FINAL_ELIGIBLE',two_stage_review_version='held-555-share-eligibility/2',
+                denominator_definition=SHARE_DENOMINATOR if m in SHARE_METRICS else None,
+                validation_stages=dict(stage1_status='CROSS_FILING_CONSISTENT',stage2_status='FINAL_ELIGIBLE',
+                    corporate_action_status='DOCUMENTED_COMMON_BASIS',adjustment_applied=False) if m in SHARE_METRICS else None,
                 share_basis='WEIGHTED_AVERAGE_DILUTED' if m.startswith('central::') else None) for m,v in cats.items()},
             gate=dict(percentile=80,calc_version='qgv2-calc/2026-10-23.1',evaluation_day='2026-11-04',source_refs=['SYNTHETIC_OFFICIAL_GATE'])))
     e=dict(schema_version='qgv-555-input/1',population_id='synthetic-evaluation',population_version='1',
@@ -430,7 +464,7 @@ def accounting_recipes(*, version='0.1.0'):
                 variants=[m for m,d in SPECS[role]] if t=='GENERAL' else known.get(role,[]),
                 state='DEFINED' if t=='GENERAL' else 'PARTIAL_DEFINITION' if role in known else 'DEFINITION_REQUIRED',
                 limitation=None if t=='GENERAL' else 'Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback') for role in SPECS}))
-    if version=='0.2.0':
+    if version in ('0.2.0','0.3.0'):
         cfg=configuration('S1-555',version=version)
         for item in out:
             if item['accounting_template']=='EQUITY_REIT':

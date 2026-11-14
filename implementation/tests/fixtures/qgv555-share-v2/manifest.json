@@ -1,0 +1,11 @@
+{
+  "schema_version": "qgv-555-share-example-manifest/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "stage-examples.json",
+      "size": 23364,
+      "sha256": "b22e6f883297402c45449937c5aa7e5723dc0cf1f5f878b3247aca9928894256"
+    }
+  ]
+}

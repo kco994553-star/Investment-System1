@@ -17,7 +17,7 @@ def attach(result,evaluation,reference):
         r=calculation_row(c,original)
         if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
         if r['issuer_id'] in points:continue
-        points[r['issuer_id']]={m:_usable(r,m,reference)[0] for m in cats};rmap[r['issuer_id']]=r
+        points[r['issuer_id']]={m:_usable(r,m,reference,share_policy=c.get('historical_share_policy'))[0] for m in cats};rmap[r['issuer_id']]=r
     pools={('all',):_Pool(points)}
     for f in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
         groups=defaultdict(dict)
@@ -31,7 +31,7 @@ def attach(result,evaluation,reference):
             if m in selected:
                 node=deepcopy(selected[m]);node.update(kind='CORE_INPUT_VIEW',core_contribution='ALREADY_COUNTED_IN_ROLE')
             else:
-                raw,reason=_usable(r,m,evaluation);score=None;n=0;basis=None
+                raw,reason=_usable(r,m,evaluation,share_policy=c.get('historical_share_policy'));score=None;n=0;basis=None
                 if outrow['status']=='READY' and raw is not None:
                     keys=[('sector',r.get('sector_id'),r.get('accounting_template'))] if c['candidate']=='S1-555' else ([('industry',r.get('industry_group')),('all',)] if spec['axis']=='Q' else [('all',)])
                     for key in keys:

@@ -252,3 +252,145 @@ def apply_reviewed_roa_fallback(snapshot, review_file, *, review_sha256,
     out['source_anchors']=[*deepcopy(snapshot.get('source_anchors',[])),
         dict(policy='owner-555-existing-roa-fallback-inputs/2026-11-14.1',review_sha256=review_sha256)]
     return out,audit
+
+
+TWO_STAGE_SHARE_REVIEW = 'held-555-share-eligibility/2'
+TWO_STAGE_SHARE_FORMULAS = {
+    'eps_cagr_3y': 'REPORTED_DILUTED_EPS_CAGR_3Y',
+    'fcf_per_share_cagr_3y': 'FCF_OVER_WEIGHTED_DILUTED_SHARES_CAGR_3Y',
+    'dilution_3y': 'WEIGHTED_DILUTED_SHARES_CAGR_3Y',
+}
+
+
+def apply_two_stage_share_review(snapshot, review_file, *, review_sha256,
+                                 reviewed_at, input_cutoff):
+    """Quarantine earlier share proofs, then adopt only full-period eligibility.
+
+    The caller hash-checks the serialized review before supplying this object.
+    Cross-filing consistency and integer-ratio candidates are diagnostic stages,
+    not permission to use a metric. Existing numerical observations remain in
+    the copied input for audit, but their proof is explicitly unadopted until a
+    source-bound, individually eligible metric replaces it. No financial recipe,
+    price join, share-count definition or adjustment is inferred here.
+    """
+    if not timestamp(snapshot['input_cutoff']) <= timestamp(reviewed_at) <= timestamp(input_cutoff):
+        raise ValueError('TWO_STAGE_SHARE_REVIEW_TIME')
+    if not re.fullmatch('[0-9a-f]{64}', review_sha256):
+        raise ValueError('TWO_STAGE_SHARE_REVIEW_HASH')
+    candidates = {}
+    for key, review in review_file.get('source_contexts', {}).items():
+        record = review['source_record']; raw_sha = review['source_sha256']
+        if (review.get('adapter_version') != TWO_STAGE_SHARE_REVIEW or
+            record.get('calc_version') != CALC or
+            record.get('source_sha256', {}).get('companyfacts') != raw_sha or
+            not re.fullmatch('[0-9a-f]{64}', raw_sha) or
+            timestamp(record['acquired_at']) > timestamp(reviewed_at)):
+            raise ValueError('TWO_STAGE_SHARE_SOURCE_CONTEXT')
+        source_cutoff=review.get('source_input_cutoff')
+        review_cutoff=review.get('review_input_cutoff')
+        if (not isinstance(source_cutoff,str) or not isinstance(review_cutoff,str) or
+            timestamp(source_cutoff)!=timestamp(record['acquired_at']) or
+            not timestamp(source_cutoff)<=timestamp(review_cutoff)<=timestamp(reviewed_at)):
+            raise ValueError('TWO_STAGE_SHARE_REVIEW_CLOCK')
+        key_hash = digest(record)
+        if key_hash in candidates:raise ValueError('TWO_STAGE_SHARE_DUPLICATE_CONTEXT')
+        candidates[key_hash] = (key, review)
+    out = deepcopy(snapshot); out['input_cutoff'] = input_cutoff
+    cats = catalog(); audit = []
+    finite = lambda value: type(value) in (int, float) and math.isfinite(value)
+    for row in out['rows']:
+        context = row.get('owner_source_context') or {}
+        found = candidates.get(context.get('record_hash'))
+        if found:
+            key, review = found; record = review['source_record']
+            if (record['cik'] != row.get('issuer_id') or
+                record['acquired_at'] != context.get('acquired_at') or
+                record.get('fiscal_year_end') != context.get('fiscal_year_end') or
+                review['source_sha256'] != context.get('companyfacts_sha256')):
+                raise ValueError('TWO_STAGE_SHARE_ROW_CONTEXT')
+            token = key.replace('~', '~0').replace('/', '~1')
+        else:
+            key = token = None; review = {}; record = {}
+        for metric in sorted(SHARE_METRICS):
+            prior = deepcopy(row.get('metric_evidence', {}).get(metric))
+            retained_value = row.get('metrics', {}).get(metric)
+            claim = review.get('metrics', {}).get(metric) or {}
+            stage1 = deepcopy(claim.get('stage1') or dict(status='UNKNOWN'))
+            stage2 = deepcopy(claim.get('stage2') or dict(status='UNCONFIRMED_PERIOD_BASIS'))
+            action = deepcopy(claim.get('corporate_action') or dict(status='UNKNOWN', adjustment_applied=False))
+            raw = claim.get('raw_value')
+            # A retained value is not discarded or silently replaced with zero.
+            # It remains a quarantined diagnostic, independent of source review.
+            raw_connected = finite(raw) or finite(retained_value)
+            summary = dict(stage1_status=stage1.get('status'),stage2_status=stage2.get('status'),
+                corporate_action_status=action.get('status'),
+                adjustment_applied=action.get('adjustment_applied') is True,
+                raw_connected=raw_connected,raw_source_context_linked=found is not None,
+                retained_numeric=finite(retained_value),reviewed_raw_numeric=finite(raw),
+                full_period_evidence_ref_count=len(stage2.get('evidence_refs') or []),
+                final_eligibility='QUARANTINED')
+            refs = [f'sha256:{review_sha256}#/source_contexts/{token}/metrics/{metric}'] if found else []
+            proof = dict(status='QUARANTINED',variant=cats[metric]['variant'],
+                historical_share_basis='UNKNOWN',share_eligibility_stage='UNCONFIRMED_PERIOD_BASIS',
+                two_stage_review_version=TWO_STAGE_SHARE_REVIEW,
+                available_at=reviewed_at,reviewed_at=reviewed_at,
+                retrieved_at=record.get('acquired_at', (prior or {}).get('retrieved_at')),
+                source_refs=refs,validation_stages=summary,
+                denominator_definition=claim.get('denominator_definition'),
+                formula_variant=claim.get('formula_variant'),
+                original_metric_evidence=prior,
+                quarantine_reason='PRIOR_CONSISTENCY_OR_RATIO_IS_NOT_FULL_PERIOD_ELIGIBILITY')
+            row.setdefault('metric_evidence', {})[metric] = proof
+            item = dict(company_id=row['company_id'],issuer_id=row.get('issuer_id'),metric=metric,
+                raw_connected=raw_connected,retained_numeric=finite(retained_value),
+                reviewed_raw_numeric=finite(raw),source_context_linked=found is not None,
+                retained_raw_value=retained_value if finite(retained_value) else None,
+                reviewed_raw_value=raw if finite(raw) else None,
+                stage1=stage1,stage2=stage2,corporate_action=action,
+                denominator_definition=claim.get('denominator_definition'),
+                formula_variant=claim.get('formula_variant'),
+                calculation_applicable=row.get('calculation_accounting_template')=='GENERAL',
+                prior_adopted=(prior or {}).get('historical_share_basis')=='VERIFIED',
+                adopted=False,reason=claim.get('reason') or stage2.get('status'))
+            if stage2.get('status') == 'FINAL_ELIGIBLE':
+                if (stage2.get('all_used_years_linked') is not True or
+                    stage2.get('documented_common_basis') is not True or
+                    not isinstance(stage2.get('evidence_refs'), list) or
+                    not stage2['evidence_refs'] or
+                    not all(isinstance(x, str) and x for x in stage2['evidence_refs']) or
+                    claim.get('basis_status') != 'VERIFIED'):
+                    raise ValueError('TWO_STAGE_FINAL_EVIDENCE_INCOMPLETE')
+                if (claim.get('denominator_definition') != 'WEIGHTED_AVERAGE_DILUTED_SHARES' or
+                    claim.get('formula_variant') != TWO_STAGE_SHARE_FORMULAS[metric]):
+                    raise ValueError('TWO_STAGE_METRIC_DEFINITION_MISMATCH')
+                if action.get('adjustment_applied') is True and (
+                    action.get('status') != 'CONFIRMED' or not action.get('evidence_refs')):
+                    raise ValueError('TWO_STAGE_UNCONFIRMED_ADJUSTMENT')
+                value = claim.get('value')
+                if not finite(value):
+                    item['reason'] = 'FORMULA_DOMAIN_OR_OTHER_INPUT_UNAVAILABLE'
+                elif row.get('calculation_accounting_template') != 'GENERAL':
+                    item['reason'] = 'FINANCIAL_REFERENCE_ONLY'
+                else:
+                    row.setdefault('metrics', {})[metric] = value
+                    proof.update(status='VERIFIED',historical_share_basis='VERIFIED',
+                        share_eligibility_stage='FINAL_ELIGIBLE',
+                        source_formula_version=record['calc_version'],
+                        period_end=record.get('fiscal_year_end'),currency=record.get('currency'),
+                        companyfacts_sha256=review['source_sha256'],
+                        reviewed_source_record_hash=context['record_hash'])
+                    summary['final_eligibility']='FINAL_ELIGIBLE'
+                    item.update(adopted=True,reason=None)
+            elif not found:
+                item['reason'] = 'REVIEW_SOURCE_CONTEXT_NOT_LINKED'
+            audit.append(item)
+    out['owner_two_stage_share_review'] = dict(adapter_version=TWO_STAGE_SHARE_REVIEW,
+        review_sha256=review_sha256,reviewed_at=reviewed_at,
+        original_input_hash=digest(snapshot),original_input_cutoff=snapshot['input_cutoff'],
+        historical_system_pit_complete=False,per_metric_adoption=True,
+        prior_proofs_quarantined=True,
+        numeric_consistency_does_not_prove_absence_of_corporate_actions=True)
+    out['source_anchors'] = [*deepcopy(snapshot.get('source_anchors', [])),
+        dict(policy=TWO_STAGE_SHARE_REVIEW,review_sha256=review_sha256,
+             original_input_hash=digest(snapshot))]
+    return out, audit
