@@ -79,6 +79,23 @@ def test_omitted_null_metric_requires_matching_retained_fiscal_context():
     assert m not in connect(s,[e])[0]['rows'][0]['metrics']
 
 
+def test_multiple_acquisitions_bind_only_the_pinned_retained_context():
+    e,s=entry_and_snapshot();older=deepcopy(e)
+    older['record']['acquired_at']='2026-02-02T01:00:00Z'
+    payload=json.loads(older['source_bytes'])
+    payload['facts']['us-gaap']['DebtLongtermAndShorttermCombinedAmount']['units']['USD'][0]['val']=100
+    older['source_bytes']=json.dumps(payload).encode()
+    older['sha256']=hashlib.sha256(older['source_bytes']).hexdigest()
+    older['record']['source_sha256']['companyfacts']=older['sha256']
+    older['reference']='synthetic#sha256='+older['sha256']
+    for entries in ([older,e],[e,older]):
+        out,audit=connect(s,entries)
+        assert out['rows'][0]['metrics']['net_debt_to_ebitda']==2
+        skipped=next(a for a in audit if a['retrieved_at']==older['record']['acquired_at'])
+        assert not skipped['linked_rows']
+        assert skipped['row_decisions'][0]['cause']=='RETAINED_FISCAL_CONTEXT_MISMATCH'
+
+
 @pytest.mark.parametrize('case',['hash','issuer','duplicate','future_review'])
 def test_repair_rejects_incoherent_evidence(case):
     e,s=entry_and_snapshot();es=[e]
