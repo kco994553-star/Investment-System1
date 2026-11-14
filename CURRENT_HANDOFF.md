@@ -21,6 +21,7 @@
 
 | PR·작업 | 담당 | 시작 (UTC) | 상태·다음 |
 | --- | --- | --- | --- |
+| 시총 Top500 전환 · QGV 555 · 사용자 설정(DC-49, 가지 `claude/qgv-top500-555`, base #536) | Main(화면·판독기·합성 제안) · Codex(Top500 모집단·555 엔진 계약) | 11/14 | 2.1 모집단·모형 선택과 2.2.7 555 설정 구현, 합성 검증만. 재계산은 ENGINE_CONTRACT_PENDING. 333 별도 후보 개발 중단(보존). 상세 [TOP500_QGV555_20261114.md](implementation/docs/frontend_v2/TOP500_QGV555_20261114.md) |
 | [#456](https://github.com/kco994553-star/Investment-System1/pull/456) 중앙 V 기준일: IEX 목록의 비거래일 파일 건너뛰기 | Main | 11/01 03:10 | **병합됨**(11/03 08:43 UTC, 오너 승인 머리 `a922d6eb` 한정, 병합 SHA `fb0ffcab67e44c9d681211a579aeab6a09a86f31`). 병합 직전 머리·파일 3개·변경 내용이 승인 때와 같음을 확인(조회). 병합 뒤 `private-boundary-push` [41605364088](https://github.com/kco994553-star/Investment-System1/actions/runs/41605364088) 성공, 배포 없음(조회). **실게시 검증은 별도:** 병합 뒤 첫 정기 실행에서 실행 ID·선택 IEX 파일 날짜와 기대 거래일·공개 `attempt_state`·실제 `qgv-official.json` 기준일을 함께 확인(4·6절). 11/03 08:47 UTC IEX 목록의 마지막 TOPS 1.6 파일은 `20261031`(토요일 3,178,963 bytes)이고 `20261102`는 아직 없음(조회, 목록만) |
 | [#457](https://github.com/kco994553-star/Investment-System1/pull/457) 결정 기록 11/01 2차·보완, DC-41, 연구 설정 10절(이 문서도 여기서 갱신) | Main | 11/01 03:00 | CI 성공(조회). 오너 승인 뒤 병합. 결정 대기 `EXP-CALC-ALIGN`(`EXP-SCORING-POP`은 11/01 4차 C2로 결정, DC-43) **DC-42 역할 확대**(정본 4개·START_HERE 4.1절 공통 파일 규칙)와 새 결정 대기 `EXP-T-OPEN-DEF`(체결가 시가의 뜻)도 이 PR |
 | [#455](https://github.com/kco994553-star/Investment-System1/pull/455) 자료층 브라우저 시험 경합 고침(시험만) | Main | 11/01 03:15 | CI 성공(조회). 오너 검토 뒤 병합(11/01 결정 12) |

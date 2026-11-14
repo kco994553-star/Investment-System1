@@ -73,7 +73,13 @@ REQUEST = 'sector-qgv-engine-request/1'
 MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
-OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay')
+OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay', 'qgv555_context', 'qgv555_preview')
+# QGV 555 · 시총 Top500 (owner 2026-11-14, DC-49): Main's SYNTHETIC proposal files (tools/make_qgv555_synthetic.py), served as
+# written so the development screen can read them; no 555 calculation exists yet, so qgv555_preview is always refused with
+# ENGINE_CONTRACT_PENDING (never a result of another model under the 555 name). The published site has no engine route.
+QGV555_FIXTURES = ROOT / 'docs' / 'frontend_v2' / 'qgv555-synthetic'
+QGV555_FILES = {'catalog': 'catalog.json', 'presets': 'presets.json', 'population': 'population-top500.json'}
+QGV555_MODELS = ('unified-555/0.1.0', 'sector-555/0.1.0')
 MAX_REQUEST_BYTES = 1 << 20
 MAX_KEPT_PREVIEWS = 32
 REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
@@ -310,6 +316,8 @@ class Bridge:
             raise Refused('OP_UNKNOWN')
         if not isinstance(rid, str) or not REQUEST_ID.fullmatch(rid):
             raise Refused('REQUEST_ID_INVALID')
+        if op.startswith('qgv555_'):
+            return self._qgv555(op, req)
         if 'model' in req or 'model_id' in req:
             # A research request: never the sector default engine, never a silent fallback to it.
             if op not in DUAL_OPS:
@@ -318,6 +326,15 @@ class Bridge:
             body = getattr(self, '_dual_' + op)(req, rid, key, config)
             return {'model': model, 'model_id': model_id, **body}
         return getattr(self, '_' + op)(req, rid)
+
+    # ---- QGV 555 (Main's synthetic proposal; no engine yet)
+    def _qgv555(self, op, req):
+        if op == 'qgv555_context':
+            files = {k: json.loads((QGV555_FIXTURES / v).read_text('utf-8')) for k, v in QGV555_FILES.items()}
+            return {'data_kind': 'SYNTHETIC', **files}
+        if req.get('model_id') not in QGV555_MODELS:
+            raise Refused('MODEL_UNKNOWN')
+        raise Refused('ENGINE_CONTRACT_PENDING')
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):

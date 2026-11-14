@@ -33,6 +33,8 @@
 // sector-qgv.js is the sector QGV request / answer check and settings editor on Codex's common engine (feature 2.2, owner
 // 2026-11-06) that screen-sector-qgv-live.js uses; it installs IS2.sectorQgv. sector-qgv-axis.js is the pure reader of the engine's
 // Q/G partial comparison (IS2.sectorQgvAxis); screen-sector-qgv-axis-live.js draws one (IS2.sectorQgvAxisLive).
+// qgv-555.js is the pure QGV 555 · 시총 Top500 reader and settings editor (IS2.qgv555, DC-49, owner 2026-11-14); screen-qgv555-live.js
+// draws its 2.1 모집단·모형 selector and its 2.2.7 555 settings block (IS2.qgv555Live).
 // classification.js is the 공통 분류 reader of Codex common-classification/1 (DC-48, owner 2026-11-07) that the company page, the QGV
 // leaderboard filter, the tech filter's group rows and 매크로 4.2 / 4.3 / 4.5 read; it installs IS2.classification and requests nothing.
 // policy-impact.js is the policy-impact/1 reader of 4.5 정책·지정학 (owner 2026-11-07) that screen-policy-impact-live.js uses; it installs IS2.policyImpact.
@@ -62,7 +64,7 @@ const LOAD_ORDER=Object.freeze([
  'search-part-live.js','screen-search-live.js','qgv-models.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
  'screen-technical-live.js','ownership-view.js','screen-ownership-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','classification.js','screen-tech-filter-live.js','research-scope.js','screen-research-scope-live.js',
  'discovery.js','screen-discovery-live.js',
- 'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-dual-engine-live.js','screen-sector-qgv-live.js',
+ 'sector-qgv.js','sector-qgv-axis.js','screen-sector-qgv-axis-live.js','screen-dual-engine-live.js','screen-sector-qgv-live.js','qgv-555.js','screen-qgv555-live.js',
  'policy-impact.js','screen-policy-impact-live.js',
  'news-refresh.js','macro-observed.js','screen-macro-observed-live.js','kis-private.js','expanded-issuers.js','input-repair.js','reference-view.js','dual-qgv.js','screen-expanded-browse-live.js','industry-macro.js','screen-industry-macro-live.js','private-expand-live.js',
 ]);
