@@ -1,15 +1,17 @@
 'use strict';
 // QGV 555 · 시총 Top500 · 사용자 설정 (owner 2026-11-14, DC-49) on #/qgv in a real browser at 1440×1000, 390×844 and 320×700, with
-// the development engine route (tools/sector_qgv_engine_bridge.py qgv555_context / qgv555_preview, Main's SYNTHETIC proposal files):
-//  - 2.1: 모집단 기존504 / 시총 Top500 / 확장 연구 × 모형 기존 공식 / U1-555 / S1-555 / 내 설정. 기존504 × 기존 공식 keeps the official
-//    table; every other pair shows its state panel and none of the official rows / lists under its name.
-//  - 2.2.7: nothing sent on open; 「555 합성 계약 불러오기」 (one POST) → five roles per axis, Q/G/V tabs, active count, a second factor
-//    splits the role's budget, alias / not-fit refusals in words with alternatives, exclude a role → count drops and the sums say so,
-//    variant / composite bounds, cancel / restore (base preset id), S1 bank edit leaves insurance as its base; 「실제 재계산」 = one
-//    engine call answered ENGINE_CONTRACT_PENDING → no number in the preview, 저장 off; Top500 lines 「확정 아님」 after loading.
-//  - D1–D10 all ten bands named (never a top-20), coverage stages, 475/500.
-//  - Keyboard (Tab to the load button, Enter), 200% zoom at 1440 without horizontal overflow, phone 44 px targets and no overflow.
-//  - Boundaries: no request leaves the origin, engine route POST only, nothing stored, no console error, CSP 0.
+// the development engine route calling Codex #537 research.qgv_555 / top500_selection (SYNTHETIC inputs only):
+//  - 2.1: 모집단 기존504 / 시총 Top500 / 확장 연구 × 모형 기존 공식 / U1-555 / S1-555 / 내 설정. Only 기존504 × 기존 공식 keeps the
+//    official table; other pairs show their state panel and none of the official rows / lists. Top500 lines from the engine's
+//    selection (public view): 검증된 연구 후보 / 확정 아님 with the reason, no price or market cap.
+//  - 2.2.7: nothing sent on open; 「555 계약 불러오기」 = context + two selections; five roles per axis (the official 15); a second
+//    metric splits the role (weights 1:1, role weight unchanged); exclude a role → active count; 「실제 재계산」 = one engine call →
+//    the engine's before / after (same input, population effect none), coverage stages, D1–D10 of a role, company detail with
+//    lineage; 저장 (the engine's record, this device's own key) → 내 설정 on 2.1; 저장 설정 재현 = REPRODUCED; 기본값 복원; S1
+//    bank = 준비 중 (not editable, no run); an S1 edit stays in its own sector.
+//  - Keyboard (Tab to the load button, Enter), 200% zoom at 1440 without horizontal overflow, phone 44 px targets and no overflow,
+//    no reason code or 예시 visible in the 555 block and 2.1.1.
+//  - Boundaries: no request leaves the origin, engine route POST only, only the 555 key stored, no console error, CSP 0.
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -22,12 +24,13 @@ const E = require('./web_app_sector_qgv_engine.js');
 const NOW = '2026-11-14T03:00:00.000Z';
 const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
 const UNPUBLISHED = ['sec-public-inputs.json', 'qgv-official.json', 'qgv-official-status.json'];
+const KEY = 'investment.web.v2.qgv555-saved';
 const SHOTS = process.env.Q5_SHOTS || null;
 let phase = 'START', pass = 0;
 const ok = (name) => { pass++; console.log('PASS ' + name); };
 
 (async () => {
-  const eng = E.start();
+  const eng = E.start({ env: {} });
   const fixtures = { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS } };
   const s = await site.start({ fixtures, posts: { [E.ROUTE]: (b) => eng.route(b) } });
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
@@ -43,13 +46,14 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       const Q5 = '[data-q5-block]';
       const text = (sel) => page.locator(sel).first().evaluate((e) => e.innerText);
       const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      const setNum = async (k, v) => { const el = page.locator('[data-k="' + k + '"]'); await el.fill(String(v)); await el.dispatchEvent('change'); };
       await page.goto(s.base + '#/qgv');
       await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor();
       await page.locator(Q5).waitFor();
       assert.deepEqual(posts, [], 'nothing sent when #/qgv opens');
       ok(tag + ' open: official table, 555 block idle, no request');
 
-      phase = tag + ' 2.1 selector';
+      phase = tag + ' 2.1 before load';
       for (const k of ['universe504', 'top500', 'expanded']) assert.equal(await page.locator('[data-q5-pop="' + k + '"]').count(), 1);
       for (const k of ['OFFICIAL', 'U1-555', 'S1-555', 'MY']) assert.equal(await page.locator('[data-q5-model="' + k + '"]').count(), 1);
       await page.locator('[data-q5-pop="top500"]').click();
@@ -59,8 +63,8 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       assert.ok(await page.locator('[data-q5-held]').count() >= 5, 'the other 2.1 blocks are held');
       await page.locator('[data-q5-model="U1-555"]').click();
       assert.equal(await page.locator('[data-q5-board]').getAttribute('data-q5-board'), 'RESULT_NOT_DELIVERED');
-      assert.match(await text('[data-q5-board-text]'), /모집단 계약 전 · 다른 모형 결과를 이 이름으로 보이지 않음/);
-      assert.match(await text('[data-q5-pop-lines]'), /계약·전달 전/);
+      assert.match(await text('[data-q5-board-text]'), /실제 Top500 미선정 · 다른 모형 결과를 이 이름으로 보이지 않음/);
+      assert.match(await text('[data-q5-pop-lines]'), /선정 결과 전달 전/);
       await page.locator('[data-q5-pop="universe504"]').click(); await page.locator('[data-q5-model="MY"]').click();
       assert.equal(await page.locator('[data-q5-board]').getAttribute('data-q5-board'), 'NO_SAVED');
       await page.locator('[data-q5-pop="expanded"]').click(); await page.locator('[data-q5-model="OFFICIAL"]').click();
@@ -68,101 +72,106 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
       await page.locator('[data-q5-pop="universe504"]').click();
       await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor();
       assert.equal(await page.locator('[data-q5-board]').count(), 0);
-      ok(tag + ' 2.1: 3 populations × 4 models; only 기존504 × 기존 공식 shows the official table, others held');
+      ok(tag + ' 2.1: 3 populations × 4 models; only 기존504 × 기존 공식 shows the official table');
 
       phase = tag + ' load';
       const load = page.locator('[data-k="q5-load"]');
       if (width === 1440) { await load.focus(); await page.keyboard.press('Enter'); } else await load.click();
       await page.locator(Q5 + ' [data-q5-role]').first().waitFor();
-      assert.deepEqual(posts, [['POST', 'qgv555_context']]);
+      assert.deepEqual(posts, [['POST', 'qgv555_context'], ['POST', 'qgv555_population'], ['POST', 'qgv555_population']]);
       for (const a of ['Q', 'G', 'V']) {
         await page.locator('[data-q5-tab="' + a + '"]').click();
         assert.equal(await page.locator('[data-q5-roles="' + a + '"] [data-q5-role]').count(), 5, a + ' has five roles');
       }
+      assert.deepEqual(await page.locator('[data-q5-roles="V"] [data-q5-role]').evaluateAll((n) => n.map((x) => x.dataset.q5Role)),
+        ['v_earnings_yield', 'v_fcf_yield', 'v_vs_industry', 'v_vs_own_history', 'v_expectation_check']);
       await page.locator('[data-q5-tab="Q"]').click();
-      const active0 = await page.locator('[data-q5-active]').getAttribute('data-q5-active');
-      assert.match(active0, /^Q\d\/G\d\/V\d$/);
-      assert.match(await text('[data-q5-base]'), /qgv-555-unified-default\/0\.1\.0 · 0\.1\.0 · 통합 공통/);
-      ok(tag + ' 2.2.7: one click = one POST; five roles per axis; active ' + active0);
+      assert.equal(await page.locator('[data-q5-active]').getAttribute('data-q5-active'), 'Q5/G5/V5');
+      assert.match(await text('[data-q5-base]'), /U1-555 기본 설정 0\.1\.0 · 통합 공통/);
+      ok(tag + ' 2.2.7: one click = context + two selections; the official 15 roles, five per axis; Q5/G5/V5');
 
       phase = tag + ' edit';
-      const prof = '[data-q5-role="profitability"]';
-      await page.locator(prof + ' [data-k="q5-add-profitability"]').click();
-      const pick = page.locator(prof + ' [data-q5-card][data-q5-selectable="true"] [data-k^="q5-pick-"]').first();
-      await pick.click();
-      const shares = await page.locator(prof + ' input[data-k^="q5-share-"]').evaluateAll((n) => n.map((x) => Number(x.value)));
-      assert.deepEqual(shares, [5000, 5000], 'a second factor splits the role budget');
-      assert.equal(await page.locator(prof + ' input[data-k="q5-role-profitability"]').inputValue(), '2500');
-      assert.equal(await page.locator('[data-q5-problems]').getAttribute('data-q5-problems'), '0');
-      ok(tag + ' add: role budget split 5000/5000, role weight unchanged, sums fine');
+      const moat = '[data-q5-role="q_moat_proxy"]';
+      await page.locator('[data-k="q5-add-q_moat_proxy"]').click();
+      await page.locator('[data-q5-cards="q_moat_proxy"] [data-k="q5-pick-roic"]').click();
+      assert.deepEqual(await page.locator(moat + ' input[data-k^="q5-share-"]').evaluateAll((n) => n.map((x) => Number(x.value))), [1, 1]);
+      assert.equal(await page.locator('[data-k="q5-role-q_moat_proxy"]').inputValue(), '20');
+      await page.locator('[data-k="q5-add-q_profitability"]').click();
+      const dupe = page.locator('[data-q5-cards="q_profitability"] [data-q5-card="roic"]');
+      assert.equal(await dupe.getAttribute('data-q5-selectable'), 'false', 'a chosen metric is not offered twice');
+      await page.locator('[data-k="q5-add-q_profitability"]').click();
+      ok(tag + ' add: role budget split 1:1, role weight unchanged, no double selection');
 
-      await page.locator('[data-q5-tab="V"]').click();
-      const vRole = page.locator('[data-q5-roles="V"] [data-q5-role-on="true"]').first(), vId = await vRole.getAttribute('data-q5-role');
-      await vRole.locator('[data-k="q5-ex-' + vId + '"]').click();
-      const active1 = await page.locator('[data-q5-active]').getAttribute('data-q5-active');
-      assert.equal(Number(active1.split('/V')[1]), Number(active0.split('/V')[1]) - 1);
-      assert.match(await text('[data-q5-problems]'), /역할 비중 합이 10000이 아님/);
-      assert.equal(await page.locator('[data-k="q5-recalc"]').isDisabled(), true, 'no recalculation while sums are off');
-      ok(tag + ' exclude: active ' + active1 + ', sums say so, recalculation off');
-
-      await page.locator('[data-k="q5-restore"]').click();
-      assert.equal(await page.locator('[data-q5-active]').getAttribute('data-q5-active'), active0);
-      assert.match(await text('[data-q5-msg]'), /기본값 복원 · qgv-555-unified-default\/0\.1\.0 · 0\.1\.0 · 통합 공통/);
-      ok(tag + ' restore: base preset id / version / scope, active back to ' + active0);
-
-      phase = tag + ' not fit';
-      await page.locator('[data-q5-m2="S1-555"]').click();
-      await page.locator('[data-k="q5-scope"]').selectOption('FINANCIALS|BANK');
-      assert.match(await text('[data-q5-base]'), /은행/);
-      await page.locator('[data-q5-tab="Q"]').click();
-      let found = false;
-      for (const r of await page.locator('[data-q5-roles="Q"] [data-q5-role]').evaluateAll((n) => n.map((x) => x.dataset.q5Role))) {
-        await page.locator('[data-k="q5-add-' + r + '"]').click();
-        const unfit = page.locator('[data-q5-cards="' + r + '"] [data-q5-selectable="false"]').filter({ hasText: '부적합' });
-        if (await unfit.count()) { found = true; assert.equal(await unfit.first().locator('[data-k^="q5-pick-"]').count(), 0); break; }
-        await page.locator('[data-k="q5-add-' + r + '"]').click();
-      }
-      assert.ok(found, 'a not-fit factor is shown with its reason and no pick');
-      ok(tag + ' bank: not-fit factor shown in words, not selectable');
-
-      await page.locator('[data-k="q5-axis-Q"]').fill('4400'); await page.locator('[data-k="q5-axis-Q"]').dispatchEvent('change');
-      await page.locator('[data-k="q5-axis-G"]').fill('2300'); await page.locator('[data-k="q5-axis-G"]').dispatchEvent('change');
-      await page.locator('[data-k="q5-scope"]').selectOption('FINANCIALS|INSURANCE');
-      const ins = await page.locator('[data-k="q5-axis-Q"]').inputValue();
-      assert.notEqual(ins, '4400', 'the bank edit is not copied to insurance');
-      ok(tag + ' bank → insurance: no propagation');
+      await page.locator('[data-q5-tab="G"]').click();
+      await page.locator('[data-k="q5-ex-g_recent_acceleration"]').click();
+      assert.equal(await page.locator('[data-q5-active]').getAttribute('data-q5-active'), 'Q5/G4/V5');
+      ok(tag + ' exclude: active Q5/G4/V5');
 
       phase = tag + ' recalc';
-      await page.locator('[data-q5-m2="U1-555"]').click();
       await page.locator('[data-k="q5-recalc"]').click();
-      await page.locator('[data-q5-preview="ENGINE_CONTRACT_PENDING"]').waitFor();
+      await page.locator('[data-q5-preview="SHOWN"]').waitFor();
       assert.deepEqual(posts.slice(-1), [['POST', 'qgv555_preview']]);
-      const pv = await text('[data-q5-preview]');
-      assert.match(pv, /재계산 엔진 계약 전 · 555 미리보기 결과 없음/);
-      assert.doesNotMatch(pv, /\d+\.\d/, 'no number in the preview');
-      assert.equal(await page.locator('[data-k="q5-save"]').isDisabled(), true);
-      ok(tag + ' recalc: one engine call → ENGINE_CONTRACT_PENDING, no number, save off');
+      assert.match(await text('[data-q5-pop-effect]'), /같은 평가·참조 입력 · 모집단 효과 없음/);
+      assert.equal(await page.locator('[data-q5-table] tbody tr').count(), 21);
+      assert.match(await text('[data-q5-coverage]'), /15역할 모두 충족\s+21 → 0/);
+      assert.equal(await page.locator('[data-q5-band]').count(), 10);
+      assert.match(await text('[data-q5-deciles]'), /D10 = 상위 · 유효 21\/21/);
+      assert.match(await text('[data-q5-versions]'), /unified-555\/0\.1\.0 · 설정 전 .* → 후 /);
+      await page.locator('[data-q5-table] tbody tr').first().locator('button').click();
+      await page.locator('[data-q5-detail]').waitFor();
+      assert.match(await text('[data-q5-detail]'), /명목 .*% · 실효 /);
+      await page.locator('[data-q5-overlap] summary').click();
+      assert.match(await text('[data-q5-overlap]'), /return_level .* 명목 [0-9.]+% · 실효 /);
+      ok(tag + ' recalc: one engine call; same input; 21 rows; coverage 21 → 0 (15 roles); D1–D10; versions; detail lineage');
 
-      phase = tag + ' deciles';
-      assert.equal(await page.locator('[data-q5-deciles] .chip').count(), 10);
-      assert.match(await text('[data-q5-deciles]'), /상위 20개로 대신하지 않음/);
-      assert.match(await text('[data-q5-coverage]'), /475\/500/);
-      ok(tag + ' D1–D10 all named, coverage 475/500');
+      phase = tag + ' save';
+      await page.locator('[data-k="q5-save"]').click();
+      await page.locator('[data-q5-msg]').waitFor();
+      assert.match(await text('[data-q5-msg]'), /이 기기에 저장함 · U1-555/);
+      assert.deepEqual(posts.slice(-1), [['POST', 'qgv555_preview']], 'saving sends nothing');
+      assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter((k) => /qgv/i.test(k))), [KEY]);
+      await page.locator('[data-k="q5-replay"]').click();
+      await page.locator('[data-q5-replay="REPRODUCED"]').waitFor();
+      await page.locator('[data-q5-model="MY"]').click();
+      assert.equal(await page.locator('[data-q5-board]').getAttribute('data-q5-board'), 'SAVED_SYNTHETIC');
+      await page.locator('[data-q5-model="OFFICIAL"]').click();
+      ok(tag + ' save: the engine record on this device only; replay REPRODUCED; 내 설정 on 2.1');
 
-      phase = tag + ' top500 lines';
+      phase = tag + ' restore';
+      await page.locator('[data-k="q5-restore"]').click();
+      assert.match(await text('[data-q5-msg]'), /기본값 복원 · U1-555 기본 설정 0\.1\.0/);
+      assert.equal(await page.locator('[data-q5-active]').getAttribute('data-q5-active'), 'Q5/G5/V5');
+      assert.equal(await page.locator('[data-q5-preview="SHOWN"]').count(), 0, 'the preview of another setting is not shown');
+      ok(tag + ' restore: own candidate and version, Q5/G5/V5, the old preview hidden');
+
+      phase = tag + ' S1';
+      await page.locator('[data-q5-m2="S1-555"]').click();
+      await page.locator('[data-k="q5-scope"]').selectOption('ENERGY|GENERAL');
+      await page.locator('[data-q5-tab="Q"]').click();
+      await setNum('q5-role-q_profitability', 40);
+      await page.locator('[data-k="q5-scope"]').selectOption('INFORMATION_TECHNOLOGY|GENERAL');
+      assert.equal(await page.locator('[data-k="q5-role-q_profitability"]').inputValue(), '25', 'the energy edit does not reach IT');
+      await page.locator('[data-k="q5-scope"]').selectOption('FINANCIALS|BANK');
+      assert.match(await text('[data-q5-base]'), /은행 · 555 정의 준비 중/);
+      assert.equal(await page.locator('[data-k="q5-recalc"]').isDisabled(), true);
+      assert.equal(await page.locator('[data-k="q5-role-q_profitability"]').isDisabled(), true);
+      ok(tag + ' S1: an edit stays in its sector; bank = 준비 중, not editable, no run');
+
+      phase = tag + ' top500';
       await page.locator('[data-q5-pop="top500"]').click(); await page.locator('[data-q5-model="U1-555"]').click();
+      assert.match(await text('[data-q5-pop-lines]'), /검증된 연구 후보 .* 공식 모집단 교체 아님/);
+      await page.locator('[data-q5-sel-kind="SYNTHETIC_ROSTER_UNPROVEN"]').click();
       const lines = await text('[data-q5-pop-lines]');
       assert.match(lines, /자료가 있는 기업 중 상위 500\(전체시장 Top500 확정 아님\)/);
-      assert.match(lines, /선정 기준일 2026-11-04 · 적용일 2026-11-05/);
-      assert.match(lines, /원래 분모 500 고유 발행사/);
-      assert.doesNotMatch(await text('[data-q5-board-text]'), /모집단 계약 전/);
-      ok(tag + ' Top500 after load: 확정 아님, dates, denominator, no price');
+      assert.match(lines, /후보 명부 완전성 근거 없음/); assert.match(lines, /분모 확정 전/); assert.match(lines, /QGV 순위가 아님/);
+      assert.doesNotMatch(lines, /\$|USD|시가총액 [0-9]/);
+      ok(tag + ' Top500: research candidate / 확정 아님 with the reason, no price');
 
+      phase = tag + ' layout';
       const main = (await text(Q5)) + '\n' + (await text('[data-lb="2.1.1"]'));
       const code = main.match(/\b[A-Z][A-Z0-9]+(?:_[A-Z0-9]+)+\b/);
       assert.equal(code, null, 'no visible reason code: ' + (code && code[0]));
-      assert.doesNotMatch(main, /예시/, 'no board example word');
-      phase = tag + ' layout';
+      assert.doesNotMatch(main, /예시/);
       assert.ok(await overflow() <= 0, 'no horizontal overflow');
       if (phone) {
         const small = await page.$$eval(Q5 + ' button:not([disabled]), [data-q5-select] button', (n) => n.filter((b) => b.offsetParent && b.getBoundingClientRect().height < 43.5).length);
@@ -173,14 +182,13 @@ const ok = (name) => { pass++; console.log('PASS ' + name); };
         await page.evaluate(() => { document.body.style.zoom = ''; });
       }
       if (SHOTS) await page.screenshot({ path: path.join(SHOTS, 'qgv555-' + tag + '.png'), fullPage: false });
-      ok(tag + ' layout: no overflow' + (phone ? ', 44 px' : ', 200% zoom'));
+      ok(tag + ' layout: no code text, no overflow' + (phone ? ', 44 px' : ', 200% zoom'));
 
       phase = tag + ' boundaries';
-      assert.deepEqual(await page.evaluate(() => Object.keys(localStorage).filter((k) => /555|top500/i.test(k))), []);
       assert.equal(await page.evaluate(() => window.__csp), 0);
       assert.ok(posts.every(([m]) => m === 'POST'));
       assert.deepEqual(seen.outside, []); assert.deepEqual(seen.errors, []);
-      ok(tag + ' boundaries: nothing stored, POST only, CSP 0, same origin, no console error');
+      ok(tag + ' boundaries: POST only, CSP 0, same origin, no console error');
       await ctx.close();
     }
     console.log('PASS ' + pass + ' qgv555 browser');

@@ -66,6 +66,8 @@ from investment_system.research import sector_qgv_main as main_bridge  # noqa: E
 from investment_system.research import sector_qgv_partial as partial  # noqa: E402
 from investment_system.research import dual_qgv  # noqa: E402
 from investment_system.research import qgv_333  # noqa: E402
+from investment_system.research import qgv_555  # noqa: E402
+from investment_system.research.top500_selection import select_top500  # noqa: E402
 from investment_system.research.sector_qgv_registry import (ENGINE, MAPPING, MODEL, NORMALIZATION, SECTORS,  # noqa: E402
                                                              TEMPLATES)
 
@@ -73,13 +75,21 @@ REQUEST = 'sector-qgv-engine-request/1'
 MAIN_REQUEST = 'sector-qgv-main-request/1'
 RESPONSE = 'sector-qgv-engine-response/1'
 FIXTURES = ROOT / 'docs' / 'research' / 'sector_qgv'
-OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay', 'qgv555_context', 'qgv555_preview')
-# QGV 555 · 시총 Top500 (owner 2026-11-14, DC-49): Main's SYNTHETIC proposal files (tools/make_qgv555_synthetic.py), served as
-# written so the development screen can read them; no 555 calculation exists yet, so qgv555_preview is always refused with
-# ENGINE_CONTRACT_PENDING (never a result of another model under the 555 name). The published site has no engine route.
-QGV555_FIXTURES = ROOT / 'docs' / 'frontend_v2' / 'qgv555-synthetic'
-QGV555_FILES = {'catalog': 'catalog.json', 'presets': 'presets.json', 'population': 'population-top500.json'}
-QGV555_MODELS = ('unified-555/0.1.0', 'sector-555/0.1.0')
+OPS = ('context', 'view', 'preview', 'save', 'comparisons', 'comparison', 'replay',
+       'qgv555_context', 'qgv555_preview', 'qgv555_replay', 'qgv555_population')
+# QGV 555 · 시총 Top500 (owner 2026-11-14, DC-49; Codex #537 beaadbd2 research.qgv_555 / top500_selection, called unchanged):
+#   qgv555_context    Codex catalog(), accounting_recipes(), configuration(U1-555 / S1-555), the sector axis defaults, the inputs
+#   qgv555_preview    run() of the edited config and of the before config on the same synthetic evaluation / reference pair
+#                     (Codex fixture(21)); both results as returned, with the after result's replay record (qgv-555-saved/1,
+#                     Main's projection of Codex's result: everything replay() reads, no rows) for the screen's 저장
+#   qgv555_replay     Codex replay(saved, e, ref): REPRODUCED only when the result hash is the saved one
+#   qgv555_population select_top500() on a synthetic candidate job (COMPLETE, or with the candidate roster unproven)
+# Synthetic inputs only. The published site has no engine route.
+QGV555_MODELS = {'unified-555/0.1.0': 'U1-555', 'sector-555/0.1.0': 'S1-555'}
+QGV555_INPUTS = ('SYNTHETIC_21',)
+QGV555_SAVED = 'qgv-555-saved/1'
+QGV555_SAVED_KEYS = ('configuration', 'evaluation', 'reference', 'bindings', 'calculated_at', 'result_hash')
+QGV555_POPULATIONS = ('SYNTHETIC_COMPLETE', 'SYNTHETIC_ROSTER_UNPROVEN')
 MAX_REQUEST_BYTES = 1 << 20
 MAX_KEPT_PREVIEWS = 32
 REQUEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._:-]{0,79}')
@@ -117,6 +127,48 @@ DUAL_MANIFEST_SHA256 = '65c5e549848981e7d2c211575cf3a192c2e30bb3eb04790b0cd6bd17
 DUAL_INPUTS = ('DUAL_BOTH_VALID', 'DUAL_QG_ONLY')
 DUAL_INPUT_TEXT = {'DUAL_BOTH_VALID': '합성 · 세 축 모두 있음', 'DUAL_QG_ONLY': '합성 · Q/G만 있음(V 핵심 관측 없음)'}
 DUAL_V_CORE = ('ep_ttm_diluted', 'common_bp')
+
+
+def _top500_job(kind):
+    """A synthetic top500-input/1 candidate job (510 issuers, one common class each; the shape of Codex's own test job). kind
+    SYNTHETIC_ROSTER_UNPROVEN leaves the candidate roster without completeness evidence."""
+    day, ts = '2026-11-04', '2026-11-04T22:00:00Z'
+    issuers = []
+    for i in range(510):
+        sid = 'synthetic-security-%04d' % i
+        issuers.append(dict(issuer_id='synthetic-issuer-%04d' % i, ticker='SYN%d' % i, eligibility='ELIGIBLE', classes_complete=True,
+            representative_security_id=sid, representative_evidence=['synthetic-primary-listing'], classes=[dict(
+                economic_class_id='synthetic-class-%04d' % i, security_id=sid, security_kind='COMMON', exchange='NYSE',
+                identity_status='VERIFIED', identity_evidence=['synthetic-identity'], valid_from=day, valid_to=None, observed_on=day,
+                available_at=ts, corporate_action_status='VERIFIED', corporate_action_evidence=['synthetic-action-ledger'],
+                shares_basis='ACTUAL_CLASS_OUTSTANDING', shares=1000, price=2000 - i, price_basis='RAW_CLOSE', currency='USD',
+                fx_to_usd=1, price_security_id=sid, price_day=day, shares_day=day, evidence=['synthetic-price-and-shares'])]))
+    coverage = dict(status='COMPLETE', evidence=['synthetic-roster-audit'], expected_issuers=[r['issuer_id'] for r in issuers])
+    if kind == 'SYNTHETIC_ROSTER_UNPROVEN':
+        coverage = dict(status='UNKNOWN', evidence=[], expected_issuers=[])
+    return dict(schema_version='top500-input/1', evaluation_day=day, input_cutoff=ts, apply_at='2026-11-05T14:30:00Z',
+        population_id='synthetic-us-candidates', population_version='1', policy=dict(version='top500-research/0.1.0',
+        status='RESEARCH_PROPOSAL', markets=['NYSE', 'NASDAQ', 'NYSE_AMERICAN', 'BATS'],
+        included_kinds=['COMMON', 'ADR', 'FOREIGN_COMMON', 'REIT'], cadence='DAILY_CLOSE'), coverage=coverage, issuers=issuers)
+
+
+# The screen's view of a top500-selection/1 answer: identity, dates, counts, states and members by issuer / representative security
+# and selection order. Market caps, prices, share counts and their evidence never leave the engine route (they are not public).
+TOP500_PUBLIC_KEYS = ('schema_version', 'population_id', 'population_version', 'evaluation_day', 'input_cutoff', 'apply_at',
+                      'status', 'official', 'target_count', 'denominator', 'members_hash', 'boundary_uncertain', 'selected_count',
+                      'candidate_count', 'unique_candidate_issuers', 'replace_official', 'reasons', 'whole_market_denominator', 'result_hash')
+
+
+def _top500_public(sel):
+    out = {k: copy.deepcopy(sel[k]) for k in TOP500_PUBLIC_KEYS}
+    out['policy'] = {k: sel['policy'][k] for k in ('version', 'status', 'cadence', 'markets', 'included_kinds')}
+    out['members'] = [{'selection_rank': i + 1, 'issuer_id': m['issuer_id'], 'representative_security_id': m['representative_security_id'],
+                       'economic_classes': len(m['economic_classes'])} for i, m in enumerate(sel['members'])]
+    out['unresolved_count'], out['excluded_count'] = len(sel['unresolved']), len(sel['excluded'])
+    out['retained_confirmed'] = None if sel['retained_confirmed'] is None else 'PREVIOUS_RETAINED'
+    out['membership_changes'] = {'entered': len(sel['membership_changes']['entered']), 'exited': len(sel['membership_changes']['exited']),
+                                 'reason': sel['membership_changes']['reason']}
+    return out
 
 
 class Refused(Exception):
@@ -327,14 +379,49 @@ class Bridge:
             return {'model': model, 'model_id': model_id, **body}
         return getattr(self, '_' + op)(req, rid)
 
-    # ---- QGV 555 (Main's synthetic proposal; no engine yet)
+    # ---- QGV 555 (Codex #537 research.qgv_555 / top500_selection, called unchanged; synthetic inputs only)
     def _qgv555(self, op, req):
+        rid = req['request_id']
         if op == 'qgv555_context':
-            files = {k: json.loads((QGV555_FIXTURES / v).read_text('utf-8')) for k, v in QGV555_FILES.items()}
-            return {'data_kind': 'SYNTHETIC', **files}
-        if req.get('model_id') not in QGV555_MODELS:
+            return {'data_kind': 'SYNTHETIC', 'catalog': qgv_555.catalog(), 'recipes': qgv_555.accounting_recipes(),
+                    'configs': {k: qgv_555.configuration(k) for k in ('U1-555', 'S1-555')},
+                    'sectors': [{'sector_id': k, 'axis_weights': dict(zip('QGV', v))} for k, v in SECTORS.items()],
+                    'templates': list(TEMPLATES),
+                    'inputs': [{'input_id': 'SYNTHETIC_21', 'label': '합성 · 21개 발행사(Codex fixture)', 'data_kind': 'SYNTHETIC'}],
+                    'populations': [{'input_id': k, 'data_kind': 'SYNTHETIC'} for k in QGV555_POPULATIONS]}
+        if op == 'qgv555_population':
+            if req.get('input_id') not in QGV555_POPULATIONS:
+                raise Refused('INPUT_UNKNOWN')
+            return {'data_kind': 'SYNTHETIC', 'selection': _top500_public(select_top500(_top500_job(req['input_id'])))}
+        if op == 'qgv555_replay':
+            saved = req.get('saved')
+            if not isinstance(saved, dict) or saved.get('schema_version') != QGV555_SAVED or set(saved) != {'schema_version', *QGV555_SAVED_KEYS}:
+                raise Refused('SAVED_INVALID')
+            e, ref = qgv_555.fixture()
+            try:
+                result = qgv_555.replay(saved, e, ref)
+            except (ValueError, KeyError, TypeError) as exc:
+                raise Refused(_code(exc)) from None
+            return {'data_kind': 'SYNTHETIC', 'reproduced': result['result_hash'] == saved['result_hash'], 'result_hash': result['result_hash']}
+        # qgv555_preview
+        model_id, config, before = req.get('model_id'), req.get('config'), req.get('before_config')
+        if model_id not in QGV555_MODELS:
             raise Refused('MODEL_UNKNOWN')
-        raise Refused('ENGINE_CONTRACT_PENDING')
+        if req.get('input_id') not in QGV555_INPUTS:
+            raise Refused('INPUT_UNKNOWN')
+        for c in (config, before):
+            if not isinstance(c, dict) or c.get('model_id') != model_id:
+                raise Refused('MODEL_RESPONSE_MISMATCH')
+        e, ref = qgv_555.fixture()
+        try:
+            out = {'before': qgv_555.run(copy.deepcopy(before), e, ref), 'after': qgv_555.run(copy.deepcopy(config), e, ref)}
+        except (ValueError, KeyError, TypeError) as exc:
+            raise Refused(_code(exc)) from None
+        for x in out.values():
+            if x['model_id'] != model_id:
+                raise Refused('MODEL_RESPONSE_MISMATCH')
+        saved = {'schema_version': QGV555_SAVED, **{k: copy.deepcopy(out['after'][k]) for k in QGV555_SAVED_KEYS}}
+        return {'data_kind': 'SYNTHETIC', 'model_id': model_id, 'input_id': req['input_id'], 'preview_id': out['after']['result_hash'], 'saved': saved, **out}
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):
