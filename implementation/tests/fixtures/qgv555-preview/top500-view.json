@@ -1,0 +1,43 @@
+{
+  "population_id": "synthetic-us-candidates",
+  "population_version": "1",
+  "evaluation_day": "2026-11-04",
+  "input_cutoff": "2026-11-04T22:00:00Z",
+  "apply_at": "2026-11-05T14:30:00Z",
+  "status": "UNCONFIRMED_CANDIDATE",
+  "denominator": null,
+  "target_count": 475,
+  "selected_count": 3,
+  "boundary_uncertain": true,
+  "reasons": [
+    "FEWER_THAN_500_ELIGIBLE_ISSUERS"
+  ],
+  "schema_version": "top500-view/1",
+  "source_result_hash": "6258e769354c15fd1f6a5e54a994fb5938c3809403a9a2bf42b46b5b1e088bb5",
+  "visibility": "AUTHENTICATED_RESEARCH",
+  "public_publication_authorized": false,
+  "retained_confirmed_available": false,
+  "members": [
+    {
+      "issuer_id": "issuer-0000",
+      "representative_security_id": "security-0",
+      "selection_rank": 1,
+      "economic_class_count": 1
+    },
+    {
+      "issuer_id": "issuer-0001",
+      "representative_security_id": "security-1",
+      "selection_rank": 2,
+      "economic_class_count": 1
+    },
+    {
+      "issuer_id": "issuer-0002",
+      "representative_security_id": "security-2",
+      "selection_rank": 3,
+      "economic_class_count": 1
+    }
+  ],
+  "official": false,
+  "replace_official": false,
+  "view_hash": "91d187f8ccb6ff769e83f6a69b463764d7735dd46d3410028e456afb3ad9a541"
+}

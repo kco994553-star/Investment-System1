@@ -1,0 +1,43 @@
+{
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "evaluation.json",
+      "size": 525588,
+      "sha256": "819c92e17fe43d12d98ac415ef8362fc986bc9d96ca0029045d025342dd69540"
+    },
+    {
+      "path": "preview-page.json",
+      "size": 49265,
+      "sha256": "2e292143e7e564b58f54427fa3befdf0ace074f7975bdc64220c1692bb53034b"
+    },
+    {
+      "path": "reference.json",
+      "size": 525587,
+      "sha256": "0fd2f979057db235a85dada1d58af9f266bb2eb97dc12ce2fd8c2652eb5d2744"
+    },
+    {
+      "path": "request.json",
+      "size": 6239,
+      "sha256": "af4ef719b02a72e85f64cc5d12b679a407ec0a182b857318f1c56062a73e6063"
+    },
+    {
+      "path": "top500-result.json",
+      "size": 9291,
+      "sha256": "dd5a5b1f0d8c69406a77a6d51fd2bdafe6cc24ff79afd4eed0b021894d617344"
+    },
+    {
+      "path": "top500-view.json",
+      "size": 1260,
+      "sha256": "9e36418a8ada8607905b69b9d7503bc3ad5abb5c35f128ee985c78cdb8656016"
+    }
+  ],
+  "expected": {
+    "evaluation_rows": 21,
+    "page_rows": 2,
+    "next_offset": 2,
+    "top500_members": 3,
+    "top500_confirmed": false,
+    "population_effect": "NOT_EVALUATED"
+  }
+}

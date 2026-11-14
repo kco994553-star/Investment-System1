@@ -1,0 +1,11 @@
+{
+  "schema_version": "qgv-555-official-example-manifest/1",
+  "data_kind": "SYNTHETIC",
+  "files": [
+    {
+      "path": "examples.json",
+      "size": 84373,
+      "sha256": "0942b8db83a43de8379c17ecc2159ebaeae7160e3a651047507d2bee446da42e"
+    }
+  ]
+}
