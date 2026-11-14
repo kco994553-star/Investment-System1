@@ -18,8 +18,10 @@ from .sector_qgv_registry import SECTORS, TEMPLATES, ALIASES as SECTOR_ALIASES
 IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
 OWNER_IDS={'U1-555':'unified-555/0.2.0','S1-555':'sector-555/0.2.0'}
 TWO_STAGE_IDS={'U1-555':'unified-555/0.3.0','S1-555':'sector-555/0.3.0'}
-REGISTERED_IDS={'0.1.0':IDS,'0.2.0':OWNER_IDS,'0.3.0':TWO_STAGE_IDS}
+OFFICIAL_REUSE_IDS={'U1-555':'unified-555/0.4.0','S1-555':'sector-555/0.4.0'}
+REGISTERED_IDS={'0.1.0':IDS,'0.2.0':OWNER_IDS,'0.3.0':TWO_STAGE_IDS,'0.4.0':OFFICIAL_REUSE_IDS}
 TWO_STAGE_POLICY='cross-filing-consistency-full-period/2'
+OFFICIAL_REUSE_POLICY='official-kernel-share-reuse/1'
 OWNER_POLICIES=dict(classification_policy='official-profile-sic-provisional/1',
     accounting_policy='reit-general-financial-reference-only/1',
     historical_share_policy='cross-filing-annual-duplicates/1',
@@ -118,6 +120,8 @@ def configuration(candidate, *, version='0.1.0'):
     if version!='0.1.0':
         out.update(OWNER_POLICIES)
         if version=='0.3.0':out['historical_share_policy']=TWO_STAGE_POLICY
+        if version=='0.4.0':out.update(historical_share_policy=OFFICIAL_REUSE_POLICY,
+            share_evidence_scope='ALL_OFFICIAL_REUSE')
         for role in V_SPECS:out['roles'][role]['metrics']={'central::'+k:v for k,v in out['roles'][role]['metrics'].items()}
     return out
 
@@ -126,6 +130,9 @@ def validate_configuration(c):
     if c.get('candidate') not in IDS:raise ValueError('MODEL_ID')
     base=configuration(c['candidate'],version=c.get('version'))
     if c.get('model_id')!=base['model_id']:raise ValueError('MODEL_ID')
+    if c['version']=='0.4.0':
+        if c.get('share_evidence_scope') not in ('ALL_OFFICIAL_REUSE','EVIDENCE_ONLY'):raise ValueError('SHARE_EVIDENCE_SCOPE')
+    elif c.get('share_evidence_scope') is not None:raise ValueError('SHARE_EVIDENCE_SCOPE')
     for k in OWNER_POLICIES:
         if c.get(k)!=base.get(k):raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
     for k in ('schema_version','version','minimum','missing_policy','submetric_missing_policy',
@@ -168,9 +175,35 @@ def identity(s):
         source_anchors=deepcopy(s.get('source_anchors',[])))
 
 
-def _usable(r,metric,s,*,share_policy=None):
+def official_reuse_assumptions_valid(proof):
+    """Shared producer/direct-CLI invariant; labels cannot turn assumptions into evidence."""
+    basis=proof.get('adoption_basis');requires=proof.get('requires_assumption')
+    evidence=proof.get('evidence_only_eligible');assumptions=proof.get('allowed_assumptions')
+    return (type(requires) is bool and type(evidence) is bool and isinstance(assumptions,list)
+        and all(isinstance(x,str) and bool(x) for x in assumptions)
+        and bool(assumptions)==requires
+        and not (evidence and (requires or basis not in ('EVIDENCE_LINKED','FILING_SPLIT_ADJUSTED')))
+        and not (basis=='OFFICIAL_ASSUMPTION_INHERITED' and not requires))
+
+
+def _usable(r,metric,s,*,share_policy=None,share_evidence_scope=None):
     proof=(r.get('metric_evidence') or {}).get(metric)
     x=r.get('metrics',{}).get(metric)
+    official_share=metric in SHARE_METRICS and share_policy==OFFICIAL_REUSE_POLICY
+    if official_share:
+        from .qgv_555_official_share import FORMULAS as REUSE_FORMULAS
+        if not proof or proof.get('official_share_reuse_version')!='held-555-official-share-reuse/1':
+            return None,'OFFICIAL_SHARE_REUSE_EVIDENCE_MISSING'
+        basis=proof.get('adoption_basis')
+        if basis in ('ADDITIONAL_VERIFICATION_REQUIRED','EXPLICIT_CONFLICT_EXCLUDED'):return None,basis
+        if (basis not in ('EVIDENCE_LINKED','FILING_SPLIT_ADJUSTED','OFFICIAL_ASSUMPTION_INHERITED') or
+            proof.get('strict_verified') is not False or not official_reuse_assumptions_valid(proof)):
+            return None,'OFFICIAL_SHARE_REUSE_EVIDENCE_MISSING'
+        if share_evidence_scope=='EVIDENCE_ONLY' and (
+            proof['requires_assumption'] or not proof['evidence_only_eligible']):
+            return None,'OFFICIAL_ASSUMPTION_NOT_IN_EVIDENCE_ONLY'
+        if proof.get('denominator_definition')!=SHARE_DENOMINATOR:return None,'SHARE_DENOMINATOR_DEFINITION_MISMATCH'
+        if proof.get('formula_variant')!=REUSE_FORMULAS[metric]:return None,'OFFICIAL_SHARE_FORMULA_MISMATCH'
     if type(x) not in (int,float) or not math.isfinite(x):return None,'RAW_MISSING'
     if metric in SHARE_METRICS and share_policy==TWO_STAGE_POLICY and (not proof or
         proof.get('share_eligibility_stage')!='FINAL_ELIGIBLE' or
@@ -178,10 +211,10 @@ def _usable(r,metric,s,*,share_policy=None):
         return None,'SHARE_PERIOD_ELIGIBILITY_UNVERIFIED'
     if metric in SHARE_METRICS and share_policy==TWO_STAGE_POLICY and proof.get('denominator_definition')!=SHARE_DENOMINATOR:
         return None,'SHARE_DENOMINATOR_DEFINITION_MISMATCH'
-    if not proof or proof.get('status')!='VERIFIED' or not proof.get('source_refs') or proof.get('variant')!=catalog()[metric]['variant']:
+    if not proof or proof.get('status')!=('RESEARCH_USABLE' if official_share else 'VERIFIED') or not proof.get('source_refs') or proof.get('variant')!=catalog()[metric]['variant']:
         return None,'DEFINITION_OR_SOURCE_UNVERIFIED'
     if timestamp(proof['available_at'])>timestamp(s['input_cutoff']):return None,'NOT_AVAILABLE_AT_CUTOFF'
-    if metric in SHARE_METRICS and proof.get('historical_share_basis')!='VERIFIED':return None,'HISTORICAL_SHARE_BASIS_UNVERIFIED'
+    if metric in SHARE_METRICS and proof.get('historical_share_basis')!=('OFFICIAL_PATH_REUSED' if official_share else 'VERIFIED'):return None,'HISTORICAL_SHARE_BASIS_UNVERIFIED'
     if r.get('accounting_template') not in catalog()[metric]['accounting_scope']:return None,'ACCOUNTING_NOT_APPLICABLE'
     if metric in ('ebit_yield','fcf_yield','own_history','gap') or metric.startswith('central::'):
         if proof.get('valuation_day')!=s['evaluation_day'] or proof.get('security_and_actions')!='VERIFIED':return None,'VALUATION_SECURITY_BASIS_UNVERIFIED'
@@ -243,7 +276,7 @@ def run(c,e,ref,*,calculated_at=None):
         if r['issuer_id'] in points:
             if r.get('metrics')!=ref_rows[r['issuer_id']].get('metrics'):raise ValueError('ISSUER_POINT_CONFLICT')
             continue
-        points[r['issuer_id']]={m:_usable(r,m,ref,share_policy=c.get('historical_share_policy'))[0] for m in cats};ref_rows[r['issuer_id']]=r
+        points[r['issuer_id']]={m:_usable(r,m,ref,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'))[0] for m in cats};ref_rows[r['issuer_id']]=r
     pools={('all',):_Pool(points)}
     for keyfun in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
         groups=defaultdict(dict)
@@ -257,7 +290,7 @@ def run(c,e,ref,*,calculated_at=None):
         supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
         unsupported_reason=('SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']!='0.1.0' and
             r.get('accounting_template')=='GENERAL' else 'ACCOUNTING_RECIPE_PREPARING')
-        raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy')) for m in cats};roles={};metric_scores={}
+        raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope')) for m in cats};roles={};metric_scores={}
         for role,spec in role_config.items():
             vals=[];items=[]
             for name,mw in spec['metrics'].items():
@@ -301,6 +334,24 @@ def run(c,e,ref,*,calculated_at=None):
                                 math.isfinite(r['metrics'][m]) else None),
                             source_refs=deepcopy(proof.get('source_refs',[])),
                             reviewed_at=proof.get('reviewed_at'),retrieved_at=proof.get('retrieved_at'))
+                    if c['version']=='0.4.0' and m in SHARE_METRICS:
+                        proof=(r.get('metric_evidence') or {}).get(m) or {}
+                        items[-1]['share_validation']=dict(
+                            review_version=proof.get('official_share_reuse_version'),
+                            adoption_basis=proof.get('adoption_basis'),strict_verified=False,
+                            requires_assumption=proof.get('requires_assumption'),
+                            allowed_assumptions=deepcopy(proof.get('allowed_assumptions',[])),
+                            evidence_only_eligible=proof.get('evidence_only_eligible'),
+                            denominator_definition=proof.get('denominator_definition'),
+                            formula_variant=proof.get('formula_variant'),formula_source=proof.get('formula_source'),
+                            periods=deepcopy(proof.get('periods',[])),
+                            additional_verification_required=proof.get('additional_verification_required',True),
+                            additional_verification=deepcopy(proof.get('additional_verification',[])),
+                            diagnostic_raw=r.get('metrics',{}).get(m),source_reason=proof.get('reason'),
+                            source_refs=deepcopy(proof.get('source_refs',[])),
+                            reviewed_at=proof.get('reviewed_at'),retrieved_at=proof.get('retrieved_at'),
+                            coverage_scope=c['share_evidence_scope'],
+                            verifies_valuation_security=False)
                 if score is not None:vals.append((score,mw))
                 metric_scores[role+'|'+m]=items[-1]
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
@@ -376,6 +427,8 @@ def run(c,e,ref,*,calculated_at=None):
         all15=count(lambda r:r['fifteen_roles_complete']),joint=count(lambda r:all(r['axes'][a]['score'] is not None for a in 'QGV')),
         gate_known=count(lambda r:r['gate_status']!='UNKNOWN'),gate_pass=count(lambda r:r['gate_status']=='PASS'),
         total=count(lambda r:r['total'] is not None),eligible_total=count(lambda r:r['total'] is not None and not r['partial_total']))
+    if c['version']=='0.4.0':result['coverage'].update(share_evidence_scope=c['share_evidence_scope'],
+        strict_share_verification=False,official_raw_reused_not_official_score=True)
     result['coverage']['role_stages']={role:dict(
         raw_any=count(lambda r:any(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         raw_all=count(lambda r:all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
@@ -464,7 +517,7 @@ def accounting_recipes(*, version='0.1.0'):
                 variants=[m for m,d in SPECS[role]] if t=='GENERAL' else known.get(role,[]),
                 state='DEFINED' if t=='GENERAL' else 'PARTIAL_DEFINITION' if role in known else 'DEFINITION_REQUIRED',
                 limitation=None if t=='GENERAL' else 'Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback') for role in SPECS}))
-    if version in ('0.2.0','0.3.0'):
+    if version in ('0.2.0','0.3.0','0.4.0'):
         cfg=configuration('S1-555',version=version)
         for item in out:
             if item['accounting_template']=='EQUITY_REIT':
