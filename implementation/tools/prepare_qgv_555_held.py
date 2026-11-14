@@ -15,7 +15,7 @@ def main():
         b=Path(d['path']).read_bytes()
         if hashlib.sha256(b).hexdigest()!=d['sha256']:raise ValueError('RETAINED_SOURCE_HASH')
         return json.loads(b)
-    sources=[dict(sha256=d['sha256'],records=read(d)[d['records_key']]) for d in plan['financial_sources']]
+    sources=[dict(sha256=d['sha256'],records_key=d['records_key'],records=read(d)[d['records_key']]) for d in plan['financial_sources']]
     outputs={k:held_input(read(d),sources,source_anchors=[d,*plan['financial_sources']]) for k,d in plan['snapshots'].items()}
     a.output.mkdir(parents=True)
     desc={}
@@ -23,7 +23,7 @@ def main():
         raw=json_bytes(v);path=a.output/(k+'.json');path.write_bytes(raw)
         desc[k]=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),size=len(raw))
     anchors=dict(schema_version='qgv-555-input-source-anchors/1',source_plan=plan,source_plan_sha256=hashlib.sha256(a.plan.read_bytes()).hexdigest(),
-        construction_rule='HELD_FORMULA_VERSIONED_RAW_PROJECTION/1',files=desc,identities={k:identity(v) for k,v in outputs.items()},
+        construction_rule='HELD_FORMULA_VERSIONED_RAW_PROJECTION/2',files=desc,identities={k:identity(v) for k,v in outputs.items()},
         runtime_metadata_is_projection_proof=False)
     (a.output/'input-source-anchors.json').write_bytes(json_bytes(anchors))
     for scope,ev,ref in plan['pairs']:

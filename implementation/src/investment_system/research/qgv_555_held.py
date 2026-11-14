@@ -13,13 +13,17 @@ def held_input(snapshot, sources, *, source_anchors):
     """
     selected={};cats=catalog();cutoff=timestamp(snapshot['as_of'])
     for source in sources:
-        for r in source['records'].values():
+        for record_key,r in source['records'].items():
             issuer=r.get('cik')
             if not issuer or not r.get('acquired_at') or timestamp(r['acquired_at'])>cutoff:continue
             if r.get('calc_version')!='qgv2-calc/2026-10-23.1':continue
             if r.get('state') not in ('LIVE','STALE'):continue
             if issuer not in selected or timestamp(r['acquired_at'])>timestamp(selected[issuer][0]['acquired_at']):
-                selected[issuer]=(r,source['sha256'])
+                # Source files use different containers and row keys. Issuer IDs
+                # identify entities; they are not automatically JSON member keys.
+                tokens=(source.get('records_key','records'),str(record_key))
+                pointer='/'+'/'.join(x.replace('~','~0').replace('/','~1') for x in tokens)
+                selected[issuer]=(r,source['sha256'],pointer)
     rows=[]
     for item in snapshot['rows']:
         r=deepcopy(item);template=r.get('accounting_template')
@@ -28,13 +32,13 @@ def held_input(snapshot, sources, *, source_anchors):
         template=template if classified else None
         metrics={};proof={};diagnostics={};source=selected.get(r.get('issuer_id'))
         if source:
-            src,sha=source
+            src,sha,pointer=source
             if template=='GENERAL' and src.get('profile')=='GENERAL':
                 for m,v in src.get('metrics',{}).items():
                     if m not in cats:continue
                     metrics[m]=v
                     proof[m]=dict(status='VERIFIED',variant=cats[m]['variant'],available_at=src['acquired_at'],
-                        source_refs=[f'sha256:{sha}#/records/{r["issuer_id"]}/metrics/{m}'],
+                        source_refs=[f'sha256:{sha}#{pointer}/metrics/{m}'],
                         source_formula_version=src['calc_version'],period_end=src.get('fiscal_year_end'),
                         currency=src.get('currency'),historical_share_basis='UNKNOWN' if m in SHARE_METRICS else None)
             else:diagnostics['legacy_metrics']='ACCOUNTING_PROFILE_NOT_INTERCHANGEABLE'
@@ -63,5 +67,5 @@ def held_input(snapshot, sources, *, source_anchors):
         input_cutoff=snapshot['as_of'],classification_version=snapshot['mapping_version'],
         classification_context=deepcopy(snapshot.get('classification_context')),
         source_anchors=deepcopy(source_anchors),source_snapshot_hash=digest(snapshot),
-        construction_rule='HELD_FORMULA_VERSIONED_RAW_PROJECTION/1',historical_pit=False,
+        construction_rule='HELD_FORMULA_VERSIONED_RAW_PROJECTION/2',historical_pit=False,
         share_metrics_policy='NO_ADOPTION_WITHOUT_HISTORICAL_BASIS_PROOF')
