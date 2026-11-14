@@ -9,6 +9,7 @@ from datetime import datetime, timezone, date
 from fractions import Fraction
 from functools import lru_cache
 import math
+import re
 
 from ..qgv.qgv_v2 import WEIGHTS, axis_score, GATE_PERCENTILE
 from ..qgv.v2_scoring import SUBMETRICS, _Pool, percentile, MIN_PEERS
@@ -19,9 +20,12 @@ IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
 OWNER_IDS={'U1-555':'unified-555/0.2.0','S1-555':'sector-555/0.2.0'}
 TWO_STAGE_IDS={'U1-555':'unified-555/0.3.0','S1-555':'sector-555/0.3.0'}
 OFFICIAL_REUSE_IDS={'U1-555':'unified-555/0.4.0','S1-555':'sector-555/0.4.0'}
-REGISTERED_IDS={'0.1.0':IDS,'0.2.0':OWNER_IDS,'0.3.0':TWO_STAGE_IDS,'0.4.0':OFFICIAL_REUSE_IDS}
+FINANCIAL_TEMP_IDS={'U1-555':'unified-555-financial-temporary/0.5.0','S1-555':'sector-555-financial-temporary/0.5.0'}
+REGISTERED_IDS={'0.1.0':IDS,'0.2.0':OWNER_IDS,'0.3.0':TWO_STAGE_IDS,'0.4.0':OFFICIAL_REUSE_IDS,'0.5.0':FINANCIAL_TEMP_IDS}
 TWO_STAGE_POLICY='cross-filing-consistency-full-period/2'
 OFFICIAL_REUSE_POLICY='official-kernel-share-reuse/1'
+FINANCIAL_TEMP_POLICY='official-financial-role-bridge/1'
+FINANCIAL_PEER_MODELS={'BANK','INSURANCE','BROKER','ASSET_MANAGER','MORTGAGE_REIT'}
 OWNER_POLICIES=dict(classification_policy='official-profile-sic-provisional/1',
     accounting_policy='reit-general-financial-reference-only/1',
     historical_share_policy='cross-filing-annual-duplicates/1',
@@ -102,6 +106,8 @@ def catalog():
             numerator_definition=('REPORTED_DILUTED_EPS_WITH_ATTRIBUTABLE_DILUTED_NUMERATOR_EVIDENCE'
                 if key=='eps_cagr_3y' else 'FY_CFO_MINUS_CASH_CAPEX'
                 if key=='fcf_per_share_cagr_3y' else 'WEIGHTED_AVERAGE_DILUTED_SHARE_COUNT_CHANGE'))
+    from .qgv_555_financial_temporary import financial_catalog
+    out.update(financial_catalog())
     return out
 
 
@@ -120,8 +126,12 @@ def configuration(candidate, *, version='0.1.0'):
     if version!='0.1.0':
         out.update(OWNER_POLICIES)
         if version=='0.3.0':out['historical_share_policy']=TWO_STAGE_POLICY
-        if version=='0.4.0':out.update(historical_share_policy=OFFICIAL_REUSE_POLICY,
+        if version in ('0.4.0','0.5.0'):out.update(historical_share_policy=OFFICIAL_REUSE_POLICY,
             share_evidence_scope='ALL_OFFICIAL_REUSE')
+        if version=='0.5.0':
+            from .qgv_555_financial_temporary import financial_role_recipes,VERSION
+            out.update(financial_temporary_policy=FINANCIAL_TEMP_POLICY,
+                financial_role_mapping_version=VERSION,financial_roles=financial_role_recipes())
         for role in V_SPECS:out['roles'][role]['metrics']={'central::'+k:v for k,v in out['roles'][role]['metrics'].items()}
     return out
 
@@ -130,9 +140,15 @@ def validate_configuration(c):
     if c.get('candidate') not in IDS:raise ValueError('MODEL_ID')
     base=configuration(c['candidate'],version=c.get('version'))
     if c.get('model_id')!=base['model_id']:raise ValueError('MODEL_ID')
-    if c['version']=='0.4.0':
+    if c['version'] in ('0.4.0','0.5.0'):
         if c.get('share_evidence_scope') not in ('ALL_OFFICIAL_REUSE','EVIDENCE_ONLY'):raise ValueError('SHARE_EVIDENCE_SCOPE')
     elif c.get('share_evidence_scope') is not None:raise ValueError('SHARE_EVIDENCE_SCOPE')
+    for key in ('financial_temporary_policy','financial_role_mapping_version'):
+        if c.get(key)!=base.get(key):raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+key)
+    if c['version']=='0.5.0':
+        from .qgv_555_financial_temporary import validate_role_recipes
+        validate_role_recipes(c.get('financial_roles',{}))
+    if c.get('financial_roles')!=base.get('financial_roles'):raise ValueError('FINANCIAL_ROLE_MAPPING_VERSION')
     for k in OWNER_POLICIES:
         if c.get(k)!=base.get(k):raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
     for k in ('schema_version','version','minimum','missing_policy','submetric_missing_policy',
@@ -186,9 +202,89 @@ def official_reuse_assumptions_valid(proof):
         and not (basis=='OFFICIAL_ASSUMPTION_INHERITED' and not requires))
 
 
-def _usable(r,metric,s,*,share_policy=None,share_evidence_scope=None):
+def _financial_enabled(c,r):
+    return (c.get('financial_temporary_policy')==FINANCIAL_TEMP_POLICY and
+        r.get('financial_calculation_profile')=='FINANCIAL' and
+        r.get('financial_temporary_policy')==FINANCIAL_TEMP_POLICY and
+        (r.get('owner_source_context') or {}).get('profile')=='FINANCIAL' and
+        bool(r.get('financial_temporary_source_refs')))
+
+
+def _row_support(c,r):
+    if _financial_enabled(c,r):
+        if c['candidate']=='U1-555':return True,None
+        if r.get('sector_id') not in SECTORS:return False,'SECTOR_CLASSIFICATION_UNCONFIRMED'
+        if r.get('accounting_template') not in FINANCIAL_PEER_MODELS:return False,'FINANCIAL_PEER_MODEL_UNCONFIRMED'
+        return True,None
+    ok=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
+    reason='SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']!='0.1.0' and r.get('accounting_template')=='GENERAL' else 'ACCOUNTING_RECIPE_PREPARING'
+    return ok,None if ok else reason
+
+
+def financial_peer_context(c,r,snapshot):
+    """S1 peers require the retained point-in-time classification, not a label."""
+    if not _financial_enabled(c,r) or c['candidate']!='S1-555':return r
+    m=r.get('classification_mapping') or {};ctx=snapshot.get('classification_context') or {}
+    hashes={x.get('classification_hash') for x in (ctx.get('source_contexts') or [ctx])}
+    try:
+        valid=(r.get('classification_status')=='VERIFIED' and bool(r.get('classification_record_id')) and
+            m.get('common_record_id')==r['classification_record_id'] and bool(m.get('evidence_refs')) and
+            m.get('common_dictionary_version')==c['classification_dictionary_version'] and
+            m.get('common_classification_hash') in hashes and bool(m.get('common_mapping_version')) and
+            date.fromisoformat(m['valid_from'])<=date.fromisoformat(snapshot['evaluation_day']) and
+            (m.get('valid_to') is None or date.fromisoformat(snapshot['evaluation_day'])<date.fromisoformat(m['valid_to'])) and
+            timestamp(m['knowledge_as_of'])<=timestamp(snapshot['input_cutoff']))
+    except (KeyError,TypeError,ValueError,AttributeError):valid=False
+    if valid:return r
+    out=deepcopy(r);out['reported_peer_accounting_template']=r.get('accounting_template')
+    out['accounting_template']=None
+    return out
+
+
+def _usable(r,metric,s,*,share_policy=None,share_evidence_scope=None,financial_policy=None):
     proof=(r.get('metric_evidence') or {}).get(metric)
     x=r.get('metrics',{}).get(metric)
+    if metric.startswith('financial::'):
+        if (financial_policy!=FINANCIAL_TEMP_POLICY or
+            not _financial_enabled(dict(financial_temporary_policy=financial_policy),r)):
+            return None,'FINANCIAL_TEMPORARY_NOT_ENABLED'
+        spec=catalog()[metric]
+        context=r.get('owner_source_context') or {}
+        if (not proof or proof.get('status')!='TEMPORARY_OFFICIAL_FINANCIAL_RAW' or
+            proof.get('financial_temporary_policy')!=FINANCIAL_TEMP_POLICY or
+            proof.get('source_formula_version')!='qgv2-calc/2026-10-23.1' or
+            proof.get('source_metric')!=spec['source_metric'] or proof.get('variant')!=spec['variant'] or
+            not proof.get('source_refs') or proof.get('source_record_hash')!=context.get('record_hash') or
+            proof.get('source_body_sha256')!=context.get('companyfacts_sha256') or
+            any(not isinstance(context.get(k),str) or not re.fullmatch('[0-9a-f]{64}',context[k])
+                for k in ('record_hash','companyfacts_sha256'))):
+            return None,'FINANCIAL_RAW_SOURCE_UNVERIFIED'
+        try:
+            acquired=timestamp(context['acquired_at']);reviewed=timestamp(proof['reviewed_at'])
+            available=timestamp(proof['available_at']);cutoff=timestamp(s['input_cutoff'])
+            clock_ok=(timestamp(proof['source_available_at'])==acquired==timestamp(proof['retrieved_at']) and
+                acquired<=reviewed<=available<=cutoff and
+                (not proof.get('source_review_created_at') or acquired<=timestamp(proof['source_review_created_at'])<=reviewed))
+        except (KeyError,TypeError,ValueError,AttributeError):clock_ok=False
+        if not clock_ok:return None,'FINANCIAL_RAW_CLOCK_UNVERIFIED'
+        if spec['historical_share_evidence_required']:
+            basis=proof.get('adoption_basis')
+            if basis in ('ADDITIONAL_VERIFICATION_REQUIRED','EXPLICIT_CONFLICT_EXCLUDED'):return None,basis
+            if proof.get('raw_reusable') is not True:
+                return None,proof.get('reason') or 'FORMULA_DOMAIN_OR_OTHER_INPUT_UNAVAILABLE'
+            if (proof.get('official_share_reuse_version')!='held-555-official-share-reuse/1' or
+                proof.get('historical_share_basis')!='OFFICIAL_PATH_REUSED' or
+                proof.get('strict_verified') is not False or not official_reuse_assumptions_valid(proof)):
+                return None,'FINANCIAL_SHARE_BASIS_UNVERIFIED'
+            if basis not in ('EVIDENCE_LINKED','FILING_SPLIT_ADJUSTED','OFFICIAL_ASSUMPTION_INHERITED'):
+                return None,'FINANCIAL_SHARE_BASIS_UNVERIFIED'
+            if share_evidence_scope=='EVIDENCE_ONLY' and (proof['requires_assumption'] or not proof['evidence_only_eligible']):
+                return None,'OFFICIAL_ASSUMPTION_NOT_IN_EVIDENCE_ONLY'
+            from .qgv_555_official_share import FORMULAS as RF
+            variant=RF.get(spec['source_metric'],'OFFICIAL_EQUITY_OVER_WEIGHTED_DILUTED_SHARES_CAGR_3Y')
+            if proof.get('formula_variant')!=variant or proof.get('denominator_definition')!=SHARE_DENOMINATOR:
+                return None,'FINANCIAL_SHARE_FORMULA_MISMATCH'
+        return (x,'VALID') if proof.get('raw_reusable') is True and type(x) in (int,float) and math.isfinite(x) else (None,'RAW_MISSING')
     official_share=metric in SHARE_METRICS and share_policy==OFFICIAL_REUSE_POLICY
     if official_share:
         from .qgv_555_official_share import FORMULAS as REUSE_FORMULAS
@@ -237,6 +333,11 @@ def calculation_row(c, row):
         out['accounting_template']=row['calculation_accounting_template']
         out['sector_id']=row.get('calculation_sector_id')
         out['industry_group']=row.get('calculation_industry_group')
+    if _financial_enabled(c,row):
+        peer=row.get('financial_peer_template')
+        if peer is not None and (peer not in FINANCIAL_PEER_MODELS or peer!=row.get('accounting_template')):
+            raise ValueError('FINANCIAL_PEER_MODEL_EVIDENCE')
+        out['accounting_template']=peer
     return out
 
 
@@ -254,6 +355,8 @@ def _bindings(c,e,ref):
     from pathlib import Path
     import hashlib
     files=[Path(__file__),Path(__file__).parent.parent/'qgv/v2_scoring.py',Path(__file__).parent.parent/'qgv/qgv_v2.py']
+    if c.get('financial_temporary_policy')==FINANCIAL_TEMP_POLICY:
+        files.append(Path(__file__).parent/'qgv_555_financial_temporary.py')
     return dict(configuration_hash=digest(c),evaluation=identity(e),reference=identity(ref),
         code_hash=digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}))
 
@@ -271,12 +374,12 @@ def run(c,e,ref,*,calculated_at=None):
             raise ValueError('CLASSIFICATION_CONTEXT_REQUIRED')
     cats=catalog();points={};ref_rows={}
     for original in sorted(ref['rows'],key=lambda x:x['company_id']):
-        r=calculation_row(c,original)
-        if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
+        r=financial_peer_context(c,calculation_row(c,original),ref)
+        if not r.get('issuer_id') or (r.get('accounting_template')!='GENERAL' and not _financial_enabled(c,r)):continue
         if r['issuer_id'] in points:
             if r.get('metrics')!=ref_rows[r['issuer_id']].get('metrics'):raise ValueError('ISSUER_POINT_CONFLICT')
             continue
-        points[r['issuer_id']]={m:_usable(r,m,ref,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'))[0] for m in cats};ref_rows[r['issuer_id']]=r
+        points[r['issuer_id']]={m:_usable(r,m,ref,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'),financial_policy=c.get('financial_temporary_policy'))[0] for m in cats};ref_rows[r['issuer_id']]=r
     pools={('all',):_Pool(points)}
     for keyfun in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
         groups=defaultdict(dict)
@@ -284,13 +387,13 @@ def run(c,e,ref,*,calculated_at=None):
         pools.update({k:_Pool(v) for k,v in groups.items()})
     out=[]
     for original in sorted(e['rows'],key=lambda x:x['company_id']):
-        r=calculation_row(c,original)
+        r=financial_peer_context(c,calculation_row(c,original),e)
         role_config=deepcopy(c['roles'])
-        if c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
-        supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
-        unsupported_reason=('SECTOR_CLASSIFICATION_UNCONFIRMED' if c['version']!='0.1.0' and
-            r.get('accounting_template')=='GENERAL' else 'ACCOUNTING_RECIPE_PREPARING')
-        raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope')) for m in cats};roles={};metric_scores={}
+        financial=_financial_enabled(c,r)
+        if financial:role_config=deepcopy(c['financial_roles'])
+        elif c['candidate']=='S1-555':role_config.update(c.get('scoped_role_overrides',{}).get(str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),{}))
+        supported,unsupported_reason=_row_support(c,r)
+        raw={m:_usable(r,m,e,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'),financial_policy=c.get('financial_temporary_policy')) for m in cats};roles={};metric_scores={}
         for role,spec in role_config.items():
             vals=[];items=[]
             for name,mw in spec['metrics'].items():
@@ -322,6 +425,14 @@ def run(c,e,ref,*,calculated_at=None):
                         primary_raw_status=raw[requested_metric][1],
                         display_flags=['SUBSTITUTE_METRIC'] if m!=requested_metric and score is not None else [])
                     if m!=requested_metric:items[-1]['substitute_for']=requested_metric
+                    if financial:
+                        proof=(r.get('metric_evidence') or {}).get(m) or {}
+                        items[-1]['financial_raw_evidence']=dict(source_metric=cats[m].get('source_metric'),
+                            formula=cats[m]['formula'],period=cats[m]['period'],attribution=cats[m].get('attribution'),
+                            source_refs=deepcopy(proof.get('source_refs',[])),
+                            source_available_at=proof.get('source_available_at'),retrieved_at=proof.get('retrieved_at'),
+                            reviewed_at=proof.get('reviewed_at'),common_attribution_confirmed=False,
+                            temporary_status='TEMPORARY_OFFICIAL_FINANCIAL')
                     if c['version']=='0.3.0' and m in SHARE_METRICS:
                         proof=(r.get('metric_evidence') or {}).get(m) or {}
                         items[-1]['share_validation']=dict(
@@ -334,7 +445,7 @@ def run(c,e,ref,*,calculated_at=None):
                                 math.isfinite(r['metrics'][m]) else None),
                             source_refs=deepcopy(proof.get('source_refs',[])),
                             reviewed_at=proof.get('reviewed_at'),retrieved_at=proof.get('retrieved_at'))
-                    if c['version']=='0.4.0' and m in SHARE_METRICS:
+                    if c['version'] in ('0.4.0','0.5.0') and (m in SHARE_METRICS or m.startswith('financial::') and cats[m].get('historical_share_evidence_required')):
                         proof=(r.get('metric_evidence') or {}).get(m) or {}
                         items[-1]['share_validation']=dict(
                             review_version=proof.get('official_share_reuse_version'),
@@ -356,7 +467,9 @@ def run(c,e,ref,*,calculated_at=None):
                 metric_scores[role+'|'+m]=items[-1]
             score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
             roles[role]=dict(score=score,metrics=items,selected=spec['weight']>0,
-                             partial=len(vals)<sum(w>0 for w in spec['metrics'].values()))
+                             partial=len(vals)<sum(w>0 for w in spec['metrics'].values()) or bool(financial and not spec['metrics']))
+            if financial:roles[role].update(temporary_status=spec['temporary_status'],
+                definition_status=spec['definition_status'],null_reason=spec['null_reason'])
         weights=c['axis_weights'] if c['candidate']=='U1-555' else c.get('sector_axis_overrides',{}).get(r.get('sector_id'),dict(zip('QGV',SECTORS.get(r.get('sector_id'),(34,33,33)))))
         scores={k:v['score'] for k,v in roles.items()}
         axes={a:axis_score(scores,a,{role:spec['weight'] for role,spec in role_config.items() if spec['axis']==a}) for a in 'QGV'}
@@ -411,6 +524,17 @@ def run(c,e,ref,*,calculated_at=None):
                 valuation_share_basis='WEIGHTED_AVERAGE_DILUTED_NOT_ACTUAL_CLASS_SHARES')
             out[-1].update(display_flags=flags,display_label=temp.get('label'),
                 source_model=(original.get('financial_reference') or {}).get('model_id'))
+            if financial:
+                from .qgv_555_financial_temporary import contribution_metadata,STATUS
+                flags=[f for f in flags if f!='TEMPORARY_OFFICIAL_PROXY']+[STATUS]
+                out[-1].update(display_flags=flags,financial_calculation_profile='FINANCIAL',
+                    display_label='금융 임시(공식 FINANCIAL 원지표)',
+                    source_reference_display_label=temp.get('label'),
+                    peer_accounting_template=r.get('accounting_template'),temporary_model_status=STATUS,
+                    financial_reference_only=False,financial_definition_complete=False,
+                    defined_roles={a:sum(bool(v['metrics']) for v in role_config.values() if v['axis']==a) for a in 'QGV'},
+                    financial_temporary_contributions=(contribution_metadata(roles,axis_weights=weights,
+                        included_axes=included,total_available=total is not None) if reported_weights is not None else None))
     # Do not invent a new decile rule: the reusable stored order adapter below
     # uses the existing dual rule verbatim via its function (including tie splits).
     _rank(out)
@@ -427,11 +551,16 @@ def run(c,e,ref,*,calculated_at=None):
         all15=count(lambda r:r['fifteen_roles_complete']),joint=count(lambda r:all(r['axes'][a]['score'] is not None for a in 'QGV')),
         gate_known=count(lambda r:r['gate_status']!='UNKNOWN'),gate_pass=count(lambda r:r['gate_status']=='PASS'),
         total=count(lambda r:r['total'] is not None),eligible_total=count(lambda r:r['total'] is not None and not r['partial_total']))
-    if c['version']=='0.4.0':result['coverage'].update(share_evidence_scope=c['share_evidence_scope'],
+    if c['version'] in ('0.4.0','0.5.0'):result['coverage'].update(share_evidence_scope=c['share_evidence_scope'],
         strict_share_verification=False,official_raw_reused_not_official_score=True)
+    if c['version']=='0.5.0':result['coverage'].update(
+        financial_temporary_issuers=count(lambda r:r.get('temporary_model_status')=='TEMPORARY_OFFICIAL_FINANCIAL'),
+        financial_temporary_code_rows=sum(r.get('temporary_model_status')=='TEMPORARY_OFFICIAL_FINANCIAL' for r in out),
+        financial_temporary_axes={a:count(lambda r:r.get('temporary_model_status')=='TEMPORARY_OFFICIAL_FINANCIAL' and r['axes'][a]['score'] is not None) for a in 'QGV'},
+        financial_dedicated_definition_complete=False)
     result['coverage']['role_stages']={role:dict(
         raw_any=count(lambda r:any(x['raw'] is not None for x in r['roles'][role]['metrics'])),
-        raw_all=count(lambda r:all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
+        raw_all=count(lambda r:bool(r['roles'][role]['metrics']) and all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
         score=count(lambda r:r['roles'][role]['score'] is not None)) for role in SPECS}
     if c['version']!='0.1.0':
         result['coverage'].update(axis_target=math.ceil(.9*b['evaluation']['issuers']),
@@ -517,7 +646,7 @@ def accounting_recipes(*, version='0.1.0'):
                 variants=[m for m,d in SPECS[role]] if t=='GENERAL' else known.get(role,[]),
                 state='DEFINED' if t=='GENERAL' else 'PARTIAL_DEFINITION' if role in known else 'DEFINITION_REQUIRED',
                 limitation=None if t=='GENERAL' else 'Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback') for role in SPECS}))
-    if version in ('0.2.0','0.3.0','0.4.0'):
+    if version in ('0.2.0','0.3.0','0.4.0','0.5.0'):
         cfg=configuration('S1-555',version=version)
         for item in out:
             if item['accounting_template']=='EQUITY_REIT':

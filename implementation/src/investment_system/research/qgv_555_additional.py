@@ -2,7 +2,7 @@
 from copy import deepcopy
 from collections import defaultdict
 from datetime import datetime,timezone
-from .qgv_555 import catalog,identity,_usable,calculation_row
+from .qgv_555 import catalog,identity,_usable,calculation_row,_financial_enabled,financial_peer_context
 from .sector_qgv import digest
 from .dual_qgv import _rank_factors
 from .sector_qgv_registry import CATALOG
@@ -14,10 +14,10 @@ def attach(result,evaluation,reference):
     if result['result_hash']!=digest({k:v for k,v in result.items() if k!='result_hash'}):raise ValueError('SOURCE_RESULT_HASH')
     out=deepcopy(result);cats=catalog();c=result['configuration'];points={};rmap={}
     for original in sorted(reference['rows'],key=lambda x:x['company_id']):
-        r=calculation_row(c,original)
-        if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
+        r=financial_peer_context(c,calculation_row(c,original),reference)
+        if not r.get('issuer_id') or (r.get('accounting_template')!='GENERAL' and not _financial_enabled(c,r)):continue
         if r['issuer_id'] in points:continue
-        points[r['issuer_id']]={m:_usable(r,m,reference,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'))[0] for m in cats};rmap[r['issuer_id']]=r
+        points[r['issuer_id']]={m:_usable(r,m,reference,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'),financial_policy=c.get('financial_temporary_policy'))[0] for m in cats};rmap[r['issuer_id']]=r
     pools={('all',):_Pool(points)}
     for f in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
         groups=defaultdict(dict)
@@ -25,13 +25,13 @@ def attach(result,evaluation,reference):
         pools.update({k:_Pool(v) for k,v in groups.items()})
     lookup={r['company_id']:r for r in evaluation['rows']}
     for outrow in out['rows']:
-        r=calculation_row(c,lookup[outrow['company_id']]);outrow['factors']={}
+        r=financial_peer_context(c,calculation_row(c,lookup[outrow['company_id']]),evaluation);outrow['factors']={}
         selected={x['metric']:x for role in reversed(list(outrow['roles'].values())) for x in role['metrics']}
         for m,spec in cats.items():
             if m in selected:
                 node=deepcopy(selected[m]);node.update(kind='CORE_INPUT_VIEW',core_contribution='ALREADY_COUNTED_IN_ROLE')
             else:
-                raw,reason=_usable(r,m,evaluation,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'));score=None;n=0;basis=None
+                raw,reason=_usable(r,m,evaluation,share_policy=c.get('historical_share_policy'),share_evidence_scope=c.get('share_evidence_scope'),financial_policy=c.get('financial_temporary_policy'));score=None;n=0;basis=None
                 if outrow['status']=='READY' and raw is not None:
                     keys=[('sector',r.get('sector_id'),r.get('accounting_template'))] if c['candidate']=='S1-555' else ([('industry',r.get('industry_group')),('all',)] if spec['axis']=='Q' else [('all',)])
                     for key in keys:

@@ -1,0 +1,10 @@
+{
+  "schema_version": "qgv-555-financial-example-manifest/1",
+  "files": [
+    {
+      "path": "examples.json",
+      "size": 490071,
+      "sha256": "ac443bd3de8ddf22f27e2315e7a2e22777440d3eed79bc69e39ac5dc1cc9697c"
+    }
+  ]
+}
