@@ -1,0 +1,9 @@
+/* Public preview banner of the new frontend (DC-51, owner 2026-11-14 public preview approval). Published only with app.html
+   (implementation/tools/web_app_preview.py); the new app's own files and the current screens do not use it. */
+.is2-preview{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:0;padding:8px 16px;
+ background:var(--marker,#FFE45C);color:var(--ink,#161616);border-bottom:2px solid var(--line,#161616);
+ font:600 14px/1.4 var(--font-body,system-ui,sans-serif);}
+.is2-preview strong{font-weight:700;}
+.is2-preview nav{display:flex;flex-wrap:wrap;gap:4px 10px;}
+.is2-preview a{color:inherit;text-decoration:underline;text-underline-offset:2px;min-height:24px;display:inline-flex;align-items:center;}
+.is2-preview a:focus-visible{outline:3px solid var(--ink,#161616);outline-offset:2px;}

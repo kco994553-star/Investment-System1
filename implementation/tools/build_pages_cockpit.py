@@ -14,7 +14,7 @@ if str(Path(__file__).resolve().parent) not in sys.path:
 from investment_system.product.web_mvp import build, repository_bundle
 
 
-def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
+def build_public_cockpit(out: Path, *, sec_m2_candidate=None, preview: bool = True) -> Path:
     out = Path(out)
     if out.is_symlink() or (out.exists() and (not out.is_dir() or any(out.iterdir()))):
         raise ValueError('Pages output must be an empty regular directory')
@@ -50,6 +50,11 @@ def build_public_cockpit(out: Path, *, sec_m2_candidate=None) -> Path:
     emit_news(out)
     from macro_evidence import emit_empty as emit_macro_evidence
     emit_macro_evidence(out)
+    # Public preview of the new frontend (DC-51, owner 2026-11-14): app.html beside index.html, pinned by the guard.
+    # The development build (build_web_app.py) replaces the current screens instead, so it builds without it.
+    if preview:
+        from web_app_preview import emit as emit_preview
+        emit_preview(out)
     return result
 
 
