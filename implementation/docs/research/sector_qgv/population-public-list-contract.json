@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "population-public-list-contract/1",
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "data_kind", "population_id", "population_version", "basis_date", "apply_at", "mapping_day", "input_cutoff", "null_reasons"],
+      "properties": {
+        "source_kind": {"enum": ["CURRENT_OFFICIAL", "SYNTHETIC_CURRENT", "TOP500_RESEARCH_CANDIDATE"]},
+        "data_kind": {"enum": ["PUBLIC_CODE_LIST", "SYNTHETIC", "RESEARCH_CANDIDATE"]},
+        "population_id": {"type": "string", "minLength": 1},
+        "population_version": {"type": ["string", "null"]},
+        "basis_date": {"type": ["string", "null"]},
+        "apply_at": {"type": ["string", "null"]},
+        "mapping_day": {"type": ["string", "null"]},
+        "input_cutoff": {"type": ["string", "null"]},
+        "null_reasons": {"type": "object", "propertyNames": {"enum": ["population_version", "basis_date", "apply_at", "mapping_day", "input_cutoff"]}, "additionalProperties": {"enum": ["LEGACY_SOURCE_NOT_RECORDED", "NOT_DECIDED", "SOURCE_NOT_DATED", "MAPPING_AS_OF_UNCONFIRMED", "SOURCE_VERSION_UNRECORDED", "APPLY_TIME_NOT_DECIDED", "INPUT_CUTOFF_NOT_RECORDED"]}}
+      }
+    },
+    "member": {
+      "type": "object",
+      "required": ["company_id", "code", "issuer_id", "security_id", "representative_security_id", "requested_google_symbol", "google_symbol", "issuer_status", "security_status", "representative_status", "google_symbol_status", "mapping_record_id", "mapping_valid_from", "mapping_valid_to", "mapping_reasons"],
+      "properties": {
+        "company_id": {"type": "string"},
+        "code": {"type": "string"},
+        "issuer_id": {"type": ["string", "null"]},
+        "security_id": {"type": ["string", "null"]},
+        "representative_security_id": {"type": ["string", "null"]},
+        "requested_google_symbol": {"type": "string"},
+        "google_symbol": {"type": ["string", "null"]},
+        "issuer_status": {"enum": ["VERIFIED", "UNCONFIRMED"]},
+        "security_status": {"enum": ["VERIFIED", "UNCONFIRMED"]},
+        "representative_status": {"enum": ["VERIFIED", "UNCONFIRMED"]},
+        "google_symbol_status": {"enum": ["VERIFIED", "UNCONFIRMED"]},
+        "mapping_reasons": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "listing": {
+      "type": "object",
+      "required": ["schema_version", "source_kind", "data_kind", "population_id", "population_version", "basis_date", "apply_at", "mapping_day", "input_cutoff", "null_reasons", "status", "official_current", "use_for_new_sheet", "public_publication_authorized", "visibility", "code_rows", "issuers", "known_issuers", "issuer_count_reason", "membership_unit", "codes", "members", "members_hash", "ordered_codes_hash", "source_sha256", "source_result_hash", "mapping_input_hash", "verified_google_mappings", "selection_is_not_qgv_rank", "whole_market_denominator", "list_hash"],
+      "properties": {
+        "schema_version": {"const": "population-public-list/1"},
+        "data_kind": {"enum": ["PUBLIC_CODE_LIST", "SYNTHETIC", "RESEARCH_CANDIDATE"]},
+        "status": {"enum": ["CONFIRMED", "CANDIDATE"]},
+        "official_current": {"type": "boolean"},
+        "use_for_new_sheet": {"type": "boolean"},
+        "public_publication_authorized": {"const": false},
+        "visibility": {"enum": ["AUTHENTICATED_RESEARCH", "PUBLIC_CODE_METADATA_PROPOSAL"]},
+        "membership_unit": {"const": "CODE_ROW"},
+        "code_rows": {"type": "integer", "minimum": 1, "maximum": 1024},
+        "issuers": {"type": ["integer", "null"], "minimum": 1},
+        "known_issuers": {"type": "integer", "minimum": 0},
+        "codes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "members": {"type": "array", "items": {"$ref": "#/$defs/member"}},
+        "verified_google_mappings": {"type": "integer", "minimum": 0},
+        "selection_is_not_qgv_rank": {"const": true},
+        "whole_market_denominator": {"type": "null"},
+        "list_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "retained_response": {
+      "type": "object", "required": ["schema_version", "status", "failure", "listing", "retained_listing_hash"],
+      "properties": {"schema_version": {"const": "population-list-response/1"}, "status": {"const": "RETAINED_PREVIOUS"}, "listing": {"$ref": "#/$defs/listing"}, "retained_listing_hash": {"type": "string"}}
+    },
+    "sheet_review": {
+      "type": "object", "required": ["schema_version", "state", "reasons", "expected_listing_hash", "added_codes", "removed_codes", "old_code_rows", "current_code_rows", "action", "writes", "touches_trades_or_quotes"],
+      "properties": {"schema_version": {"const": "sheet-population-review/1"}, "state": {"enum": ["CURRENT", "UNVERSIONED_LIST_MATCH", "REVIEW_REQUIRED"]}, "action": {"const": "USER_SELECTED_UPDATE_ONLY"}, "writes": {"const": 0}, "touches_trades_or_quotes": {"const": false}}
+    }
+  }
+}

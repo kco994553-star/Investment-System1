@@ -1,0 +1,23 @@
+{
+  "apply_at": null,
+  "basis_date": null,
+  "current_official": true,
+  "deployed_hash_reason": "DEPLOYED_BYTES_NOT_SUPPLIED_NOT_INFERRED_FROM_CANONICAL_JSON",
+  "deployed_payload_bytes_sha256": null,
+  "google_mapping_status": "NOT_SUPPLIED_NOT_MEASURED",
+  "identity_status": "CODE_LIST_NOT_A_SECURITY_MASTER",
+  "issuers": null,
+  "members_hash": "93b959e1e1c145f450d3f5269dcf937d95548e15b4a7a3eb2c8080755f09ccaf",
+  "ordered_codes_hash": "5ca3a43896a2b049b534fea7b305cb1d2d0ad0d458a69968422a15c4f346c342",
+  "population_id": "Universe504",
+  "population_version": null,
+  "public_payload_semantic_hash": "230e6dfdfb9cbe64f20d6bb1deb4655e817de55cfc68443cf002f07b25ddc413",
+  "schema_version": "current-public-code-source/1",
+  "source_code_rows": 504,
+  "source_git_blob": "4d6e9771cc1a830569b6219283f9698322f4e5f5",
+  "source_path": "implementation/src/investment_system/universe/universe_codes_v1.json",
+  "source_sha256": "26aedc7a1889efe4a2c5051686a9fa15f7bb14546e00dbd46218c779bd725d28",
+  "transition_state": "NOT_TRANSITIONED",
+  "transition_target": "MARKET_CAP_TOP500_ISSUERS",
+  "unknown_reason": "LEGACY_PUBLIC_SOURCE_DOES_NOT_CONTAIN_THESE_FIELDS"
+}
