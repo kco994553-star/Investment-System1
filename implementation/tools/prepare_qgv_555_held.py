@@ -34,7 +34,7 @@ def main():
         raw=json_bytes(v);path=a.output/(k+'.json');path.write_bytes(raw)
         desc[k]=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),size=len(raw))
     anchors=dict(schema_version='qgv-555-input-source-anchors/1',source_plan=plan,source_plan_sha256=hashlib.sha256(a.plan.read_bytes()).hexdigest(),
-        construction_rule='held-555-fy-debt/1' if audits else 'HELD_FORMULA_VERSIONED_RAW_PROJECTION/2',files=desc,identities={k:identity(v) for k,v in outputs.items()},
+        construction_rule='held-555-fy-debt/2' if audits else 'HELD_FORMULA_VERSIONED_RAW_PROJECTION/2',files=desc,identities={k:identity(v) for k,v in outputs.items()},
         runtime_metadata_is_projection_proof=False)
     (a.output/'input-source-anchors.json').write_bytes(json_bytes(anchors))
     if audits:(a.output/'debt-review-audit.json').write_bytes(json_bytes(audits))

@@ -27,6 +27,18 @@ def test_exact_fy_debt_uses_existing_kernel_not_quarterly_total():
     assert held_fy_debt_metric(p,r,'synthetic')['value'] is None
 
 
+def test_legacy_published_precision_preserves_existing_tie_definition():
+    p,r=source()
+    p['facts']['us-gaap']['DebtLongtermAndShorttermCombinedAmount']['units']['USD'][0]['val']=47
+    out=held_fy_debt_metric(p,r,'synthetic')
+    assert out['unrounded_value']==pytest.approx(37/30)
+    assert out['value']==1.23333  # independently written 6-significant-digit expectation
+    e,s=entry_and_snapshot();raw=json.dumps(p).encode();sha=hashlib.sha256(raw).hexdigest()
+    e.update(source_bytes=raw,sha256=sha,reference='synthetic#sha256='+sha)
+    e['record']['source_sha256']['companyfacts']=sha
+    assert connect(s,[e])[0]['rows'][0]['metrics']['net_debt_to_ebitda']==1.23333
+
+
 @pytest.mark.parametrize('case',['missing','liabilities','unit','future','conflict','no_da','financial'])
 def test_missing_or_invalid_input_is_not_zero_or_a_substitute(case):
     p,r=source();tax=p['facts']['us-gaap'];node=tax['DebtLongtermAndShorttermCombinedAmount'];x=node['units']['USD'][0]

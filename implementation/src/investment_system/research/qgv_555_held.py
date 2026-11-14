@@ -16,8 +16,8 @@ def held_fy_debt_metric(payload, record, reference):
     from .sector_qgv_held import _connect_explicit_debt
     if str(payload.get('cik')).zfill(10) != record.get('cik'):
         raise ValueError('DEBT_SOURCE_ISSUER_MISMATCH')
-    out = dict(metric='net_debt_to_ebitda', value=None, components={}, reasons={},
-               source_reference=reference, adapter_version='held-555-fy-debt/1')
+    out = dict(metric='net_debt_to_ebitda', value=None, unrounded_value=None, components={}, reasons={},
+               source_reference=reference, adapter_version='held-555-fy-debt/2')
     if record.get('profile') != 'GENERAL':
         out['reasons']['accounting'] = 'ACCOUNTING_NOT_APPLICABLE'
         return out
@@ -54,7 +54,11 @@ def held_fy_debt_metric(payload, record, reference):
     fields['cash'] = dict(value=company.i('cash_and_equivalents', 0),
                           target_end=str(end), currency=currency,
                           period_policy='EXISTING_FY_INSTANT_TOLERANCE')
-    out['value'] = vf._metrics_general(company)['net_debt_to_ebitda']
+    out['unrounded_value'] = vf._metrics_general(company)['net_debt_to_ebitda']
+    # compute_reported_periods publishes/ranks these legacy raw metrics at six
+    # significant digits. Keep precise audit arithmetic separate from that input.
+    out['value'] = vf._round(out['unrounded_value'])
+    out['raw_precision_policy'] = 'EXISTING_PUBLISHED_SIX_SIGNIFICANT_DIGITS'
     if out['value'] is None:
         out['reasons']['metric'] = 'OTHER_REQUIRED_COMPONENT_MISSING_OR_DENOMINATOR_INVALID'
     return out
@@ -122,7 +126,7 @@ def connect_fy_debt_review(snapshot, entries, *, reviewed_at, input_cutoff):
         result_kind='RETROSPECTIVE_REVIEW', historical_system_pit_complete=False,
         evidence_hash=digest(audits))
     out['source_anchors'] = [*deepcopy(snapshot.get('source_anchors', [])),
-                            dict(repair='held-555-fy-debt/1', evidence_hash=digest(audits))]
+                            dict(repair='held-555-fy-debt/2', evidence_hash=digest(audits))]
     return out, audits
 
 
