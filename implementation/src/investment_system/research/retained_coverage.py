@@ -4,6 +4,58 @@ from collections import Counter
 from .classification_counts import count, require, score_present
 
 
+def saved_axis_losses(official, research, *, official_day, evaluation_day, reason_priority):
+    """Compare saved code rows, count issuer losses and retain overlapping causes.
+
+    Each row has company_id, issuer_id, score; research rows also carry reasons.
+    Reasons are supplied by the existing input audit, never inferred from a total.
+    A publication at another price date remains an observation, not a same-day
+    coverage experiment. No scoring, imputation or population selection occurs.
+    """
+    from datetime import date
+    for day in (official_day, evaluation_day):date.fromisoformat(day)
+    require(len(reason_priority) == len(set(reason_priority)), 'DUPLICATE_CAUSE_PRIORITY')
+    def index(rows):
+        out = {}
+        for row in rows:
+            key = row['company_id']
+            require(key not in out and row.get('issuer_id'), 'COVERAGE_ROW_IDENTITY')
+            score_present(row['score'])
+            out[key] = row
+        return out
+    before, after = index(official), index(research)
+    require(before.keys() == after.keys(), 'COVERAGE_POPULATION_MISMATCH')
+    require(all(before[k]['issuer_id'] == after[k]['issuer_id'] for k in before),
+            'COVERAGE_ISSUER_MISMATCH')
+    issuers = {r['issuer_id'] for r in before.values()}
+    old = {r['issuer_id'] for r in before.values() if score_present(r['score'])}
+    new = {r['issuer_id'] for r in after.values() if score_present(r['score'])}
+    lost = old - new
+    causes = {issuer: set() for issuer in lost}
+    for key, row in after.items():
+        issuer = row['issuer_id']
+        if issuer in lost and score_present(before[key]['score']):
+            require(all(isinstance(r, str) and r for r in row.get('reasons', [])), 'CAUSE_ID')
+            causes[issuer].update(row.get('reasons', []))
+    primary = {}; multiple = {}
+    for issuer, reasons in causes.items():
+        reason = next((r for r in reason_priority if r in reasons), 'UNASSESSED')
+        primary.setdefault(reason, set()).add(issuer)
+        for cause in reasons:multiple.setdefault(cause, set()).add(issuer)
+    require(sum(len(x) for x in primary.values()) == len(lost), 'LOSS_CAUSE_RECONCILIATION')
+    same_day = official_day == evaluation_day
+    return dict(unit='ISSUER',code_rows=len(before),denominator=len(issuers),
+        official_day=official_day,evaluation_day=evaluation_day,same_valuation_day=same_day,
+        official_valid=len(old),research_valid=len(new),observed_official_only=len(lost),
+        comparable_loss_count=len(lost) if same_day else None,
+        comparison_status='SAME_DAY' if same_day else 'NOT_MEASURED_SAME_DAY',
+        new_only=len(new-old),representative={k:len(v) for k,v in primary.items()},
+        multiple={k:len(v) for k,v in multiple.items()},
+        cause_overlap=True,unassessed_issuers=len(primary.get('UNASSESSED',set())),
+        issuer_losses={k:sorted(v) for k,v in causes.items()},
+        roles_or_axes_combined_across_code_rows=False)
+
+
 def coverage_scope(preview_rows, class_rows, *, input_gaps=None, v_readiness=None):
     rows = list(preview_rows)
     classes = {r['company_id']: r for r in class_rows}
