@@ -1,7 +1,7 @@
 from copy import deepcopy
 import hashlib
 import pytest
-from investment_system.research.qgv_555 import configuration,fixture,run,validate_configuration
+from investment_system.research.qgv_555 import configuration,fixture,run,validate_configuration,accounting_recipes
 from investment_system.research.qgv_555_financial_temporary import financial_catalog
 from investment_system.research.qgv_555_additional import attach
 from investment_system.research.qgv_555_delivery import artifacts,validate
@@ -199,3 +199,18 @@ def test_financial_source_cannot_expand_general_metric_reference_pool():
             if metric.startswith('financial::'):continue
             assert value['score']==previous['factors'][metric]['score']
             assert value['reference_n']==previous['factors'][metric]['reference_n']
+
+
+def test_accounting_metadata_distinguishes_temporary_bridge_from_reference_only():
+    current={x['accounting_template']:x for x in accounting_recipes(version='0.5.0')}
+    previous={x['accounting_template']:x for x in accounting_recipes(version='0.4.0')}
+    for model in ('BANK','INSURANCE','BROKER','ASSET_MANAGER','MORTGAGE_REIT'):
+        row=current[model]
+        assert row['state']=='TEMPORARY_OFFICIAL_FINANCIAL'
+        assert row['financial_reference_policy']=='TEMPORARY_555_RAW_ROLE_BRIDGE'
+        assert row['financial_definition_complete'] is False
+        assert row['roles']['q_profitability']['variants']==['financial::roe','financial::roa','financial::net_interest_income_to_assets']
+        assert row['roles']['q_earnings_quality']['variants']==[]
+        assert all(not row['roles'][r]['variants'] for r in row['roles'] if r.startswith('v_'))
+        assert previous[model]['financial_reference_policy']=='ORIGINAL_OFFICIAL_MODEL_ONLY_NOT_555'
+    assert current['EQUITY_REIT']['state']=='TEMPORARY_GENERAL'

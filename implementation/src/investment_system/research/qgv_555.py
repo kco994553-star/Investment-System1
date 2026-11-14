@@ -661,6 +661,15 @@ def accounting_recipes(*, version='0.1.0'):
                         limitation='Owner-approved interim GENERAL calculation; not a completed FFO/AFFO recipe')
             elif item['accounting_template']=='GENERAL':
                 for role,node in item['roles'].items():node['variants']=list(cfg['roles'][role]['metrics'])
+            elif version=='0.5.0' and item['accounting_template'] in FINANCIAL_PEER_MODELS:
+                item.update(state='TEMPORARY_OFFICIAL_FINANCIAL',label='금융 임시(공식 FINANCIAL 원지표)',
+                    financial_reference_policy='TEMPORARY_555_RAW_ROLE_BRIDGE',
+                    financial_calculation_profile='FINANCIAL',financial_definition_complete=False)
+                for role,node in item['roles'].items():
+                    recipe=cfg['financial_roles'][role]
+                    node.update(variants=list(recipe['metrics']),
+                        state='TEMPORARY_DEFINED' if recipe['metrics'] else 'DEFINITION_REQUIRED',
+                        limitation=recipe['null_reason'] or 'Official FY raw-role proxy; dedicated financial definition is incomplete')
             else:item['financial_reference_policy']='ORIGINAL_OFFICIAL_MODEL_ONLY_NOT_555'
     elif version!='0.1.0':raise ValueError('UNKNOWN_MODEL_VERSION')
     return out
