@@ -1,0 +1,2181 @@
+{
+  "roic": {
+    "canonical_id": "roic",
+    "variant": "roic/555-v0",
+    "display_name": "roic",
+    "aliases": [],
+    "formula": "NOPAT / mean(FY opening, closing invested capital)",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_profitability"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "return_level",
+    "formula_source": "v2_factors._Company.roic",
+    "required_inputs": "NOPAT / mean(FY opening, closing invested capital)",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "gross_profit_to_assets": {
+    "canonical_id": "gross_profit_to_assets",
+    "variant": "gross_profit_to_assets/555-v0",
+    "display_name": "gross_profit_to_assets",
+    "aliases": [],
+    "formula": "FY gross profit / FY closing assets",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_profitability"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "gross_profit",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "FY gross profit / FY closing assets",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "moat_proxy": {
+    "canonical_id": "moat_proxy",
+    "variant": "moat_proxy/555-v0",
+    "display_name": "moat_proxy",
+    "aliases": [],
+    "formula": "mean(return) * max(0, 1-std/mean); mean<=0: mean; >=3 of 5 FY",
+    "period": "FY_5Y_MIN3",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_moat_proxy"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "return_level",
+    "formula_source": "v2_factors._moat",
+    "required_inputs": "mean(return) * max(0, 1-std/mean); mean<=0: mean; >=3 of 5 FY",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "accruals_to_assets": {
+    "canonical_id": "accruals_to_assets",
+    "variant": "accruals_to_assets/555-v0",
+    "display_name": "accruals_to_assets",
+    "aliases": [],
+    "formula": "(FY NI - FY CFO) / mean(opening,closing assets)",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [
+      "q_earnings_quality"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "cash_conversion",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "(FY NI - FY CFO) / mean(opening,closing assets)",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "fcf_to_net_income": {
+    "canonical_id": "fcf_to_net_income",
+    "variant": "fcf_to_net_income/555-v0",
+    "display_name": "fcf_to_net_income",
+    "aliases": [],
+    "formula": "(FY CFO - cash CAPEX) / FY NI; NI>0",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_earnings_quality"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "cash_conversion",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "(FY CFO - cash CAPEX) / FY NI; NI>0",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "net_debt_to_ebitda": {
+    "canonical_id": "net_debt_to_ebitda",
+    "variant": "net_debt_to_ebitda/555-v0",
+    "display_name": "net_debt_to_ebitda",
+    "aliases": [],
+    "formula": "(interest-bearing debt - cash) / (FY EBIT + DA); denominator>0",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [
+      "q_financial_safety"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "debt_capacity",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "(interest-bearing debt - cash) / (FY EBIT + DA); denominator>0",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "interest_coverage": {
+    "canonical_id": "interest_coverage",
+    "variant": "interest_coverage/555-v0",
+    "display_name": "interest_coverage",
+    "aliases": [],
+    "formula": "FY EBIT / FY interest; interest>0",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_financial_safety"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "interest_capacity",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "FY EBIT / FY interest; interest>0",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "dilution_3y": {
+    "canonical_id": "dilution_3y",
+    "variant": "dilution_3y/555-v0",
+    "display_name": "dilution_3y",
+    "aliases": [],
+    "formula": "(split-consistent diluted weighted shares FY/FY-3)^(1/3)-1",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [
+      "q_capital_allocation"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "share_basis",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "(split-consistent diluted weighted shares FY/FY-3)^(1/3)-1",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "incremental_roic_5y": {
+    "canonical_id": "incremental_roic_5y",
+    "variant": "incremental_roic_5y/555-v0",
+    "display_name": "incremental_roic_5y",
+    "aliases": [],
+    "formula": "(NOPAT FY-NOPAT FY-5)/(IC FY-IC FY-5); delta IC>0",
+    "period": "FY_5Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [
+      "q_capital_allocation"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "incremental_return",
+    "formula_source": "v2_factors._incremental",
+    "required_inputs": "(NOPAT FY-NOPAT FY-5)/(IC FY-IC FY-5); delta IC>0",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "revenue_cagr_3y": {
+    "canonical_id": "revenue_cagr_3y",
+    "variant": "revenue_cagr_3y/555-v0",
+    "display_name": "revenue_cagr_3y",
+    "aliases": [],
+    "formula": "(revenue FY/revenue FY-3)^(1/3)-1; positive endpoints",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_revenue_growth"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "revenue_growth",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "(revenue FY/revenue FY-3)^(1/3)-1; positive endpoints",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "eps_cagr_3y": {
+    "canonical_id": "eps_cagr_3y",
+    "variant": "eps_cagr_3y/555-v0",
+    "display_name": "eps_cagr_3y",
+    "aliases": [],
+    "formula": "(verified diluted EPS FY/FY-3)^(1/3)-1; positive endpoints",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_per_share_growth"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "earnings_growth",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "(verified diluted EPS FY/FY-3)^(1/3)-1; positive endpoints",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "fcf_per_share_cagr_3y": {
+    "canonical_id": "fcf_per_share_cagr_3y",
+    "variant": "fcf_per_share_cagr_3y/555-v0",
+    "display_name": "fcf_per_share_cagr_3y",
+    "aliases": [],
+    "formula": "(verified FCF/share FY/FY-3)^(1/3)-1; positive endpoints",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_per_share_growth"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "cash_growth",
+    "formula_source": "v2_factors._metrics_general",
+    "required_inputs": "(verified FCF/share FY/FY-3)^(1/3)-1; positive endpoints",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "incremental_roic_3y": {
+    "canonical_id": "incremental_roic_3y",
+    "variant": "incremental_roic_3y/555-v0",
+    "display_name": "incremental_roic_3y",
+    "aliases": [],
+    "formula": "(NOPAT FY-NOPAT FY-3)/(IC FY-IC FY-3); delta IC>0",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_growth_efficiency"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "incremental_return",
+    "formula_source": "v2_factors._incremental",
+    "required_inputs": "(NOPAT FY-NOPAT FY-3)/(IC FY-IC FY-3); delta IC>0",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "revenue_positive_growth_share": {
+    "canonical_id": "revenue_positive_growth_share",
+    "variant": "revenue_positive_growth_share/555-v0",
+    "display_name": "revenue_positive_growth_share",
+    "aliases": [],
+    "formula": "positive annual revenue changes / available changes; >=3 of 5",
+    "period": "FY_5Y_MIN3",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_consistency"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "revenue_growth",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "positive annual revenue changes / available changes; >=3 of 5",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "revenue_growth_volatility": {
+    "canonical_id": "revenue_growth_volatility",
+    "variant": "revenue_growth_volatility/555-v0",
+    "display_name": "revenue_growth_volatility",
+    "aliases": [],
+    "formula": "population std annual revenue changes; >=3 of 5",
+    "period": "FY_5Y_MIN3",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "G",
+    "roles": [
+      "g_consistency"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "revenue_growth",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "population std annual revenue changes; >=3 of 5",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "revenue_acceleration": {
+    "canonical_id": "revenue_acceleration",
+    "variant": "revenue_acceleration/555-v0",
+    "display_name": "revenue_acceleration",
+    "aliases": [],
+    "formula": "TTM revenue YoY growth - FY3 revenue CAGR",
+    "period": "TTM_AND_FY3",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [
+      "g_recent_acceleration"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "revenue_growth",
+    "formula_source": "v2_factors._growth_common",
+    "required_inputs": "TTM revenue YoY growth - FY3 revenue CAGR",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "ebit_yield": {
+    "canonical_id": "ebit_yield",
+    "variant": "ebit_yield/555-v0",
+    "display_name": "ebit_yield",
+    "aliases": [
+      "EV_EBIT_TTM"
+    ],
+    "formula": "validated TTM EBIT / positive EV",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [
+      "v_earnings_yield",
+      "v_vs_industry"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "enterprise_earnings",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": "validated TTM EBIT / positive EV",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "fcf_yield": {
+    "canonical_id": "fcf_yield",
+    "variant": "fcf_yield/555-v0",
+    "display_name": "fcf_yield",
+    "aliases": [
+      "EV_FCF_TTM"
+    ],
+    "formula": "(TTM CFO - positive cash CAPEX) / positive EV",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [
+      "v_fcf_yield"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "enterprise_cash",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": "(TTM CFO - positive cash CAPEX) / positive EV",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "own_history": {
+    "canonical_id": "own_history",
+    "variant": "own_history/555-v0",
+    "display_name": "own_history",
+    "aliases": [],
+    "formula": "current EBIT/share/price percentile in eligible own historical values",
+    "period": "HISTORY_MIN3",
+    "unit": "percentile",
+    "direction": 1,
+    "axis": "V",
+    "roles": [
+      "v_vs_own_history"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "enterprise_earnings",
+    "formula_source": "qgv_v2.percentile",
+    "required_inputs": "current EBIT/share/price percentile in eligible own historical values",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "gap": {
+    "canonical_id": "gap",
+    "variant": "gap/555-v0",
+    "display_name": "gap",
+    "aliases": [],
+    "formula": "reverse DCF implied growth - realized FY3 revenue CAGR",
+    "period": "DCF_AND_FY3",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "V",
+    "roles": [
+      "v_expectation_check"
+    ],
+    "accounting_scope": [
+      "GENERAL"
+    ],
+    "input_family": "revenue_growth",
+    "formula_source": "qgv_v2.reverse_dcf",
+    "required_inputs": "reverse DCF implied growth - realized FY3 revenue CAGR",
+    "source": "EXISTING_CODE_DEFINITION",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": true,
+    "recommendation": "OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM"
+  },
+  "sector::operating_margin_ttm": {
+    "canonical_id": "sector::operating_margin_ttm",
+    "variant": "operating_margin_ttm/sector-1",
+    "display_name": "operating_margin_ttm",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "operating_margin_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "operating_income",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue",
+        "period": "TTM",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::accruals_assets_ttm": {
+    "canonical_id": "sector::accruals_assets_ttm",
+    "variant": "accruals_assets_ttm/sector-1",
+    "display_name": "accruals_assets_ttm",
+    "aliases": [],
+    "formula": "difference_average",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "accruals_assets_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "net_income",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "cfo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_begin",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::debt_assets": {
+    "canonical_id": "sector::debt_assets",
+    "variant": "debt_assets/sector-1",
+    "display_name": "debt_assets",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "LATEST_QUARTER",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "debt_assets",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "debt",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::roa_ttm": {
+    "canonical_id": "sector::roa_ttm",
+    "variant": "roa_ttm/sector-1",
+    "display_name": "roa_ttm",
+    "aliases": [],
+    "formula": "ratio_average",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "roa_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "net_income",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_begin",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::roe_common_ttm": {
+    "canonical_id": "sector::roe_common_ttm",
+    "variant": "roe_common_ttm/sector-1",
+    "display_name": "roe_common_ttm",
+    "aliases": [],
+    "formula": "ratio_average",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT"
+    ],
+    "input_family": "roe_common_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "net_income_common",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "common_equity_begin",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "common_equity_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::common_equity_assets": {
+    "canonical_id": "sector::common_equity_assets",
+    "variant": "common_equity_assets/sector-1",
+    "display_name": "common_equity_assets",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "LATEST_QUARTER",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT"
+    ],
+    "input_family": "common_equity_assets",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "common_equity_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::cfo_assets_ttm": {
+    "canonical_id": "sector::cfo_assets_ttm",
+    "variant": "cfo_assets_ttm/sector-1",
+    "display_name": "cfo_assets_ttm",
+    "aliases": [],
+    "formula": "ratio_average",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "cfo_assets_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "cfo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_begin",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::interest_coverage_ttm": {
+    "canonical_id": "sector::interest_coverage_ttm",
+    "variant": "interest_coverage_ttm/sector-1",
+    "display_name": "interest_coverage_ttm",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "multiple",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "interest_coverage_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "ebit",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "interest_expense",
+        "period": "TTM",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::revenue_cagr_3y": {
+    "canonical_id": "sector::revenue_cagr_3y",
+    "variant": "revenue_cagr_3y/sector-1",
+    "display_name": "revenue_cagr_3y",
+    "aliases": [],
+    "formula": "cagr3",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "revenue_cagr_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue_fy",
+        "period": "FY",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::roa_improvement_3y": {
+    "canonical_id": "sector::roa_improvement_3y",
+    "variant": "roa_improvement_3y/sector-1",
+    "display_name": "roa_improvement_3y",
+    "aliases": [],
+    "formula": "difference",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "roa_improvement_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "roa_fy",
+        "period": "FY",
+        "unit": "decimal"
+      },
+      {
+        "field": "roa_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "decimal"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::common_bps_cagr_3y": {
+    "canonical_id": "sector::common_bps_cagr_3y",
+    "variant": "common_bps_cagr_3y/sector-1",
+    "display_name": "common_bps_cagr_3y",
+    "aliases": [],
+    "formula": "cagr3",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT"
+    ],
+    "input_family": "common_bps_cagr_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "common_bps_fy",
+        "period": "FY",
+        "unit": "currency/share"
+      },
+      {
+        "field": "common_bps_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency/share"
+      },
+      {
+        "field": "common_bps_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency/share"
+      },
+      {
+        "field": "common_bps_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::cfo_assets_improvement_3y": {
+    "canonical_id": "sector::cfo_assets_improvement_3y",
+    "variant": "cfo_assets_improvement_3y/sector-1",
+    "display_name": "cfo_assets_improvement_3y",
+    "aliases": [],
+    "formula": "difference",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "EQUITY_REIT"
+    ],
+    "input_family": "cfo_assets_improvement_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "cfo_assets_fy",
+        "period": "FY",
+        "unit": "decimal"
+      },
+      {
+        "field": "cfo_assets_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "decimal"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ep_ttm_diluted": {
+    "canonical_id": "sector::ep_ttm_diluted",
+    "variant": "ep_ttm_diluted/sector-1",
+    "display_name": "ep_ttm_diluted",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ep_ttm_diluted",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_ttm_diluted",
+        "period": "TTM",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ep_fy_diluted": {
+    "canonical_id": "sector::ep_fy_diluted",
+    "variant": "ep_fy_diluted/sector-1",
+    "display_name": "ep_fy_diluted",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "FY",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ep_fy_diluted",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_fy_diluted",
+        "period": "FY",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ep_fy1": {
+    "canonical_id": "sector::ep_fy1",
+    "variant": "ep_fy1/sector-1",
+    "display_name": "ep_fy1",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "FY1",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ep_fy1",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_fy1",
+        "period": "FY1",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ep_ntm": {
+    "canonical_id": "sector::ep_ntm",
+    "variant": "ep_ntm/sector-1",
+    "display_name": "ep_ntm",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "NTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ep_ntm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_ntm",
+        "period": "NTM",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::net_income_mcap": {
+    "canonical_id": "sector::net_income_mcap",
+    "variant": "net_income_mcap/sector-1",
+    "display_name": "net_income_mcap",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "net_income_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "net_income_common",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::common_bp": {
+    "canonical_id": "sector::common_bp",
+    "variant": "common_bp/sector-1",
+    "display_name": "common_bp",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "LATEST_QUARTER",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "common_bp",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "common_bps",
+        "period": "INSTANT",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::tangible_common_bp": {
+    "canonical_id": "sector::tangible_common_bp",
+    "variant": "tangible_common_bp/sector-1",
+    "display_name": "tangible_common_bp",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "LATEST_QUARTER",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "tangible_common_bp",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "tangible_common_bps",
+        "period": "INSTANT",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::sales_mcap": {
+    "canonical_id": "sector::sales_mcap",
+    "variant": "sales_mcap/sector-1",
+    "display_name": "sales_mcap",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "sales_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::cfo_mcap": {
+    "canonical_id": "sector::cfo_mcap",
+    "variant": "cfo_mcap/sector-1",
+    "display_name": "cfo_mcap",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "cfo_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "cfo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ni_da_mcap": {
+    "canonical_id": "sector::ni_da_mcap",
+    "variant": "ni_da_mcap/sector-1",
+    "display_name": "ni_da_mcap",
+    "aliases": [],
+    "formula": "sum_ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ni_da_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "net_income",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "da",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ebitda_ev": {
+    "canonical_id": "sector::ebitda_ev",
+    "variant": "ebitda_ev/sector-1",
+    "display_name": "ebitda_ev",
+    "aliases": [],
+    "formula": "sum_ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ebitda_ev",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "ebit",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "da",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "enterprise_value",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::ebit_ev": {
+    "canonical_id": "sector::ebit_ev",
+    "variant": "ebit_ev/sector-1",
+    "display_name": "ebit_ev",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "ebit_ev",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "ebit",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "enterprise_value",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::sales_ev": {
+    "canonical_id": "sector::sales_ev",
+    "variant": "sales_ev/sector-1",
+    "display_name": "sales_ev",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "sales_ev",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "enterprise_value",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::fcf_mcap": {
+    "canonical_id": "sector::fcf_mcap",
+    "variant": "fcf_mcap/sector-1",
+    "display_name": "fcf_mcap",
+    "aliases": [],
+    "formula": "difference_ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "fcf_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "cfo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "capex",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::fcf_ev": {
+    "canonical_id": "sector::fcf_ev",
+    "variant": "fcf_ev/sector-1",
+    "display_name": "fcf_ev",
+    "aliases": [],
+    "formula": "difference_ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "fcf_ev",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "cfo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "capex",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "enterprise_value",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::dividend_yield_ttm": {
+    "canonical_id": "sector::dividend_yield_ttm",
+    "variant": "dividend_yield_ttm/sector-1",
+    "display_name": "dividend_yield_ttm",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "dividend_yield_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "common_dps_ttm",
+        "period": "TTM",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::net_share_reduction": {
+    "canonical_id": "sector::net_share_reduction",
+    "variant": "net_share_reduction/sector-1",
+    "display_name": "net_share_reduction",
+    "aliases": [],
+    "formula": "one_minus_ratio",
+    "period": "ONE_YEAR",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "net_share_reduction",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "adjusted_shares_now",
+        "period": "INSTANT",
+        "unit": "shares"
+      },
+      {
+        "field": "adjusted_shares_year_ago",
+        "period": "YEAR_AGO",
+        "unit": "shares"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::shareholder_yield": {
+    "canonical_id": "sector::shareholder_yield",
+    "variant": "shareholder_yield/sector-1",
+    "display_name": "shareholder_yield",
+    "aliases": [],
+    "formula": "sum",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "shareholder_yield",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "dividend_yield",
+        "period": "TTM",
+        "unit": "decimal"
+      },
+      {
+        "field": "net_share_reduction",
+        "period": "ONE_YEAR",
+        "unit": "decimal"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::peg_historical": {
+    "canonical_id": "sector::peg_historical",
+    "variant": "peg_historical/sector-1",
+    "display_name": "peg_historical",
+    "aliases": [],
+    "formula": "peg",
+    "period": "TTM",
+    "unit": "multiple",
+    "direction": -1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "peg_historical",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_ttm_diluted",
+        "period": "TTM",
+        "unit": "currency/share"
+      },
+      {
+        "field": "price",
+        "period": "PRICE",
+        "unit": "currency/share"
+      },
+      {
+        "field": "eps_growth_3y",
+        "period": "FY_3Y",
+        "unit": "decimal"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::nareit_ffo_mcap": {
+    "canonical_id": "sector::nareit_ffo_mcap",
+    "variant": "nareit_ffo_mcap/sector-1",
+    "display_name": "nareit_ffo_mcap",
+    "aliases": [],
+    "formula": "ratio",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "V",
+    "roles": [],
+    "accounting_scope": [
+      "EQUITY_REIT"
+    ],
+    "input_family": "nareit_ffo_mcap",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "nareit_ffo",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "issuer_mcap",
+        "period": "PRICE",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::gross_profit_assets_ttm": {
+    "canonical_id": "sector::gross_profit_assets_ttm",
+    "variant": "gross_profit_assets_ttm/sector-1",
+    "display_name": "gross_profit_assets_ttm",
+    "aliases": [],
+    "formula": "ratio_average",
+    "period": "TTM",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "gross_profit_assets_ttm",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "gross_profit",
+        "period": "TTM",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_begin",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::net_debt_assets": {
+    "canonical_id": "sector::net_debt_assets",
+    "variant": "net_debt_assets/sector-1",
+    "display_name": "net_debt_assets",
+    "aliases": [],
+    "formula": "difference_ratio",
+    "period": "LATEST_QUARTER",
+    "unit": "decimal",
+    "direction": -1,
+    "axis": "Q",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "net_debt_assets",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "debt",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "cash",
+        "period": "INSTANT",
+        "unit": "currency"
+      },
+      {
+        "field": "assets_end",
+        "period": "INSTANT",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::revenue_growth_1y": {
+    "canonical_id": "sector::revenue_growth_1y",
+    "variant": "revenue_growth_1y/sector-1",
+    "display_name": "revenue_growth_1y",
+    "aliases": [],
+    "formula": "growth1",
+    "period": "FY_1Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "revenue_growth_1y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue_fy",
+        "period": "FY",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::revenue_cagr_5y": {
+    "canonical_id": "sector::revenue_cagr_5y",
+    "variant": "revenue_cagr_5y/sector-1",
+    "display_name": "revenue_cagr_5y",
+    "aliases": [],
+    "formula": "cagr5",
+    "period": "FY_5Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "revenue_cagr_5y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue_fy",
+        "period": "FY",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy4",
+        "period": "FY_MINUS_4",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy5",
+        "period": "FY_MINUS_5",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::operating_income_cagr_3y": {
+    "canonical_id": "sector::operating_income_cagr_3y",
+    "variant": "operating_income_cagr_3y/sector-1",
+    "display_name": "operating_income_cagr_3y",
+    "aliases": [],
+    "formula": "cagr3",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER"
+    ],
+    "input_family": "operating_income_cagr_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "operating_income_fy",
+        "period": "FY",
+        "unit": "currency"
+      },
+      {
+        "field": "operating_income_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency"
+      },
+      {
+        "field": "operating_income_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency"
+      },
+      {
+        "field": "operating_income_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::eps_diluted_cagr_3y": {
+    "canonical_id": "sector::eps_diluted_cagr_3y",
+    "variant": "eps_diluted_cagr_3y/sector-1",
+    "display_name": "eps_diluted_cagr_3y",
+    "aliases": [],
+    "formula": "cagr3",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "BANK",
+      "INSURANCE",
+      "BROKER",
+      "MORTGAGE_REIT",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "eps_diluted_cagr_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "eps_diluted_fy",
+        "period": "FY",
+        "unit": "currency/share"
+      },
+      {
+        "field": "eps_diluted_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency/share"
+      },
+      {
+        "field": "eps_diluted_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency/share"
+      },
+      {
+        "field": "eps_diluted_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency/share"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  },
+  "sector::revenue_growth_consistency_3y": {
+    "canonical_id": "sector::revenue_growth_consistency_3y",
+    "variant": "revenue_growth_consistency_3y/sector-1",
+    "display_name": "revenue_growth_consistency_3y",
+    "aliases": [],
+    "formula": "positive_growth_share",
+    "period": "FY_3Y",
+    "unit": "decimal",
+    "direction": 1,
+    "axis": "G",
+    "roles": [],
+    "accounting_scope": [
+      "GENERAL",
+      "ASSET_MANAGER",
+      "EQUITY_REIT"
+    ],
+    "input_family": "revenue_growth_consistency_3y",
+    "formula_source": "sector_qgv.calculate_raw",
+    "required_inputs": [
+      {
+        "field": "revenue_fy",
+        "period": "FY",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy1",
+        "period": "FY_MINUS_1",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy2",
+        "period": "FY_MINUS_2",
+        "unit": "currency"
+      },
+      {
+        "field": "revenue_fy3",
+        "period": "FY_MINUS_3",
+        "unit": "currency"
+      }
+    ],
+    "source": "SECTOR_CATALOG",
+    "implementation_status": "EXISTING_KERNEL",
+    "availability": "PER_INPUT",
+    "validation": "REQUIRES_EVIDENCE",
+    "default": false,
+    "recommendation": "SUITABLE_OPTION_NOT_DEFAULT"
+  }
+}

@@ -1,0 +1,2939 @@
+{
+  "schema_version": "qgv-555-delivery/1",
+  "data_kind": "SYNTHETIC",
+  "evaluation": {
+    "population_id": "synthetic-evaluation",
+    "population_version": "1",
+    "unit": "CODE_ROW",
+    "code_rows": 21,
+    "issuers": 21,
+    "evaluation_day": "2026-11-04",
+    "input_cutoff": "2026-11-04T22:00:00Z",
+    "input_hash": "fe09c8cf803c35035939b48b0b9df224a28a56fd23034a04134652bfb418b810",
+    "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+    "classification_version": "common-sector-dictionary/2",
+    "source_anchors": [
+      "SYNTHETIC"
+    ]
+  },
+  "models": {
+    "U1-555": {
+      "model_id": "unified-555/0.1.0",
+      "result_hash": "995c2332fc487a1df2f16fcb5894cda605659478d4ea78146a72485a72a300ef",
+      "bindings": {
+        "configuration_hash": "edc56840fd1eff29b6080184ec938cb406d8e2b38568505db1c2ef55c7bce0e5",
+        "evaluation": {
+          "population_id": "synthetic-evaluation",
+          "population_version": "1",
+          "unit": "CODE_ROW",
+          "code_rows": 21,
+          "issuers": 21,
+          "evaluation_day": "2026-11-04",
+          "input_cutoff": "2026-11-04T22:00:00Z",
+          "input_hash": "fe09c8cf803c35035939b48b0b9df224a28a56fd23034a04134652bfb418b810",
+          "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+          "classification_version": "common-sector-dictionary/2",
+          "source_anchors": [
+            "SYNTHETIC"
+          ]
+        },
+        "reference": {
+          "population_id": "synthetic-reference",
+          "population_version": "1",
+          "unit": "CODE_ROW",
+          "code_rows": 21,
+          "issuers": 21,
+          "evaluation_day": "2026-11-04",
+          "input_cutoff": "2026-11-04T22:00:00Z",
+          "input_hash": "9b23105917c8474826e27a7055ddce215d79c50af7d6ee9f3997043bba5783c2",
+          "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+          "classification_version": "common-sector-dictionary/2",
+          "source_anchors": [
+            "SYNTHETIC"
+          ]
+        },
+        "code_hash": "82562ed227df418296df615d07354116080aac5655cb282fab37391733253472"
+      },
+      "coverage": {
+        "denominator": 21,
+        "target": 20,
+        "axes": {
+          "Q": 21,
+          "G": 21,
+          "V": 21
+        },
+        "roles": {
+          "q_profitability": 21,
+          "q_moat_proxy": 21,
+          "q_earnings_quality": 21,
+          "q_financial_safety": 21,
+          "q_capital_allocation": 21,
+          "g_revenue_growth": 21,
+          "g_per_share_growth": 21,
+          "g_growth_efficiency": 21,
+          "g_consistency": 21,
+          "g_recent_acceleration": 21,
+          "v_earnings_yield": 21,
+          "v_fcf_yield": 21,
+          "v_vs_industry": 21,
+          "v_vs_own_history": 21,
+          "v_expectation_check": 21
+        },
+        "all15": 21,
+        "joint": 21,
+        "gate_known": 21,
+        "gate_pass": 21,
+        "total": 21,
+        "eligible_total": 21,
+        "role_stages": {
+          "q_profitability": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_moat_proxy": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_earnings_quality": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_financial_safety": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_capital_allocation": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_revenue_growth": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_per_share_growth": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_growth_efficiency": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_consistency": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_recent_acceleration": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_earnings_yield": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_fcf_yield": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_vs_industry": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_vs_own_history": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_expectation_check": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          }
+        }
+      },
+      "calculated_at": "2026-11-14T00:31:31.744978+00:00",
+      "configuration": {
+        "schema_version": "qgv-555-config/1",
+        "model_id": "unified-555/0.1.0",
+        "candidate": "U1-555",
+        "version": "0.1.0",
+        "axis_weights": {
+          "Q": 34,
+          "G": 33,
+          "V": 33
+        },
+        "roles": {
+          "q_profitability": {
+            "axis": "Q",
+            "weight": 25,
+            "metrics": {
+              "roic": 1,
+              "gross_profit_to_assets": 1
+            }
+          },
+          "q_moat_proxy": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "moat_proxy": 1
+            }
+          },
+          "q_earnings_quality": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "accruals_to_assets": 1,
+              "fcf_to_net_income": 1
+            }
+          },
+          "q_financial_safety": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "net_debt_to_ebitda": 1,
+              "interest_coverage": 1
+            }
+          },
+          "q_capital_allocation": {
+            "axis": "Q",
+            "weight": 15,
+            "metrics": {
+              "dilution_3y": 1,
+              "incremental_roic_5y": 1
+            }
+          },
+          "g_revenue_growth": {
+            "axis": "G",
+            "weight": 25,
+            "metrics": {
+              "revenue_cagr_3y": 1
+            }
+          },
+          "g_per_share_growth": {
+            "axis": "G",
+            "weight": 25,
+            "metrics": {
+              "eps_cagr_3y": 1,
+              "fcf_per_share_cagr_3y": 1
+            }
+          },
+          "g_growth_efficiency": {
+            "axis": "G",
+            "weight": 20,
+            "metrics": {
+              "incremental_roic_3y": 1
+            }
+          },
+          "g_consistency": {
+            "axis": "G",
+            "weight": 15,
+            "metrics": {
+              "revenue_positive_growth_share": 1,
+              "revenue_growth_volatility": 1
+            }
+          },
+          "g_recent_acceleration": {
+            "axis": "G",
+            "weight": 15,
+            "metrics": {
+              "revenue_acceleration": 1
+            }
+          },
+          "v_earnings_yield": {
+            "axis": "V",
+            "weight": 25,
+            "metrics": {
+              "ebit_yield": 1
+            }
+          },
+          "v_fcf_yield": {
+            "axis": "V",
+            "weight": 25,
+            "metrics": {
+              "fcf_yield": 1
+            }
+          },
+          "v_vs_industry": {
+            "axis": "V",
+            "weight": 20,
+            "metrics": {
+              "ebit_yield": 1
+            }
+          },
+          "v_vs_own_history": {
+            "axis": "V",
+            "weight": 15,
+            "metrics": {
+              "own_history": 1
+            }
+          },
+          "v_expectation_check": {
+            "axis": "V",
+            "weight": 15,
+            "metrics": {
+              "gap": 1
+            }
+          }
+        },
+        "minimum": 8,
+        "missing_policy": "available-role-weight-50/1",
+        "submetric_missing_policy": "available-submetric-weight-renormalize/1",
+        "reference_policy": "legacy-general-industry-fallback8/1",
+        "gate_policy": "official-q-percentile-required/1",
+        "duplicate_policy": "DISCLOSE_ONLY",
+        "classification_version": "common-sector-dictionary/2",
+        "type_multiplier": false,
+        "additional_factor_weight": 0,
+        "official": false
+      },
+      "files": [
+        "U1-555-detail-0000.json"
+      ]
+    },
+    "S1-555": {
+      "model_id": "sector-555/0.1.0",
+      "result_hash": "14c6f072b1c0a35e4c19767135c8a3ffeaa9c951b4d80a56b32b046e1a13a914",
+      "bindings": {
+        "configuration_hash": "da2074a108f5bc3208641df94cc9f067960781a0c70f3a5340783ba32d4b3e1c",
+        "evaluation": {
+          "population_id": "synthetic-evaluation",
+          "population_version": "1",
+          "unit": "CODE_ROW",
+          "code_rows": 21,
+          "issuers": 21,
+          "evaluation_day": "2026-11-04",
+          "input_cutoff": "2026-11-04T22:00:00Z",
+          "input_hash": "fe09c8cf803c35035939b48b0b9df224a28a56fd23034a04134652bfb418b810",
+          "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+          "classification_version": "common-sector-dictionary/2",
+          "source_anchors": [
+            "SYNTHETIC"
+          ]
+        },
+        "reference": {
+          "population_id": "synthetic-reference",
+          "population_version": "1",
+          "unit": "CODE_ROW",
+          "code_rows": 21,
+          "issuers": 21,
+          "evaluation_day": "2026-11-04",
+          "input_cutoff": "2026-11-04T22:00:00Z",
+          "input_hash": "9b23105917c8474826e27a7055ddce215d79c50af7d6ee9f3997043bba5783c2",
+          "members_hash": "b4058f36568e8bdd530dd504e554babb99d947257980c11e504a35f3906e6feb",
+          "classification_version": "common-sector-dictionary/2",
+          "source_anchors": [
+            "SYNTHETIC"
+          ]
+        },
+        "code_hash": "82562ed227df418296df615d07354116080aac5655cb282fab37391733253472"
+      },
+      "coverage": {
+        "denominator": 21,
+        "target": 20,
+        "axes": {
+          "Q": 21,
+          "G": 21,
+          "V": 21
+        },
+        "roles": {
+          "q_profitability": 21,
+          "q_moat_proxy": 21,
+          "q_earnings_quality": 21,
+          "q_financial_safety": 21,
+          "q_capital_allocation": 21,
+          "g_revenue_growth": 21,
+          "g_per_share_growth": 21,
+          "g_growth_efficiency": 21,
+          "g_consistency": 21,
+          "g_recent_acceleration": 21,
+          "v_earnings_yield": 21,
+          "v_fcf_yield": 21,
+          "v_vs_industry": 21,
+          "v_vs_own_history": 21,
+          "v_expectation_check": 21
+        },
+        "all15": 21,
+        "joint": 21,
+        "gate_known": 21,
+        "gate_pass": 21,
+        "total": 21,
+        "eligible_total": 21,
+        "role_stages": {
+          "q_profitability": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_moat_proxy": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_earnings_quality": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_financial_safety": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "q_capital_allocation": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_revenue_growth": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_per_share_growth": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_growth_efficiency": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_consistency": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "g_recent_acceleration": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_earnings_yield": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_fcf_yield": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_vs_industry": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_vs_own_history": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          },
+          "v_expectation_check": {
+            "raw_any": 21,
+            "raw_all": 21,
+            "score": 21
+          }
+        }
+      },
+      "calculated_at": "2026-11-14T00:31:31.780007+00:00",
+      "configuration": {
+        "schema_version": "qgv-555-config/1",
+        "model_id": "sector-555/0.1.0",
+        "candidate": "S1-555",
+        "version": "0.1.0",
+        "axis_weights": {
+          "Q": 34,
+          "G": 33,
+          "V": 33
+        },
+        "roles": {
+          "q_profitability": {
+            "axis": "Q",
+            "weight": 25,
+            "metrics": {
+              "roic": 1,
+              "gross_profit_to_assets": 1
+            }
+          },
+          "q_moat_proxy": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "moat_proxy": 1
+            }
+          },
+          "q_earnings_quality": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "accruals_to_assets": 1,
+              "fcf_to_net_income": 1
+            }
+          },
+          "q_financial_safety": {
+            "axis": "Q",
+            "weight": 20,
+            "metrics": {
+              "net_debt_to_ebitda": 1,
+              "interest_coverage": 1
+            }
+          },
+          "q_capital_allocation": {
+            "axis": "Q",
+            "weight": 15,
+            "metrics": {
+              "dilution_3y": 1,
+              "incremental_roic_5y": 1
+            }
+          },
+          "g_revenue_growth": {
+            "axis": "G",
+            "weight": 25,
+            "metrics": {
+              "revenue_cagr_3y": 1
+            }
+          },
+          "g_per_share_growth": {
+            "axis": "G",
+            "weight": 25,
+            "metrics": {
+              "eps_cagr_3y": 1,
+              "fcf_per_share_cagr_3y": 1
+            }
+          },
+          "g_growth_efficiency": {
+            "axis": "G",
+            "weight": 20,
+            "metrics": {
+              "incremental_roic_3y": 1
+            }
+          },
+          "g_consistency": {
+            "axis": "G",
+            "weight": 15,
+            "metrics": {
+              "revenue_positive_growth_share": 1,
+              "revenue_growth_volatility": 1
+            }
+          },
+          "g_recent_acceleration": {
+            "axis": "G",
+            "weight": 15,
+            "metrics": {
+              "revenue_acceleration": 1
+            }
+          },
+          "v_earnings_yield": {
+            "axis": "V",
+            "weight": 25,
+            "metrics": {
+              "ebit_yield": 1
+            }
+          },
+          "v_fcf_yield": {
+            "axis": "V",
+            "weight": 25,
+            "metrics": {
+              "fcf_yield": 1
+            }
+          },
+          "v_vs_industry": {
+            "axis": "V",
+            "weight": 20,
+            "metrics": {
+              "ebit_yield": 1
+            }
+          },
+          "v_vs_own_history": {
+            "axis": "V",
+            "weight": 15,
+            "metrics": {
+              "own_history": 1
+            }
+          },
+          "v_expectation_check": {
+            "axis": "V",
+            "weight": 15,
+            "metrics": {
+              "gap": 1
+            }
+          }
+        },
+        "minimum": 8,
+        "missing_policy": "available-role-weight-50/1",
+        "submetric_missing_policy": "available-submetric-weight-renormalize/1",
+        "reference_policy": "sector-accounting-no-fallback8/1",
+        "gate_policy": "official-q-percentile-required/1",
+        "duplicate_policy": "DISCLOSE_ONLY",
+        "classification_version": "common-sector-dictionary/2",
+        "type_multiplier": false,
+        "additional_factor_weight": 0,
+        "official": false
+      },
+      "files": [
+        "S1-555-detail-0000.json"
+      ]
+    }
+  },
+  "groups": [
+    {
+      "group_id": "1b884246ca4bf2e366dab60e",
+      "model": "U1-555",
+      "role": "q_profitability",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "1ab58bd277ac041085b7398c5758f752f6ccac9c319e9ee011c51aa7e491a4b5",
+      "files": [
+        "distribution-1b884246ca4bf2e366dab60e-0000.json"
+      ]
+    },
+    {
+      "group_id": "a2001b962615a89a00f181c0",
+      "model": "U1-555",
+      "role": "q_moat_proxy",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "45bad45c5b5e4c8c48a79ed1bc3868e3a1d4c463016ff542c2200cf0ead6d986",
+      "files": [
+        "distribution-a2001b962615a89a00f181c0-0000.json"
+      ]
+    },
+    {
+      "group_id": "3ac333186c7460fb0f7690ee",
+      "model": "U1-555",
+      "role": "q_earnings_quality",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "fc5770ac47fac3f0adb8275b0b3093d430e737a1547fdcde929b022dee422ab6",
+      "files": [
+        "distribution-3ac333186c7460fb0f7690ee-0000.json"
+      ]
+    },
+    {
+      "group_id": "1f8d87b05220caee7263c72a",
+      "model": "U1-555",
+      "role": "q_financial_safety",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "99bdcae799812b88fc7488ea05ed92a54562378218e4b1647f49f37eb77f08dd",
+      "files": [
+        "distribution-1f8d87b05220caee7263c72a-0000.json"
+      ]
+    },
+    {
+      "group_id": "f8cb8a80b16717714e207215",
+      "model": "U1-555",
+      "role": "q_capital_allocation",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "41403e281ec94ab2e07b2588b1b3b436322d327e607dc64b673c177cb3f1461d",
+      "files": [
+        "distribution-f8cb8a80b16717714e207215-0000.json"
+      ]
+    },
+    {
+      "group_id": "606acc1ff65cc4b8fd714a3b",
+      "model": "U1-555",
+      "role": "g_revenue_growth",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "d84797cf10ea7a3ec7e313324e5e1b3a0b0f80c7fed1c62da85ef9e2e859d82b",
+      "files": [
+        "distribution-606acc1ff65cc4b8fd714a3b-0000.json"
+      ]
+    },
+    {
+      "group_id": "10645d009f20eae46a4feaaa",
+      "model": "U1-555",
+      "role": "g_per_share_growth",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "3e34ffd99fc541c0cae365d17bfd2e2d3c928961223e31b02cac6133069ebd63",
+      "files": [
+        "distribution-10645d009f20eae46a4feaaa-0000.json"
+      ]
+    },
+    {
+      "group_id": "5ef4de6358d0b6069f6a283d",
+      "model": "U1-555",
+      "role": "g_growth_efficiency",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "282cc2f289b710348a626556fdc8ca4dc5a1f2de5ab5352fa509679b2d87223a",
+      "files": [
+        "distribution-5ef4de6358d0b6069f6a283d-0000.json"
+      ]
+    },
+    {
+      "group_id": "86f870ae5f10f060a498395e",
+      "model": "U1-555",
+      "role": "g_consistency",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "b9126895cbb604bc701bb756b1e5b1486494a27faf347d717cbb406636eb71dc",
+      "files": [
+        "distribution-86f870ae5f10f060a498395e-0000.json"
+      ]
+    },
+    {
+      "group_id": "f65cb10376b0cd4b16343db6",
+      "model": "U1-555",
+      "role": "g_recent_acceleration",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "5b9a9ae76461ffc16a9c27134946c219c2084db3832fb57f628db73710a75aae",
+      "files": [
+        "distribution-f65cb10376b0cd4b16343db6-0000.json"
+      ]
+    },
+    {
+      "group_id": "45ec0732b389f9d6473d6a11",
+      "model": "U1-555",
+      "role": "v_earnings_yield",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "2c651a4ad05210a78d404882ee9e873d4eb258a7a233234ee9546f08ab7f4e97",
+      "files": [
+        "distribution-45ec0732b389f9d6473d6a11-0000.json"
+      ]
+    },
+    {
+      "group_id": "a97feca08b7a0f1cca32ee52",
+      "model": "U1-555",
+      "role": "v_fcf_yield",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "c86927504a90628b0870b2e90bf91f13c2d557fdbd469254d58b41158ad24740",
+      "files": [
+        "distribution-a97feca08b7a0f1cca32ee52-0000.json"
+      ]
+    },
+    {
+      "group_id": "b1de021f7ecd2af2bd733a33",
+      "model": "U1-555",
+      "role": "v_vs_industry",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "2c651a4ad05210a78d404882ee9e873d4eb258a7a233234ee9546f08ab7f4e97",
+      "files": [
+        "distribution-b1de021f7ecd2af2bd733a33-0000.json"
+      ]
+    },
+    {
+      "group_id": "389c8ce1190720ed38869e73",
+      "model": "U1-555",
+      "role": "v_vs_own_history",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "40fd52ea2b60e3efde8da3bcc7cbe0a16345eb4049355b94591b680cb4c2ea17",
+      "files": [
+        "distribution-389c8ce1190720ed38869e73-0000.json"
+      ]
+    },
+    {
+      "group_id": "7ae6070d2ef1b9fb8e22b6a7",
+      "model": "U1-555",
+      "role": "v_expectation_check",
+      "ranking_scope": "COMMON",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "eb1c9e758ac9571536ebde2785563d731b14d848ee8c48fa0f0d562d1832ab90",
+      "files": [
+        "distribution-7ae6070d2ef1b9fb8e22b6a7-0000.json"
+      ]
+    },
+    {
+      "group_id": "725a10b8dac78f71103635bc",
+      "model": "S1-555",
+      "role": "q_profitability",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "1ab58bd277ac041085b7398c5758f752f6ccac9c319e9ee011c51aa7e491a4b5",
+      "files": [
+        "distribution-725a10b8dac78f71103635bc-0000.json"
+      ]
+    },
+    {
+      "group_id": "aa6dc27c37b25615572753eb",
+      "model": "S1-555",
+      "role": "q_moat_proxy",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "45bad45c5b5e4c8c48a79ed1bc3868e3a1d4c463016ff542c2200cf0ead6d986",
+      "files": [
+        "distribution-aa6dc27c37b25615572753eb-0000.json"
+      ]
+    },
+    {
+      "group_id": "5627c22c5953e43eadbca07c",
+      "model": "S1-555",
+      "role": "q_earnings_quality",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "fc5770ac47fac3f0adb8275b0b3093d430e737a1547fdcde929b022dee422ab6",
+      "files": [
+        "distribution-5627c22c5953e43eadbca07c-0000.json"
+      ]
+    },
+    {
+      "group_id": "72cdc050d4c903d457da2060",
+      "model": "S1-555",
+      "role": "q_financial_safety",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "99bdcae799812b88fc7488ea05ed92a54562378218e4b1647f49f37eb77f08dd",
+      "files": [
+        "distribution-72cdc050d4c903d457da2060-0000.json"
+      ]
+    },
+    {
+      "group_id": "3e9bf5e69b33b7106a124be1",
+      "model": "S1-555",
+      "role": "q_capital_allocation",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "41403e281ec94ab2e07b2588b1b3b436322d327e607dc64b673c177cb3f1461d",
+      "files": [
+        "distribution-3e9bf5e69b33b7106a124be1-0000.json"
+      ]
+    },
+    {
+      "group_id": "cc334a016bca834bc7230f93",
+      "model": "S1-555",
+      "role": "g_revenue_growth",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "d84797cf10ea7a3ec7e313324e5e1b3a0b0f80c7fed1c62da85ef9e2e859d82b",
+      "files": [
+        "distribution-cc334a016bca834bc7230f93-0000.json"
+      ]
+    },
+    {
+      "group_id": "90d976a888aac05be7740a9b",
+      "model": "S1-555",
+      "role": "g_per_share_growth",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "3e34ffd99fc541c0cae365d17bfd2e2d3c928961223e31b02cac6133069ebd63",
+      "files": [
+        "distribution-90d976a888aac05be7740a9b-0000.json"
+      ]
+    },
+    {
+      "group_id": "db95d8c969b57976f827df15",
+      "model": "S1-555",
+      "role": "g_growth_efficiency",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "282cc2f289b710348a626556fdc8ca4dc5a1f2de5ab5352fa509679b2d87223a",
+      "files": [
+        "distribution-db95d8c969b57976f827df15-0000.json"
+      ]
+    },
+    {
+      "group_id": "be3f26acb86279dc8823c0a1",
+      "model": "S1-555",
+      "role": "g_consistency",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "b9126895cbb604bc701bb756b1e5b1486494a27faf347d717cbb406636eb71dc",
+      "files": [
+        "distribution-be3f26acb86279dc8823c0a1-0000.json"
+      ]
+    },
+    {
+      "group_id": "8cda88a45ecb1be44065f595",
+      "model": "S1-555",
+      "role": "g_recent_acceleration",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "5b9a9ae76461ffc16a9c27134946c219c2084db3832fb57f628db73710a75aae",
+      "files": [
+        "distribution-8cda88a45ecb1be44065f595-0000.json"
+      ]
+    },
+    {
+      "group_id": "284da959a352a124d0c3e90b",
+      "model": "S1-555",
+      "role": "v_earnings_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "2c651a4ad05210a78d404882ee9e873d4eb258a7a233234ee9546f08ab7f4e97",
+      "files": [
+        "distribution-284da959a352a124d0c3e90b-0000.json"
+      ]
+    },
+    {
+      "group_id": "3924d7b9dfa09699f9aa3069",
+      "model": "S1-555",
+      "role": "v_fcf_yield",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "c86927504a90628b0870b2e90bf91f13c2d557fdbd469254d58b41158ad24740",
+      "files": [
+        "distribution-3924d7b9dfa09699f9aa3069-0000.json"
+      ]
+    },
+    {
+      "group_id": "fe0e591446a977d39ab34ac5",
+      "model": "S1-555",
+      "role": "v_vs_industry",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "2c651a4ad05210a78d404882ee9e873d4eb258a7a233234ee9546f08ab7f4e97",
+      "files": [
+        "distribution-fe0e591446a977d39ab34ac5-0000.json"
+      ]
+    },
+    {
+      "group_id": "00f96308ad7d5801ee339aa5",
+      "model": "S1-555",
+      "role": "v_vs_own_history",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "40fd52ea2b60e3efde8da3bcc7cbe0a16345eb4049355b94591b680cb4c2ea17",
+      "files": [
+        "distribution-00f96308ad7d5801ee339aa5-0000.json"
+      ]
+    },
+    {
+      "group_id": "47cd8a6479968cb135e6ec10",
+      "model": "S1-555",
+      "role": "v_expectation_check",
+      "ranking_scope": "SECTOR|INFORMATION_TECHNOLOGY|GENERAL",
+      "evaluation_valid_n": 21,
+      "original_code_rows": 21,
+      "unit": "CODE_ROW",
+      "reference_n": null,
+      "reference_n_reason": "COMPOSITE_SUBMETRIC_COUNTS_IN_MEMBERS",
+      "bins": [
+        {
+          "decile": 10,
+          "count": 2,
+          "top_percent_from": 0,
+          "top_percent_to": 10
+        },
+        {
+          "decile": 9,
+          "count": 3,
+          "top_percent_from": 10,
+          "top_percent_to": 20
+        },
+        {
+          "decile": 8,
+          "count": 2,
+          "top_percent_from": 20,
+          "top_percent_to": 30
+        },
+        {
+          "decile": 7,
+          "count": 2,
+          "top_percent_from": 30,
+          "top_percent_to": 40
+        },
+        {
+          "decile": 6,
+          "count": 2,
+          "top_percent_from": 40,
+          "top_percent_to": 50
+        },
+        {
+          "decile": 5,
+          "count": 2,
+          "top_percent_from": 50,
+          "top_percent_to": 60
+        },
+        {
+          "decile": 4,
+          "count": 2,
+          "top_percent_from": 60,
+          "top_percent_to": 70
+        },
+        {
+          "decile": 3,
+          "count": 2,
+          "top_percent_from": 70,
+          "top_percent_to": 80
+        },
+        {
+          "decile": 2,
+          "count": 2,
+          "top_percent_from": 80,
+          "top_percent_to": 90
+        },
+        {
+          "decile": 1,
+          "count": 2,
+          "top_percent_from": 90,
+          "top_percent_to": 100
+        }
+      ],
+      "minimum_decile_n": 10,
+      "members_hash": "eb1c9e758ac9571536ebde2785563d731b14d848ee8c48fa0f0d562d1832ab90",
+      "files": [
+        "distribution-47cd8a6479968cb135e6ec10-0000.json"
+      ]
+    }
+  ],
+  "rank_policy": "STORED_DUAL_ORDINAL_SCORE_DESC_CODE_ASC",
+  "tie_policy": "EXISTING_FIXED_COUNT_BINS_WITH_REPORTED_TIE_SPLITS",
+  "official": false,
+  "whole_market_denominator": null,
+  "filter_recalculates": false,
+  "additional_factor_contribution": 0
+}

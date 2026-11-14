@@ -1,0 +1,794 @@
+[
+  {
+    "accounting_template": "GENERAL",
+    "state": "DEFINED_GENERAL",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roic",
+          "gross_profit_to_assets"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [
+          "moat_proxy"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [
+          "accruals_to_assets",
+          "fcf_to_net_income"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "net_debt_to_ebitda",
+          "interest_coverage"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [
+          "dilution_3y",
+          "incremental_roic_5y"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "eps_cagr_3y",
+          "fcf_per_share_cagr_3y"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [
+          "incremental_roic_3y"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [
+          "revenue_positive_growth_share",
+          "revenue_growth_volatility"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [
+          "revenue_acceleration"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ebit_yield"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [
+          "fcf_yield"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "ebit_yield"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [
+          "own_history"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [
+          "gap"
+        ],
+        "state": "DEFINED",
+        "limitation": null
+      }
+    }
+  },
+  {
+    "accounting_template": "BANK",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  },
+  {
+    "accounting_template": "INSURANCE",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  },
+  {
+    "accounting_template": "BROKER",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  },
+  {
+    "accounting_template": "MORTGAGE_REIT",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  },
+  {
+    "accounting_template": "ASSET_MANAGER",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  },
+  {
+    "accounting_template": "EQUITY_REIT",
+    "state": "PREPARING",
+    "roles": {
+      "q_profitability": {
+        "weight": 25,
+        "variants": [
+          "roa_ttm",
+          "roe_common_ttm"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_moat_proxy": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_earnings_quality": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_financial_safety": {
+        "weight": 20,
+        "variants": [
+          "common_equity_assets"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "q_capital_allocation": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_revenue_growth": {
+        "weight": 25,
+        "variants": [
+          "revenue_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_per_share_growth": {
+        "weight": 25,
+        "variants": [
+          "common_bps_cagr_3y",
+          "eps_diluted_cagr_3y"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_growth_efficiency": {
+        "weight": 20,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_consistency": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "g_recent_acceleration": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_earnings_yield": {
+        "weight": 25,
+        "variants": [
+          "ep_ttm_diluted"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_fcf_yield": {
+        "weight": 25,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_industry": {
+        "weight": 20,
+        "variants": [
+          "common_bp"
+        ],
+        "state": "PARTIAL_DEFINITION",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_vs_own_history": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      },
+      "v_expectation_check": {
+        "weight": 15,
+        "variants": [],
+        "state": "DEFINITION_REQUIRED",
+        "limitation": "Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback"
+      }
+    }
+  }
+]

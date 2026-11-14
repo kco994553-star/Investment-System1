@@ -1,0 +1,318 @@
+"""Versioned 555 research orchestration using the existing percentile/axis kernels.
+
+No data fetching, price reconstruction, official-policy mutation or UI arithmetic.
+Raw metric definitions belong to v2_factors or the explicit sector catalog.
+"""
+from collections import defaultdict
+from copy import deepcopy
+from datetime import datetime, timezone, date
+from fractions import Fraction
+from functools import lru_cache
+import math
+
+from ..qgv.qgv_v2 import WEIGHTS, axis_score, GATE_PERCENTILE
+from ..qgv.v2_scoring import SUBMETRICS, _Pool, percentile, MIN_PEERS
+from .sector_qgv import digest, timestamp
+from .sector_qgv_registry import SECTORS, TEMPLATES
+
+IDS={'U1-555':'unified-555/0.1.0','S1-555':'sector-555/0.1.0'}
+V_SPECS={'v_earnings_yield':(('ebit_yield',1),),'v_fcf_yield':(('fcf_yield',1),),
+    'v_vs_industry':(('ebit_yield',1),),'v_vs_own_history':(('own_history',1),),
+    'v_expectation_check':(('gap',-1),)}
+SPECS={**SUBMETRICS['GENERAL'],**V_SPECS}
+ALIASES={'EV_EBIT_TTM':'ebit_yield','EV_FCF_TTM':'fcf_yield'}
+SHARE_METRICS={'eps_cagr_3y','fcf_per_share_cagr_3y','dilution_3y'}
+FORMULAS={
+ 'roic':('NOPAT / mean(FY opening, closing invested capital)','FY','return_level','v2_factors._Company.roic'),
+ 'gross_profit_to_assets':('FY gross profit / FY closing assets','FY','gross_profit','v2_factors._metrics_general'),
+ 'moat_proxy':('mean(return) * max(0, 1-std/mean); mean<=0: mean; >=3 of 5 FY','FY_5Y_MIN3','return_level','v2_factors._moat'),
+ 'accruals_to_assets':('(FY NI - FY CFO) / mean(opening,closing assets)','FY','cash_conversion','v2_factors._metrics_general'),
+ 'fcf_to_net_income':('(FY CFO - cash CAPEX) / FY NI; NI>0','FY','cash_conversion','v2_factors._metrics_general'),
+ 'net_debt_to_ebitda':('(interest-bearing debt - cash) / (FY EBIT + DA); denominator>0','FY','debt_capacity','v2_factors._metrics_general'),
+ 'interest_coverage':('FY EBIT / FY interest; interest>0','FY','interest_capacity','v2_factors._metrics_general'),
+ 'dilution_3y':('(split-consistent diluted weighted shares FY/FY-3)^(1/3)-1','FY_3Y','share_basis','v2_factors._growth_common'),
+ 'incremental_roic_5y':('(NOPAT FY-NOPAT FY-5)/(IC FY-IC FY-5); delta IC>0','FY_5Y','incremental_return','v2_factors._incremental'),
+ 'incremental_roic_3y':('(NOPAT FY-NOPAT FY-3)/(IC FY-IC FY-3); delta IC>0','FY_3Y','incremental_return','v2_factors._incremental'),
+ 'revenue_cagr_3y':('(revenue FY/revenue FY-3)^(1/3)-1; positive endpoints','FY_3Y','revenue_growth','v2_factors._growth_common'),
+ 'eps_cagr_3y':('(verified diluted EPS FY/FY-3)^(1/3)-1; positive endpoints','FY_3Y','earnings_growth','v2_factors._growth_common'),
+ 'fcf_per_share_cagr_3y':('(verified FCF/share FY/FY-3)^(1/3)-1; positive endpoints','FY_3Y','cash_growth','v2_factors._metrics_general'),
+ 'revenue_positive_growth_share':('positive annual revenue changes / available changes; >=3 of 5','FY_5Y_MIN3','revenue_growth','v2_factors._growth_common'),
+ 'revenue_growth_volatility':('population std annual revenue changes; >=3 of 5','FY_5Y_MIN3','revenue_growth','v2_factors._growth_common'),
+ 'revenue_acceleration':('TTM revenue YoY growth - FY3 revenue CAGR','TTM_AND_FY3','revenue_growth','v2_factors._growth_common'),
+ 'ebit_yield':('validated TTM EBIT / positive EV','TTM','enterprise_earnings','sector_qgv.calculate_raw'),
+ 'fcf_yield':('(TTM CFO - positive cash CAPEX) / positive EV','TTM','enterprise_cash','sector_qgv.calculate_raw'),
+ 'own_history':('current EBIT/share/price percentile in eligible own historical values','HISTORY_MIN3','enterprise_earnings','qgv_v2.percentile'),
+ 'gap':('reverse DCF implied growth - realized FY3 revenue CAGR','DCF_AND_FY3','revenue_growth','qgv_v2.reverse_dcf'),
+}
+
+
+@lru_cache(maxsize=1)
+def catalog():
+    out={}
+    for role,spec in SPECS.items():
+        for metric,direction in spec:
+            formula,period,family,source=FORMULAS[metric]
+            if metric not in out:
+                out[metric]=dict(canonical_id=metric,variant=f'{metric}/555-v0',display_name=metric,
+                    aliases=[a for a,m in ALIASES.items() if m==metric],formula=formula,period=period,
+                    unit='percentile' if metric=='own_history' else 'decimal',direction=direction,
+                    axis=role[0].upper(),roles=[],accounting_scope=['GENERAL'],input_family=family,
+                    formula_source=source,required_inputs=formula,source='EXISTING_CODE_DEFINITION',
+                    implementation_status='EXISTING_KERNEL',availability='PER_INPUT',validation='REQUIRES_EVIDENCE',
+                    default=True,recommendation='OWNER_555_BASELINE_NOT_PERFORMANCE_OPTIMUM')
+            out[metric]['roles'].append(role)
+    # Explicit namespace: FY legacy and TTM sector variants are never aliases.
+    from .sector_qgv_registry import CATALOG
+    for key,v in CATALOG.items():
+        if v['calculator_status']!='IMPLEMENTED':continue
+        out['sector::'+key]=dict(canonical_id='sector::'+key,variant=key+'/sector-1',display_name=v.get('name',key),
+            aliases=[],formula=v.get('formula',v.get('formula_id')),period=v.get('period'),unit=v.get('unit'),
+            direction=1 if v['direction']=='HIGHER' else -1,axis=v['axis'],roles=[],
+            accounting_scope=v['scope'],input_family=v.get('overlap_group',v['role']),
+            formula_source='sector_qgv.calculate_raw',required_inputs=v['inputs'],source='SECTOR_CATALOG',
+            implementation_status='EXISTING_KERNEL',availability='PER_INPUT',validation='REQUIRES_EVIDENCE',
+            default=False,recommendation='SUITABLE_OPTION_NOT_DEFAULT')
+    return out
+
+
+def configuration(candidate):
+    if candidate not in IDS:raise ValueError('UNKNOWN_MODEL')
+    return dict(schema_version='qgv-555-config/1',model_id=IDS[candidate],candidate=candidate,
+        version='0.1.0',axis_weights=dict(Q=34,G=33,V=33),
+        roles={r:dict(axis=a,weight=w,metrics={m:1 for m,d in SPECS[r]}) for a,rs in WEIGHTS.items() for r,w in rs.items()},
+        minimum=MIN_PEERS,missing_policy='available-role-weight-50/1',
+        submetric_missing_policy='available-submetric-weight-renormalize/1',
+        reference_policy='legacy-general-industry-fallback8/1' if candidate=='U1-555' else 'sector-accounting-no-fallback8/1',
+        gate_policy='official-q-percentile-required/1',duplicate_policy='DISCLOSE_ONLY',
+        classification_version='common-sector-dictionary/2',type_multiplier=False,
+        additional_factor_weight=0,official=False)
+
+
+def validate_configuration(c):
+    if c.get('candidate') not in IDS or c.get('model_id')!=IDS[c['candidate']]:raise ValueError('MODEL_ID')
+    base=configuration(c['candidate'])
+    for k in ('schema_version','version','minimum','missing_policy','submetric_missing_policy',
+              'reference_policy','gate_policy','duplicate_policy','type_multiplier','additional_factor_weight'):
+        if c.get(k)!=base[k]:raise ValueError('POLICY_CHANGE_REQUIRES_SEPARATE_VERSION:'+k)
+    def valid_weights(ws):
+        return all(type(v) in (int,float) and math.isfinite(v) and v>=0 for v in ws) and sum(ws)>0
+    if set(c['axis_weights'])!=set('QGV') or not valid_weights(c['axis_weights'].values()):raise ValueError('AXIS_WEIGHTS')
+    if set(c['roles'])!=set(SPECS):raise ValueError('ROLE_IDS')
+    cats=catalog()
+    for a in 'QGV':
+        if not valid_weights([r['weight'] for r in c['roles'].values() if r['axis']==a]):raise ValueError('ROLE_WEIGHTS')
+    for role,r in c['roles'].items():
+        if r['axis']!=role[0].upper():raise ValueError('ROLE_AXIS')
+        ids=[ALIASES.get(m,m) for m in r['metrics']]
+        if len(ids)!=len(set(ids)):raise ValueError('DUPLICATE_CANONICAL_METRIC')
+        if not valid_weights(r['metrics'].values()):raise ValueError('METRIC_WEIGHTS')
+        if any(m not in cats or cats[m]['axis']!=r['axis'] for m in ids):raise ValueError('UNSUPPORTED_METRIC_VARIANT')
+    return c
+
+
+def identity(s):
+    ids=[r['company_id'] for r in s['rows']]
+    if len(ids)!=len(set(ids)) or set(ids)!=set(s['members']):raise ValueError('POPULATION_MEMBERS')
+    return dict(population_id=s['population_id'],population_version=s['population_version'],
+        unit='CODE_ROW',code_rows=len(ids),issuers=len({r['issuer_id'] for r in s['rows'] if r.get('issuer_id')}),
+        evaluation_day=s['evaluation_day'],input_cutoff=s['input_cutoff'],input_hash=digest(s),
+        members_hash=digest(sorted(ids)),classification_version=s['classification_version'],
+        source_anchors=deepcopy(s.get('source_anchors',[])))
+
+
+def _usable(r,metric,s):
+    proof=(r.get('metric_evidence') or {}).get(metric)
+    x=r.get('metrics',{}).get(metric)
+    if type(x) not in (int,float) or not math.isfinite(x):return None,'RAW_MISSING'
+    if not proof or proof.get('status')!='VERIFIED' or not proof.get('source_refs') or proof.get('variant')!=catalog()[metric]['variant']:
+        return None,'DEFINITION_OR_SOURCE_UNVERIFIED'
+    if timestamp(proof['available_at'])>timestamp(s['input_cutoff']):return None,'NOT_AVAILABLE_AT_CUTOFF'
+    if metric in SHARE_METRICS and proof.get('historical_share_basis')!='VERIFIED':return None,'HISTORICAL_SHARE_BASIS_UNVERIFIED'
+    if r.get('accounting_template') not in catalog()[metric]['accounting_scope']:return None,'ACCOUNTING_NOT_APPLICABLE'
+    if metric in ('ebit_yield','fcf_yield','own_history','gap'):
+        if proof.get('valuation_day')!=s['evaluation_day'] or proof.get('security_and_actions')!='VERIFIED':return None,'VALUATION_SECURITY_BASIS_UNVERIFIED'
+    return x,'VALID'
+
+
+def _gate(r,s):
+    g=r.get('gate') or {}
+    p=g.get('percentile')
+    if (type(p) not in (int,float) or not math.isfinite(p) or not 0<=p<=100 or
+        g.get('evaluation_day')!=s['evaluation_day'] or not g.get('source_refs') or
+        g.get('calc_version')!='qgv2-calc/2026-10-23.1'):
+        return 'UNKNOWN'
+    return 'VALUE_EXCLUDED' if p<=GATE_PERCENTILE else 'PASS'
+
+
+def _bindings(c,e,ref):
+    from pathlib import Path
+    import hashlib
+    files=[Path(__file__),Path(__file__).parent.parent/'qgv/v2_scoring.py',Path(__file__).parent.parent/'qgv/qgv_v2.py']
+    return dict(configuration_hash=digest(c),evaluation=identity(e),reference=identity(ref),
+        code_hash=digest({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}))
+
+
+def run(c,e,ref,*,calculated_at=None):
+    validate_configuration(c)
+    for s in (e,ref):
+        if s.get('schema_version')!='qgv-555-input/1':raise ValueError('INPUT_SCHEMA')
+        identity(s);date.fromisoformat(s['evaluation_day']);timestamp(s['input_cutoff'])
+    for k in ('evaluation_day','input_cutoff','classification_version'):
+        if e[k]!=ref[k]:raise ValueError('INPUT_CONTEXT:'+k)
+    cats=catalog();points={};ref_rows={}
+    for r in sorted(ref['rows'],key=lambda x:x['company_id']):
+        if not r.get('issuer_id') or r.get('accounting_template')!='GENERAL':continue
+        if r['issuer_id'] in points:
+            if r.get('metrics')!=ref_rows[r['issuer_id']].get('metrics'):raise ValueError('ISSUER_POINT_CONFLICT')
+            continue
+        points[r['issuer_id']]={m:_usable(r,m,ref)[0] for m in cats};ref_rows[r['issuer_id']]=r
+    pools={('all',):_Pool(points)}
+    for keyfun in (lambda r:('industry',r.get('industry_group')),lambda r:('sector',r.get('sector_id'),r.get('accounting_template'))):
+        groups=defaultdict(dict)
+        for issuer,r in ref_rows.items():groups[keyfun(r)][issuer]=points[issuer]
+        pools.update({k:_Pool(v) for k,v in groups.items()})
+    out=[]
+    for r in sorted(e['rows'],key=lambda x:x['company_id']):
+        supported=r.get('accounting_template')=='GENERAL' and (c['candidate']=='U1-555' or r.get('sector_id') in SECTORS)
+        raw={m:_usable(r,m,e) for m in cats};roles={};metric_scores={}
+        for role,spec in c['roles'].items():
+            vals=[];items=[]
+            for name,mw in spec['metrics'].items():
+                m=ALIASES.get(name,name);value,reason=raw[m];score=None;n=0;basis=None
+                if supported and value is not None and mw>0:
+                    if m=='own_history':
+                        if 0<=value<=100:score=value;basis='OWN_HISTORY'
+                    else:
+                        if c['candidate']=='S1-555':keys=[('sector',r.get('sector_id'),r.get('accounting_template'))]
+                        elif spec['axis']=='Q' or role=='v_vs_industry':keys=[('industry',r.get('industry_group')),('all',)]
+                        else:keys=[('all',)]
+                        for key in keys:
+                            p=pools.get(key,_Pool({}));less,equal,n=p.rank(m,cats[m]['direction'],value,r['issuer_id'])
+                            basis='|'.join(str(x) for x in key)
+                            if n>=c['minimum']:
+                                score=percentile(less,equal,n);break
+                        if score is None:reason='PEER_SAMPLE_SMALL'
+                elif not supported:reason='ACCOUNTING_RECIPE_PREPARING'
+                items.append(dict(metric=m,raw=value,raw_status=raw[m][1],score=score,reason=None if score is not None else reason,
+                                  reference_n=n,reference_scope=basis,weight=mw))
+                if score is not None:vals.append((score,mw))
+                metric_scores[role+'|'+m]=items[-1]
+            score=sum(x*w for x,w in vals)/sum(w for _,w in vals) if vals else None
+            roles[role]=dict(score=score,metrics=items,selected=spec['weight']>0,
+                             partial=len(vals)<sum(w>0 for w in spec['metrics'].values()))
+        weights=c['axis_weights'] if c['candidate']=='U1-555' else dict(zip('QGV',SECTORS.get(r.get('sector_id'),(34,33,33))))
+        scores={k:v['score'] for k,v in roles.items()}
+        axes={a:axis_score(scores,a,{role:spec['weight'] for role,spec in c['roles'].items() if spec['axis']==a}) for a in 'QGV'}
+        gate=_gate(r,e);valid=[a for a in 'QGV' if axes[a]['score'] is not None]
+        included=[a for a in valid if not (a=='V' and gate=='VALUE_EXCLUDED')]
+        enough=sum(weights[a] for a in valid)>=sum(weights.values())*.5
+        total=sum(weights[a]*axes[a]['score'] for a in included)/sum(weights[a] for a in included) if included and enough and gate!='UNKNOWN' else None
+        lineage=[];families=defaultdict(lambda:dict(nominal=0.,effective=0.))
+        for role,spec in c['roles'].items():
+            a=spec['axis'];role_total=sum(v['weight'] for v in c['roles'].values() if v['axis']==a)
+            role_used=sum(v['weight'] for k,v in c['roles'].items() if v['axis']==a and scores[k] is not None)
+            metrics=roles[role]['metrics'];metric_total=sum(x['weight'] for x in metrics)
+            metric_used=sum(x['weight'] for x in metrics if x['score'] is not None)
+            for item in metrics:
+                nom=Fraction(str(weights[a]))/sum(weights.values())*Fraction(str(spec['weight']))/role_total*Fraction(str(item['weight']))/metric_total
+                eff=0.
+                if total is not None and a in included and scores[role] is not None and item['score'] is not None and metric_used:
+                    eff=weights[a]/sum(weights[x] for x in included)*spec['weight']/role_used*item['weight']/metric_used
+                family=cats[item['metric']]['input_family']
+                lineage.append(dict(axis=a,role=role,metric=item['metric'],input_family=family,nominal=float(nom),nominal_ratio=[nom.numerator,nom.denominator],effective=eff))
+                families[family]['nominal']+=float(nom);families[family]['effective']+=eff
+        out.append(dict(company_id=r['company_id'],issuer_id=r['issuer_id'],security_id=r.get('security_id'),
+            sector_id=r.get('sector_id'),accounting_template=r.get('accounting_template'),roles=roles,axes=axes,
+            active_roles={a:sum(v['weight']>0 for v in c['roles'].values() if v['axis']==a) for a in 'QGV'},
+            fifteen_roles_complete=all(roles[k]['score'] is not None for k in SPECS),
+            gate_status=gate,total=total,partial_total=total is not None and len(valid)<3,
+            ranking_scope='COMMON' if c['candidate']=='U1-555' else 'SECTOR|'+str(r.get('sector_id'))+'|'+str(r.get('accounting_template')),
+            status='READY' if supported else 'ACCOUNTING_RECIPE_PREPARING',lineage=lineage,
+            input_family_contributions=dict(families)))
+    # Do not invent a new decile rule: the reusable stored order adapter below
+    # uses the existing dual rule verbatim via its function (including tie splits).
+    _rank(out)
+    b=_bindings(c,e,ref)
+    result=dict(schema_version='qgv-555-result/1',model_id=c['model_id'],configuration=deepcopy(c),
+        evaluation=b['evaluation'],reference=b['reference'],bindings=b,rows=out,
+        calculated_at=calculated_at or datetime.now(timezone.utc).isoformat(),
+        duplicate_control=dict(applied='DISCLOSE_ONLY',A='PENDING_FIXED_SHARED_BUDGET',B='SEPARATE_USER_CONFIGURATION'),
+        performance='NOT_MEASURED',official=False,whole_market_denominator=None)
+    def count(predicate):return len({r['issuer_id'] for r in out if r.get('issuer_id') and predicate(r)})
+    result['coverage']=dict(denominator=b['evaluation']['issuers'],target=math.ceil(.95*b['evaluation']['issuers']),
+        axes={a:count(lambda r:r['axes'][a]['score'] is not None) for a in 'QGV'},
+        roles={k:count(lambda r:r['roles'][k]['score'] is not None) for k in SPECS},
+        all15=count(lambda r:r['fifteen_roles_complete']),joint=count(lambda r:all(r['axes'][a]['score'] is not None for a in 'QGV')),
+        gate_known=count(lambda r:r['gate_status']!='UNKNOWN'),gate_pass=count(lambda r:r['gate_status']=='PASS'),
+        total=count(lambda r:r['total'] is not None),eligible_total=count(lambda r:r['total'] is not None and not r['partial_total']))
+    result['coverage']['role_stages']={role:dict(
+        raw_any=count(lambda r:any(x['raw'] is not None for x in r['roles'][role]['metrics'])),
+        raw_all=count(lambda r:all(x['raw'] is not None for x in r['roles'][role]['metrics'])),
+        score=count(lambda r:r['roles'][role]['score'] is not None)) for role in SPECS}
+    result['result_hash']=digest(result)
+    return result
+
+
+def _rank(rows):
+    from .dual_qgv import _rank_factors
+    from .sector_qgv import rank_result_rows
+    from .sector_qgv_registry import CATALOG
+    # Adapter maps each role into a temporary existing factor slot, calls the
+    # established rank/decile kernel, then copies metadata back. No formulas copied.
+    slot=next(iter(CATALOG))
+    for role in SPECS:
+        bridge=[dict(company_id=r['company_id'],ranking_scope=r['ranking_scope'],
+            factors={v:dict(score=r['roles'][role]['score'] if v==slot else None) for v in CATALOG}) for r in rows]
+        _rank_factors(bridge)
+        for r,x in zip(rows,bridge):r['roles'][role].update({k:x['factors'][slot][k] for k in ('rank','rank_n','decile','decile_status')})
+    groups=defaultdict(list)
+    for r in rows:groups[r['ranking_scope']].append(r);r.update(rank=None,rank_n=0)
+    for group in groups.values():
+        ranked=rank_result_rows([r for r in group if r['total'] is not None and not r['partial_total']])
+        for i,r in enumerate(ranked):
+            next(x for x in group if x['company_id']==r['company_id']).update(rank=i+1,rank_n=len(ranked))
+
+
+def validate_binding(result,*,expected_evaluation,expected_reference):
+    if result['evaluation']!=expected_evaluation:raise ValueError('EVALUATION_ANCHOR_MISMATCH')
+    if result['reference']!=expected_reference:raise ValueError('REFERENCE_ANCHOR_MISMATCH')
+    if result['result_hash']!=digest({k:v for k,v in result.items() if k!='result_hash'}):raise ValueError('RESULT_HASH')
+    return True
+
+
+def replay(saved,e,ref):
+    if identity(e)!=saved['evaluation'] or identity(ref)!=saved['reference']:raise ValueError('SAVED_INPUT_MISMATCH')
+    return run(saved['configuration'],e,ref,calculated_at=saved['calculated_at'])
+
+
+def fixture(n=21):
+    rows=[];cats=catalog();ts='2026-11-04T22:00:00Z'
+    for i in range(n):
+        rows.append(dict(company_id=f'SYN:{i:03}',issuer_id=f'synthetic-issuer-{i:03}',security_id=f'synthetic-security-{i:03}',
+            sector_id='INFORMATION_TECHNOLOGY',accounting_template='GENERAL',industry_group='synthetic-industry',
+            metrics={m:(50 if m=='own_history' else i+1) for m in cats},
+            metric_evidence={m:dict(status='VERIFIED',variant=v['variant'],source_refs=['SYNTHETIC_ONLY'],available_at=ts,
+                historical_share_basis='VERIFIED',valuation_day='2026-11-04',security_and_actions='VERIFIED') for m,v in cats.items()},
+            gate=dict(percentile=80,calc_version='qgv2-calc/2026-10-23.1',evaluation_day='2026-11-04',source_refs=['SYNTHETIC_OFFICIAL_GATE'])))
+    e=dict(schema_version='qgv-555-input/1',population_id='synthetic-evaluation',population_version='1',
+        evaluation_day='2026-11-04',input_cutoff=ts,classification_version='common-sector-dictionary/2',
+        members=[r['company_id'] for r in rows],rows=rows,source_anchors=['SYNTHETIC'])
+    ref=deepcopy(e);ref['population_id']='synthetic-reference'
+    return e,ref
+
+
+def accounting_recipes():
+    """Do not activate five names as five defined financial formulas."""
+    out=[]
+    known={'q_profitability':['roa_ttm','roe_common_ttm'],
+           'q_financial_safety':['common_equity_assets'],
+           'g_revenue_growth':['revenue_cagr_3y'],
+           'g_per_share_growth':['common_bps_cagr_3y','eps_diluted_cagr_3y'],
+           'v_earnings_yield':['ep_ttm_diluted'],'v_vs_industry':['common_bp']}
+    for t in TEMPLATES:
+        out.append(dict(accounting_template=t,state='DEFINED_GENERAL' if t=='GENERAL' else 'PREPARING',
+            roles={role:dict(weight=WEIGHTS[role[0].upper()][role],
+                variants=[m for m,d in SPECS[role]] if t=='GENERAL' else known.get(role,[]),
+                state='DEFINED' if t=='GENERAL' else 'PARTIAL_DEFINITION' if role in known else 'DEFINITION_REQUIRED',
+                limitation=None if t=='GENERAL' else 'Independent attribution, period, peer and five-role recipe review required; no GENERAL fallback') for role in SPECS}))
+    return out
