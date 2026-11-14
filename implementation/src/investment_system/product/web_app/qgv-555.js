@@ -83,7 +83,8 @@ function checkContext(x){
  const recipes={};for(const r of x.recipes)recipes[r.accounting_template]=r;
  if(!recipes.GENERAL||recipes.GENERAL.state!=='DEFINED_GENERAL')fail('RECIPE_GENERAL');
  if(!isObj(x.selectable))fail('SELECTABLE');for(const t of x.templates)if(!isObj(x.selectable[t]))fail('SELECTABLE:'+t);
- return freeze({data_kind:x.data_kind||null,catalog:copy(x.catalog),configs:copy(x.configs),selectable:copy(x.selectable),roles,sectors,templates:[...x.templates],recipes,inputs:copy(x.inputs||[])});}
+ if(!isObj(x.anchors)||!isObj(x.anchors.evaluation)||!isObj(x.anchors.reference)||!HEX.test(String(x.anchors.evaluation.input_hash))||!HEX.test(String(x.anchors.reference.input_hash)))fail('ANCHORS');
+ return freeze({data_kind:x.data_kind||null,catalog:copy(x.catalog),configs:copy(x.configs),selectable:copy(x.selectable),anchors:copy(x.anchors),roles,sectors,templates:[...x.templates],recipes,inputs:copy(x.inputs||[])});}
 function aliasOf(cat,name){for(const m of Object.values(cat))if(m.aliases.includes(name))return m.canonical_id;return null;}
 const canonical=(ctx,m)=>own(ctx.catalog,m)?m:(aliasOf(ctx.catalog,m)||m);
 const roleText=r=>own(ROLE_TEXT,r)?ROLE_TEXT[r][0]:r;
@@ -118,6 +119,7 @@ function setMetric(c,scope,role,m,v){if(!weightOk(v))fail('WEIGHT_INVALID');retu
 // not-recommended metric of the same axis and accounting model is selectable); the setting adds alias and recipe states.
 function blocked(ctx,c,scope,role,m){const e=ctx.catalog[canonical(ctx,m)],r=rolesOf(c,scope)[role];if(!e)return'METRIC_UNKNOWN';if(!r)return'ROLE_UNKNOWN';
  const sel=(ctx.selectable[templateOf(scope)]||{})[role]||[];
+ if(e.implementation_status!=='EXISTING_KERNEL')return'NOT_IMPLEMENTED';
  if(!sel.includes(e.canonical_id))return e.axis!==r.axis?'AXIS_MISMATCH':'ACCOUNTING_NOT_APPLICABLE';
  if((ctx.recipes[templateOf(scope)]||{}).state!=='DEFINED_GENERAL')return'ACCOUNTING_RECIPE_PREPARING';
  if(Object.keys(r.metrics).some(x=>canonical(ctx,x)===e.canonical_id))return'ALIAS_DUPLICATE';return null;}
@@ -160,22 +162,36 @@ function card(ctx,m,c,scope,role,row){const e=ctx.catalog[canonical(ctx,m)];if(!
   recommendation:word(REC_TEXT,e.recommendation),status:word(STATUS_TEXT,e.implementation_status)+' · 자료 유무는 엔진 답',selectable:chosen||!why,why,alternatives:alts,
   evidence:e.formula_source+' · '+(e.source==='SECTOR_CATALOG'?'섹터 요소 사전':'기존 코드 정의')+' · 검증 '+(e.validation==='REQUIRES_EVIDENCE'?'기업별 근거 필요':e.validation),
   aliases:e.aliases,family:e.input_family,
+  assignment:e.roles.length?(e.roles.includes(role)?'기본 역할':'다른 역할의 기본 지표 · 이 역할('+roleText(role)+')에 명시 배정'):'기본 역할 없음 · 이 역할('+roleText(role)+')에 명시 배정',
   weights:chosen?'역할 안 설정 '+r.metrics[m]+'/'+share+' · 역할 설정 '+r.weight+(lin.length?' · 총점 명목 '+pct(lin[0].nominal)+' · 결측 재배분 뒤 '+pct(lin[0].missing_redistributed_before_gate)+' · 관문 뒤 '+pct(lin[0].after_gate)+'(엔진 답 · 첫 기업)':' · 명목·재배분·관문 뒤 비중은 미리보기 뒤 엔진 답'):'선택 안 됨'});}
 function search(ctx,q){const t=String(q||'').trim().toLowerCase();if(!t)return[];
  return Object.values(ctx.catalog).filter(e=>[e.canonical_id,e.display_name,...e.aliases].some(n=>String(n).toLowerCase().includes(t))).map(e=>e.canonical_id);}
 
 /* ---- engine answers (qgv-555-preview-page/1 from Codex preview(); detail rows and role deciles of the same kept preview) */
 // One preview answer: late (another request or an edited setting), other-model and other-setting answers are never shown.
-function previewAnswer(req,res,current){if(!isObj(res))return{state:'ENGINE_NOT_CONNECTED'};if(res.request_id!==req.request_id||req!==current)return{state:'LATE_ANSWER'};
+const same=(a,b)=>canon(a)===canon(b);
+function canon(v){if(Array.isArray(v))return'['+v.map(canon).join(',')+']';if(isObj(v))return'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';return JSON.stringify(v);}
+// anchors: the route's independent evaluation / reference identities (qgv555_context), never taken from the answer itself.
+function previewAnswer(req,res,current,anchors){if(!isObj(res))return{state:'ENGINE_NOT_CONNECTED'};if(res.request_id!==req.request_id||req!==current)return{state:'LATE_ANSWER'};
  if(res.ok!==true)return{state:'REFUSED',code:res.code||'ENGINE_FAILED'};if(res.model_id!==req.model_id)return{state:'MODEL_MISMATCH'};
  const pg=res.page,sv=res.saved;
  if(!isObj(pg)||pg.schema_version!==SCHEMA.PAGE||pg.request_id!==req.request_id||!Array.isArray(pg.rows)||!isObj(pg.before_coverage)||!isObj(pg.after_coverage))return{state:'REFUSED',code:'PAGE_SHAPE'};
  if(validateSaved(sv).ok!==true||sv.configuration.model_id!==req.model_id)return{state:'MODEL_MISMATCH'};
  if(JSON.stringify(sv.configuration)!==JSON.stringify(req.config))return{state:'CONFIG_MISMATCH'};
- if(sv.result_hash!==pg.after_result_hash)return{state:'REFUSED',code:'RESULT_HASH'};return{state:'SHOWN'};}
+ if(sv.result_hash!==pg.after_result_hash)return{state:'REFUSED',code:'RESULT_HASH'};
+ // The before side: with a saved record asked for, only its replay whose hash is the saved one (Codex #437 6871203367).
+ if(req.saved_before){if(res.before_source!=='SAVED_REPLAYED'||res.before_result_hash!==req.saved_before.result_hash||pg.before_result_hash!==req.saved_before.result_hash)return{state:'REFUSED',code:'BEFORE_SOURCE'};}
+ else if(res.before_source!=='RECOMPUTED')return{state:'REFUSED',code:'BEFORE_SOURCE'};
+ if(anchors&&(!same(pg.evaluation,anchors.evaluation)||!same(pg.reference,anchors.reference)||!same(sv.evaluation,anchors.evaluation)||!same(sv.reference,anchors.reference)))return{state:'INPUT_MISMATCH'};
+ return{state:'SHOWN'};}
 // A later page of the same preview (same source hash) only.
-function pageAnswer(first,res){if(!isObj(res)||res.ok!==true||!isObj(res.page))return{state:'REFUSED',code:res&&res.code||'PAGE_SHAPE'};
- if(res.page.source_preview_hash!==first.source_preview_hash)return{state:'LATE_ANSWER'};return{state:'SHOWN'};}
+// expected: the offset asked for (the rows shown so far); a page that starts elsewhere or overruns the row count is a gap, never appended.
+function pageAnswer(first,res,expected){if(!isObj(res)||res.ok!==true||!isObj(res.page))return{state:'REFUSED',code:res&&res.code||'PAGE_SHAPE'};
+ const p=res.page;if(p.source_preview_hash!==first.source_preview_hash)return{state:'LATE_ANSWER'};
+ if(expected!==undefined&&(p.offset!==expected||!Array.isArray(p.rows)||p.offset+p.rows.length>first.row_count||p.row_count!==first.row_count||(p.next_offset!==null&&p.next_offset!==p.offset+p.rows.length)))return{state:'PAGE_GAP'};
+ return{state:'SHOWN'};}
+// A saved record against the inputs of this route: the same evaluation / reference identities, or it is not this input's record.
+function savedMatches(sv,anchors){return!!(sv&&anchors&&same(sv.evaluation,anchors.evaluation)&&same(sv.reference,anchors.reference));}
 const TRANSITION=Object.freeze({COMMON:'',NEWLY_COMPUTABLE:'새로 산출',LOST:'미산출로 바뀜',UNAVAILABLE_BOTH:'전후 모두 없음'});
 // Before / after as the engine projected them (never re-scored or re-ranked here).
 function compare(pg){return freeze({population:pg.population_effect,scope:pg.effect_scope,coverage:{before:pg.before_coverage,after:pg.after_coverage},row_count:pg.row_count,
@@ -223,6 +239,50 @@ function populationView(key,v,kind){const P=POPULATIONS[key];if(!P)return null;
   '모집단 '+v.population_id+' · '+v.population_version+' · 선정 결과 '+v.source_result_hash.slice(0,12)+'… · 인증 연구 보기(공개 게시 권한 아님)',
   '시총 선정 순위(1~'+v.members.length+')는 QGV 순위가 아님 · 가격·시총은 보이지 않음']});}
 
+/* ---- stored r2 delivery (보관 결과 읽기; Codex #537 qgv-555-delivery/1 staged by Main with the qgv-555-stage/1 receipt) */
+const STORED_SCOPE=Object.freeze({universe504:'operating504',expanded:'held1057'});
+const SCOPE_TEXT=Object.freeze({operating504:'운영504코드 / 501발행사 · 기존504',held1057:'보유 1057발행사 · 확장 연구(전체시장 아님)'});
+const STORED_SCHEMA=Object.freeze({index:'qgv-555-delivery/1',group:'qgv-555-groups-part/1',detail:'qgv-555-detail/1',distribution:'qgv-555-distribution-part/1'});
+const kindOf=n=>n==='index'?'index':n.startsWith('group-index-')?'group':n.startsWith('distribution-')?'distribution':'detail';
+// stage / manifest / index read through the private Worker (raw = {bytes, body}); sha256: async bytes → hex.
+async function checkStored({stage,manifest,index},{scope,sha256}){if(typeof sha256!=='function')fail('HASH_UNAVAILABLE');
+ if(!isObj(stage)||stage.schema_version!=='qgv-555-stage/1'||stage.scope!==scope||stage.stored_result_only!==true||!HEX.test(String(stage.manifest_sha256))||!HEX.test(String(stage.index_sha256)))fail('STAGE');
+ if(!isObj(stage.expected_evaluation)||!isObj(stage.expected_references))fail('STAGE_ANCHORS');
+ if(!manifest||await sha256(manifest.bytes)!==stage.manifest_sha256)fail('MANIFEST_HASH');const M=manifest.body;
+ if(M.schema_version!=='qgv-555-delivery-manifest/1'||!Array.isArray(M.files))fail('MANIFEST_SCHEMA');
+ const files=new Map();for(const f of M.files){if(files.has(f.path))fail('MANIFEST_DUPLICATE');files.set(f.path,f);}
+ const ie=files.get('index.json');if(!ie||!index||await sha256(index.bytes)!==ie.sha256||index.bytes.length!==ie.size||ie.sha256!==stage.index_sha256)fail('INDEX_HASH');
+ const X=index.body;if(X.schema_version!==STORED_SCHEMA.index)fail('INDEX_SCHEMA');
+ // Independent anchors: the stage receipt's identities were computed from the input files themselves (tools/stage_private_qgv555.py).
+ if(!same(X.evaluation,stage.expected_evaluation))fail('EVALUATION_ANCHOR');
+ const ids=Object.fromEntries(Object.entries(X.models||{}).map(([k,v])=>[k,v.model_id]));if(!same(ids,{'U1-555':MODELS['U1-555'].model_id,'S1-555':MODELS['S1-555'].model_id}))fail('MODELS');
+ for(const[k,v]of Object.entries(X.models)){if(!same(v.bindings.reference,stage.expected_references[k]))fail('REFERENCE_ANCHOR:'+k);if(!same(v.bindings.evaluation,stage.expected_evaluation))fail('EVALUATION_BINDING:'+k);}
+ if(X.groups_layout==='SHARDED'?(!Array.isArray(X.group_files)||X.groups.length!==0):!Array.isArray(X.groups))fail('GROUP_LAYOUT');
+ return freeze({scope,stage:copy(stage),files:Object.fromEntries(files),index:copy(X)});}
+// One member file read later: its bytes must be the manifest's, its schema its kind's; a detail names this model's result.
+async function checkStoredFile(st,name,raw,sha256){const e=st.files[name+'.json'];if(!e)fail('NOT_IN_MANIFEST');
+ if(!raw||raw.bytes.length!==e.size||await sha256(raw.bytes)!==e.sha256)fail('MEMBER_HASH');const b=raw.body,k=kindOf(name);
+ if(b.schema_version!==STORED_SCHEMA[k])fail('MEMBER_SCHEMA');
+ if(k==='group'&&b.evaluation_input_hash!==st.index.evaluation.input_hash)fail('GROUP_CONTEXT');
+ if(k==='detail'){const key=name.slice(0,6),m=st.index.models[key];if(!m||b.model_id!==m.model_id||b.result_hash!==m.result_hash)fail('DETAIL_RESULT');}
+ return b;}
+// Group files: all of them, together (count and duplicates as Codex read_groups()).
+function storedGroups(st,parts){const X=st.index;if(X.groups_layout!=='SHARDED')return X.groups;if(parts.length!==X.group_files.length)fail('GROUP_FILES');
+ const g=parts.flatMap(p=>p.rows);if(g.length!==X.groups_count||new Set(g.map(x=>x.group_id)).size!==g.length)fail('GROUP_MEMBERS');return g;}
+function storedBoard(st,key){const m=st.index.models[key],e=st.index.evaluation;
+ return freeze({key,model_id:m.model_id,result_hash:m.result_hash,calculated_at:m.calculated_at,config_hash:m.bindings.configuration_hash,coverage:m.coverage,
+  files:m.files,lines:['보관 결과 · 생산자 '+st.stage.producer_sha.slice(0,8)+' 실행 · 계산 '+m.calculated_at+' · 이 화면에서 재계산 아님',
+   SCOPE_TEXT[st.scope]+' · 평가일 '+e.evaluation_day+' · 입력 마감 '+e.input_cutoff,
+   '평가 입력 '+e.input_hash.slice(0,12)+'… · 참조 입력 '+m.bindings.reference.input_hash.slice(0,12)+'… · 둘 다 원입력에서 따로 계산한 기준과 같음',
+   '결과 '+m.result_hash.slice(0,12)+'… · 설정 '+m.bindings.configuration_hash.slice(0,12)+'… · 분류 '+e.classification_version+' · 전체시장 분모 없음']});}
+function storedRows(detail){return detail.rows.map(r=>({company_id:r.company_id,Q:r.axes.Q.score,G:r.axes.G.score,V:r.axes.V.score,total:r.total,partial:r.partial_total,rank:r.rank,rank_n:r.rank_n,
+ active:r.active_roles,complete:r.fifteen_roles_complete,gate:r.gate_status,status:r.status}));}
+// Ranking scopes of one model's role groups (U1: COMMON; S1: one per SECTOR|TEMPLATE, never joined into one ranking).
+function storedScopes(groups,model,role){return groups.filter(x=>x.model===model&&x.kind==='roles'&&x.role===role).map(x=>x.ranking_scope);}
+function storedDeciles(groups,model,role,scope){const g=groups.find(x=>x.model===model&&x.kind==='roles'&&x.role===role&&(scope===undefined||x.ranking_scope===scope));if(!g)return null;
+ const bands=Array(10).fill(0);for(const b of g.bins)if(Number.isInteger(b.decile)&&b.decile>=1&&b.decile<=10)bands[b.decile-1]=b.count;
+ return freeze({role,bands,valid:g.evaluation_valid_n,n:g.original_code_rows,scope:g.ranking_scope,ties:Array.isArray(g.tie_splits)?g.tie_splits.length:0});}
+
 /* ---- 2.1 pair state (no result of another model or population under the chosen name) */
 function boardState(pop,model,{officialLoaded=false,saved=null,selection=null}={}){
  if(!own(POPULATIONS,pop)||!own(MODELS,model))return freeze({state:'UNKNOWN',text:'알 수 없는 선택'});
@@ -230,9 +290,10 @@ function boardState(pop,model,{officialLoaded=false,saved=null,selection=null}={
   return freeze({state:'NO_RESULT',text:pop==='top500'?'기존 공식 QGV는 기존504에서만 계산됨 · 시총 Top500 공식 결과 없음':'확장 연구 모집단에는 공식 QGV 없음'});}
  if(model==='MY')return freeze({state:saved?'SAVED_SYNTHETIC':'NO_SAVED',text:saved?'내 설정 저장됨('+CANDIDATE_OF[saved.configuration.model_id]+' · 합성 입력 결과) · 이 모집단의 실자료 결과 전달 전':'저장된 555 설정 없음 · 2.2.7에서 재계산한 뒤 저장'});
  const tp=pop==='top500'?(selection?' · 선정 '+(selection.status==='VALIDATED_RESEARCH_CANDIDATE'?'검증된 연구 후보':'미확정 후보')+'(합성)':' · 실제 Top500 미선정'):'';
- return freeze({state:'RESULT_NOT_DELIVERED',text:MODELS[model].label+' 결과 화면 연결 전 · 계산 담당 실자료 r2(운영504·보유1057)는 수령·대조, 비공개 전달 준비 중'+tp+' · 다른 모형 결과를 이 이름으로 보이지 않음'});}
+ if(pop==='top500')return freeze({state:'RESULT_NOT_DELIVERED',text:MODELS[model].label+' · 시총 Top500 결과 없음'+tp+' · 다른 모집단 결과를 이 이름으로 보이지 않음'});
+ return freeze({state:'STORED_AVAILABLE',text:MODELS[model].label+' · '+SCOPE_TEXT[STORED_SCOPE[pop]]+' · 보관 결과(계산 담당 실자료 r2)는 아래에서 로그인 뒤 불러옴 · 이 화면에서 재계산 아님 · 다른 모형 결과를 이 이름으로 보이지 않음'});}
 
 return Object.freeze({SCHEMA,AXES,ROLE_TEXT,POPULATIONS,MODELS,CANDIDATE_OF,KIND_TEXT,TEMPLATE_TEXT,GATE_TEXT,REASON_TEXT,SELECTION_TEXT,DATA_KIND_TEXT,
  checkContext,canonical,roleText,templateOf,sectorOf,scopes,recipeLine,start,rolesOf,axisOf,setAxis,setRole,excludeRole,setMetric,blocked,addMetric,removeMetric,replaceMetric,
- restore,restoreScope,activeCount,problems,sums,families,card,search,previewAnswer,pageAnswer,TRANSITION,compare,stages,deciles,detail,validateSaved,checkView,populationView,boardState,pct,score});
+ restore,restoreScope,activeCount,problems,sums,families,card,search,previewAnswer,pageAnswer,savedMatches,TRANSITION,STORED_SCOPE,SCOPE_TEXT,checkStored,checkStoredFile,storedGroups,storedBoard,storedRows,storedScopes,storedDeciles,compare,stages,deciles,detail,validateSaved,checkView,populationView,boardState,pct,score});
 });

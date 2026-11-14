@@ -368,6 +368,13 @@ const EXPANDED_FILES = Object.freeze({ expanded_manifest: 'manifest.json', expan
 // staged byte for byte under classification/ownership/{views,receipts}/<entity id>.json; the same 2 MiB limit and the same owner auth.
 const OWNERSHIP_ENTITY = /^[A-Z0-9][A-Z0-9-]{0,31}$/;
 const RECEIPT_KEYS = ['attempt', 'retained_dataset_sha256', 'retained_view_sha256', 'unchanged_generated_at', 'unchanged_last_success_at'];
+// QGV 555 saved delivery (owner 2026-11-14, DC-49; Codex #537, staged by tools/stage_private_qgv555.py byte for byte under
+// classification/q555/<scope>/): ?part=q555_stage|q555_manifest&scope=<scope> (Main's stage receipt / the producer's manifest) and
+// ?part=q555_file&scope=<scope>&name=<member> for index, group-index-NNNN, U1|S1-555-detail-NNNN, distribution-<24 hex>-NNNN. The
+// same owner auth and 2 MiB limit; each file carries its schema (the stage receipt and the manifest also name or carry the scope).
+const Q555_NAME = /^(index|group-index-\d{4}|(?:U1|S1)-555-detail-\d{4}|distribution-[0-9a-f]{24}-\d{4})$/;
+const Q555_SCHEMA = (name) => name === 'index' ? 'qgv-555-delivery/1' : name.startsWith('group-index-') ? 'qgv-555-groups-part/1'
+  : name.startsWith('distribution-') ? 'qgv-555-distribution-part/1' : 'qgv-555-detail/1';
 // /kis/classification?part=<part> only (no other parameter, no alternate encoding); the detail part takes exactly one shard key, two
 // lowercase hex digits (Codex's fixed pattern ^[0-9a-f]{2}$), and no other part takes one. The answer is the part, or
 // 'expanded_detail/<shard>'.
@@ -379,6 +386,10 @@ export function kisClassificationPart(url) {
   if (dual) { if (!DUAL_SCOPES.includes(dual[2]) || (SET_333_ONLY.includes(dual[1]) && !dual[3])) throw new Failure('REQUEST_INVALID', 400); return dual[1] + '/' + dual[2] + (dual[3] ? '@333' : ''); }
   const dualDetail = /^\?part=(dual_detail|dual_leaders_detail|dual_dist_detail|dual_bins_detail)&scope=([a-z0-9]{1,16})&shard=(\d{3})(&set=333)?$/.exec(url.search);
   if (dualDetail) { if (!DUAL_SCOPES.includes(dualDetail[2])) throw new Failure('REQUEST_INVALID', 400); return dualDetail[1] + '/' + dualDetail[2] + (dualDetail[4] ? '@333' : '') + '/' + dualDetail[3]; }
+  const q555 = /^\?part=(q555_stage|q555_manifest)&scope=([a-z0-9]{1,16})$/.exec(url.search);
+  if (q555) { if (!DUAL_SCOPES.includes(q555[2])) throw new Failure('REQUEST_INVALID', 400); return q555[1] + '/' + q555[2]; }
+  const q555f = /^\?part=q555_file&scope=([a-z0-9]{1,16})&name=([A-Za-z0-9-]{1,64})$/.exec(url.search);
+  if (q555f) { if (!DUAL_SCOPES.includes(q555f[1]) || !Q555_NAME.test(q555f[2])) throw new Failure('REQUEST_INVALID', 400); return 'q555_file/' + q555f[1] + '/' + q555f[2]; }
   const own = /^\?part=(ownership_view|ownership_receipt)&entity=([A-Z0-9-]{1,32})$/.exec(url.search);
   if (own) { if (!OWNERSHIP_ENTITY.test(own[2])) throw new Failure('REQUEST_INVALID', 400); return own[1] + '/' + own[2]; }
   if (!/^\?part=[a-z_]{1,20}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
@@ -390,6 +401,8 @@ export function kisClassificationPart(url) {
 function classificationPath(part) {
   if (Object.hasOwn(EPS_FILES, part)) return 'classification/dual-333/' + EPS_FILES[part][0];
   if (part.startsWith('expanded_detail/')) return 'classification/expanded/expanded-detail/' + part.slice(16) + '.json';
+  if (part.startsWith('q555_')) { const [name, scope, file] = part.split('/');
+    return 'classification/q555/' + scope + '/' + (name === 'q555_stage' ? 'stage' : name === 'q555_manifest' ? 'manifest' : file) + '.json'; }
   if (part.startsWith('dual_')) { const [name, slot, shard] = part.split('/'), [scope, set] = slot.split('@');
     return 'classification/' + (set === '333' ? 'dual-333/' : 'dual/') + scope + '/' + (shard ? ({ dual_leaders_detail: 'leaders/factor-leaders-', dual_dist_detail: 'distribution/distribution-', dual_bins_detail: 'bins/bins-' }[name] || 'detail-') + shard : DUAL_PARTS[name][0]) + '.json'; }
   if (Object.hasOwn(EXPANDED_FILES, part)) return 'classification/expanded/' + EXPANDED_FILES[part];
@@ -402,6 +415,10 @@ function classificationPath(part) {
 function classificationSchema(o, part) {
   if (Object.hasOwn(EPS_FILES, part)) return EPS_FILES[part][1](o);
   if (part.startsWith('expanded_detail/')) return o.schema_version === CLASSIFICATION_PARTS.expanded_detail && o.shard_key === part.slice(16);
+  if (part.startsWith('q555_')) { const [name, scope, file] = part.split('/');
+    if (name === 'q555_stage') return o.schema_version === 'qgv-555-stage/1' && o.scope === scope;
+    if (name === 'q555_manifest') return o.schema_version === 'qgv-555-delivery-manifest/1' && Array.isArray(o.files);
+    return o.schema_version === Q555_SCHEMA(file); }
   // A dual file carries its part's schema; a manifest (and the leaders index) also names the scope asked for.
   if (part.startsWith('dual_')) { const [name, slot] = part.split('/'), scope = slot.split('@')[0];
     return o.schema_version === DUAL_PARTS[name][1] && (!DUAL_SCOPED.includes(name) || o.scope === scope); }

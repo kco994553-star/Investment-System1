@@ -388,7 +388,9 @@ class Bridge:
                     'selectable': {t: {r: qgv_555_preview.selectable_metrics(r, t) for r in qgv_555.SPECS} for t in TEMPLATES},
                     'sectors': [{'sector_id': k, 'axis_weights': dict(zip('QGV', v))} for k, v in SECTORS.items()],
                     'templates': list(TEMPLATES),
-                    'inputs': [{'input_id': 'SYNTHETIC_21', 'label': '합성 · 21개 발행사(Codex fixture)', 'data_kind': 'SYNTHETIC'}]}
+                    'inputs': [{'input_id': 'SYNTHETIC_21', 'label': '합성 · 21개 발행사(Codex fixture)', 'data_kind': 'SYNTHETIC'}],
+                    # The route's independent anchors: identity() of the inputs it resolves (the screen checks every answer against them).
+                    'anchors': {'evaluation': qgv_555.identity(qgv_555.fixture()[0]), 'reference': qgv_555.identity(qgv_555.fixture()[1])}}
         if op == 'qgv555_population':
             if req.get('input_id') not in QGV555_POPULATIONS:
                 raise Refused('INPUT_UNKNOWN')
@@ -426,9 +428,23 @@ class Bridge:
             if not isinstance(c, dict) or c.get('model_id') != model_id:
                 raise Refused('MODEL_RESPONSE_MISMATCH')
         e, ref = qgv_555.fixture()
+        # Codex #437 6871203367: a compact saved record is never handed to preview() as a result. It is replayed with the same
+        # inputs and the original engine; only when the replayed result hash is the saved one is that FULL result the before side.
+        full_before, source = None, 'RECOMPUTED'
+        if 'saved_before' in req:
+            compact = req['saved_before']
+            if not isinstance(compact, dict) or compact.get('schema_version') != QGV555_SAVED or set(compact) != {'schema_version', *QGV555_SAVED_KEYS}:
+                raise Refused('SAVED_INVALID')
+            if compact['configuration'] != before:
+                raise Refused('SAVED_ENGINE_OR_CONFIGURATION_MISMATCH')
+            full_before = qgv_555.replay(compact, e, ref)
+            if full_before['result_hash'] != compact['result_hash']:
+                raise Refused('SAVED_NOT_REPRODUCED')
+            source = 'SAVED_REPLAYED'
         preview = qgv_555_preview.preview({'schema_version': 'qgv-555-preview-request/1', 'request_id': req['request_id'],
                                            'before': copy.deepcopy(before), 'after': copy.deepcopy(config)}, e, ref,
-                                          expected_evaluation=qgv_555.identity(e), expected_reference=qgv_555.identity(ref))
+                                          expected_evaluation=qgv_555.identity(e), expected_reference=qgv_555.identity(ref),
+                                          saved_before=full_before)
         after = preview['after_result']
         if after['model_id'] != model_id:
             raise Refused('MODEL_RESPONSE_MISMATCH')
@@ -437,7 +453,8 @@ class Bridge:
             self.kept_555.pop(next(iter(self.kept_555)))
         saved = {'schema_version': QGV555_SAVED, **{k: copy.deepcopy(after[k]) for k in QGV555_SAVED_KEYS}}
         return {'data_kind': 'SYNTHETIC', 'model_id': model_id, 'input_id': req['input_id'], 'preview_id': preview['result_hash'],
-                'page': qgv_555_preview.preview_page(preview, offset=0, limit=QGV555_PAGE), 'saved': saved}
+                'page': qgv_555_preview.preview_page(preview, offset=0, limit=QGV555_PAGE), 'saved': saved, 'before_source': source,
+                'before_result_hash': preview['before_result_hash']}
 
     # ---- research models (Codex #529 research.dual_qgv, called unchanged)
     def _dual_context(self, req, rid, key, config):

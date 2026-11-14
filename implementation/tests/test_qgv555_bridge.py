@@ -41,6 +41,8 @@ def test_context_is_codex_contract(b):
     assert out['recipes'] == json.loads(json.dumps(qgv_555.accounting_recipes()))
     assert out['selectable']['GENERAL']['q_profitability'] == qgv_555_preview.selectable_metrics('q_profitability', 'GENERAL')
     assert out['selectable']['BANK']['q_profitability'] == qgv_555_preview.selectable_metrics('q_profitability', 'BANK')
+    e, ref = qgv_555.fixture()
+    assert out['anchors'] == {'evaluation': qgv_555.identity(e), 'reference': qgv_555.identity(ref)}
 
 
 def test_preview_is_codex_preview_page_of_both_configs_on_the_same_input(b):
@@ -103,6 +105,25 @@ def test_save_and_replay_reproduce_the_shown_preview(b):
     r = ask(b, op='qgv555_replay', saved=saved)
     assert r['ok'] is True and r['reproduced'] is True and r['result_hash'] == p['page']['after_result_hash']
     assert ask(b, op='qgv555_replay', saved={**saved, 'rows': []})['code'] == 'SAVED_INVALID'
+
+
+def test_saved_before_is_its_replay_only_when_the_hash_is_the_saved_one(b):
+    base = qgv_555.configuration('U1-555')
+    c = copy.deepcopy(base)
+    c['axis_weights']['V'] = 50
+    first = ask(b, op='qgv555_preview', model_id=U1, config=c, before_config=base, input_id='SYNTHETIC_21')
+    assert first['before_source'] == 'RECOMPUTED'
+    sv = first['saved']
+    d = copy.deepcopy(c)
+    d['axis_weights']['Q'] = 50
+    out = ask(b, op='qgv555_preview', model_id=U1, config=d, before_config=c, input_id='SYNTHETIC_21', saved_before=sv)
+    assert out['ok'] is True and out['before_source'] == 'SAVED_REPLAYED'
+    assert out['before_result_hash'] == out['page']['before_result_hash'] == sv['result_hash']
+    forged = ask(b, op='qgv555_preview', model_id=U1, config=d, before_config=c, input_id='SYNTHETIC_21', saved_before={**sv, 'result_hash': 'a' * 64})
+    assert forged['code'] == 'SAVED_NOT_REPRODUCED'
+    other = ask(b, op='qgv555_preview', model_id=U1, config=d, before_config=base, input_id='SYNTHETIC_21', saved_before=sv)
+    assert other['code'] == 'SAVED_ENGINE_OR_CONFIGURATION_MISMATCH'
+    assert ask(b, op='qgv555_preview', model_id=U1, config=d, before_config=c, input_id='SYNTHETIC_21', saved_before={**sv, 'rows': []})['code'] == 'SAVED_INVALID'
 
 
 def test_population_is_codex_top500_view(b):

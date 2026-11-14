@@ -19,7 +19,7 @@ const Q=()=>I.qgv555;
 const REQ='sector-qgv-engine-request/1';
 const S={pop:'universe504',model:'OFFICIAL',load:'IDLE',code:null,ctx:null,selections:null,selKind:'SYNTHETIC_COMPLETE',
  cand:'U1-555',scope:'COMMON',axis:'Q',edit:null,addRole:null,query:'',preview:null,pendingId:null,current:null,dropped:0,msg:null,err:null,
- company:null,detail:null,decRole:'q_profitability',dec:null,replay:null};
+ company:null,detail:null,decRole:'q_profitability',dec:null,replay:null,savedStale:false,stored:{},storedModelRole:'q_profitability'};
 const listeners=new Set();
 const changed=()=>{for(const f of[...listeners]){try{f();}catch(_){}}};
 let seq=0;const rid=()=>'q555-'+(++seq)+'-'+Math.random().toString(36).slice(2,8);
@@ -27,12 +27,14 @@ const ENGINE_TEXT={ENGINE_NOT_CONNECTED:'계산 실행 경로 연결 전 · 이 
  MODEL_RESPONSE_MISMATCH:'답한 모형이 요청과 다름 · 쓰지 않음',DUPLICATE_CANONICAL_METRIC:'같은 지표(별칭)를 한 역할에 두 번 넣을 수 없음',DUPLICATE_SAME_FORMULA_METRIC:'같은 산식의 지표를 한 역할에 두 번 넣을 수 없음',
  AXIS_WEIGHTS:'축 비중은 0 이상이고 합이 0보다 커야 함',ROLE_WEIGHTS:'축마다 역할 비중 합이 0보다 커야 함',METRIC_WEIGHTS:'역할마다 지표 비중 합이 0보다 커야 함',SECTOR_AXIS_WEIGHTS:'섹터 축 비중이 맞지 않음',
  UNSUPPORTED_METRIC_VARIANT:'이 축에 없는 지표',SAVED_INPUT_MISMATCH:'저장 때 입력과 다름 · 재현 아님',
- SAVED_ENGINE_VERSION_REQUIRED:'저장 때 엔진 판이 필요 · 재현 아님',ABORTED:'화면을 떠나 멈춤',LATE_ANSWER:'늦게 온 답 · 쓰지 않음',MODEL_MISMATCH:'답한 모형이 요청과 다름 · 쓰지 않음',
- CONFIG_MISMATCH:'답의 설정이 요청한 설정과 다름 · 쓰지 않음'};
+ SAVED_ENGINE_VERSION_REQUIRED:'저장 때 엔진 판이 필요 · 재현 아님',SAVED_NOT_REPRODUCED:'저장 설정을 다시 계산한 결과가 저장 결과와 다름 · 이전 결과로 쓰지 않음',SAVED_ENGINE_OR_CONFIGURATION_MISMATCH:'저장 설정과 비교 기준 설정이 다름 · 쓰지 않음',BEFORE_SOURCE:'비교 기준(전)이 저장 결과 재현이 아님 · 쓰지 않음',SAVED_INVALID:'저장 기록 형식이 맞지 않음',ABORTED:'화면을 떠나 멈춤',LATE_ANSWER:'늦게 온 답 · 쓰지 않음',MODEL_MISMATCH:'답한 모형이 요청과 다름 · 쓰지 않음',
+ CONFIG_MISMATCH:'답의 설정이 요청한 설정과 다름 · 쓰지 않음',INPUT_MISMATCH:'답의 평가·참조 입력이 이 경로의 기준과 다름 · 쓰지 않음',PAGE_GAP:'페이지가 이어지지 않음(누락·순서 어긋남) · 붙이지 않음',
+ AUTH_REQUIRED:'로그인 필요 · 비공개 영역에서 로그인한 뒤 다시',KIS_SERIES_NOT_FOUND:'보관 결과가 전달 위치에 없음(배치 전)',AUTH_FORBIDDEN:'이 계정은 읽을 수 없음',RATE_LIMITED:'요청 간격 제한 · 잠시 뒤 다시',
+ EVALUATION_ANCHOR:'평가 입력이 독립 기준과 다름 · 쓰지 않음',REFERENCE_ANCHOR:'참조 입력이 독립 기준과 다름 · 쓰지 않음',MEMBER_HASH:'파일이 목록표의 해시와 다름 · 쓰지 않음',MANIFEST_HASH:'목록표가 배치 기록과 다름 · 쓰지 않음',INDEX_HASH:'색인이 목록표와 다름 · 쓰지 않음'};
 const say=c=>{const k=String(c||'').split(':')[0];return ENGINE_TEXT[k]||(/^POLICY_CHANGE/.test(k)?'정책 값은 이 화면에서 바꿀 수 없음':'엔진이 거절함');};
 const EDIT_TEXT={WEIGHT_INVALID:'비중은 0 이상의 숫자',METRIC_NOT_SELECTED:'선택되지 않은 지표',ROLE_LAST_METRIC:'역할의 마지막 지표는 뺄 수 없음 · 역할 제외를 쓰세요',
  ALIAS_DUPLICATE:'같은 지표(별칭)를 이 역할에 두 번 고를 수 없음',AXIS_MISMATCH:'다른 축의 지표',ACCOUNTING_NOT_APPLICABLE:'이 회계모형에 부적합 · 대안을 보세요',
- ACCOUNTING_RECIPE_PREPARING:'이 회계모형의 555 정의 준비 중',SETTING_SCOPE:'범위를 먼저 고르세요',BASE_VERSION_MISSING:'원래 기본 설정 판을 찾지 못함 · 복원하지 않음',ROLE_UNKNOWN:'알 수 없는 역할',METRIC_UNKNOWN:'알 수 없는 지표'};
+ ACCOUNTING_RECIPE_PREPARING:'이 회계모형의 555 정의 준비 중',NOT_IMPLEMENTED:'계산 구현 전 지표',SETTING_SCOPE:'범위를 먼저 고르세요',BASE_VERSION_MISSING:'원래 기본 설정 판을 찾지 못함 · 복원하지 않음',ROLE_UNKNOWN:'알 수 없는 역할',METRIC_UNKNOWN:'알 수 없는 지표'};
 const editText=c=>EDIT_TEXT[String(c).split(':')[0]]||'설정을 바꾸지 못함';
 const PROB={AXIS_WEIGHTS:'축 비중 합이 0',ROLE_WEIGHTS:'역할 비중 합이 0',METRIC_WEIGHTS:'지표 비중 합이 0'};
 const chip=(label,on,attrs={})=>h('button',{type:'button',class:'chip','aria-pressed':String(!!on),...attrs},label);
@@ -52,7 +54,8 @@ async function load(signal){if(S.load==='LOADING')return;S.load='LOADING';S.code
  const sel={};for(const k of['SYNTHETIC_COMPLETE','SYNTHETIC_ROSTER_UNPROVEN']){const b=await call('qgv555_population',{input_id:k},signal);
   if(b.res&&b.res.ok===true){try{sel[k]=Q().checkView(b.res.view);}catch(_){sel[k]=null;}}}
  S.ctx=ctx;S.selections=sel;S.load='READY';pick('U1-555','COMMON');changed();}
-function pick(cand,scope){const sv=savedOf(Q().MODELS[cand].model_id);S.cand=cand;S.scope=scope;S.edit=sv?Object.freeze(JSON.parse(JSON.stringify(sv.configuration))):Q().start(S.ctx,cand);
+// A saved setting comes back on restart; a record of other inputs (anchors differ) keeps its setting but is not this input's result.
+function pick(cand,scope){const sv=savedOf(Q().MODELS[cand].model_id);S.cand=cand;S.scope=scope;S.edit=sv?Object.freeze(JSON.parse(JSON.stringify(sv.configuration))):Q().start(S.ctx,cand);S.savedStale=!!sv&&!Q().savedMatches(sv,S.ctx.anchors);
  S.preview=null;S.pendingId=null;S.current=null;S.err=null;S.msg=null;S.company=null;S.detail=null;S.dec=null;S.replay=null;}
 
 /* ---- 2.1 selector (inside 2.1.1) */
@@ -72,7 +75,47 @@ function selector({redraw}){const M=Q();if(!M)return{el:null,official:true};
   chip('합성 · '+l,S.selKind===k,{dataset:{q5SelKind:k,k:'q5-sel-'+k},onclick:set(()=>{S.selKind=k;})}))):null;
  const lines=h('ul',{class:'news-lines',dataset:{q5PopLines:pv.state}},...pv.lines.map(t=>h('li',null,t)),
   h('li',{dataset:{q5Counts:''}},'산출 수 · 참조집단: 이 모집단의 결과 전달 전'),h('li',null,'시총 선정 순위와 QGV 순위는 다른 열 · QGV 순위는 결과 전달 뒤에만'));
- return{el:h('div',null,head,panel,kinds,lines),official:false};}
+ const stored=storedBlock(M,redraw);
+ return{el:h('div',null,head,panel,kinds,lines,stored),official:false};}
+
+/* ---- 2.1 보관 결과 읽기 (r2, private Worker; each step a click; each file's bytes checked against the staged manifest) */
+const sha256=async b=>{const d=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('');};
+const codeOf=e=>String(e&&e.message||e||'').split(' ')[0];
+function storedBlock(M,redraw){const scope=M.STORED_SCOPE[S.pop],key=S.model;if(!scope||!(key==='U1-555'||key==='S1-555'))return null;
+ const T=S.stored[scope]||(S.stored[scope]={st:null,busy:false,err:null,rows:{},groups:null});
+ const read=(e,list,then)=>{if(T.busy)return;T.busy=true;T.err=null;redraw();let p;try{p=I.prices.kisRead(e,list);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(then).catch(err=>{T.err=say(codeOf(err))+' · 이전 화면은 그대로';}).finally(()=>{T.busy=false;redraw();});};
+ const btn=(k,label,on,dis)=>h('button',{type:'button',class:'btn',disabled:T.busy||!!dis,dataset:{k},onclick:on},label);
+ const err=T.err?h('p',{class:'hand err',role:'alert',dataset:{q5StoredErr:''}},T.err):null;
+ if(!T.st)return h('div',{class:'lb',dataset:{q5Stored:'IDLE'}},h('p',{class:'reason'},'보관 결과 · ',M.SCOPE_TEXT[scope],' · 계산 담당 실자료(r2) · 로그인한 비공개 영역에서만 · 이 화면에서 재계산 아님'),
+  btn('q5-stored-load',T.busy?'불러오는 중 · 3개 · 요청 간격 5초':'보관 결과 불러오기',e=>read(e,[['classification','q555_stage/'+scope],['classification','q555_manifest/'+scope],['classification','q555_file/'+scope+'/index']],
+   async([stage,manifest,index])=>{const st=await M.checkStored({stage:stage&&stage.body,manifest,index},{scope,sha256});T.st=st;T.rows={};T.groups=st.index.groups_layout==='SHARDED'?null:M.storedGroups(st,[]);})),err);
+ const b=M.storedBoard(T.st,key),cov=b.coverage,st=M.stages(cov),rows=T.rows[key],n=b.files.length,next=rows?rows.i+1:0;
+ const td=v=>h('td',null,v),th=t=>h('th',{scope:'col'},t);
+ const table=rows?h('div',{class:'tbl-wrap'},h('table',{class:'tbl lb-tbl',dataset:{q5StoredTable:key}},h('caption',null,'보관 결과 묶음 '+(rows.i+1)+'/'+n+' · 생산자 순서 그대로 · 화면 재정렬 없음'),
+  h('thead',null,h('tr',null,th('기업'),th('Q'),th('G'),th('V'),th('총점'),th('순위'),th('활성 역할'),th('15역할'),th('관문'))),
+  h('tbody',null,...rows.list.map(r=>h('tr',{dataset:{q5StoredRow:r.company_id}},td(r.company_id),td(M.score(r.Q)),td(M.score(r.G)),td(M.score(r.V)),
+   td(r.total===null?'없음':M.score(r.total)+(r.partial?' · 부분 합계(순위 제외)':' · 완전')),td(r.rank?r.rank+'/'+r.rank_n:'순위 없음'),
+   td('Q'+r.active.Q+'/G'+r.active.G+'/V'+r.active.V),td(r.complete?'완결':'미완결'),td(M.GATE_TEXT[r.gate]||r.gate)))))):null;
+ const scopes=T.groups?M.storedScopes(T.groups,key,S.storedModelRole):[],rs=scopes.includes(T.rankScope)?T.rankScope:scopes[0];
+ const D=T.groups&&rs!==undefined?M.storedDeciles(T.groups,key,S.storedModelRole,rs):null;
+ const scopeWord=x=>x==='COMMON'?'공통':scopeText(String(x).replace(/^SECTOR\|/,''));
+ return h('div',{class:'lb',dataset:{q5Stored:'SHOWN'}},
+  h('ul',{class:'news-lines',dataset:{q5StoredLines:''}},...b.lines.map(t=>h('li',null,t))),
+  h('table',{class:'tbl',dataset:{q5StoredCoverage:key}},h('caption',null,'보관 결과 커버리지 · 발행사 수'),h('tbody',null,...st.map(x=>h('tr',null,h('th',{scope:'row'},x.label),td(String(x.value)))))),
+  h('p',{class:'reason'},'완전 총점(15역할·세 축·관문)과 부분 합계는 따로 · 부분 합계는 순위·95% 분자에 넣지 않음'),
+  btn('q5-stored-rows',rows?(next<n?'다음 묶음('+(next+1)+'/'+n+')':'마지막 묶음'):'기업 표 불러오기(1/'+n+')',e=>{const i=rows?next:0;
+   read(e,[['classification','q555_file/'+scope+'/'+b.files[i].replace(/\.json$/,'')]],async([raw])=>{const d=await M.checkStoredFile(T.st,b.files[i].replace(/\.json$/,''),raw,sha256);T.rows[key]={i,list:M.storedRows(d)};});},rows&&next>=n),
+  table,
+  T.groups?h('div',{dataset:{q5StoredDeciles:key}},h('label',{class:'meta'},'역할 10분위 ',h('select',{dataset:{k:'q5-stored-role'},onchange:e=>{S.storedModelRole=e.target.value;redraw();}},
+    ...Object.keys(M.ROLE_TEXT).map(r=>h('option',{value:r,selected:r===S.storedModelRole},M.roleText(r))))),
+   scopes.length>1?h('label',{class:'meta'},' 순위 범위 ',h('select',{dataset:{k:'q5-stored-scope'},onchange:e=>{T.rankScope=e.target.value;redraw();}},
+    ...scopes.map(x=>h('option',{value:x,selected:x===rs},scopeWord(x))))):null,
+   D?h('div',{class:'scroll',role:'group','aria-label':'10분위'},...D.bands.map((c,i)=>h('span',{class:'chip',dataset:{q5StoredBand:String(i+1)}},'D'+(i+1)+' '+c))):h('p',{class:'meta'},'이 역할의 구간 없음'),
+   D?h('p',{class:'meta'},'D10 = 상위 · 유효 '+D.valid+'/'+D.n+' · 범위 '+scopeWord(D.scope)+(scopes.length>1?' · 섹터별 순위 · 이어 붙인 통합 순위 아님':'')+' · 생산자 구간 그대로'):null)
+   :btn('q5-stored-groups','역할 10분위 불러오기('+(T.st.index.group_files||[]).length+'개)',e=>{const names=T.st.index.group_files.map(f=>f.replace(/\.json$/,''));
+    read(e,names.map(nm=>['classification','q555_file/'+scope+'/'+nm]),async(raws)=>{const parts=[];for(let i=0;i<names.length;i++)parts.push(await M.checkStoredFile(T.st,names[i],raws[i],sha256));T.groups=M.storedGroups(T.st,parts);});}),
+  err);}
 
 /* ---- 2.2.7 */
 function fill(route,{body}){const signal=route.signal;
@@ -84,20 +127,20 @@ function fill(route,{body}){const signal=route.signal;
  listeners.add(paint);signal.addEventListener('abort',()=>listeners.delete(paint),{once:true});
  const key=()=>S.edit?JSON.stringify(S.edit):null;
  const act=fn=>()=>{try{fn();S.err=null;}catch(e){S.err=editText(e&&e.message);}if(S.preview&&S.preview.key!==key())S.preview=null;changed();};
- async function recalc(){const M=Q(),sv=savedOf(S.edit.model_id),before=sv?sv.configuration:S.ctx.configs[S.cand],k=key();
-  const req={schema_version:REQ,op:'qgv555_preview',request_id:rid(),model_id:S.edit.model_id,config:S.edit,before_config:before,input_id:'SYNTHETIC_21'};
+ async function recalc(){const M=Q(),sv0=savedOf(S.edit.model_id),sv=sv0&&M.savedMatches(sv0,S.ctx.anchors)?sv0:null,before=sv?sv.configuration:S.ctx.configs[S.cand],k=key();
+  const req={schema_version:REQ,op:'qgv555_preview',request_id:rid(),model_id:S.edit.model_id,config:S.edit,before_config:before,input_id:'SYNTHETIC_21',...(sv?{saved_before:sv}:{})};
   S.pendingId=req.request_id;S.current=req;S.msg=null;S.err=null;changed();let res=null;
   try{res=await I.data.engine(req,{signal});}catch(e){res={request_id:req.request_id,ok:false,code:e&&e.name==='AbortError'?'ABORTED':String(e&&e.message||'ENGINE_UNREACHABLE')};}
   if(signal.aborted)return;
   if(S.pendingId!==req.request_id||key()!==k){S.dropped++;changed();return;}
-  S.pendingId=null;const a=M.previewAnswer(req,res,S.current);
+  S.pendingId=null;const a=M.previewAnswer(req,res,S.current,S.ctx.anchors);
   if(a.state!=='SHOWN'){S.err='재계산 거절 · '+say(a.code||a.state)+(S.preview?' · 이전 미리보기는 그대로':'');changed();return;}
   const pg=res.page;S.preview={key:k,res,id:res.preview_id,first:pg,cmp:M.compare(pg),rows:[...pg.rows],next:pg.next_offset,saved:!!sv};S.company=null;S.detail=null;S.dec=null;changed();
   void roleDeciles(S.decRole);}
  // The other requests of one shown preview (each answers for that preview only; an answer for an older one is dropped).
  const same=(pv,hash)=>S.preview===pv&&pv.key===key()&&(!hash||hash===pv.first.after_result_hash);
  async function morePage(){const pv=S.preview;if(!pv||pv.next===null)return;const{res}=await call('qgv555_page',{preview_id:pv.id,offset:pv.next},signal);if(signal.aborted)return;
-  const a=Q().pageAnswer(pv.first,res);if(a.state!=='SHOWN'||!same(pv)){S.dropped++;changed();return;}pv.rows.push(...res.page.rows);pv.next=res.page.next_offset;changed();}
+  const a=Q().pageAnswer(pv.first,res,pv.rows.length);if(a.state==='PAGE_GAP'&&same(pv)){S.err=say('PAGE_GAP');changed();return;}if(a.state!=='SHOWN'||!same(pv)){S.dropped++;changed();return;}pv.rows.push(...res.page.rows);pv.next=res.page.next_offset;changed();}
  async function openDetail(id){const pv=S.preview;if(!pv)return;if(S.company===id){S.company=null;S.detail=null;changed();return;}S.company=id;S.detail=null;changed();
   const{res}=await call('qgv555_detail',{preview_id:pv.id,company_id:id},signal);if(signal.aborted)return;
   if(!res||res.ok!==true||!same(pv,res.after_result_hash)||res.model_id!==S.edit.model_id||S.company!==id){S.dropped++;changed();return;}S.detail=res.row;changed();}
@@ -125,7 +168,7 @@ function fill(route,{body}){const signal=route.signal;
    ...M.scopes(ctx,'S1-555').map(x=>h('option',{value:x.scope,selected:x.scope===sc},scopeText(x.scope)+(x.state==='DEFINED_GENERAL'?'':' · 준비 중'))))):null;
   const sv=savedOf(c.model_id);
   const base=h('p',{class:'meta',dataset:{q5Base:''}},'원본 참조 ',c.candidate,' 기본 설정 ',c.version,' · ',scopeText(sc),' · ',M.KIND_TEXT[M.MODELS[S.cand].kind],' · ',M.recipeLine(ctx,sc),
-   ' · 다른 섹터·회계모형으로 자동 복사하지 않음',sv?' · 내 설정 저장됨(결과 '+sv.result_hash.slice(0,12)+'…)':'');
+   ' · 다른 섹터·회계모형으로 자동 복사하지 않음',sv?' · 내 설정 저장됨(결과 '+sv.result_hash.slice(0,12)+'…)'+(S.savedStale?' · 저장 때 입력과 지금 입력이 다름 · 설정만 불러옴, 재현 대상 아님':''):'');
   const axes=h('div',{class:'scroll',role:'group','aria-label':'축 비중',dataset:{q5Axes:''}},...M.AXES.map(a=>h('label',{class:'chip'},a+' ',
    num(a+' 축 비중',sums.axes[a],'q5-axis-'+a,v=>act(()=>{S.edit=M.setAxis(S.edit,ctx,sc,a,v);})(),{disabled:!editable}))),
    h('span',{class:'meta'},'합 ',String(sums.axis),' · 엔진이 합에 대한 비율로 씀'+(S.cand==='S1-555'?' · 이 섹터의 축 비중만 바뀜':'')));
@@ -146,7 +189,7 @@ function fill(route,{body}){const signal=route.signal;
    h('button',{type:'button',class:'btn',dataset:{k:'q5-cancel'},onclick:act(()=>{const s=savedOf(c.model_id);S.edit=s?Object.freeze(JSON.parse(JSON.stringify(s.configuration))):M.start(ctx,S.cand);S.msg='변경 취소 · '+(s?'저장한 설정':'기본 설정');})},'변경 취소'),
    h('button',{type:'button',class:'btn',dataset:{k:'q5-restore'},onclick:act(()=>{S.edit=M.restore(ctx,S.edit);S.msg='기본값 복원 · '+S.edit.candidate+' 기본 설정 '+S.edit.version;})},'기본값 복원'),
    S.cand==='S1-555'?h('button',{type:'button',class:'btn',dataset:{k:'q5-restore-scope'},onclick:act(()=>{S.edit=M.restoreScope(S.edit,sc);S.msg='이 범위 되돌리기 · '+scopeText(sc);})},'이 범위 되돌리기'):null,
-   sv?h('button',{type:'button',class:'btn',disabled:S.replay&&S.replay.state==='PENDING',dataset:{k:'q5-replay'},onclick:()=>{void replay();}},'저장 설정 재현'):null);
+   sv?h('button',{type:'button',class:'btn',disabled:(S.replay&&S.replay.state==='PENDING')||S.savedStale,dataset:{k:'q5-replay'},onclick:()=>{void replay();}},'저장 설정 재현'):null);
   const msg=S.err?h('p',{class:'hand err',role:'alert',dataset:{q5Err:''}},S.err):S.msg?h('p',{class:'hand',dataset:{q5Msg:''}},S.msg):null;
   const rp=S.replay?h('p',{class:S.replay.state==='REPRODUCED'?'hand':'hand err',dataset:{q5Replay:S.replay.state}},{PENDING:'재현 요청 중',REPRODUCED:'재현됨 · 저장 결과와 같은 결과 해시 '+(S.replay.hash||'').slice(0,12)+'…',
    DIFFERENT:'재현 안 됨 · 결과 해시가 다름',REFUSED:'재현 거절 · '+say(S.replay.code)}[S.replay.state]):null;
@@ -172,7 +215,7 @@ function fill(route,{body}){const signal=route.signal;
    h('p',{class:'meta'},'이 축의 지표 '+list.length+'개 · 다른 역할의 기본 지표도 적합하면 고를 수 있음'),
    h('ul',{class:'news-lines'},...list.map(e=>{const k=M.card(ctx,e.canonical_id,c,sc,r,row),sel=chosen.includes(e.canonical_id);
     return h('li',{dataset:{q5Card:e.canonical_id,q5Selectable:String(k.selectable&&!sel)}},h('b',null,k.name),' ',...k.badges.map(t=>h('span',{class:'tag'},t)),
-     h('div',{class:'meta'},'기본 역할 ',k.roles.length?k.roles.join('·'):'없음(선택지)',' · ',k.formula,' · 적용 ',k.templates),
+     h('div',{class:'meta',dataset:{q5Assign:k.roles.length?'DEFAULT':'UNASSIGNED'}},k.assignment,' · ',k.formula,' · 적용 ',k.templates),
      h('div',{class:'meta'},k.status,' · ',k.recommendation,' · 원입력 계열 ',k.family),
      k.aliases.length?h('div',{class:'meta'},'별칭 ',k.aliases.join(', '),' (같은 지표로 한 번만)'):null,
      h('details',{class:'why'},h('summary',null,'근거 ▸'),h('p',{class:'meta'},k.evidence)),
@@ -193,8 +236,9 @@ function fill(route,{body}){const signal=route.signal;
    td('Q'+x.after.active_roles.Q+'/G'+x.after.active_roles.G+'/V'+x.after.active_roles.V)));
   const roleIds=Object.keys(S.edit.roles),D=S.dec;
   return h('div',{class:'lb',dataset:{q5Preview:'SHOWN'}},
-   h('div',{class:'lb-head'},h('b',null,'전후 미리보기 · 엔진 답'),h('span',{class:'meta'},M.DATA_KIND_TEXT.SYNTHETIC,' · ',pv.res.input_id)),
+   h('div',{class:'lb-head'},h('b',null,'전후 미리보기 · 엔진 답'),h('span',{class:'meta',dataset:{q5RecalcKind:'SYNTHETIC'}},'합성 입력 재계산 · 실자료 재계산 아님 · ',pv.res.input_id)),
    h('p',{class:'reason',dataset:{q5PopEffect:C.population}},C.scope==='SETTINGS_ONLY_FIXED_INPUT_AND_POPULATIONS'?'설정 효과만 · 같은 평가·참조 입력과 모집단 고정 · 모집단 효과는 이 비교에서 평가하지 않음(별도 비교)':'비교 범위 '+C.scope),
+   h('p',{class:'meta',dataset:{q5BeforeSource:pv.res.before_source}},pv.res.before_source==='SAVED_REPLAYED'?'전 = 저장한 내 설정을 같은 입력으로 다시 계산한 결과(저장 결과 해시와 같음)':'전 = 비교 기준 설정을 같은 입력으로 계산'),
    h('p',{class:'meta',dataset:{q5Versions:''}},'평가 입력 ',C.versions.evaluation.slice(0,10),'… · 참조 입력 ',C.versions.reference.slice(0,10),'… · 분류 ',C.versions.classification,
     ' · 결과 전 ',C.versions.before.slice(0,10),'… → 후 ',C.versions.after.slice(0,10),'… · 계산 ',C.versions.calculated_at),
    h('table',{class:'tbl',dataset:{q5Coverage:'SHOWN'}},h('caption',null,'커버리지 단계 · 발행사 수 · 전 → 후'),
