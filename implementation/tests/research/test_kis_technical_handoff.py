@@ -141,6 +141,8 @@ def test_main_examples_schema_and_manual_availability_expectations():
     files = tool.handoff_fixtures()
     import hashlib
     manifest = json.loads((root / 'tests/fixtures/kis-technical-handoff/memory-examples-manifest.json').read_text())
+    assert manifest['schema'] == 'synthetic-technical-memory-examples/1'
+    assert files['expectations.json']['schema'] == 'synthetic-technical-expectations/1'
     assert manifest['delivery_state'] == 'IN_MEMORY_GENERATOR_VALUES'
     assert set(files) == {f['generated_member_name'] for f in manifest['files']}
     for entry in manifest['files']:

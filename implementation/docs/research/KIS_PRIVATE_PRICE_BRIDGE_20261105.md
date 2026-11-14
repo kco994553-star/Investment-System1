@@ -94,6 +94,10 @@ In the current Codex environment both writable roots `/workspace` and `/tmp` hav
 Git metadata, so that disk-output check refuses those destinations. The guard is
 unchanged. In-memory examples, schema validation and public expected-state/hash
 files are verified; an actual private CLI write is not claimed for this environment.
+The tracked expectations/hash files are public `synthetic-technical-*` metadata,
+not instances of the private `kis-*` runtime schemas. Full bar/job/result examples
+remain in memory or the approved outside-Git route; renaming a real KIS result
+does not make it eligible for public output. The existing boundary guard is unchanged.
 
 ### Current calculation availability and UI reasons
 

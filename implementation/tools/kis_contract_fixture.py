@@ -60,7 +60,7 @@ def handoff_fixtures():
             measure_raw=result['measures']['raw_count'],measure_adopted=result['measures']['adopted_count'],
             pattern_state=result['patterns']['state'],pattern_reasons=result['patterns']['reasons'],
             group_status=result['group']['state'],rank=None,decile=None))
-    out['expectations.json']=dict(schema='kis-technical-handoff-expectations/1',data_kind='SYNTHETIC',cases=expected)
+    out['expectations.json']=dict(schema='synthetic-technical-expectations/1',data_kind='SYNTHETIC',cases=expected)
     return out
 
 

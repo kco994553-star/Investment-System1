@@ -53,12 +53,12 @@
       "sha256": "fc729f7abe1aa38ac664f1aa67e2711c0f204076d832145d7acc9e11b2595728"
     },
     {
-      "bytes": 1686,
+      "bytes": 1684,
       "generated_member_name": "expectations.json",
-      "sha256": "5d6f0eb232f7ee4f66050ff924cdbd09fcaf33923bdfa6d80e0f0429d3bb6a1a"
+      "sha256": "24836a86462f7e982e703735931d1cfac4387a55427c2cc60ee53a667da8f535"
     }
   ],
   "generator": "implementation/tools/kis_contract_fixture.py::handoff_fixtures",
-  "schema": "kis-technical-memory-examples/1",
+  "schema": "synthetic-technical-memory-examples/1",
   "serialization": "UTF8_JSON_SORT_KEYS_COMPACT_ALLOW_NAN_FALSE_PLUS_LF"
 }
