@@ -549,6 +549,10 @@ def test_workflow_replay_is_opt_in_read_only_and_keeps_the_existing_deploy_gate(
     assert '--live' not in replay_steps and 'forward_validation_ledger.py' not in replay_steps
     assert build.index('replay_pages_20261020.py') < build.index('ci_browser_tests.txt') < build.index('actions/upload-pages-artifact@')
     assert '    needs: build\n' in deploy
+    # A plain manual run skips replay_source, and a job's implicit success() is false when any ancestor job was skipped, so the
+    # deploy gate names build's own result (owner 2026-11-14): deploy runs exactly when build succeeded, never when it was
+    # skipped (replay_source failed or was cancelled), failed or cancelled.
+    assert deploy.startswith("    if: ${{ !cancelled() && needs.build.result == 'success' && github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm' }}\n    needs: build\n")
     assert '    concurrency:\n      group: checked-cockpit-pages\n      cancel-in-progress: false\n' in deploy
     assert '    permissions:\n      contents: read\n      pages: write\n      id-token: write\n' in deploy
     assert deploy.index('pages_freshness_guard.py') < deploy.index('--check-deploy') < deploy.index('actions/deploy-pages@')

@@ -206,7 +206,7 @@ jobs:
         with:
           path: ${{ runner.temp }}/public-cockpit
   deploy:
-    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
+    if: ${{ !cancelled() && needs.build.result == 'success' && github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm' }}
     needs: build
     runs-on: ubuntu-24.04
     permissions:
