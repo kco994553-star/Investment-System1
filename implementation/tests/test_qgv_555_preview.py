@@ -48,6 +48,20 @@ def test_optional_sector_variant_selectable_without_default_role():
     assert 'sector::ep_ttm_diluted' not in selectable_metrics('q_profitability','GENERAL')
 
 
+def test_main_compact_saved_requires_replay_before_preview(monkeypatch):
+    from investment_system.research.qgv_555 import replay
+    e,r=fixture();q=request();full=run(q['before'],e,r)
+    keys=('configuration','evaluation','reference','bindings','calculated_at','result_hash')
+    compact=dict(schema_version='qgv-555-saved/1',**{k:deepcopy(full[k]) for k in keys})
+    with pytest.raises(ValueError,match='RESULT_HASH'):
+        preview(q,e,r,expected_evaluation=identity(e),expected_reference=identity(r),saved_before=compact)
+    restored=replay(compact,e,r)
+    assert restored['result_hash']==compact['result_hash']
+    monkeypatch.setattr('investment_system.research.qgv_555_preview.run',lambda *a,**k:pytest.fail('same input rerun'))
+    result=preview(q,e,r,expected_evaluation=identity(e),expected_reference=identity(r),saved_before=restored)
+    assert result['before_result_hash']==full['result_hash']
+
+
 def test_page_keeps_full_population_and_bounds():
     from investment_system.research.qgv_555_preview import preview_page
     e,r=fixture();out=preview(request(),e,r,expected_evaluation=identity(e),expected_reference=identity(r))
