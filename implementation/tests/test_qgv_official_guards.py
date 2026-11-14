@@ -290,7 +290,8 @@ def test_the_price_source_url_shapes_are_exact():
             assert boundary.price_source_kind(url) == kind, url
     for url in REJECTED:
         assert boundary.price_source_kind(url) is None, url
-    assert boundary.ACTIONS_PRICE_ROUTES == ('implementation/tools/qgv_official_publish.py',)
+    # Run branch claude/iex-day-20261104-once only (owner route choice 2026-11-14): + the one-off private day store.
+    assert boundary.ACTIONS_PRICE_ROUTES == ('implementation/tools/qgv_official_publish.py', 'implementation/tools/iex_day_private_once.py')
     assert not set(boundary.ACTIONS_PRICE_ROUTES) & set(boundary.AUDITED_ROUTES)   # separate from the 27+1 audited routes
 
 
@@ -411,7 +412,8 @@ ADAPTER_FILES = {'implementation/src/investment_system/providers/iex_hist.py',
                  'implementation/src/investment_system/providers/iex_monthend.py',
                  'implementation/src/investment_system/qgv/qgv_official.py',
                  'implementation/src/investment_system/public_price_boundary.py',
-                 'implementation/tools/qgv_official_publish.py'}
+                 'implementation/tools/qgv_official_publish.py',
+                 'implementation/tools/iex_day_private_once.py'}   # run branch only (2026-11-14)
 
 
 def _code_files():

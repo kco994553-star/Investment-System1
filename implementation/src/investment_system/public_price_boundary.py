@@ -117,7 +117,9 @@ AUDITED_ROUTES = (
 # docs/qgv_scoring_standard/CENTRAL_V_PUBLICATION_DESIGN_20261018.md §12-3-1, docs/public_price_boundary/AUDIT.md §10). Kept apart
 # from AUDITED_ROUTES (the 27+1 audited public-output routes above stay withheld and their audit table test is unchanged) and from
 # the SEC allowlists (require_financial_url rejects every URL below; require_price_source rejects every SEC URL).
-ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py',)
+# Run branch claude/iex-day-20261104-once only (owner route choice 2026-11-14, never merged): the one-off private day store for
+# QGV 555 V (tools/iex_day_private_once.py, same IEX functions; prices to a private raw-repo release only).
+ACTIONS_PRICE_ROUTES = ('implementation/tools/qgv_official_publish.py', 'implementation/tools/iex_day_private_once.py')
 _SEGMENT = r'[A-Za-z0-9%_~-][A-Za-z0-9%._~-]*'      # no empty, '.' or '..' path segment
 _QUERY = r'(?:\?[A-Za-z0-9%._~=&-]*)?'
 PRICE_SOURCE_URL_PATTERNS = {
