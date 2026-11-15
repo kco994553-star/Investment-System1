@@ -176,8 +176,8 @@ async function click(page, name) { await page.locator('[data-test-action="' + na
 async function scores(page) {
   return page.evaluate(async () => {
     const Q = window.IS2.qgv, pg = await Q.page(), again = await Q.page(), rows = pg.rows, msft = Q.row(pg, 'NASDAQ:MSFT');
-    return { json: JSON.stringify(pg), coverage: JSON.stringify(Q.coverage(pg)), same: pg === again, state: pg.state, v_source: pg.v_source, engine_v_source: pg.engine_v_source,
-      expected: Q.V_SOURCES.OFFICIAL_CENTRAL, engine: Q.V_SOURCES.DEVICE_TEMPORARY, price_basis: pg.price_basis, n: rows.length,
+    return { json: JSON.stringify(pg), coverage: JSON.stringify(Q.coverage(pg)), same: pg === again, state: pg.state, v_source: pg.v_source, engine_v_source: Object.hasOwn(pg, 'engine_v_source'),
+      expected: Q.V_SOURCES.OFFICIAL_CENTRAL, engine: Object.hasOwn(Q.V_SOURCES, 'DEVICE_TEMPORARY'), price_basis: pg.price_basis, n: rows.length,
       labels: [...new Set(rows.map((r) => r.source + '|' + r.source_label))], v: rows.filter((r) => r.score.v !== null).length,
       vNullWithoutReason: rows.filter((r) => r.score.v === null && !(typeof r.na_reason.v === 'string' && r.na_reason.v)).length,
       vWithReason: rows.filter((r) => r.score.v !== null && r.na_reason.v !== null).length, msft: msft ? { v: msft.score.v, reason: msft.na_reason.v } : null };
@@ -304,7 +304,7 @@ async function scores(page) {
       const I = window.IS2, keep = (x) => (x && typeof x === 'object' ? { state: x.state, reason: x.reason !== undefined ? x.reason : null } : x);
       await I.data.list('news'); await I.data.list('sec'); await I.data.shares(); await I.data.static('entities.json');
       return { quote: await I.prices.quote({ code: 'NASDAQ:NVDA', ticker: 'NVDA' }), settings: await I.prices.deviceSettings(), holdings: keep(await I.store.holdings()),
-        stored: (await I.engines.virtual.stored({ reportDate: '2026-10-20' })).state, forward: (await I.engines.virtual.forward()).state, draft: typeof (await I.engines.target.draft()), macro: (await I.engines.macro.current()) !== undefined,
+        stored: (await I.engines.virtual.stored({ reportDate: '2026-10-20' })).state, forward: (await I.engines.virtual.forward()).state, draft: await I.engines.target.draft().then((d) => typeof d, (e) => e.message + ':' + e.reason), macro: (await I.engines.macro.current()) !== undefined,
         quotesHeld: await I.store.marketQuotes.count(), rank: (await I.qgv.page()).rank_label,
         status: I.prices.status(), shares: I.data.state('sec-universe-shares.json').state, ledger: I.data.state('forward-validation-ledger.json').state };
     });
@@ -315,7 +315,7 @@ async function scores(page) {
     assert.equal(reads.rank, '공식 순위 · 중앙 게시 V', 'the rank wording comes from the accessor');
     assert.equal(reads.stored, 'NOT_AVAILABLE', 'stored run after the start day, without sign-in and Worker address');
     assert.equal(reads.forward, 'NOT_PUBLISHED');
-    assert.equal(reads.draft, 'object');
+    assert.equal(reads.draft, 'OFFICIAL_V_REQUIRED:OFFICIAL_NOT_PUBLISHED', 'no central V publication: no TARGET v1 draft, never one from another V (2026-11-15)');
     assert.deepEqual([reads.status.google.connected, reads.status.universe.state, reads.status.sheet.set, reads.status.universe_source.set], [false, 'NOT_READ', false, false]);
     assert.deepEqual([reads.shares, reads.ledger], ['OK', 'NOT_PUBLISHED']);
     phase = 'A boundaries';
@@ -334,7 +334,7 @@ async function scores(page) {
     assert.ok(a.n > 500, 'the whole Universe plus TARGET rows');
     // DC-31: the central V only; without a publication every V is NA with OFFICIAL_NOT_PUBLISHED (never a device V).
     assert.deepEqual(a.expected, { id: 'OFFICIAL_CENTRAL', ko: '공식 V', note: '중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)' });
-    assert.deepEqual([a.v_source, a.engine_v_source], [a.expected, a.engine], 'the device result labels only the hidden TARGET engine result');
+    assert.deepEqual([a.v_source, a.engine_v_source, a.engine], [a.expected, false, false], 'no hidden engine V source and no device V source (2026-11-15: TARGET v1 reads the central V too)');
     assert.deepEqual(a.labels, ['OFFICIAL_CENTRAL|' + a.expected.ko], 'every row is the central V, labelled by the accessor');
     assert.deepEqual([a.v, a.vNullWithoutReason], [0, 0], 'no publication: every V is null and carries its reason');
     assert.deepEqual(a.msft, { v: null, reason: 'OFFICIAL_NOT_PUBLISHED' });
@@ -431,7 +431,7 @@ async function scores(page) {
     const c = await scores(page);
     assert.deepEqual(since(at), [], 'the score path sends nothing');
     assert.equal(c.state, 'READY'); assert.equal(c.same, true);
-    assert.deepEqual([c.v_source, c.engine_v_source], [c.expected, c.engine]);
+    assert.deepEqual([c.v_source, c.engine_v_source, c.engine], [c.expected, false, false]);
     assert.deepEqual(c.labels, ['OFFICIAL_CENTRAL|' + c.expected.ko]);
     assert.equal(c.v, 0, 'the Universe read gives no screen V (DC-31: M3 ranks only)'); assert.equal(c.json, a.json, 'the page is unchanged by the read');
     assert.deepEqual([c.vNullWithoutReason, c.vWithReason], [0, 0], 'a value has no reason, a null always has one');

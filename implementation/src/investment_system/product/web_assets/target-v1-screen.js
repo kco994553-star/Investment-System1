@@ -1,6 +1,6 @@
 /* TARGET v1 builder screen (owner decision 2026-10-14), mounted under the playbook TARGET v1 section (PlaybookScreen.mount).
-   Device only: the v2 scores (V needs this device's prices) and the price series for the set comparison stay in RAM; the
-   device stores only the draft ranking, the user's card answers, the confirmed TARGET v1 versions, the R-B / R-C rule-index
+   Device only: the scores (the central V publication's rows, read on a click) and the price series for the set comparison
+   stay in RAM; the device stores only the draft ranking, the user's card answers, the confirmed TARGET v1 versions, the R-B / R-C rule-index
    definitions (규칙 지수; 2026-10-15 T-SET, never the sheet ledger's user sets B/C/D) and the symbols the user added for TV1 scoring
    inside the playbook store (target_v1, part of the existing device backup), plus one judgement record per card answer.
    T-PRICE (2026-10-15): a TV1 name outside the 19 has no runner series, so after the user's click and a confirm dialog its daily
@@ -18,8 +18,11 @@
    calc_version are shown as a count beside it (they block through CALC_VERSION_MIXED, not freshness). No price and no score.
    PR-D (owner decision D8 (b), GSQ-024; spec 2.1.7, 6.1.2~6.1.4): the Build and Finalize clicks also read the central V publication
    qgv-official.json through QgvOfficial (next to the sec-qgv2.json re-read; never at mount). It is used only when it is valid,
-   verified, of the re-read file's calc_version and at most 2 completed New York sessions old; otherwise the device path ("임시 V") with one
-   line saying why. Labels follow the draft's V source; official V is shown with the publication's IEX attribution and basis day. */
+   verified, of the re-read file's calc_version and at most 2 completed New York sessions old. Owner decision 2026-11-15 (DC-31,
+   the planned 11/16 change): it is the builder's only V source. Without a usable publication no draft is made and TARGET v1
+   finalize waits (OFFICIAL_V_REQUIRED), with one line saying why; the device V path is gone. R-B (규칙 지수) is selected on such a
+   click from the same publication. Official V is shown with the publication's IEX attribution and its own price basis day. A
+   saved draft of the earlier device source is not shown (regenerate); a saved version of it stays readable as history. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const api=factory(root,node?require('./target-v1-builder.js'):root.TargetV1Builder,node?require('./target-v1-config-defaults.js'):root.TargetV1ConfigDefaults,node?require('./playbook-config-defaults.js'):root.PlaybookConfigDefaults,
   node?()=>require('./qgv-official.js'):()=>root.QgvOfficial);
@@ -32,10 +35,10 @@ const GRADE={CORE:'핵심',GENERAL:'일반',EQUAL:'균등'},SAFETY={PASS:'통과
 const EXCLUDE={TOTAL_NOT_AVAILABLE:'총점 없음',AXIS_COVERAGE_LOW:'축 산출 50% 미만',VALUE_TRAP_GATE:'가치 함정 관문',FINANCIAL_SAFETY_FAIL:'재무 안전 불통과',FINANCIAL_SAFETY_NOT_AVAILABLE:'재무 안전 자료 없음(NA)',SUBGROUP_MAX:'업종 하위 묶음 4개 상한',SECTOR_GROUP_MAX:'업종 묶음 40% 상한',SINGLE_MAX:'단일 10% 상한',USER_DISAGREE:'사용자 반대',IDENTITY_CONFLICT_WITHDRAWN:'신원 충돌로 사용 중지'};
 // Finalize blockers (finalizeBlockers / finalize error .blockers) as one line each.
 const BLOCKERS={TARGET_V1_CARDS_PENDING:'카드 응답 대기',TARGET_V1_SHORTFALL:'통과 종목 부족(조건 완화 없음)',TARGET_LIMITS_BLOCKED:'16절 한도 위반',V_FACTORS_V3_V4_MISSING:'V3(업종 대비)·V4(자기 과거 대비)가 빠진 V로 계산된 선정 종목이 있어 확정할 수 없음(초안은 가능 · 2026-10-23 결정)',SEC_QGV2_NOT_AVAILABLE:'최신 공개 sec-qgv2.json을 읽지 못함',
- V_SOURCE_CHANGED:'초안 이후 V 출처(공식 V ↔ 임시 V, 또는 중앙 V 게시본)가 바뀜 · 초안 재생성 필요',CALC_VERSION_MISSING:'calc_version 없음(이전 형식 파일)',CALC_VERSION_MIXED:'행마다 calc_version이 다르거나 NA 사유 없는 빈 행이 있음',ROW_DATA_STALE:'값이 있는 행의 SEC 수집 시각이 7일을 넘음(파일 as_of는 신선도로 보지 않음)',DRAFT_BASIS_CHANGED:'초안 이후 입력 기준(calc_version·유형 적용 범위·신원 충돌 사용 중지·샤드별 수집 시각)이 바뀜 · 초안 재생성 필요',FINANCIAL_SAFETY_RECHECK_FAILED:'선정 종목 재무 안전 재검사(최신 자료) 불통과',
+ V_SOURCE_CHANGED:'초안의 V 출처가 지금 쓸 수 있는 중앙 V 게시본과 다름(이전 기기 V 초안, 출처 기록 없는 초안 또는 다른 게시본) · 초안 재생성 필요',OFFICIAL_V_REQUIRED:'쓸 수 있는 중앙 V 게시본 없음(없음·검증 실패·calc_version 다름·기준일 오래됨) · 다른 V로 채우지 않음 · TARGET v1 확정 대기',CALC_VERSION_MISSING:'calc_version 없음(이전 형식 파일)',CALC_VERSION_MIXED:'행마다 calc_version이 다르거나 NA 사유 없는 빈 행이 있음',ROW_DATA_STALE:'값이 있는 행의 SEC 수집 시각이 7일을 넘음(파일 as_of는 신선도로 보지 않음)',DRAFT_BASIS_CHANGED:'초안 이후 입력 기준(calc_version·유형 적용 범위·신원 충돌 사용 중지·샤드별 수집 시각)이 바뀜 · 초안 재생성 필요',FINANCIAL_SAFETY_RECHECK_FAILED:'선정 종목 재무 안전 재검사(최신 자료) 불통과',
  Q_COVERAGE_LOW:'Q 산출 종목 90% 미만',G_COVERAGE_LOW:'G 산출 종목 90% 미만',NUMBER_CHECK_NOT_PASSED:'숫자 검증(10개 기업) 미통과',NUMBER_CHECK_CALC_VERSION_MISMATCH:'숫자 검증 calc_version이 현재 파일과 다름',DATE_INVALID:'날짜 오류',TARGET_V1_DRAFT_REQUIRED:'초안 없음'};
 const ERRORS={NUMBER_CHECK_NOT_PASSED:null,TARGET_V1_SHORTFALL:'통과 종목이 15개에 못 미쳐 확정할 수 없습니다(조건을 완화하지 않음).',TARGET_V1_CARDS_PENDING:'모든 카드에 응답해야 확정할 수 있습니다.',TARGET_LIMITS_BLOCKED:'16절 한도를 넘어 확정할 수 없습니다.',DISAGREE_REASON_REQUIRED:'반대 이유를 한 줄로 적어 주세요.',
- QGV2_NOT_READY:'QGV v2 점수가 이 기기에서 아직 계산되지 않았습니다.',OFFICIAL_INVALID:'중앙 V 게시본을 쓸 수 없습니다.',V_SOURCE_MIXED:'공식 V 초안은 게시본 점수로만 만듭니다.',TARGET_V1_DRAFT_REQUIRED:'먼저 초안을 만드세요.',REASON_INVALID:'이유는 줄바꿈 없이 200자 이내로 적어 주세요.',TARGET_V1_NOT_SELECTED:'현재 선정에 없는 종목입니다.'};
+ QGV2_NOT_READY:'중앙 V 게시본에 QGV v2 총점이 있는 종목이 없습니다.',OFFICIAL_V_REQUIRED:'쓸 수 있는 중앙 V 게시본이 없습니다 · TARGET v1 초안·확정은 중앙 V를 기다립니다(다른 V로 채우지 않음).',OFFICIAL_INVALID:'중앙 V 게시본을 쓸 수 없습니다.',V_SOURCE_MIXED:'공식 V 초안은 게시본 점수로만 만듭니다.',TARGET_V1_DRAFT_REQUIRED:'먼저 초안을 만드세요.',REASON_INVALID:'이유는 줄바꿈 없이 200자 이내로 적어 주세요.',TARGET_V1_NOT_SELECTED:'현재 선정에 없는 종목입니다.'};
 /* V factor count (user decision 2026-10-23, TargetV1Builder.vFactors): 'n/5' per candidate and a marker when V lacks V3 (업종 대비)
    or V4 (자기 과거 대비); such a name can stay in a draft but blocks finalize (V_FACTORS_V3_V4_MISSING). A draft row built before the
    count has no v_missing → 'NA' and the marker (V3·V4 not confirmed). */
@@ -48,13 +51,17 @@ function vReasonHtml(rows,attr){const bad=rows.filter(B.vIncomplete);if(!bad.len
  return '<p '+attr+'>V3(업종 대비)·V4(자기 과거 대비)가 빠진 V · '+esc(bad.map(r=>r.symbol+' V '+vText(r)).join(' · '))+' · 초안은 그대로 쓸 수 있지만 이 종목이 선정에 있으면 TARGET v1을 확정할 수 없습니다(2026-10-23 결정)</p>';}
 const today=()=>new Date().toISOString().slice(0,10),key=t=>String(t||'').replaceAll('.','-').toUpperCase();
 /* ---------- V source (PR-D, D8 (b)) ---------- */
-// QgvOfficial when the page loads it (lazy); absent → no central V step at all, the screen is the device path as before.
+// QgvOfficial when the page loads it (lazy); absent → no central V, so no draft (OFFICIAL_V_REQUIRED) and finalize waits.
 function reader(){try{const R=officialReader();return R&&typeof R.resolve==='function'?R:null;}catch(_){return null;}}
 // Why the central V was not used (QgvOfficial.REASONS, M4), one short line.
 const OFFICIAL_REASON={OFFICIAL_NOT_PUBLISHED:'중앙 V 게시본 없음(404)',OFFICIAL_UNAVAILABLE:'중앙 V 게시본을 읽지 못함',OFFICIAL_INVALID:'중앙 V 게시본 검증 실패',
  OFFICIAL_CALC_VERSION_DIFFERS:'게시본 calc_version이 최신 sec-qgv2.json과 다름',OFFICIAL_STALE:'게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)'};
-function reasonLine(code,fallback){return '공식 V 사용 안 함 · '+code+' · '+(OFFICIAL_REASON[code]||code)+(fallback?' → 임시 V':'');}
-const sourceOf=d=>B.V_SOURCES?.[d?.v_source]||B.V_SOURCE;
+function reasonLine(code){return '공식 V 사용 불가 · '+code+' · '+(OFFICIAL_REASON[code]||code)+' · 초안·확정은 중앙 V 게시본을 기다림';}
+const sourceOf=d=>B.V_SOURCES[d?.v_source]||B.V_SOURCE;
+// A saved draft that is not OFFICIAL_CENTRAL (the earlier device source, or none recorded): its V values are never shown.
+const legacyDraft=d=>!!d&&d.v_source!==B.V_SOURCE.id;
+// A saved version's source as history (an old version of the earlier device source stays readable; none recorded = 출처 기록 없음).
+const versionSource=v=>B.V_SOURCES[v?.v_source]||B.LEGACY_V_SOURCES[v?.v_source]||{ko:'출처 기록 없음(이전 기록)'};
 /* GSQ-024: official V is shown with the IEX attribution sentence, its terms link and the basis wording, from the publication read at
    the click; after a reload (no publication in memory) from the reader's constants, which every accepted publication equals. An
    OFFICIAL_CENTRAL draft with neither (QgvOfficial missing on the page) or without its publication record shows no V value and no
@@ -64,8 +71,9 @@ const officialHidden=(draft,pub)=>draft?.v_source==='OFFICIAL_CENTRAL'&&!attribu
 function attributionHtml(draft,pub){const a=attributionOf(draft,pub);if(!a)return '';
  return '<p class="small" data-tv1-attribution><span data-tv1-attribution-label>'+esc(a.label_ko)+'</span> · 가격 기준일 '+esc(draft.official.price_basis_date)+' · <span data-tv1-attribution-text>'+esc(a.text)+'</span>'
   +(/^https:\/\//.test(a.terms_url)?' <a data-tv1-terms href="'+esc(a.terms_url)+'" target="_blank" rel="noopener noreferrer">이용 약관</a>':'')+'</p>';}
-// The publication id and basis day ride only with an OFFICIAL_CENTRAL draft (never on a 임시 V line).
+// The publication id and basis day ride only with an OFFICIAL_CENTRAL draft (a legacy draft is never shown).
 function officialText(draft){const o=draft?.v_source==='OFFICIAL_CENTRAL'?draft.official:null;return o?' · 가격 기준일 '+o.price_basis_date+' · 게시본 '+String(o.publication_id).slice(0,19):'';}
+const LEGACY_HIDDEN='<section class="card" data-tv1-legacy-hidden><h2>TARGET v1 초안</h2><p>이전 V 출처(기기 V 또는 출처 기록 없음)로 만든 초안 · 지금 V 출처는 중앙 V 게시본만이라 점수와 후보를 표시하지 않습니다 · 위 버튼으로 초안을 다시 만드세요</p></section>';
 const OFFICIAL_HIDDEN='<section class="card" data-tv1-official-hidden><h2>TARGET v1 초안</h2><p>중앙 V 게시본으로 만든 초안 · IEX 출처 문구를 함께 보일 수 없어 점수와 후보를 표시하지 않습니다 · 페이지를 새로 고치거나 초안을 다시 만드세요</p></section>';
 function typeNames(types){const list=g.TypeConfigDefaults?.types||[];return types.length?types.map(id=>list.find(t=>t.id===id)?.name||id).join('·'):'미분류';}
 function subgroupName(id){if(!id)return '확인 불가';const row=PCFG.sector_checks.find(s=>s.id===id);if(row)return row.name;const combined=PCFG.portfolio_limits.combined_groups.find(x=>x.id===id);if(combined)return combined.ko;if(id==='technology_hardware')return '기술 하드웨어';if(id==='general_industrial')return '일반 산업';return id.startsWith('industry:')?'업종군 '+id.slice(9):id;}
@@ -185,10 +193,12 @@ function rawDataHtml({playbook=g.PlaybookScreen,storage=g.localStorage,config=DE
  try{const state=readState(playbook,storage);return rawHtml(state,state.draft?B.currentSelection(state,config):null,config);}
  catch(_){return '<p data-tv1-raw>확인 불가 · TARGET 기기 기록을 읽을 수 없습니다.</p>';}
 }
+// The latest saved version with its V source as recorded (history: an earlier device-source version keeps its own label).
+function versionHtml(state){const v=B.latestVersion(state);return v?'<p data-tv1-version>'+esc('저장된 TARGET '+v.version+' · '+v.date+' · V 출처 '+versionSource(v).ko+(v.price_basis_date?' · 가격 기준일 '+v.price_basis_date:''))+'</p>':'';}
 /* ---------- mount ---------- */
 async function mount(host,context={}){
  if(!host)return;const P=context.playbook||g.PlaybookScreen,cfg=context.config||DEFAULT_CFG,storage=context.storage||g.localStorage,date=context.date||today(),catalog=context.catalog||await context.catalogPromise,screens=context.screens||{};
- const inputs=screens?.['sec-qgv2.json']||null,computed=context.computed||null,ready=computed?.v2_state==='READY',universeCodes=context.universeCodes||[],closesFor=context.closesProvider||defaultCloses;
+ const inputs=screens?.['sec-qgv2.json']||null,universeCodes=context.universeCodes||[],closesFor=context.closesProvider||defaultCloses;
  const loadPublished=context.publishedProvider||latestPublished;let lastCheck=null,lastFresh=null;
  // PR-D: the central V at the click (QgvOfficial.resolve: one no-store read, never throws). officialSource / nyToday (+ nyMinutes):
  // test seams; otherwise the device's New York day and time from one clock read (completed sessions, M4).
@@ -206,24 +216,25 @@ async function mount(host,context={}){
   return{basis,fresh:{state:'READY',as_of:typeof published.as_of==='string'?published.as_of:null,mixed,...B.freshnessRows(published,{finalizeDate:date,basis,shardOf,cfg})}};};
  const readCloses=context.scoringClosesProvider||sheetCloses,syncPrices=context.priceSync||sheetSync,ask=context.confirm||(t=>g.confirm(t)),storeOf=context.priceStoreStatus||storeState;
  let state;try{state=readState(P,storage);}catch(_){host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더</h2><p>확인 불가 · 기기 기록을 읽을 수 없습니다.</p></section>';return;}
- let message='',armed=false/* false | 'auto' | 'official' */,round=null,cmp=null,review=null,priceNote='';const cover=B.coverage(inputs,cfg);
+ let message='',armed=false,round=null,cmp=null,review=null,priceNote='';const cover=B.coverage(inputs,cfg);
  const save=next=>{writeState(P,storage,next);state=next;};
- // C: R-B starts the day v2 is ready on this device and is re-selected on every quarterly rebalance day (no backfill).
- if(ready&&B.ruleBDue(state,date,cfg)){try{const eligible=B.universeRows({computed,inputs,universeCodes,existing:existingSymbols(catalog),cfg}).filter(r=>!B.exclusions(r,cfg).length),seg=B.ruleBSegment(eligible,date,cfg);if(seg.ready){const{ready:_,...row}=seg;save({...state,rule_b:[...state.rule_b,row]});message='R-B(규칙 지수) 선정 · '+date+' · '+seg.rows.length+'종목';}}catch(_){}}
+ // C: R-B starts on the first click that read a usable central V publication and is re-selected on every quarterly rebalance day
+ // (no backfill), from that publication's rows (2026-11-15: the central V only; nothing is selected without one). → status text.
+ const ruleBFrom=pub=>{if(!pub||!B.ruleBDue(state,date,cfg))return '';try{const eligible=B.universeRows({computed:B.officialComputed(pub),inputs,universeCodes,existing:existingSymbols(catalog),cfg}).filter(r=>!B.exclusions(r,cfg).length),seg=B.ruleBSegment(eligible,date,cfg);
+  if(!seg.ready)return '';const{ready:_,...row}=seg;save({...state,rule_b:[...state.rule_b,{...row,v_source:B.V_SOURCE.id}]});return ' · R-B(규칙 지수) 선정 · '+date+' · '+seg.rows.length+'종목';}catch(_){return '';}};
  // T-PRICE: series of the tracked TV1 names, read from the user's sheet into RAM, fed to the playbook scoring table.
  const refreshScoring=async()=>{const names=scoringNames(P,storage,catalog,inputs,state,cfg);if(!names.tracked.length||!P.addScoringSeries)return 0;
   const syms=[...new Set(names.tracked.flatMap(n=>[n.price_symbol,n.sector_symbol]).concat(cfg.scoring_prices.benchmark))],closes=await readCloses(syms),series={};
   for(const n of names.tracked){const s=B.scoringSeries(n,closes,cfg);if(s)series[n.symbol]=s;}P.addScoringSeries(series);
   const table=host.ownerDocument?.querySelector('[data-playbook-scoring]');if(table&&P.scoringSeries){let records=[];try{records=P.read(storage).records;}catch(_){records=[];}table.outerHTML=P.scoringHtml(records,P.scoringSeries());}
   return Object.keys(series).length;};
- const draw=()=>{if(!host.isConnected)return;const sel=state.draft?B.currentSelection(state,cfg):null,hidden=officialHidden(state.draft,lastOfficial);
-  host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더 · 규칙 기반 선정</h2><p class="small">QGV v2 기준 · '+esc(cfg.config_version)+' · v0 · UNCALIBRATED · 이 기기에서 계산(가격은 RAM에만) · 공개·전송 없음</p><p data-tv1-coverage>'+esc(cover.label||'커버리지 조건 충족 (Q '+cover.q+'/'+cover.size+', G '+cover.g+'/'+cover.size+')')+'</p><p data-tv1-readiness>'+(ready?'QGV v2 계산됨 · 기기 가격 '+esc(computed.priced_codes??'NA')+'종목':'NA · QGV v2 총점에는 V가 필요하고 V에는 이 기기의 가격이 필요합니다(유니버스 시트 읽기·가격 저장소). '+(R?'기기 가격으로 만드는 초안은 비활성 · 중앙 V 게시본으로는 아래 버튼으로 만들 수 있음':'초안 만들기 비활성'))+'</p>'
-   // M3: before a click nothing claims 임시 V or 공식 V. Without device prices only the central V can make a draft (its own button).
-   +(R?'<p class="small" data-tv1-v-plan>V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V, 없으면 임시 V'+(ready?'':' · 이 기기 가격이 없으면 공식 V로만 만들 수 있습니다')+'</p>':'')
-   +'<button type="button" data-tv1-build '+(ready?'':'disabled')+'>'+(armed==='auto'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':state.draft?'규칙으로 초안 다시 만들기':'규칙으로 초안 만들기')+'</button>'
-   +(R&&!ready?'<button type="button" data-tv1-build-official>'+(armed==='official'?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':'중앙 V 게시본으로 초안 '+(state.draft?'다시 ':'')+'만들기')+'</button>':'')
+ const draw=()=>{if(!host.isConnected)return;const sel=state.draft?B.currentSelection(state,cfg):null,legacy=legacyDraft(state.draft),hidden=legacy||officialHidden(state.draft,lastOfficial);
+  host.innerHTML='<section class="card" data-tv1-builder><h2>TARGET v1 빌더 · 규칙 기반 선정</h2><p class="small">QGV v2 기준 · '+esc(cfg.config_version)+' · v0 · UNCALIBRATED · V는 중앙 V 게시본만 · 선정은 이 기기에서 계산 · 공개·전송 없음</p><p data-tv1-coverage>'+esc(cover.label||'커버리지 조건 충족 (Q '+cover.q+'/'+cover.size+', G '+cover.g+'/'+cover.size+')')+'</p><p data-tv1-readiness>'+(R?'V 출처: 중앙 V 게시본만 · 초안 만들기·확정 버튼을 누를 때 qgv-official.json을 읽어 확인 · 쓸 수 있는 게시본이 없으면 초안을 만들지 않고 TARGET v1 확정을 미룸(다른 V로 채우지 않음)':'NA · 중앙 V 판독기(QgvOfficial)가 이 페이지에 없어 초안을 만들 수 없습니다 · TARGET v1 확정 대기')+'</p>'
+   // M3: before a click nothing claims 공식 V; the publication's own price basis day is shown with the draft it made.
+   +(R?'<p class="small" data-tv1-v-plan>V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V(게시본의 가격 기준일 그대로) · 없으면 초안 없음 · 확정 대기</p>':'')
+   +'<button type="button" data-tv1-build '+(R?'':'disabled')+'>'+(armed?'다시 만들면 카드 응답이 초기화됩니다 · 한 번 더 누르세요':state.draft?'중앙 V 게시본으로 초안 다시 만들기':'중앙 V 게시본으로 초안 만들기')+'</button>'
    +(officialNote?'<p class="small" data-tv1-official-reason>'+esc(officialNote)+'</p>':'')+'<p role="status" data-tv1-status>'+esc(message)+'</p></section>'
-   +(hidden?OFFICIAL_HIDDEN:'')+(state.draft&&!hidden?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+(R?' 중앙 V 게시본도 다시 읽어 초안의 V 출처와 같은지 확인합니다(다르면 초안 재생성).':'')+'</p>'+precheckHtml(fresh,cfg,date)+'<button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg,lastFresh)+''+(state.versions.length?'<p data-tv1-version>저장된 TARGET '+esc(B.latestVersion(state).version+' · '+B.latestVersion(state).date+' · V 출처 '+(B.V_SOURCES?.[B.latestVersion(state).v_source]||B.V_SOURCE).ko+(B.latestVersion(state).price_basis_date?' · 가격 기준일 '+B.latestVersion(state).price_basis_date:''))+'</p>':'')+'</section>':'')
+   +(legacy?LEGACY_HIDDEN+versionHtml(state):hidden?OFFICIAL_HIDDEN:'')+(state.draft&&!hidden?candidateTable(state.draft,cfg,lastOfficial)+selectionHtml(sel,cfg)+'<section data-tv1-cards><h2>카드 응답 · '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+'</h2><p class="small">반대는 한 줄 이유가 필요하고 그 종목은 빠지며 다음 순위가 자동으로 들어옵니다(한도 재검사). 모름은 유지하고 미확인으로 기록합니다. 모든 응답은 판정 기록으로 저장되어 나중에 채점됩니다.</p>'+sel.rows.map(r=>cardHtml(r,sel.answers[key(r.symbol)],cfg,sourceOf(state.draft))).join('')+'</section><section class="card" data-tv1-confirm><h2>TARGET v1 확정</h2><p>응답 '+(sel.rows.length-sel.pending.length)+'/'+sel.rows.length+' · '+esc(limitsText(sel.limits))+'</p>'+numberCheckHtml(cfg)+'<p data-tv1-v-source>V 출처: '+esc(sourceOf(state.draft).ko+' · '+sourceOf(state.draft).note+officialText(state.draft))+' · 확정 기록에 남습니다</p>'+attributionHtml(state.draft,lastOfficial)+scheduleHtml(state,cfg,date)+'<p class="small">확정 버튼을 누르는 순간 최신 공개 sec-qgv2.json을 다시 읽어 calc_version·값이 있는 행의 SEC 수집 시각 '+cfg.finalize_check.freshness_max_days+'일 이내(파일 as_of 아님)·초안 입력 기준·선정 종목 재무 안전·Q·G 산출 '+Math.round(cfg.coverage.ready_min_ratio*100)+'% 이상을 검사합니다(초안 때 결과는 쓰지 않음).'+' 중앙 V 게시본도 다시 읽습니다 · 쓸 수 있는 게시본이 없으면 확정을 미루고(OFFICIAL_V_REQUIRED), 초안과 다른 게시본이면 초안을 다시 만듭니다.</p>'+precheckHtml(fresh,cfg,date)+'<button type="button" data-tv1-finalize '+(sel.complete&&!sel.shortfall?'':'disabled')+'>TARGET v1 확정 저장</button>'+checkHtml(lastCheck,cfg,lastFresh)+''+versionHtml(state)+'</section>':'')
    +rebalanceHtml(state,catalog,context.ram,cfg,date,round)+transitionHtml(state,cfg,date,cmp,review)+setsHtml(state,cfg,date)+pricesHtml(scoringNames(P,storage,catalog,inputs,state,cfg),storeOf(),cfg,priceNote);
   bind(sel);};
  // 확정 차단 점검 button: one read of the published file on the user's click; only the check block is repainted (card inputs kept).
@@ -234,18 +245,16 @@ async function mount(host,context={}){
  const run=fn=>{try{fn();}catch(e){say(ERRORS[e.message]===null?cfg.number_check.message:ERRORS[e.message]||e.message);}};
  const bind=sel=>{
   // The draft records its input basis (calc_version, as_of, per-shard acquisition) when the re-read file is the page's file.
-  // PR-D M3/M4: the central V is read at this click next to sec-qgv2.json; usable → the draft from its rows (official), else the
-  // device scores as before (mode 'auto'), or no draft (mode 'official': the button shown without device prices).
-  const buildWith=async mode=>{if(state.draft&&state.answers.length&&armed!==mode){armed=mode;draw();return;}armed=false;
+  // PR-D M3/M4: the central V is read at this click next to sec-qgv2.json; usable → the draft from its rows (official). Not usable
+  // (or no QgvOfficial) → no draft, the reason line, and TARGET v1 waits (2026-11-15: the central V only, no other V source).
+  const buildWith=async()=>{if(state.draft&&state.answers.length&&!armed){armed=true;draw();return;}armed=false;
    const seq=++freshSeq,published=await loadPublished();if(!host.isConnected)return;const read=await freshFor(published);if(!host.isConnected)return;if(seq===freshSeq)fresh=read.fresh;
    const off=R?await officialNow(published):null;if(!host.isConnected)return;
    const basis=published&&inputs?.as_of&&published.as_of===inputs.as_of?read.basis:null;
-   const pub=off?.ok?off.payload:null;if(pub)lastOfficial=pub;officialNote=off&&!pub?reasonLine(off.reason,mode==='auto'):'';
-   if(mode==='official'&&!pub){message='공식 V 초안 불가 · 임시 V 초안에는 이 기기의 가격이 필요합니다';draw();return;}
-   run(()=>{const draft=pub?B.buildDraft({computed:B.officialComputed(pub),inputs,universeCodes,existing:existingSymbols(catalog),date,basis,official:pub,cfg}):B.buildDraft({computed,inputs,universeCodes,existing:existingSymbols(catalog),date,basis,cfg});save({...state,draft,answers:[]});message='초안 만듦 · 통과 '+draft.eligible_count+' · 후보 '+B.candidates(draft,cfg).length+(basis?' · 입력 기준 '+(basis.calc_version||'calc_version 없음'):' · 입력 기준 기록 불가(확정 때 재생성)')+(pub?' · 공식 V(가격 기준일 '+pub.times.price_basis_date+')':'');draw();});
-   if(off&&!pub)draw();};
-  const build=host.querySelector('[data-tv1-build]');if(build)build.onclick=()=>buildWith('auto');
-  const buildOfficial=host.querySelector('[data-tv1-build-official]');if(buildOfficial)buildOfficial.onclick=()=>buildWith('official');
+   const pub=off?.ok?off.payload:null;if(pub)lastOfficial=pub;officialNote=off&&!pub?reasonLine(off.reason):'';
+   if(!pub){message='초안 만들지 않음 · '+(R?'쓸 수 있는 중앙 V 게시본 없음':'중앙 V 판독기 없음')+' · TARGET v1 확정은 중앙 V를 기다립니다(다른 V로 채우지 않음)';draw();return;}
+   run(()=>{const draft=B.buildDraft({computed:B.officialComputed(pub),inputs,universeCodes,existing:existingSymbols(catalog),date,basis,official:pub,cfg});save({...state,draft,answers:[]});message='초안 만듦 · 통과 '+draft.eligible_count+' · 후보 '+B.candidates(draft,cfg).length+(basis?' · 입력 기준 '+(basis.calc_version||'calc_version 없음'):' · 입력 기준 기록 불가(확정 때 재생성)')+' · 공식 V(가격 기준일 '+pub.times.price_basis_date+')'+ruleBFrom(pub);draw();});};
+  const build=host.querySelector('[data-tv1-build]');if(build)build.onclick=()=>buildWith();
   for(const card of host.querySelectorAll('[data-tv1-card]'))for(const b of card.querySelectorAll('[data-tv1-answer]'))b.onclick=()=>run(()=>{
    const symbol=card.dataset.tv1Card,kind=b.dataset.tv1Answer,reason=card.querySelector('[data-tv1-reason]').value,row=sel.rows.find(r=>r.symbol===symbol);
    const next=B.answer(state,{symbol,answer:kind,reason,date},cfg),saved=next.answers[next.answers.length-1];
@@ -256,19 +265,19 @@ async function mount(host,context={}){
   const fin=host.querySelector('[data-tv1-finalize]');if(fin)fin.onclick=async()=>{fin.disabled=true;say('최신 공개 파일 다시 읽는 중');const seq=++freshSeq,published=await loadPublished();if(!host.isConnected)return;
    const read=await freshFor(published);if(!host.isConnected)return;const basis=read.basis;if(seq===freshSeq)fresh=read.fresh;lastFresh=read.fresh;
    // PR-D M3: the central V re-read at this click too; the source usable now is checked against the draft's (V_SOURCE_CHANGED).
-   const off=R?await officialNow(published):null;if(!host.isConnected)return;const official=off?.ok?off.payload:null;if(official)lastOfficial=official;officialNote=off&&!official?reasonLine(off.reason,false):'';
+   const off=R?await officialNow(published):null;if(!host.isConnected)return;const official=off?.ok?off.payload:null;if(official)lastOfficial=official;officialNote=off&&!official?reasonLine(off.reason):'';const ruleB=ruleBFrom(official);
    lastCheck=B.finalizeBlockers(state,{date,published,basis,official,cfg});
    // Changed input basis on a valid file → regenerate the draft (same-symbol answers kept); needs the page's scores of that file.
    const fileOk=!!lastCheck.check&&!lastCheck.check.reasons.some(r=>['SEC_QGV2_NOT_AVAILABLE','CALC_VERSION_MISSING','CALC_VERSION_MIXED'].includes(r));
    if(lastCheck.basis_changed&&fileOk){
-    // From the source usable now: the publication's rows when it is usable, else the page's device scores (the rules as before).
+    // Only from the central V usable now (its rows); without one the draft stays and TARGET v1 waits (OFFICIAL_V_REQUIRED).
     const moved=lastCheck.v_source_changed===true;
-    if((official||ready)&&inputs?.as_of&&published.as_of===inputs.as_of){try{const r=B.regenerateDraft(state,{computed:official?B.officialComputed(official):computed,inputs,universeCodes,existing:existingSymbols(catalog),date,basis,official,cfg});save(r.state);lastCheck=B.finalizeBlockers(state,{date,published,basis,official,cfg});
-      message=(moved?'V 출처가 바뀌어('+sourceOf(r.state.draft).ko+') ':'입력 기준이 바뀌어 ')+'초안을 다시 만들었습니다 · 응답 유지 '+r.carried.length+' · 새로 확인할 종목 '+r.fresh.length+(r.fresh.length?' ('+r.fresh.join(' · ')+')':'')+' · 카드 확인 후 다시 확정하세요';}catch(e){message='초안 재생성 불가 · '+(ERRORS[e.message]||e.message);}}
-    else message=moved?'V 출처(공식 V ↔ 임시 V, 또는 중앙 V 게시본)가 초안과 달라 초안을 다시 만들어야 합니다'+(official?'':' · 임시 V로 만들려면 이 기기의 가격이 필요합니다')+' · 페이지를 새로 고친 뒤 다시 확정하세요':'입력 기준(calc_version·유형 적용 범위·신원 충돌 사용 중지·샤드별 수집 시각)이 초안과 달라 초안을 다시 만들어야 합니다 · 페이지를 새로 고친 뒤 다시 확정하세요';
+    if(official&&inputs?.as_of&&published.as_of===inputs.as_of){try{const r=B.regenerateDraft(state,{computed:B.officialComputed(official),inputs,universeCodes,existing:existingSymbols(catalog),date,basis,official,cfg});save(r.state);lastCheck=B.finalizeBlockers(state,{date,published,basis,official,cfg});
+      message=(moved?'V 출처가 바뀌어(중앙 V 게시본 '+String(official.publication_id).slice(0,19)+' · 가격 기준일 '+official.times.price_basis_date+') ':'입력 기준이 바뀌어 ')+'초안을 다시 만들었습니다 · 응답 유지 '+r.carried.length+' · 새로 확인할 종목 '+r.fresh.length+(r.fresh.length?' ('+r.fresh.join(' · ')+')':'')+' · 카드 확인 후 다시 확정하세요'+ruleB;}catch(e){message='초안 재생성 불가 · '+(ERRORS[e.message]||e.message);}}
+    else message=!official?'쓸 수 있는 중앙 V 게시본이 없어 TARGET v1 확정을 미룹니다(OFFICIAL_V_REQUIRED · 다른 V로 채우지 않음) · 게시본이 다시 유효해지면 초안을 다시 만드세요':moved?'V 출처(중앙 V 게시본)가 초안과 달라 초안을 다시 만들어야 합니다 · 페이지를 새로 고친 뒤 다시 확정하세요':'입력 기준(calc_version·유형 적용 범위·신원 충돌 사용 중지·샤드별 수집 시각)이 초안과 달라 초안을 다시 만들어야 합니다 · 페이지를 새로 고친 뒤 다시 확정하세요';
     draw();return;}
-   try{const next=B.finalize(state,{date,published,basis,official,cfg});save(next);const v=B.latestVersion(next);message='TARGET '+v.version+' 저장 · calc_version '+v.calc_version+' · R-C(규칙 지수) '+date+' 시작 · 원본 v0 유지'+(v.publication_id?' · 공식 V 게시본 '+v.publication_id.slice(0,19)+' · 가격 기준일 '+v.price_basis_date:'');}
-   catch(e){message=ERRORS[e.message]===null?cfg.number_check.message:e.message==='NUMBER_CHECK_CALC_VERSION_MISMATCH'?cfg.number_check.mismatch_message:ERRORS[e.message]||('확정 불가 · '+(BLOCKERS[e.message]||e.message));}draw();};
+   try{const next=B.finalize(state,{date,published,basis,official,cfg});save(next);const v=B.latestVersion(next);message='TARGET '+v.version+' 저장 · calc_version '+v.calc_version+' · R-C(규칙 지수) '+date+' 시작 · 원본 v0 유지 · 공식 V 게시본 '+v.publication_id.slice(0,19)+' · 가격 기준일 '+v.price_basis_date+ruleB;}
+   catch(e){message=(ERRORS[e.message]===null?cfg.number_check.message:e.message==='NUMBER_CHECK_CALC_VERSION_MISMATCH'?cfg.number_check.mismatch_message:ERRORS[e.message]||('확정 불가 · '+(BLOCKERS[e.message]||e.message)))+ruleB;}draw();};
   bindPrecheck();
   for(const b of host.querySelectorAll('[data-tv1-round]'))b.onclick=()=>{round=Number(b.dataset.tv1Round);draw();};
   const load=host.querySelector('[data-tv1-load-compare]');if(load)load.onclick=async()=>{try{say('가격 불러오는 중 · 이 기기 RAM');const v0=v0Weights(catalog),bSyms=state.rule_b.flatMap(s=>s.rows.map(r=>r.symbol)),cSyms=(state.versions.find(v=>v.version===state.rule_c?.version)?.rows||[]).map(r=>r.symbol);

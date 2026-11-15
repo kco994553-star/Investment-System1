@@ -5,8 +5,9 @@
    reason (naText: calculated factors n/total, axis below 50% of its weight); never v1. v1 survives only in the forward-validation
    ledger comparison record (tools/forward_validation_ledger.py), which does not read this module.
    Owner decision 2026-10-31 (DC-31, device V abolished): screens show only the central V of qgv-official.json (officialPage /
-   compute({publication}): the publication's own Q·G·V, totals and ranks, no engine call and no price). The device path
-   (collectQuotes / pageResult: this device's prices in RAM) stays only for the TARGET v1 builder until the 11/16 PR. Nothing here
+   compute({publication}): the publication's own Q·G·V, totals and ranks, no engine call and no price). The TARGET v1 builder too
+   reads the central V only (owner decision 2026-11-15). The device path (collectQuotes / pageResult: this device's prices in RAM)
+   is no screen's or builder's V source; its remaining caller is PlaybookScreen.prepareScores (see there). Nothing here
    is stored, logged or sent, and no result carries a price, market cap or EV. Missing is null, never 0. */
 (function(root,factory){const node=typeof module==='object'&&module.exports;
  const dep=(file,name)=>node?()=>require('./'+file):()=>root[name];
@@ -84,7 +85,7 @@ const PERSONAL_LABEL=['개인 설정 미리보기 · 공식 점수 아님','Pers
    independent facts of one shown value, read only from the profile it was computed with. Labels only: nothing is computed here.
    weights  OFFICIAL = the official default profile (QgvV2.DEFAULT_PRESET, gate GATE_DEFAULT, official weights) | PERSONAL;
    setting  the personal choices behind the value: PRESET (another preset), GATE_OFF (gate toggled), WEIGHTS (personal weights);
-   prices   DEVICE = this device's prices went in (the TARGET v1 device result only, until 11/16) | NONE;
+   prices   DEVICE = this device's prices went in (the device path only: collectQuotes / pageResult) | NONE;
    source   CENTRAL = read as published in qgv-official.json (central = true: the official Q·G·V, total and rank) |
             DEVICE_COMPUTED = computed on this device (a personal preview, from published factor scores without prices) |
             PUBLISHED = read as published (sec-qgv2.json Q·G axes). kind: 'QGV' (a total, rank, list or N set: axis weights and gate count), 'V' (the V axis alone: preset and
@@ -420,7 +421,7 @@ function judgmentRows(computed){
   out[cid]={q:p.q,g:p.g,partial:p.partial,v:p.v,total:p.total,total_reason:p.total_reason||null,version:p.version,factors_available:p.factors_available,factors_total:p.factors_total,flags:[...p.flags],value_trap:p.flags.includes('VALUE_TRAP_CAUTION'),value_trap_gate:p.value_trap_gate===true,compare:null};}
  return out;
 }
-/* TARGET v1 ONLY until the 11/16 PR (DC-31: no screen reads a device V; the builder keeps its V source until then).
+/* Device path (DC-31: no screen reads a device V; since 2026-11-15 not the TARGET v1 builder either, it reads the central V).
    Device quotes for the v2 cross-section (RAM): the Universe tab read on this device (PrivateSubsetView.prices) first, then
    this device's stored/sheet/Worker quote per shown company (DeviceValuation.deviceQuote), plus PriceStore month-end closes
    for the own-history factor. Never stored or sent. */
@@ -516,7 +517,7 @@ function codeRow(computed,code){const r=rowOf(computed,code);return r&&(r.code==
 // The page identities plus a caller's own identity that is not a Universe code of the file (pageResult and officialPage alike).
 function pageIdentityList(v2Inputs,identities){const given=cleanIds(identities),seen=new Set(),ids=[];
  for(const c of pageIds?[...pageIds,...given.filter(c=>c.company_id.startsWith('TARGET:')||!Object.hasOwn(v2Inputs.records,c.company_id))]:given)if(!seen.has(c.company_id)){seen.add(c.company_id);ids.push(c);}return ids;}
-// DEVICE page result: the TARGET v1 builder's device V only, until the 11/16 PR (DC-31). Screens read officialPage.
+// DEVICE page result (PlaybookScreen.prepareScores only; DC-31). Screens and the TARGET v1 builder (2026-11-15) read the central V.
 function pageResult(win,{v2Inputs,catalog=null,identities=[],preset,gate}={}){
  if(!v2Inputs||!object(v2Inputs.records))return Promise.resolve(null);
  // preset/gate not given (undefined): the registered official page profile (S06), else the engine defaults.

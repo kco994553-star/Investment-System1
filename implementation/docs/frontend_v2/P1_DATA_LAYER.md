@@ -46,7 +46,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   | `subscribe(fn, {signal})` | 맡아 두었다가 준비되면 층에 붙인다(그전에 signal이 abort되면 버린다) | 아무것도 붙이지 않는다 |
 
   - 층 파일이 실행되면 IS2의 대리 객체를 진짜로 바꾼다. 화면이 미리 잡아 둔 대리 객체도 준비 뒤에는 모든 호출을 층으로 넘긴다. 실패하면 대리 객체를 IS2에 다시 놓는다(반쯤 만든 층에 닿지 않게).
-  - 옛 모듈과 engines에만 넘기는 view·결과(`prices.priceView`·`storeFacade`, `store.storage`, `qgv.scoreView`·`forEngines`·`engineInputs`)는 대리 객체에 없다.
+  - 옛 모듈과 engines에만 넘기는 view·결과(`prices.priceView`·`storeFacade`, `store.storage`, `qgv.scoreView`·`centralComputed`·`engineInputs`)는 대리 객체에 없다(`forEngines`는 2026-11-15에 지움).
 - **화면 규칙**
   - 화면 파일은 불러올 때 층을 건드리지 않는다(노드 시험). 층 값은 렌더 때 읽는다. 화면 논리 파일도 불러올 때는 `IS2`에 자기 함수만 놓는다.
   - **화면의 첫 그림 파일은 뼈대만 둔다**(P2-1, Main 결정 2026-10-25). 첫 그림 파일에는 동기로 그리는 자리(제목, 입력 요소, 머리, 카드 틀과 `parts.pending`)와, 층 없이 되는 최소 동작(예: 검색 상자에 입력하면 '불러오는 중')만 둔다. 색인 만들기·목록 논리·칩·카드 채우기·저장 버튼처럼 `IS2.ready` 뒤에만 도는 논리는 `LOAD_ORDER`의 화면 논리 파일에 둔다.
@@ -169,7 +169,7 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
 - `page({signal})` → Page (DC-31, 10절).
   - 같은 입력이면 모든 화면이 같은 객체를 받는다.
   - 점수는 `QgvScores.officialPage`가 `data.official()`의 게시본으로 만든다. 공식 기본 프로필이고, 엔진 호출도 가격도 없다.
-  - 숨은 TARGET 결과(`forEngines`, 11/16까지)만 `QgvScores.pageResult(scoreView, …)`로 계산한다. scoreView는 네트워크를 쓰지 않는다(`SCORE_PATH_NO_NETWORK`). 가격은 RAM에 있는 것만 쓰고, 기기 DB에 저장된 시세는 읽지 않는다(DC-18, 3절 STOPPED).
+  - (2026-11-15에 지움) 숨은 TARGET 결과(`forEngines`)는 없다. 예전에는 `QgvScores.pageResult(scoreView, …)`로 계산했다. scoreView는 네트워크를 쓰지 않는다(`SCORE_PATH_NO_NETWORK`). 가격은 RAM에 있는 것만 쓰고, 기기 DB에 저장된 시세는 읽지 않는다(DC-18, 3절 STOPPED).
 - 접근 함수
   - `rankLabel(x, en)`: 순위 옆에 붙이는 글. x는 Page, 미리보기, 행, V 출처 id다. 공식 Page는 '공식 순위 · 중앙 게시 V', 미리보기와 그 행은 '내 설정 순위 · 공식 V로 다시 계산 · 공식 순위 아님'이다(DC-31). 모르는 출처는 공식이라고 부르지 않는다. Page와 미리보기에는 같은 글이 `rank_label`로 들어 있다.
   - `rows(page, {scope:'ALL'|'UNIVERSE'|'TARGET'})`: QgvScores 순서 그대로 준다. 정렬, 모집단, 분류 필터는 P2-2a가 `screen-qgv-live.js`의 작은 순수 이식(옛 `leaderboard-screen.js`의 `sortRows`·`sicOf`·`populationOf`·`classificationOf` 업종 부분·`filterClassifications`, 각 줄에 원래 함수와 줄 번호)으로 붙였다(Main 결정 2026-10-25). `LeaderboardScreen`(67 KB)과 `StatRadar`는 불러오지 않는다. 같은 결과는 노드 대조 시험(`web_app_qgv_screen_node_test.js`)과 고정 벡터가 묶고, P3가 옛 파일을 지우면 사본은 하나만 남는다. 레이더는 P2-2c에서 정한다.
@@ -182,10 +182,10 @@ P2 화면 레인이 쓰는 함수, 기록 모양, 사유 코드, 지켜야 할 �
   - `reasonText(code, en)`, `V_SOURCES`, `vSource()`.
     - P2-2a가 더한 글(qgv.js `TEXT`, Main 결정 2026-10-25, 보드 문구가 있으면 그대로): 가격 버튼·M3 코드 `UNIVERSE_SOURCE_NOT_SET`·`UNIVERSE_SOURCE_INVALID`·`AUTH_REQUIRED`·`CANCELED`·`PREPARE_TIMEOUT`·`SOURCE_TOO_LARGE`·`UNIVERSE_READ_FAILED`·`SHEET_NOT_CONNECTED`(PriceStore 자기 코드)·`PRICE_TABS_OFF`·`UNIVERSE_NOT_READ`·`NOT_IN_UNIVERSE`·`NO_VERIFIED_ROWS`, 수익률 코드 `PRICE_TABS_NOT_LOADED`·`RETURN_SESSIONS_NOT_AVAILABLE`·`RETURN_HISTORY_TOO_SHORT`·`RETURN_BASE_CLOSE_MISSING`·`RETURN_LAST_CLOSE_MISSING`·`PERIOD_PENDING`·`PRICE_BASIS_CONTINUITY_UNCONFIRMED`(TA-G1 코드). `RETURN_*`는 V 이력 규칙의 `HISTORY_TOO_SHORT`와 구별하려고 따로 둔다. 어느 글에도 V 출처 낱말은 없다.
     - 화면은 표에 없는 코드(M3 `reason_codes`의 `GOOGLE_MCAP_MISSING` 등, 클릭 오류 `CLICK_REQUIRED` 등)를 글로 찍지 않는다. 그 자리의 고정 한국어 문구를 쓰고 코드는 `data-reason`·`data-na`에만 둔다.
-- `forEngines`(숨은 TARGET 기기 결과, Promise), `centralComputed`, `engineInputs`, `scoreView`는 engines 전용이다(소스 검사로 막는다).
+- `centralComputed`, `engineInputs`, `scoreView`는 engines 전용이다(소스 검사로 막는다). `forEngines`는 2026-11-15에 지웠다.
 
 ```
-Page { v_source{id,ko,note}, engine_v_source{…}, rank_label, state: READY|NO_DATA|DATA_FORMAT_NEWER|READ_FAILED, reason,
+Page { v_source{id,ko,note}, rank_label, state: READY|NO_DATA|DATA_FORMAT_NEWER|READ_FAILED, reason,
   as_of, calc_version, type_scope, profile_id, preset, gate, generation, basis_id,
   price_basis{kind:'CENTRAL_IEX', label, reason, price_basis_date, generated_at, verified_at, publication_id, calc_version, sessions, stale, calc_differs, inputs_match, attempt, attribution},
   identities{state: OK|NOT_AVAILABLE, reason: null|CATALOG_NOT_AVAILABLE, count} | null, coverage, rows[] }
@@ -275,7 +275,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 공통
   - 점수는 공유 Page의 기기 결과다. 결과는 얼린 복사본이다.
   - `page` 인자는 `qgv.page()`가 준 Page만 받는다. 다른 것은 `PAGE_UNKNOWN`이다.
-  - V가 든 결과에는 `v_source`(계산에 쓴 출처 id)가 있다: `target.draft/build/blockers/selectRuleB`는 11/16까지 `DEVICE_TEMPORARY`, `playbook.facts/judge`는 `OFFICIAL_CENTRAL`(DC-31, 10절).
+  - V가 든 결과에는 `v_source`(계산에 쓴 출처 id)가 있다: `target.draft/build/blockers/selectRuleB`는 `OFFICIAL_CENTRAL`(2026-11-15부터, 그 전 `DEVICE_TEMPORARY`), `playbook.facts/judge`는 `OFFICIAL_CENTRAL`(DC-31, 10절).
   - V 출처를 남기는 저장 기록: 초안(`draft.v_source`), R-B 행(`rule_b[].v_source`), 확정 버전(`versions[].v_source`, 초안의 출처). 옛 상태 검사(`validateState`)가 받아들이는 자리다.
   - **출처 필드가 없는 저장 기록**(형식이 정확한 키만 받음, 모두 기기 V): TARGET 카드 판정 기록(`thresholds.v`), 플레이북 발생 기록(T1 V_DETERIORATED 같은 V 변화 신호 포함), 출처 이전의 옛 초안.
   - 쓰기는 모두 클릭 안에서만 한다.
@@ -285,7 +285,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 쓰기·요청
     - `build(event, {reset})` [WRITE]. 카드 응답이 있으면 `reset:true`가 필요하다.
     - `finalize(event)` [WRITE]. outcome은 `FINALIZED`, `BLOCKED`, `DRAFT_REGENERATED`, `RELOAD_REQUIRED` 중 하나다.
-      - `FINALIZED`면 버전에 `v_source`를 기록한다. 값은 초안의 출처이고, 초안에 없으면 Page의 `engine_v_source.id`다.
+      - `FINALIZED`면 버전에 `v_source`를 기록한다. 2026-11-15부터 빌더가 `OFFICIAL_CENTRAL`과 게시본 id·가격 기준일을 쓴다. 다른 값이면 `V_SOURCE_MISMATCH`(저장 안 함).
       - 빌더(#391)가 직접 박은 `v_source`가 그 값과 다르면 `V_SOURCE_MISMATCH`를 던지고 아무것도 저장하지 않는다.
     - `answer(event, …)`, `selectRuleB(event)` [WRITE].
     - `compare(event)`, `syncScoringPrices(event)` [SYNC]. syncScoringPrices의 탭 동기화는 자기 signal을 내미는 중첩 실행이다.
@@ -347,7 +347,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 한 페이지에 한 번 읽는다. "공개 자료 다시 읽기"(`refresh`) 뒤에 다시 읽는다(구독자는 `{reason:'OFFICIAL'}`을 받는다). 기기에 아무것도 저장하지 않는다. 마지막 좋은 게시본은 서버가 지킨다.
 - `qgv.js`
   - `OFFICIAL_READER`는 `QgvOfficial`이다. `vSource()`는 늘 `OFFICIAL_CENTRAL`이다.
-  - `V_SOURCES`는 바꾸지 않았다. `QgvOfficial`·`TargetV1Builder`와 같아야 한다는 시험이 11/16까지 있다. `DEVICE_TEMPORARY`는 숨은 TARGET 엔진 결과(`engine_v_source`)에만 붙는다. Page나 행에는 붙지 않는다.
+  - `V_SOURCES`는 2026-11-15에 `OFFICIAL_CENTRAL` 하나만 남겼다. `QgvOfficial`·`TargetV1Builder`와 같아야 한다는 시험은 그대로다. `DEVICE_TEMPORARY`는 빌더의 `LEGACY_V_SOURCES`에만 남는다(옛 기록을 읽는 용도). Page·행·엔진 결과에는 없다.
 
 **점수 접근자 `qgv-scores.js` 게시본 모드** (계산 논리, 독립 검토 대상)
 - `officialPage(win, {publication, v2Inputs, identities, reason})`: 화면이 함께 쓰는 결과다. `publication_id`(와 입력 객체·페이지 식별자·참고 행)로 기억한다. `QgvOfficial.validate`를 통과한 게시본만 받는다.
@@ -372,7 +372,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
   - 종합은 `qgv-v2.js` scoreUniverse 식 그대로다. 같은 합성 입력에서 기기 엔진과 정확히 같다는 시험이 있다(`qgv_scores_node_test.js`).
   - 개인 순위와 개인 QG 참고 순서도 한 CIK에 한 자리다. 대표 코드는 Python `assign_ranks`와 같은 규칙이다(Universe CIK의 LIVE/STALE TARGET 행, 없으면 그 CIK의 첫 횡단면 Universe 코드). 같은 CIK의 다른 코드 행은 `rank_row`(개인)를 들고 사유는 `ISSUER_RANKED_ONCE`다. 공식 가중치로 미리보면 모든 행의 개인 순위·QG 순서가 게시본과 같다(시험).
   - 가중치 단계 표는 NA다(`WEIGHT_STAGES_NOT_REBUILT`). `qgv-v2.js`는 고치지 않는다.
-- 기기 경로 `collectQuotes` / `pageResult`는 그대로 둔다. 옛 앱과 TARGET이 아직 쓴다(PR-1b와 11/16에 걷어낸다).
+- 기기 경로 `collectQuotes` / `pageResult`는 그대로 둔다. 2026-11-15에 TARGET은 쓰지 않게 됐다. 남은 호출은 옛 앱 보고서의 `플레이북 열기`(app.js → `PlaybookScreen.prepareScores`)다.
 - `qgv-scores.js`는 해시 고정 파일이다. `pages_artifact_guard.py` `APPROVED_SHA256`에서 이 파일 하나만 다시 고정했다.
 
 **Page 기준(`price_basis`)과 화면 문구**
@@ -395,7 +395,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 - 플레이북 사실과 리허설은 Page의 중앙 결과(`qgv.centralComputed`)를 읽는다. `v_source`는 `OFFICIAL_CENTRAL`이다.
   - 기기 V 이력이 없으므로 `v_prev20`은 NA다(`V_HISTORY_NOT_PUBLISHED`). V 변화 규칙은 그 값이 없다고 보고한다. 엔진은 고치지 않았다.
   - `prepareScores`는 뉴스 RAM을 채우는 데만 부른다. `sec-qgv2.json` 없이 부르므로 기기 V를 계산하지 않는다.
-- TARGET v1(초안, R-B, 확정)은 11/16까지 숨은 기기 결과를 읽는다. `await qgv.forEngines(pg)`로, 빌더가 물을 때마다 `QgvScores.pageResult`를 부르고(그 기억이 Universe 읽기·기기 입력·preset/gate별로 같은 결과를 돌려준다) 화면에는 쓰지 않는다. 중앙 Page는 게시본으로 기억하므로 같은 객체로 남지만, 뒤의 Universe 읽기나 `setProfile`은 빌더 결과에 반영된다. 기록은 `engine_v_source`(`DEVICE_TEMPORARY`)다.
+- (2026-11-15 전까지) TARGET v1(초안, R-B, 확정)은 숨은 기기 결과를 읽었다. `await qgv.forEngines(pg)`로, 빌더가 물을 때마다 `QgvScores.pageResult`를 부르고(그 기억이 Universe 읽기·기기 입력·preset/gate별로 같은 결과를 돌려준다) 화면에는 쓰지 않는다. 중앙 Page는 게시본으로 기억하므로 같은 객체로 남지만, 뒤의 Universe 읽기나 `setProfile`은 빌더 결과에 반영된다. 기록은 `engine_v_source`(`DEVICE_TEMPORARY`)다.
 
 **기기 V 이력**
 - `store.vHistory`를 지웠다.
@@ -404,7 +404,7 @@ RowRecord { id, ticker, code, record, scope: UNIVERSE|OUTSIDE_UNIVERSE, target, 
 
 **PR-1b(옛 화면)**: 리더보드·기업 상세 QGV 카드·레이더 V축(kind SCORE, central)·"V 산출 현황 · 중앙 게시"(게시본 coverage)·Universe 페이지·S13 비교·플레이북 사실(`v_now` 공식, `v_prev20` NA)이 `QgvScores.officialPage`(앱이 연 뒤 한 번 읽은 게시본, `setPagePublication`)를 읽는다. 기준 줄·IEX 출처 문구·약관 링크는 `QgvScores.centralHtml`. S06 프리셋은 게시된 요인 점수로 다시 계산한 개인 프리셋 보기. V 이력 기록·읽기, 가치(DCF) 패널, 기기 시세 배지를 지움. TARGET v1 빌더만 기기 결과를 받음(포트폴리오·기업 화면은 기기 V를 계산하지 않음). 읽기 대기 중에는 `OFFICIAL_LOADING`('확인 중', 게시본 없음으로 표시하지 않음)이고 플레이북은 그 읽기를 기다림. 다시 읽기가 실패해도 마지막 검증 게시본을 그대로 쓰고 기준 줄에 '다시 읽기 실패(사유) · 마지막 게시본 표시'를 붙임(`last_attempt_reason`, data-cx-read-failure). 홈 QGV 카드·S13 비교·레이더·TARGET 작성기 후보 표에도 기준 줄과 IEX 출처를 붙임. S06은 발행사(CIK) 하나에 자리 하나를 대표 증권 하나에만 주고(게시본 `assign_ranks`와 같은 대표 규칙과 동점 순서: 종합점수, 기호, 키), 같은 CIK의 다른 주식 종류(GOOG 등)는 그 자리를 `rank_row`로 가리키며 공식 순위·QG 참고 목록 개수에 따로 세지 않음. 방향 규칙 DC-31a~d.
 
-**남은 것**: 11/16 PR(TARGET V 출처, `V_SOURCES`에서 `DEVICE_TEMPORARY` 정리, 기기 경로 삭제).
+**2026-11-15 (11/16 PR, 소유자 승인)**: TARGET v1 빌더의 V 출처는 중앙 V(`qgv-official.json`)만이다. engines는 `data.official()` 게시본을 `QgvOfficial.usable`(같은 calc_version·기준일 뒤 마감 거래일 2일 이내)로 확인해 넘긴다. 쓸 수 없으면 초안·R-B를 만들지 않고 확정은 `BLOCKED`(`OFFICIAL_V_REQUIRED`, `official_reason`)로 기다린다. 기기 V·KIS V로 채우지 않는다. `forEngines`·`engine_v_source`·`DEVICE_TEMPORARY`(V_SOURCES·RANK_LABELS)를 지웠다. 저장된 옛 기기 V 초안은 읽히고 `V_SOURCE_CHANGED`로 재생성, 옛 확정 기록은 이력으로 남는다.
 
 ## 11. 사용자 결정
 

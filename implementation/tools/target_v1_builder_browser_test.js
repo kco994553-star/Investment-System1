@@ -15,11 +15,14 @@
 // next turn), per-class action texts, the calc_version-mixed count beside it; the line agrees with the finalize check.
 // Every request is intercepted: public screens are the empty fixtures, the Worker is stubbed, anything else
 // is aborted and counted. No horizontal page scroll; no buy/sell verbs on the builder.
-// PR-D (owner decision D8 (b), GSQ-024): qgv-official.json is answered 404 (tools/empty_public_screens.js ABSENT) in every phase
-// above, so the device V ("임시 V") assertions hold on deploy builds too, and nothing reads it at mount. The official phase serves
-// the synthetic publication of tests/fixtures/qgv_official_vectors_v1.json with a sec-qgv2.json of the same calc_version: the
-// central-V button (no device prices) builds a 공식 V draft with the publication's IEX attribution, terms link and basis day;
-// finalize records OFFICIAL_CENTRAL with the publication id; a publication gone at finalize regenerates on device V.
+// PR-D (owner decision D8 (b), GSQ-024) and the owner decision of 2026-11-15 (DC-31, the 11/16 change): the builder's only V
+// source is the central V publication. qgv-official.json is answered 404 (tools/empty_public_screens.js ABSENT): the first build
+// click makes no draft and says why (TARGET v1 waits), and nothing reads it at mount. The synthetic drafts of the later phases
+// are synthetic central publications (SYN_INIT below, test only); the official phase serves the synthetic publication of
+// tests/fixtures/qgv_official_vectors_v1.json through the real reader with a sec-qgv2.json of the same calc_version: the build
+// button makes a 공식 V draft with the publication's IEX attribution, terms link and own basis day; finalize records
+// OFFICIAL_CENTRAL with the publication id; a publication gone at finalize blocks with OFFICIAL_V_REQUIRED (no regeneration, no
+// other V); a failed read at a build click keeps the previous draft.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require('playwright');
 const {routeEmptyPublicScreens}=require('./empty_public_screens');
@@ -30,11 +33,22 @@ const OFFICIAL=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures
 const OFFICIAL_INPUTS=(()=>{const SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'],M={roic:0.25,moat_return_mean_5y:0.2,fcf_to_net_income:1.1,net_debt_to_ebitda:1,interest_coverage:12,revenue_cagr_3y:0.12},records={};
  Object.entries(PUB.rows).forEach(([code,r],i)=>{records[code]={cik:r.cik||('PUB'+i),sic:SICS[i%SICS.length],industry_group:r.industry_group,metrics:M,qg_axes:{Q:{score:r.axes.Q.score},G:{score:r.axes.G.score}}};});
  return{as_of:'2026-10-13T21:00:00Z',records,codes:Object.keys(PUB.rows).filter(k=>!k.startsWith('TARGET:'))};})();
-// Device scores for the publication's codes (each code's own published row as a synthetic device result): the auto-build phase.
-const DEVICE_FOR_PUB=(()=>{const rows={};for(const[code,r]of Object.entries(PUB.rows)){if(code.startsWith('TARGET:'))continue;
-  rows[code]={ticker:code.split(':')[1],code,v2:{total:r.total,q:r.axes.Q.score,g:r.axes.G.score,v:r.axes.V.score,axes:r.axes,factors:r.factors,factors_available:Object.values(r.factors).filter(f=>Number.isFinite(f.score)).length,factors_total:15,
-   q_industry_percentile:r.q_industry_percentile,value_trap_gate:r.value_trap_gate,selected_types:r.selected_types}};}
- return{v2_state:'READY',v2_as_of:'2026-10-13',profile:{id:'qgv-v2/balanced/gate-on'},priced_codes:Object.keys(rows).length,rows};})();
+/* Synthetic central publications (2026-11-15: the builder's only V source). __tv1Publish publishes synthetic accessor rows as a
+   publication object (each Universe code its ticker's row; a factors_available below 15 as that many factor scores, the weakest
+   Q·G factors null) and serves it; QgvOfficial.state() answers OFFICIAL for exactly these objects and, while one is served,
+   QgvOfficial.resolve() answers it when its calc_version is the re-read sec-qgv2.json's (else OFFICIAL_CALC_VERSION_DIFFERS).
+   The official phase serves none, so the real reader validates the fixture publication there. Test only (page init script). */
+const SYN_INIT=`window.__syn={pubs:new WeakSet(),serve:null,n:0};(()=>{let real;Object.defineProperty(window,'QgvOfficial',{configurable:true,enumerable:true,get(){return real;},
+ set(v){real=v&&!v.__syn?Object.freeze({...v,__syn:true,state:p=>window.__syn.pubs.has(p)?'OFFICIAL':v.state(p),
+  resolve:async(src,o={})=>{const p=window.__syn.serve;if(!p)return v.resolve(src,o);return p.calc_version===o.secCalcVersion?{ok:true,reason:null,sessions:0,payload:p}:{ok:false,reason:'OFFICIAL_CALC_VERSION_DIFFERS',sessions:null,payload:null};}}):v;}});})();
+window.__tv1Publish=(computed,inputs,codes,calc)=>{const WEAK=['g_recent_acceleration','g_consistency','g_growth_efficiency','g_per_share_growth','q_capital_allocation'],rows={},by=new Map();
+ for(const r of Object.values(computed.rows))by.set(r.ticker,r);
+ for(const code of codes){const r=by.get(code.slice(code.indexOf(':')+1));if(!r)continue;const v=r.v2,f={};for(const[k,x]of Object.entries(v.factors))f[k]={score:Number.isFinite(x.score)?x.score:null,reason:null};
+  for(const k of WEAK.slice(0,Math.max(0,(v.factors_total||15)-(v.factors_available??15))))if(f[k])f[k].score=null;
+  rows[code]={cik:inputs.records[code]?.cik??null,state:'LIVE',industry_group:inputs.records[code]?.industry_group??null,total:v.total,axes:v.axes,factors:f,q_industry_percentile:v.q_industry_percentile,value_trap_gate:v.value_trap_gate===true,selected_types:[...v.selected_types]};}
+ const pub={publication_id:'qgvpub-'+(++window.__syn.n).toString(16).padStart(64,'0'),calc_version:calc,times:{price_basis_date:'2026-10-13',inputs_as_of:'2026-10-13T21:00:00Z'},weights:{profile_id:computed.profile.id},
+  price_source:{supplied:codes.length},attribution:{...window.QgvOfficial.ATTRIBUTION},rows};
+ window.__syn.pubs.add(pub);window.__syn.serve=pub;return pub;};`;
 
 // Synthetic published sec-qgv2.json (raw shape) for the same 45 synthetic names + fillers to 504 (page init script).
 const PAYLOAD=`window.__tv1Payload=(calc,{asOf='2026-10-13T21:00:00Z',acquired='2026-10-13T20:00:00Z',patch={}}={})=>{
@@ -43,8 +57,8 @@ const PAYLOAD=`window.__tv1Payload=(calc,{asOf='2026-10-13T21:00:00Z',acquired='
  for(let i=0;i<504;i++){const code=i<45?'NASDAQ:'+(i===3?'NVDA':'SYN'+String(i).padStart(2,'0')):'NYSE:P'+i;
   out.records[code]={cik:'C'+i,state:'LIVE',reason_codes:[],acquired_at:acquired,axes:{Q:{score:50},G:{score:50}},metrics:{...M},...(calc?{calc_version:calc}:{})};}
  for(const[code,f]of Object.entries(patch))Object.assign(out.records[code],f);return out;};`;
-// Synthetic v2 accessor rows + public records → a draft through the shipped builder (runs in the page); the draft records the
-// input basis of the qgv2-calc/2026-10-17.1 payload.
+// Synthetic v2 accessor rows + public records, published as a synthetic central publication (served) → a draft through the
+// shipped builder from its rows (runs in the page); the draft records the input basis of the qgv2-calc/2026-10-17.1 payload.
 // vMiss: {symbol: V factor id} whose synthetic score is null (2026-10-23 V count: a V without V3 / V4 blocks finalize).
 async function seed({date,n=45,vMiss={}}){
  const B=window.TargetV1Builder,S=window.TargetV1Screen,SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'];
@@ -55,8 +69,8 @@ async function seed({date,n=45,vMiss={}}){
  for(let i=0;i<n;i++){const symbol=i===3?'NVDA':'SYN'+String(i).padStart(2,'0'),code='NASDAQ:'+symbol,ax=s=>({score:s,weight_available:1});codes.push(code);
   computed.rows['c'+i]={ticker:symbol,code,v2:{total:90-i*0.5,q:70,g:65,v:55,axes:{Q:ax(70),G:ax(65),V:ax(55)},factors:Object.fromEntries(Object.entries(F).map(([k,v])=>[k,{score:vMiss[symbol]===k?null:v}])),factors_available:i%7===0?11:15,factors_total:15,q_industry_percentile:60,value_trap_gate:i===44,selected_types:['quality']}};
   inputs.records[code]={cik:'C'+i,sic:i===3?'3674':SICS[i%SICS.length],industry_group:'grp'+(i%SICS.length),metrics:M,qg_axes:{Q:{score:70},G:{score:65}}};}
- const basis=await B.inputBasis(window.__tv1Payload('qgv2-calc/2026-10-17.1'));window.__seedData={computed,inputs,codes,basis};
- const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:['NVDA'],date,basis});
+ const basis=await B.inputBasis(window.__tv1Payload('qgv2-calc/2026-10-17.1')),pub=window.__tv1Publish(computed,inputs,codes,'qgv2-calc/2026-10-17.1');window.__seedData={computed,inputs,codes,basis,pub};
+ const draft=B.buildDraft({computed:B.officialComputed(pub),inputs,universeCodes:codes,existing:['NVDA'],date,basis,official:pub});
  const state={...B.emptyState(),draft,rule_b:[{date,rows:draft.pool.slice(0,15).map(r=>({symbol:r.symbol,pct:100/15,subgroup:r.subgroup})),cash_pct:0,limits_ok:true}]};
  S.writeState(window.PlaybookScreen,localStorage,state);return draft.pool.length;
 }
@@ -66,18 +80,19 @@ async function seed({date,n=45,vMiss={}}){
   phase=width+' setup';const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),unexpected=[];
   await routeEmptyPublicScreens(context);
   await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin===new URL(BASE).origin)return route.fallback();if(url.origin===WORKER)return route.fulfill({status:503,contentType:'application/json',body:'{"error":"UNAVAILABLE"}'});unexpected.push(url.origin);return route.abort();});
-  await context.addInitScript({content:PAYLOAD});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await context.addInitScript({content:PAYLOAD});await context.addInitScript({content:SYN_INIT});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(BASE+'#playbook');await page.locator('[data-tv1-builder]').waitFor();
-  phase=width+' empty';assert.equal(await page.locator('[data-tv1-build]').isDisabled(),true);assert.match(await page.locator('[data-tv1-readiness]').textContent(),/^NA · QGV v2 총점에는 V가 필요/);
-  assert.match(await page.locator('[data-tv1-readiness]').textContent(),/\. 기기 가격으로 만드는 초안은 비활성 · 중앙 V 게시본으로는 아래 버튼으로 만들 수 있음$/,'no "drafting disabled" beside the enabled central-V button');
+  phase=width+' empty';assert.equal(await page.locator('[data-tv1-build]').isDisabled(),false,'the one build button reads the central V at the click');
+  assert.equal(await page.locator('[data-tv1-readiness]').textContent(),'V 출처: 중앙 V 게시본만 · 초안 만들기·확정 버튼을 누를 때 qgv-official.json을 읽어 확인 · 쓸 수 있는 게시본이 없으면 초안을 만들지 않고 TARGET v1 확정을 미룸(다른 V로 채우지 않음)');
   assert.match(await page.locator('[data-tv1-coverage]').textContent(),/초안 · 커버리지 편향 가능 \(Q 0\/504, G 0\/504\)/);assert.equal(await page.locator('[data-tv1-card]').count(),0);
-  // PR-D: before a click nothing claims 임시 V or 공식 V; without device prices only the central-V button can build. Here the
-  // publication is absent (404) → no draft, one line with the reason.
-  assert.match(await page.locator('[data-tv1-v-plan]').textContent(),/^V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V, 없으면 임시 V · 이 기기 가격이 없으면 공식 V로만/);
-  assert.ok(!/임시 V|공식 V/.test((await page.locator('[data-tv1-builder]').textContent()).replace(/V 출처: 초안 만들 때 확인[^\n]*?만들 수 있습니다/,'')),'no source claimed before a click');
-  await page.locator('[data-tv1-build-official]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-official-reason]'));
-  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 안 함 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404)');
-  assert.equal(await page.locator('[data-tv1-status]').textContent(),'공식 V 초안 불가 · 임시 V 초안에는 이 기기의 가격이 필요합니다');assert.equal(await page.locator('[data-tv1-candidates]').count(),0);
+  // PR-D / 2026-11-15: before a click nothing claims 공식 V (only the plan line names it). The publication is absent here (404) →
+  // no draft, one line with the reason, and TARGET v1 waits (no other V).
+  const planText=await page.locator('[data-tv1-v-plan]').textContent();assert.equal(planText,'V 출처: 초안 만들 때 확인 · 유효한 중앙 게시본이 있으면 공식 V(게시본의 가격 기준일 그대로) · 없으면 초안 없음 · 확정 대기');
+  assert.ok(!/임시 V|공식 V/.test((await page.locator('[data-tv1-builder]').textContent()).replace(planText,'')),'no source claimed before a click');assert.equal(await page.locator('[data-tv1-build-official]').count(),0);
+  await page.locator('[data-tv1-build]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-official-reason]'));
+  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 불가 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404) · 초안·확정은 중앙 V 게시본을 기다림');
+  assert.equal(await page.locator('[data-tv1-status]').textContent(),'초안 만들지 않음 · 쓸 수 있는 중앙 V 게시본 없음 · TARGET v1 확정은 중앙 V를 기다립니다(다른 V로 채우지 않음)');assert.equal(await page.locator('[data-tv1-candidates]').count(),0);
+  assert.equal(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).draft),null,'nothing drafted');
   phase=width+' draft';const pool=await page.evaluate(seed,{date:'2026-10-14'});assert.ok(pool>=30);
   // The shipped browser builder must recognize the actual production version. The shipped number check is recorded for
   // qgv2-calc/2026-10-23.1 (2026-10-29), so this 17.1 fixture is a mismatch and the recorded version passes.
@@ -114,7 +129,8 @@ async function seed({date,n=45,vMiss={}}){
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
   assert.match(await page.locator('[data-tv1-status]').textContent(),/^확정 불가 · 최신 공개 sec-qgv2\.json을 읽지 못함$/);
   assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 확인 불가 · 최신 공개 sec-qgv2.json을 읽지 못함');
-  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['SEC_QGV2_NOT_AVAILABLE','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+  // (no re-read file → no calc_version to match the central V against → OFFICIAL_V_REQUIRED too)
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['SEC_QGV2_NOT_AVAILABLE','OFFICIAL_V_REQUIRED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
   const store=await page.evaluate(()=>{const v=PlaybookScreen.read(localStorage);return{records:v.records.filter(r=>r.primary_code==='TV1').map(r=>r.verdict),versions:v.target_v1.versions.length};});
   assert.equal(store.versions,0);assert.equal(store.records.length,16);assert.equal(store.records.filter(v=>v==='TV1_DISAGREE').length,1);assert.equal(store.records.filter(v=>v==='TV1_UNKNOWN').length,1);
   await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-confirm]').waitFor();assert.match(await page.locator('[data-playbook-scoring]').textContent(),/TARGET v1 반대/);
@@ -130,10 +146,13 @@ async function seed({date,n=45,vMiss={}}){
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));
   // The click's file replaced the line: all rows fresh → line only, no table.
   assert.equal(await page.evaluate(()=>window.__pub.reads),1);assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 오늘 차단 0 · 내일 차단 0 · 보존 행 0');assert.equal(await page.locator('[data-tv1-precheck-table]').count(),0);
-  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.match(await page.locator('[data-tv1-status]').textContent(),/calc_version 없음\(이전 형식 파일\)/);
-  // Another calc_version on a valid file → the draft must be regenerated; without this page's scores of that file → reload hint.
-  await page.evaluate(()=>{window.__pub.calc='qgv2-calc/2026-10-17.2';});await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>window.__pub.reads===2&&/페이지를 새로 고친 뒤 다시 확정하세요/.test(document.querySelector('[data-tv1-status]').textContent));
-  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.equal(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.length),0);
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','OFFICIAL_V_REQUIRED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.match(await page.locator('[data-tv1-status]').textContent(),/calc_version 없음\(이전 형식 파일\)/);
+  // Another calc_version on a valid file → the draft basis changed, and the served central V (17.1) is not of that file: no
+  // regeneration, TARGET v1 waits for a central V of the new calc_version (OFFICIAL_V_REQUIRED).
+  await page.evaluate(()=>{window.__pub.calc='qgv2-calc/2026-10-17.2';});await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>window.__pub.reads===2&&/TARGET v1 확정을 미룹니다/.test(document.querySelector('[data-tv1-status]').textContent));
+  assert.match(await page.locator('[data-tv1-status]').textContent(),/^쓸 수 있는 중앙 V 게시본이 없어 TARGET v1 확정을 미룹니다\(OFFICIAL_V_REQUIRED · 다른 V로 채우지 않음\)/);
+  assert.match(await page.locator('[data-tv1-official-reason]').textContent(),/^공식 V 사용 불가 · OFFICIAL_CALC_VERSION_DIFFERS · /);
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['DRAFT_BASIS_CHANGED','OFFICIAL_V_REQUIRED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);assert.equal(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.length),0);
   // One valued row acquired 8+ days ago blocks (row acquisition, not the file as_of). Its shard was collected later (2026-10-13), so it
   // is a kept row: the identity-action text, not the all-shards hint; the line counts the same row the finalize check counts.
   await page.evaluate(()=>{window.__pub.calc='qgv2-calc/2026-10-17.1';window.__pub.patch={'NYSE:P200':{acquired_at:'2026-10-05T00:00:00Z'}};});await page.locator('[data-tv1-finalize]').click();
@@ -160,7 +179,7 @@ async function seed({date,n=45,vMiss={}}){
   assert.equal(await page.evaluate(()=>window.__pub.reads),5);assert.match(await page.locator('[data-tv1-finalize-check]').textContent(),/^확정 검사 통과.*calc_version qgv2-calc\/2026-10-17\.1 · as_of 2026-10-13T21:00:00Z · Q 503\/504 · G 503\/504 · 정상 NA 행 1 · 계산 버전 다른 행 0 · 7일 넘은 행 0/);
   assert.deepEqual(await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions[0].number_check),{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-14',companies:10});
   assert.match(await page.locator('[data-tv1-rule-c]').textContent(),/^R-C · TARGET v1 \(규칙 지수\) · 시작 2026-10-14 · v1/);
-  assert.match(await page.locator('[data-tv1-rule-b]').textContent(),/^R-B · v2 상위 15 균등 \(규칙 지수\) · 시작 2026-10-14/);assert.match(await page.locator('[data-tv1-sets]').textContent(),/사용자 세트 B\/C\/D\(VirtualMeta\)와 이름이 겹치지 않게/);assert.match(await page.locator('[data-tv1-version]').textContent(),/v1 · 2026-10-14/);assert.equal(await page.locator('[data-tv1-version]').textContent(),'저장된 TARGET v1 · 2026-10-14 · V 출처 임시 V','a device version names its source (PR-D)');
+  assert.match(await page.locator('[data-tv1-rule-b]').textContent(),/^R-B · v2 상위 15 균등 \(규칙 지수\) · 시작 2026-10-14/);assert.match(await page.locator('[data-tv1-sets]').textContent(),/사용자 세트 B\/C\/D\(VirtualMeta\)와 이름이 겹치지 않게/);assert.match(await page.locator('[data-tv1-version]').textContent(),/v1 · 2026-10-14/);assert.equal(await page.locator('[data-tv1-version]').textContent(),'저장된 TARGET v1 · 2026-10-14 · V 출처 공식 V · 가격 기준일 2026-10-13','the version names its source and the publication\'s own basis day');
   phase=width+' rebalance';const reb=page.locator('[data-tv1-rebalance]');assert.match(await reb.locator('h2').textContent(),/1회차 2026-11-16 주/);
   assert.ok(await reb.locator('tbody tr').count()>=15);const first=await reb.locator('tbody tr').first().locator('td').allTextContents();assert.equal(first.length,6);assert.match(first[3],/^[+−]?\d+\.\d\d%p$/);assert.equal(first[5],'●●●만원');
   const nvda=await reb.locator('[data-tv1-rebalance-row=NVDA] td').allTextContents();assert.match(nvda[1],/%$/);
@@ -203,16 +222,20 @@ async function seed({date,n=45,vMiss={}}){
   const syn00=scored.filter(r=>/^SYN0[01] /.test(r[0]));assert.ok(syn00.length>0&&syn00.every(r=>/^NA · /.test(r[2])&&r[3]==='NA'&&r[4]==='NA'),JSON.stringify(syn00[0]));
   assert.ok(!(await page.evaluate(()=>JSON.stringify(localStorage))).match(/"close"|50\.2|100\.1/),'no price in device storage');
   phase=width+' regenerate';await page.evaluate(seed,{date:'2026-10-14'});
-  // All 15 answered; the page's scores are of the latest file (same as_of); a new SEC acquisition in one shard changes the basis and
-  // SYN43 now ranks first → the draft is regenerated: 14 answers kept, SYN43 waits for its card.
+  // All 15 answered; the page's inputs are of the latest file (same as_of); a new SEC acquisition in one shard changes the basis →
+  // the draft is regenerated from the same central V (15 answers kept). Then a new central publication where SYN43 ranks first →
+  // V_SOURCE_CHANGED → regenerated from it: 14 answers kept, SYN43 waits for its card.
   await page.evaluate(async()=>{const B=TargetV1Builder,S=TargetV1Screen,catalog=await(await fetch('actual-catalog.json')).json();let st=S.readState(PlaybookScreen,localStorage);
    for(const r of B.currentSelection(st).rows)st=B.answer(st,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});S.writeState(PlaybookScreen,localStorage,st);
-   const d=window.__seedData;for(const r of Object.values(d.computed.rows))if(r.ticker==='SYN43')r.v2.total=99;
+   const d=window.__seedData;
    const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-14',companies:10}}};
    await S.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',computed:d.computed,universeCodes:d.codes,
     screens:{'sec-qgv2.json':{...d.inputs,as_of:'2026-10-13T21:00:00Z'}},publishedProvider:async()=>window.__tv1Payload('qgv2-calc/2026-10-17.1',{patch:{'NYSE:P400':{acquired_at:'2026-10-14T03:00:00Z'}}})});});
   await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/입력 기준이 바뀌어 초안을 다시 만들었습니다/.test(document.querySelector('[data-tv1-status]').textContent));
-  assert.match(await page.locator('[data-tv1-status]').textContent(),/^입력 기준이 바뀌어 초안을 다시 만들었습니다 · 응답 유지 14 · 새로 확인할 종목 1 \(SYN43\) · 카드 확인 후 다시 확정하세요$/);
+  assert.match(await page.locator('[data-tv1-status]').textContent(),/^입력 기준이 바뀌어 초안을 다시 만들었습니다 · 응답 유지 15 · 새로 확인할 종목 0 · 카드 확인 후 다시 확정하세요$/);
+  await page.evaluate(()=>{const d=window.__seedData;for(const r of Object.values(d.computed.rows))if(r.ticker==='SYN43')r.v2.total=99;window.__tv1Publish(d.computed,d.inputs,d.codes,'qgv2-calc/2026-10-17.1');});
+  await page.locator('[data-tv1-finalize]').click();await page.waitForFunction(()=>/^V 출처가 바뀌어/.test(document.querySelector('[data-tv1-status]').textContent));
+  assert.match(await page.locator('[data-tv1-status]').textContent(),/^V 출처가 바뀌어\(중앙 V 게시본 qgvpub-[0-9a-f]{12} · 가격 기준일 2026-10-13\) 초안을 다시 만들었습니다 · 응답 유지 14 · 새로 확인할 종목 1 \(SYN43\) · 카드 확인 후 다시 확정하세요$/);
   assert.equal(await page.locator('[data-tv1-card="SYN43"] [data-tv1-card-state]').textContent(),'응답 대기');assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
   const regen=await page.evaluate(()=>{const st=TargetV1Screen.readState(PlaybookScreen,localStorage);return{shards:st.draft.basis.shards,seed:window.__seedData.basis.shards,answers:st.answers.length};});
   assert.notEqual(regen.shards,regen.seed);assert.match(regen.shards,/2026-10-14T03:00:00Z/);
@@ -228,7 +251,7 @@ async function seed({date,n=45,vMiss={}}){
    const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-17.1',passed:true,date:'2026-10-14',companies:10}}};
    await S.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',publishedProvider:async()=>window.__tv1Payload('qgv2-calc/2026-10-17.1')});});
   assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(6).textContent(),'V 요인');
-  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(임시 V)');assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 임시 V · 기기 시세로 계산 · 중앙 V 미게시/);
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(공식 V)');assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 공식 V · 중앙 게시 · IEX 마지막 체결가 기준\(공식 종가 아님\) · 가격 기준일 2026-10-13 · 게시본 qgvpub-/);
   const vRow=page.locator('[data-tv1-candidate=SYN00]');assert.equal(await vRow.getAttribute('data-tv1-v-count'),'4');assert.equal(await vRow.getAttribute('data-tv1-v-incomplete'),'');
   assert.equal(await vRow.locator('[data-tv1-v-cell]').textContent(),'4/5 V4 빠짐 · 확정 불가');assert.match(await vRow.textContent(),/예$|아니오$/);
   assert.equal(await page.locator('[data-tv1-candidate=SYN01] [data-tv1-v-cell]').textContent(),'5/5');assert.equal(await page.locator('[data-tv1-candidates] [data-tv1-v-incomplete]').count(),1);
@@ -286,16 +309,16 @@ async function seed({date,n=45,vMiss={}}){
   phase=width+' shortfall';const few=await page.evaluate(seed,{date:'2026-10-14',n:12});assert.equal(few,12);
   await page.evaluate(async()=>{const catalog=await(await fetch('actual-catalog.json')).json();await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,catalog,storage:localStorage,date:'2026-10-14'});});
   assert.match(await page.locator('[data-tv1-shortfall]').textContent(),/^통과 종목 부족 3종목 · 조건 완화·제외 종목 복귀 없음 · 확정 불가 · 사유: /);assert.equal(await page.locator('[data-tv1-card]').count(),12);assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),true);
-  phase=width+' official';let officialReads=0,officialStatus=200;
+  phase=width+' official';let officialReads=0,officialStatus=200;await page.evaluate(()=>{window.__syn.serve=null;});   // the real reader from here
   await page.route('**/qgv-official.json*',route=>{officialReads++;return officialStatus===200?route.fulfill({status:200,contentType:'application/json',body:OFFICIAL}):route.fulfill({status:officialStatus,contentType:'text/plain',body:'not found'});});
   const officialMount=async(extra={})=>page.evaluate(async({inputs,extra})=>{const catalog=await(await fetch('actual-catalog.json')).json(),{codes,...sec}=inputs;
    const cfg={...TargetV1ConfigDefaults,number_check:{...TargetV1ConfigDefaults.number_check,result:{calc_version:'qgv2-calc/2026-10-23.1',passed:true,date:'2026-10-14',companies:10}}};
-   const d=extra.device?window.__seedData:null;
+   const d=extra.seeded?window.__seedData:null;
    await TargetV1Screen.mount(document.querySelector('[data-target-v1-builder]'),{playbook:PlaybookScreen,config:cfg,catalog,storage:localStorage,date:'2026-10-14',nyToday:extra.nyToday||'2026-10-14',nyMinutes:extra.nyMinutes,
-    computed:d?d.computed:extra.pubDevice||null,universeCodes:d?d.codes:codes,screens:{'sec-qgv2.json':d?{...d.inputs,as_of:sec.as_of}:sec},publishedProvider:async()=>window.__tv1Payload(extra.calc||'qgv2-calc/2026-10-23.1')});},{inputs:OFFICIAL_INPUTS,extra});
+    universeCodes:d?d.codes:codes,screens:{'sec-qgv2.json':d?{...d.inputs,as_of:sec.as_of}:sec},publishedProvider:async()=>window.__tv1Payload(extra.calc||'qgv2-calc/2026-10-23.1')});},{inputs:OFFICIAL_INPUTS,extra});
   await page.evaluate(()=>TargetV1Screen.writeState(PlaybookScreen,localStorage,TargetV1Builder.emptyState()));await officialMount();
-  assert.equal(officialReads,0,'never read at mount');assert.equal(await page.locator('[data-tv1-build]').isDisabled(),true);assert.equal(await page.locator('[data-tv1-build-official]').isDisabled(),false);
-  await page.locator('[data-tv1-build-official]').click();await page.locator('[data-tv1-candidates]').waitFor();assert.equal(officialReads,1);
+  assert.equal(officialReads,0,'never read at mount');assert.equal(await page.locator('[data-tv1-build]').isDisabled(),false);assert.equal(await page.locator('[data-tv1-build-official]').count(),0,'one build button');
+  await page.locator('[data-tv1-build]').click();await page.locator('[data-tv1-candidates]').waitFor();assert.equal(officialReads,1);
   const pubId=PUB.publication_id,shortId=pubId.slice(0,19),attr=await page.evaluate(()=>({...QgvOfficial.ATTRIBUTION}));
   assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(공식 V)');
   assert.match(await page.locator('[data-tv1-candidates] > p.small').first().textContent(),new RegExp('V 출처: 공식 V \\(중앙 게시 · IEX 마지막 체결가 기준\\(공식 종가 아님\\)\\) · 가격 기준일 2026-10-13 · 게시본 '+shortId+' · 제외: '));
@@ -321,7 +344,7 @@ async function seed({date,n=45,vMiss={}}){
    const plan=await page.locator('[data-tv1-v-plan]').count()?await page.locator('[data-tv1-v-plan]').textContent():'';
    assert.ok(!/공식 V|임시 V|100\.0/.test((await page.locator('[data-tv1-builder]').textContent()).replace(plan,'')+await page.locator('[data-tv1-official-hidden]').textContent()),why+' (only the neutral plan line names the sources)');};
   await page.evaluate(()=>{window.__qoSaved=window.QgvOfficial;delete window.QgvOfficial;});
-  try{await officialMount();await assertHidden('reader missing');assert.equal(await page.locator('[data-tv1-v-plan]').count(),0);assert.equal(await page.locator('[data-tv1-build-official]').count(),0);}
+  try{await officialMount();await assertHidden('reader missing');assert.equal(await page.locator('[data-tv1-v-plan]').count(),0);assert.equal(await page.locator('[data-tv1-build]').isDisabled(),true,'no reader: no draft at all');}
   finally{await page.evaluate(()=>{window.QgvOfficial=window.__qoSaved;delete window.__qoSaved;});}
   await page.evaluate(()=>{const S=TargetV1Screen,s=S.readState(PlaybookScreen,localStorage),{official:_,...bare}=s.draft;S.writeState(PlaybookScreen,localStorage,{...s,draft:bare});});
   await officialMount();await assertHidden('no publication record');
@@ -331,41 +354,43 @@ async function seed({date,n=45,vMiss={}}){
   // all cards answered; the click re-reads both files, the publication is still usable → version OFFICIAL_CENTRAL + publication.
   const stamp=async()=>page.evaluate(async({official})=>{const B=TargetV1Builder,S=TargetV1Screen;let s=S.readState(PlaybookScreen,localStorage);
    s={...s,draft:{...s.draft,basis:await B.inputBasis(window.__tv1Payload('qgv2-calc/2026-10-23.1')),v_source:'OFFICIAL_CENTRAL',official}};for(const r of B.currentSelection(s).rows)s=B.answer(s,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});S.writeState(PlaybookScreen,localStorage,s);},{official:st.official});
-  await page.evaluate(seed,{date:'2026-10-14'});await stamp();await officialMount({device:true});
+  await page.evaluate(seed,{date:'2026-10-14'});await page.evaluate(()=>{window.__syn.serve=null;});await stamp();await officialMount({seeded:true});
   assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 공식 V · /);await page.locator('[data-tv1-finalize]').click();
   await page.waitForFunction(()=>/TARGET v1 저장 · calc_version qgv2-calc\/2026-10-23\.1/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,2);
   assert.match(await page.locator('[data-tv1-status]').textContent(),new RegExp(' · 원본 v0 유지 · 공식 V 게시본 '+shortId+' · 가격 기준일 2026-10-13$'));
   const ver=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).versions.at(-1));
   assert.deepEqual([ver.version,ver.v_source,ver.publication_id,ver.price_basis_date,ver.official_inputs_as_of,ver.calc_version],['v1','OFFICIAL_CENTRAL',pubId,'2026-10-13',PUB.times.inputs_as_of,'qgv2-calc/2026-10-23.1']);
   assert.match(await page.locator('[data-tv1-version]').textContent(),/^저장된 TARGET v1 · 2026-10-14 · V 출처 공식 V · 가격 기준일 2026-10-13$/);
-  // The publication gone at finalize (404) → V_SOURCE_CHANGED → the draft is regenerated on device V (same file, device scores ready).
-  await page.evaluate(seed,{date:'2026-10-14'});await stamp();officialStatus=404;await officialMount({device:true});await page.locator('[data-tv1-finalize]').click();
-  await page.waitForFunction(()=>/초안을 다시 만들었습니다/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,3);
-  assert.equal(await page.locator('[data-tv1-status]').textContent(),'V 출처가 바뀌어(임시 V) 초안을 다시 만들었습니다 · 응답 유지 15 · 새로 확인할 종목 0 · 카드 확인 후 다시 확정하세요');
-  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 안 함 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404)');
-  st=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage).draft);assert.deepEqual([st.v_source,st.official],[undefined,undefined]);
-  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(임시 V)');assert.equal(await page.locator('[data-tv1-attribution]').count(),0);
-  // The main path: device prices ready AND a publication → "규칙으로 초안 만들기" decides at the click (M4). Usable → 공식 V draft;
-  // 404 / 500 / another calc_version / stale → the device draft ("임시 V") with the reason line ending "→ 임시 V".
+  // The publication gone at finalize (404) → OFFICIAL_V_REQUIRED: TARGET v1 waits; the draft is kept as it is (no regeneration,
+  // no other V) and nothing is saved.
+  await page.evaluate(seed,{date:'2026-10-14'});await page.evaluate(()=>{window.__syn.serve=null;});await stamp();officialStatus=404;await officialMount({seeded:true});await page.locator('[data-tv1-finalize]').click();
+  await page.waitForFunction(()=>document.querySelector('[data-tv1-finalize-check]'));assert.equal(officialReads,3);
+  assert.equal(await page.locator('[data-tv1-status]').textContent(),'쓸 수 있는 중앙 V 게시본이 없습니다 · TARGET v1 초안·확정은 중앙 V를 기다립니다(다른 V로 채우지 않음).');
+  assert.deepEqual(await page.locator('[data-tv1-blocker]').evaluateAll(n=>n.map(x=>x.dataset.tv1Blocker)),['OFFICIAL_V_REQUIRED']);
+  assert.equal(await page.locator('[data-tv1-official-reason]').textContent(),'공식 V 사용 불가 · OFFICIAL_NOT_PUBLISHED · 중앙 V 게시본 없음(404) · 초안·확정은 중앙 V 게시본을 기다림');
+  st=await page.evaluate(()=>TargetV1Screen.readState(PlaybookScreen,localStorage));assert.deepEqual([st.draft.v_source,st.draft.official.publication_id,st.versions.length],['OFFICIAL_CENTRAL',pubId,0]);
+  assert.equal(await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),'V(공식 V)');assert.equal(await page.locator('[data-tv1-attribution]').count(),2);
+  // The main path: the build button decides at the click (M4). Usable → 공식 V draft; 404 / 500 / another calc_version / stale →
+  // no draft (the previous one stays) with the reason line; never a draft from another V.
   phase=width+' official auto';await page.evaluate(()=>TargetV1Screen.writeState(PlaybookScreen,localStorage,TargetV1Builder.emptyState()));
-  const autoBuild=async(opts,status=200)=>{officialStatus=status;const before=officialReads;await officialMount({pubDevice:DEVICE_FOR_PUB,...opts});
-   assert.equal(await page.locator('[data-tv1-build]').isDisabled(),false);assert.equal(await page.locator('[data-tv1-build-official]').count(),0,'device prices ready: one build button');
+  const autoBuild=async(opts,status=200)=>{officialStatus=status;const before=officialReads;await officialMount(opts);
+   assert.equal(await page.locator('[data-tv1-build]').isDisabled(),false);assert.equal(await page.locator('[data-tv1-build-official]').count(),0,'one build button');
    assert.equal(officialReads,before,'never read at mount');await page.locator('[data-tv1-build]').click();
-   await page.waitForFunction(()=>/^초안 만듦/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,before+1);
-   return{head:await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),reason:await page.locator('[data-tv1-official-reason]').count()?await page.locator('[data-tv1-official-reason]').textContent():null,
-    draft:await page.evaluate(()=>{const d=TargetV1Screen.readState(PlaybookScreen,localStorage).draft;return{v_source:d.v_source,official:d.official,symbols:d.pool.map(r=>r.symbol)};})};};
+   await page.waitForFunction(()=>/^초안 (만듦|만들지 않음)/.test(document.querySelector('[data-tv1-status]').textContent));assert.equal(officialReads,before+1);
+   return{head:await page.locator('[data-tv1-candidates] thead th').nth(5).textContent(),reason:await page.locator('[data-tv1-official-reason]').count()?await page.locator('[data-tv1-official-reason]').textContent():null,status:await page.locator('[data-tv1-status]').textContent(),
+    draft:await page.evaluate(()=>{const d=TargetV1Screen.readState(PlaybookScreen,localStorage).draft;return{v_source:d.v_source,official:d.official,created:d.created,symbols:d.pool.map(r=>r.symbol)};})};};
   let auto=await autoBuild({});assert.deepEqual([auto.head,auto.reason,auto.draft.v_source,auto.draft.official.publication_id],['V(공식 V)',null,'OFFICIAL_CENTRAL',pubId]);
-  assert.match(await page.locator('[data-tv1-status]').textContent(),/ · 공식 V\(가격 기준일 2026-10-13\)$/);assert.equal(await page.locator('[data-tv1-attribution]').count(),2);
+  assert.match(auto.status,/ · 공식 V\(가격 기준일 2026-10-13\)$/);assert.equal(await page.locator('[data-tv1-attribution]').count(),2);
   const officialSymbols=auto.draft.symbols;
   // Fri 2026-10-16 09:35 New York: only Wed and Thu completed → still fresh (M4 "completed sessions"); unknown time → today counted → stale.
   auto=await autoBuild({nyToday:'2026-10-16',nyMinutes:9*60+35});assert.deepEqual([auto.head,auto.reason,auto.draft.v_source],['V(공식 V)',null,'OFFICIAL_CENTRAL']);
-  const device=(code,text)=>'공식 V 사용 안 함 · '+code+' · '+text+' → 임시 V';
-  for(const[opts,status,reason]of [[{},404,device('OFFICIAL_NOT_PUBLISHED','중앙 V 게시본 없음(404)')],[{},500,device('OFFICIAL_UNAVAILABLE','중앙 V 게시본을 읽지 못함')],
-   [{calc:'qgv2-calc/2026-10-23.2'},200,device('OFFICIAL_CALC_VERSION_DIFFERS','게시본 calc_version이 최신 sec-qgv2.json과 다름')],
-   [{nyToday:'2026-10-16'},200,device('OFFICIAL_STALE','게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)')],
-   [{nyToday:'2026-10-16',nyMinutes:16*60+30},200,device('OFFICIAL_STALE','게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)')]]){
-   auto=await autoBuild(opts,status);assert.deepEqual([auto.head,auto.reason,auto.draft.v_source,auto.draft.official],['V(임시 V)',reason,undefined,undefined],reason);
-   assert.equal(await page.locator('[data-tv1-attribution]').count(),0);assert.match(await page.locator('[data-tv1-v-source]').textContent(),/^V 출처: 임시 V · 기기 시세로 계산 · 중앙 V 미게시 · 확정 기록에 남습니다$/);}
+  const waiting=(code,text)=>'공식 V 사용 불가 · '+code+' · '+text+' · 초안·확정은 중앙 V 게시본을 기다림';
+  for(const[opts,status,reason]of [[{},404,waiting('OFFICIAL_NOT_PUBLISHED','중앙 V 게시본 없음(404)')],[{},500,waiting('OFFICIAL_UNAVAILABLE','중앙 V 게시본을 읽지 못함')],
+   [{calc:'qgv2-calc/2026-10-23.2'},200,waiting('OFFICIAL_CALC_VERSION_DIFFERS','게시본 calc_version이 최신 sec-qgv2.json과 다름')],
+   [{nyToday:'2026-10-16'},200,waiting('OFFICIAL_STALE','게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)')],
+   [{nyToday:'2026-10-16',nyMinutes:16*60+30},200,waiting('OFFICIAL_STALE','게시본 가격 기준일 뒤 마감된 뉴욕 거래일이 2일을 넘음(또는 미래 날짜)')]]){
+   auto=await autoBuild(opts,status);assert.deepEqual([auto.status,auto.reason],['초안 만들지 않음 · 쓸 수 있는 중앙 V 게시본 없음 · TARGET v1 확정은 중앙 V를 기다립니다(다른 V로 채우지 않음)',reason],reason);
+   assert.deepEqual([auto.head,auto.draft.v_source,auto.draft.official.publication_id,auto.draft.symbols],['V(공식 V)','OFFICIAL_CENTRAL',pubId,officialSymbols],reason+': the previous central draft stays');}
   assert.ok(officialSymbols.length>0);
   await page.unroute('**/qgv-official.json*');
   phase=width+' layout';const text=await page.locator('[data-target-v1-builder]').textContent();assert.ok(!/매수|매도|사세요|파세요|\bbuy\b|\bsell\b/i.test(text),'buy/sell wording');

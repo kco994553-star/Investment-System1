@@ -104,9 +104,9 @@ const chip=(label,on,attrs={})=>h('button',{type:'button',class:'chip','aria-pre
 const wait=t=>h('span',{class:'chip wait'},t);
 const hand=(...t)=>h('p',{class:'hand'},...t);
 const red=(code,words,...more)=>h('p',{class:'hand err',dataset:{reason:code}},words,...more);
-// DC-26 colour hooks: the Q·G·V columns take their axis tint; the source chip takes the mine mark only while the shown score is the
-// one this device's engines compute (page.engine_v_source): never since the central V (DC-31: the device result is TARGET's only).
-const AX=['q','g','v'],vsrcClass=pg=>'chip vsrc'+(pg.v_source===pg.engine_v_source?' mine':'');
+// DC-26 colour hooks: the Q·G·V columns take their axis tint; the source chip never takes the mine mark: the shown V is the central
+// V and no engine computes a device V (DC-31; the TARGET v1 builder too since 2026-11-15).
+const AX=['q','g','v'],vsrcClass=()=>'chip vsrc';
 const settingsLink=()=>h('a',{class:'lk',href:href('detail','settings')},'→ 세부: 설정·시트 연결');
 const group=(label,...kids)=>h('div',{class:'scroll',role:'group','aria-label':label},...kids);
 

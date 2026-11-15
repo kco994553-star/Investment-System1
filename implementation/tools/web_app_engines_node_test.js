@@ -1,16 +1,18 @@
 'use strict';
 // New frontend P1 · engine wiring (web_app/engines.js) on the real old modules: TARGET v1, playbook, virtual trading, macro lights.
-//  - TARGET: the draft from the accessor's result equals the draft TargetV1Builder makes from QgvScores.compute on the fixture
-//    (strictPayload + Universe-tab quotes); the builder gets the same arguments the old screen passed (spies); finalize re-checks
-//    against the RAW published JSON (data.peek), regenerates a draft on a changed basis, and a saved version records
-//    page.engine_v_source; every write needs a trusted click (CLICK_REQUIRED, storage unchanged); price paths are SYNC clicks on
+//  - TARGET (2026-11-15, DC-31: the central V only): the draft equals the one TargetV1Builder makes from officialComputed of the
+//    publication data.official() validated (no device price); the builder gets the old screen's arguments plus that publication
+//    (spies); without a usable one (not published, stale on the New York clock, another calc_version) nothing is drafted, built or
+//    selected and finalize is BLOCKED with OFFICIAL_V_REQUIRED; finalize re-checks against the RAW published JSON (data.peek),
+//    regenerates a draft on a changed basis or V source (a saved device draft loads and is regenerated), and saves only
+//    OFFICIAL_CENTRAL versions; every write needs a trusted click (CLICK_REQUIRED, storage unchanged); price paths are SYNC clicks on
 //    PriceStore with the one price view.
 //  - Playbook: judge() reproduces openPanel's R1_FILING rule (playbook_screen_browser_test 'manual R1') and its macro
 //    reference-only display without writing, equals the old openPanel's judgement, and record(event) writes what openPanel wrote
 //    on open; a judgement says recorded:false / JUDGEMENT_NOT_RECORDED until its occurrences are in the store, then recorded:true
 //    (owner 2026-10-24: recorded only on the click), read from the store, so a judgement made again, after a reload too, says the
 //    same; NOTHING_TO_RECORD when there is no occurrence to write; facts() reads the page's central result (DC-31: the official V,
-//    v_prev20 NA with V_HISTORY_NOT_PUBLISHED) after the news list; TARGET reads the hidden device result (await qgv.forEngines).
+//    v_prev20 NA with V_HISTORY_NOT_PUBLISHED) after the news list; TARGET reads the central V (no forEngines).
 //  - One event, one top-level action: syncScoringPrices' tab sync is a nested step presenting its SYNC action's signal.
 //  - Virtual: stored() is the runner's open pass on the price view with fetch:false (NOT_AVAILABLE before sign-in with zero
 //    requests; PRICE_NOT_FETCHED after it with zero private requests); compare / forward / rehearse; run() is NOT_IN_P1.
@@ -61,7 +63,10 @@ const fresh = (name) => { delete require.cache[require.resolve(R.newPath(name))]
 const plain = (v) => JSON.parse(JSON.stringify(v));
 /* One page: a browser-like window, the reused old modules (index.html order), fresh P1 modules. The QGV accessor reads the Universe
    tab above (no price click in these tests); every other price path goes through the real price layer. */
-function env({ files = {} } = {}) {
+// ny: the New York day / minutes QgvOfficial.usable counts sessions with (engines' test seam); default one day after the
+// publication's basis day 2026-10-13, so the synthetic publication is fresh.
+const NY = Object.freeze({ date: '2026-10-14', minutes: 720 });
+function env({ files = {}, ny = NY } = {}) {
   const table = { [QGV2]: { json: F.strictPayload() }, 'actual-catalog.json': { json: CATALOG }, 'universe-codes.json': { json: CODES }, 'forward-validation-ledger.json': { json: ledger() }, 'qgv-official.json': { body: PUB_TEXT }, ...files };
   const win = R.nodeWindow({ files: (name) => table[name] || null }), mods = R.loadOld(win);
   win.InvestmentAppConfig = Object.freeze({ ...mods.InvestmentAppConfig, virtualTradingRequestSpacingMs: 0 });
@@ -70,7 +75,7 @@ function env({ files = {} } = {}) {
   const U = universe(), action = fresh('action.js').create({ win }), data = fresh('data.js').create({ win, action });
   const prices = fresh('prices.js').create({ win, action, data }), store = fresh('store.js').create({ win, action, data });
   const qgv = fresh('qgv.js').create({ win, data, action, prices: { universeView: U.view, storeFacade: prices.storeFacade, subscribe: prices.subscribe } });
-  const engines = fresh('engines.js').create({ win, action, data, prices, store, qgv });
+  const engines = fresh('engines.js').create({ win, action, data, prices, store, qgv, nyNow: () => ny });
   return { win, mods, table, U, action, data, prices, store, qgv, engines, click: () => win.trusted('click'), priv: () => win.requests.filter((r) => /^https?:\/\//.test(r.name)), saved: () => win.localStorage.getItem(mods.PlaybookScreen.KEY) };
 }
 // Records every call of the named functions of an old module (same function, same arguments), installed on the window.
@@ -82,33 +87,39 @@ function spy(e, global, names) {
 const NOT_CLICKS = [undefined, new Event('click'), { type: 'click', isTrusted: true }];
 
 // ---------------------------------------------------------------- TARGET v1
-test('TARGET draft: the accessor result gives the draft TargetV1Builder makes from QgvScores.compute on the fixture; same builder arguments', async () => {
-  const e = env(), { mods, qgv, data, engines } = e, QS = mods.QgvScores, TB = mods.TargetV1Builder, calls = spy(e, 'TargetV1Builder', ['buildDraft']);
-  const pg = await qgv.page(), inputs = data.get(QGV2);
-  assert.equal(pg.state, 'READY'); assert.equal(inputs.as_of, F.strictPayload().as_of);
+test('TARGET draft (2026-11-15, central V only): the draft TargetV1Builder makes from officialComputed of the publication data.official() validated; same builder arguments; none without a usable publication', async () => {
+  const e = env(), { mods, qgv, data, engines } = e, TB = mods.TargetV1Builder, calls = spy(e, 'TargetV1Builder', ['buildDraft']);
+  const pg = await qgv.page(), inputs = data.get(QGV2), off = await data.official();
+  assert.equal(pg.state, 'READY'); assert.equal(inputs.as_of, F.strictPayload().as_of); assert.equal(off.state, 'OFFICIAL'); assert.equal(mods.QgvOfficial.state(off.payload), 'OFFICIAL');
   const got = await engines.target.draft({ date: DATE });
-  // Reference without the accessor: the old collectQuotes over the same Universe read, QgvScores.compute, TargetV1Builder.buildDraft.
-  const ids = mods.DeviceWatchlist.identities(CATALOG).map((c) => ({ company_id: c.company_id, ticker: c.ticker })), U2 = QS.universeIdentities(inputs, ids);
-  const quotes = await QS.collectQuotes({ PrivateSubsetView: { prices: () => e.U.prices } }, { identities: ids, v2Inputs: inputs, catalog: CATALOG });
-  const computed = QS.compute({ identities: U2.identities, v2Inputs: inputs, quotes, preset: null, gate: null, referenceRows: {}, official: U2 });
-  assert.deepEqual(plain((await qgv.forEngines(pg)).rows), plain(computed.rows), 'the hidden TARGET device result is QgvScores.compute on the same inputs and quotes');
-  const ref = TB.buildDraft({ computed, inputs, universeCodes: CODES.codes, existing: mods.TargetV1Screen.existingSymbols(CATALOG), date: DATE, basis: null, cfg: mods.TargetV1ConfigDefaults });
-  assert.deepEqual(got, { ...plain(ref), v_source: 'DEVICE_TEMPORARY' }, 'the old draft, plus the V source its pool V came from');
-  assert.ok(got.pool.length >= 10 && got.eligible_count === got.pool.length, 'fixture gives a real candidate pool');
+  // Reference without the engines: TargetV1Builder.buildDraft over officialComputed of the same publication (no device price, no compute).
+  const computed = TB.officialComputed(off.payload);
+  const ref = TB.buildDraft({ computed, inputs, universeCodes: CODES.codes, existing: mods.TargetV1Screen.existingSymbols(CATALOG), date: DATE, basis: null, official: off.payload, cfg: mods.TargetV1ConfigDefaults });
+  assert.deepEqual(got, plain(ref), 'the builder\'s central draft');
+  assert.equal(got.v_source, 'OFFICIAL_CENTRAL'); assert.deepEqual(got.official, plain(TB.officialRecord(off.payload)));
+  assert.equal(got.official.price_basis_date, off.payload.times.price_basis_date, 'the publication\'s own price basis day, as published');
+  assert.ok(got.pool.length >= 5 && got.eligible_count === got.pool.length, 'fixture gives a real candidate pool');
   assert.equal(calls.buildDraft.length, 1); const [a] = calls.buildDraft[0];
-  assert.deepEqual(Object.keys(a).sort(), ['basis', 'cfg', 'computed', 'date', 'existing', 'inputs', 'universeCodes']);
-  assert.equal(a.computed, await qgv.forEngines(pg)); assert.notEqual(a.computed, qgv.centralComputed(pg), 'never the central result (TARGET keeps its V source until 11/16)'); assert.equal(a.inputs, inputs); assert.equal(a.cfg, mods.TargetV1ConfigDefaults);
+  assert.deepEqual(Object.keys(a).sort(), ['basis', 'cfg', 'computed', 'date', 'existing', 'inputs', 'official', 'universeCodes']);
+  assert.equal(a.computed, computed); assert.equal(a.official, off.payload); assert.notEqual(a.computed, qgv.centralComputed(pg), 'the builder\'s own adapter of the publication'); assert.equal(a.inputs, inputs); assert.equal(a.cfg, mods.TargetV1ConfigDefaults);
   assert.deepEqual([...a.universeCodes], CODES.codes); assert.deepEqual(a.existing, mods.TargetV1Screen.existingSymbols(CATALOG)); assert.equal(a.date, DATE); assert.equal(a.basis, null);
+  assert.equal(qgv.forEngines, undefined, 'no hidden device result');
   assert.ok(Object.isFrozen(got) && Object.isFrozen(got.pool[0]));
   assert.ok(!SENTINEL.test(JSON.stringify(got)), 'no device price in the draft');
   await assert.rejects(engines.target.draft({ date: 'x' }), /DATE_INVALID/);
   // Only a page from qgv.page(): a look-alike (a preview, a plain object) is a fixed code, never a TypeError on its fields.
-  for (const page of [qgv.preview(pg, JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_v2_custom_vectors_v1.json'), 'utf8')).cases[0].input.weights), { engine_v_source: { id: 'OFFICIAL_CENTRAL' } }])
+  for (const page of [qgv.preview(pg, JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_v2_custom_vectors_v1.json'), 'utf8')).cases[0].input.weights), { v_source: { id: 'OFFICIAL_CENTRAL' } }])
     for (const call of [() => engines.target.draft({ date: DATE, page }), () => engines.target.basis({ page })]) await assert.rejects(call(), /^Error: PAGE_UNKNOWN$/);
+  // No usable central V → no draft (never one from another V): not published, stale on the New York clock, another calc_version.
+  const later = { ...F.strictPayload(), calc_version: 'qgv2-calc/2026-10-23.2' };
+  for (const [opts, reason] of [[{ files: { 'qgv-official.json': null } }, 'OFFICIAL_NOT_PUBLISHED'], [{ ny: { date: '2026-10-19', minutes: 720 } }, 'OFFICIAL_STALE'], [{ files: { [QGV2]: { json: later } }, peekOnly: true }, 'OFFICIAL_CALC_VERSION_DIFFERS']]) {
+    const x = env(opts); await x.qgv.page(); if (opts.peekOnly) x.table[QGV2] = { json: later };
+    await assert.rejects(x.engines.target.draft({ date: DATE }), (err) => err.message === 'OFFICIAL_V_REQUIRED' && err.reason === reason, reason);
+  }
   assert.deepEqual(e.priv(), []);
 });
 
-test('TARGET writes: build / answer / R-B only in a trusted click (storage unchanged otherwise); build keeps the raw-file basis', async () => {
+test('TARGET writes: build / answer / R-B only in a trusted click (storage unchanged otherwise); build keeps the raw-file basis; no usable central V → nothing built or selected', async () => {
   const e = env(), { mods, engines, data } = e, TB = mods.TargetV1Builder, cfg = mods.TargetV1ConfigDefaults;
   for (const ev of NOT_CLICKS) {
     assert.throws(() => engines.target.build(ev, { date: DATE }), /CLICK_REQUIRED/);
@@ -122,7 +133,7 @@ test('TARGET writes: build / answer / R-B only in a trusted click (storage uncha
   assert.deepEqual(basis, await TB.inputBasis(F.strictPayload()), 'basis of the raw published file (same as_of as the page inputs)');
   const draft = await engines.target.build(e.click(), { date: DATE });
   assert.deepEqual(engines.target.state().draft, draft); assert.deepEqual(draft, await engines.target.draft({ date: DATE, basis }));
-  assert.equal(draft.v_source, 'DEVICE_TEMPORARY', 'the saved draft keeps the V source of its pool'); assert.equal((await engines.target.blockers({ date: DATE })).v_source, 'DEVICE_TEMPORARY');
+  assert.equal(draft.v_source, 'OFFICIAL_CENTRAL', 'the saved draft is the central V\'s'); assert.equal((await engines.target.blockers({ date: DATE })).v_source, 'OFFICIAL_CENTRAL'); assert.equal((await engines.target.blockers({ date: DATE })).official_reason, null);
   assert.ok(draft.basis && draft.basis.shard_count === F.strictPayload().shard_count);
   // A card answer: the old judgement record (TV1-… id, the builder's record) and the latest answer per name.
   const sel = TB.currentSelection(engines.target.state(), cfg), name = sel.rows.find((r) => !mods.TargetV1Screen.existingSymbols(CATALOG).includes(r.symbol)).symbol;
@@ -135,56 +146,69 @@ test('TARGET writes: build / answer / R-B only in a trusted click (storage uncha
   const before = e.saved();
   await assert.rejects(engines.target.build(e.click(), { date: DATE }), /TARGET_V1_ANSWERS_RESET/); assert.equal(e.saved(), before);
   await engines.target.build(e.click(), { date: DATE, reset: true }); assert.deepEqual(engines.target.state().answers, []);
-  // R-B on a due day: the builder's universeRows / exclusions / ruleBSegment over the page result; written only when ready.
+  // R-B on a due day: the builder's universeRows / exclusions / ruleBSegment over the central V; written only when ready.
   assert.equal(engines.target.ruleBDue(DATE), TB.ruleBDue(engines.target.state(), DATE, cfg));
   const st = e.saved(), r = await engines.target.selectRuleB(e.click(), { date: DATE });
-  if (r.state === 'SELECTED') { assert.equal(engines.target.state().rule_b.length, 1); assert.equal(engines.target.state().rule_b[0].v_source, 'DEVICE_TEMPORARY'); assert.equal(r.v_source, 'DEVICE_TEMPORARY'); }
+  if (r.state === 'SELECTED') { assert.equal(engines.target.state().rule_b.length, 1); assert.equal(engines.target.state().rule_b[0].v_source, 'OFFICIAL_CENTRAL'); assert.equal(r.v_source, 'OFFICIAL_CENTRAL'); }
   else { assert.equal(r.state, 'NOT_READY'); assert.equal(e.saved(), st); }
-  // A saved R-B row with its V source still passes the old state check (validateState fixes only date and rows of a row).
+  // A saved R-B row of the earlier device source still passes the state check (validateState fixes only date and rows of a row).
   const withRow = { ...engines.target.state(), rule_b: [{ date: DATE, rows: [{ symbol: 'NVDA', pct: 10 }], v_source: 'DEVICE_TEMPORARY' }] };
   assert.doesNotThrow(() => TB.validateState(withRow));
   assert.equal(data.get(QGV2).as_of, draft.v2_as_of); assert.deepEqual(e.priv(), []); assert.equal(e.action.blocked(), 0);
+  // Without a usable central V (stale on the New York clock): build is refused and R-B is not selected; nothing is written.
+  const x = env({ ny: { date: '2026-10-19', minutes: 720 } }); await x.qgv.page();
+  await assert.rejects(x.engines.target.build(x.click(), { date: DATE }), (err) => err.message === 'OFFICIAL_V_REQUIRED' && err.reason === 'OFFICIAL_STALE');
+  assert.deepEqual(await x.engines.target.selectRuleB(x.click(), { date: DATE }), { state: 'OFFICIAL_V_REQUIRED', reason: 'OFFICIAL_STALE' }); assert.equal(x.saved(), null);
 });
 
-test('TARGET finalize: re-checks the RAW published JSON (data.peek), regenerates on a changed basis, records engine_v_source on a saved version', async () => {
+test('TARGET finalize: re-checks the RAW published JSON (data.peek) and the central V, regenerates on a changed basis or V source, saves only OFFICIAL_CENTRAL versions; no usable central V → BLOCKED (OFFICIAL_V_REQUIRED)', async () => {
   const e = env(), { mods, engines, qgv, data } = e, TB = mods.TargetV1Builder, raw = F.strictPayload();
-  const pg = await qgv.page(); await engines.target.build(e.click(), { date: DATE });
+  const pg = await qgv.page(), off = await data.official(), rec = TB.officialRecord(off.payload); await engines.target.build(e.click(), { date: DATE });
   const calls = spy(e, 'TargetV1Builder', ['finalizeBlockers', 'finalize', 'inputBasis', 'regenerateDraft']), before = e.saved();
   const f = await engines.target.finalize(e.click(), { date: DATE });
-  assert.equal(f.outcome, 'BLOCKED'); assert.ok(f.blockers.includes('TARGET_V1_CARDS_PENDING') && f.blockers.includes('Q_COVERAGE_LOW'), f.blockers.join(','));
+  assert.equal(f.outcome, 'BLOCKED'); assert.ok(f.blockers.includes('TARGET_V1_CARDS_PENDING') && f.blockers.includes('Q_COVERAGE_LOW'), f.blockers.join(',')); assert.ok(!f.blockers.includes('OFFICIAL_V_REQUIRED')); assert.equal(f.official_reason, null);
   assert.equal(e.saved(), before, 'a blocked finalize writes nothing');
   for (const [name, at] of [['finalizeBlockers', 1], ['finalize', 1], ['inputBasis', 0]]) {
     const p = name === 'inputBasis' ? calls[name][0][0] : calls[name][0][at].published;
     assert.deepEqual(p, raw, name + ' gets the raw published file'); assert.notEqual(p, data.get(QGV2));
     assert.equal(p.kind, 'SEC_QGV2'); assert.ok(Object.values(p.records).every((r) => !('qg_axes' in r)), 'not the Qgv2Inputs value');
   }
+  assert.equal(calls.finalizeBlockers[0][1].official, off.payload); assert.equal(calls.finalize[0][1].official, off.payload, 'the central V usable now');
   assert.deepEqual(calls.finalize[0][1].basis, await TB.inputBasis(raw)); assert.equal(calls.finalize[0][1].cfg, mods.TargetV1ConfigDefaults); assert.equal(calls.finalize[0][1].date, DATE);
   assert.deepEqual((await engines.target.blockers({ date: DATE })).blockers, f.blockers);
-  // A draft built while the file could not be re-read has no basis: finalize regenerates it from the page result (answers kept).
-  e.table[QGV2] = { status: 500, body: '' }; await engines.target.build(e.click(), { date: DATE, reset: true }); e.table[QGV2] = { json: raw };
+  // While the file cannot be re-read there is no calc_version to match the central V against: no build (nothing written).
+  e.table[QGV2] = { status: 500, body: '' }; const unread = e.saved();
+  await assert.rejects(engines.target.build(e.click(), { date: DATE, reset: true }), (err) => err.message === 'OFFICIAL_V_REQUIRED' && err.reason === 'OFFICIAL_CALC_VERSION_DIFFERS'); assert.equal(e.saved(), unread);
+  e.table[QGV2] = { json: raw };
+  // A saved draft without a basis (one from before the basis was kept): finalize regenerates it from the central V (answers kept).
+  const nob = JSON.parse(e.saved()); nob.target_v1.draft.basis = null; e.win.localStorage.setItem(mods.PlaybookScreen.KEY, JSON.stringify(nob));
   assert.equal(engines.target.state().draft.basis, null);
   const g = await engines.target.finalize(e.click(), { date: DATE });
   assert.equal(g.outcome, 'DRAFT_REGENERATED'); assert.deepEqual(engines.target.state().draft.basis, await TB.inputBasis(raw));
-  assert.equal(engines.target.state().draft.v_source, 'DEVICE_TEMPORARY', 'a regenerated draft keeps its V source');
-  const [, o] = calls.regenerateDraft[0]; assert.equal(o.computed, await qgv.forEngines(pg)); assert.equal(o.inputs, qgv.engineInputs(pg)); assert.equal(o.date, DATE);
-  // A version that passes: the engines add v_source = page.engine_v_source.id (#391 writes the same id itself; another id fails).
+  assert.equal(engines.target.state().draft.v_source, 'OFFICIAL_CENTRAL', 'a regenerated draft is the central V\'s');
+  const [, o] = calls.regenerateDraft[0]; assert.equal(o.computed, TB.officialComputed(off.payload)); assert.equal(o.official, off.payload); assert.equal(o.inputs, qgv.engineInputs(pg)); assert.equal(o.date, DATE);
+  // A saved draft of the earlier device source (before 2026-11-15) still loads; finalize calls it V_SOURCE_CHANGED and regenerates
+  // it from the central V.
+  const legacy = JSON.parse(e.saved()); delete legacy.target_v1.draft.official; legacy.target_v1.draft.v_source = 'DEVICE_TEMPORARY'; e.win.localStorage.setItem(mods.PlaybookScreen.KEY, JSON.stringify(legacy));
+  assert.equal(engines.target.state().draft.v_source, 'DEVICE_TEMPORARY'); assert.ok((await engines.target.blockers({ date: DATE })).blockers.includes('V_SOURCE_CHANGED'));
+  const h = await engines.target.finalize(e.click(), { date: DATE }); assert.equal(h.outcome, 'DRAFT_REGENERATED'); assert.equal(engines.target.state().draft.v_source, 'OFFICIAL_CENTRAL');
+  // No usable central V (stale on the New York clock): BLOCKED with OFFICIAL_V_REQUIRED and why; nothing regenerated or saved.
+  const x = env({ ny: { date: '2026-10-19', minutes: 720 } }); x.win.localStorage.setItem(mods.PlaybookScreen.KEY, e.saved()); const xs = x.saved();
+  const w = await x.engines.target.finalize(x.click(), { date: DATE }); assert.equal(w.outcome, 'BLOCKED'); assert.ok(w.blockers.includes('OFFICIAL_V_REQUIRED')); assert.equal(w.official_reason, 'OFFICIAL_STALE'); assert.equal(x.saved(), xs);
+  assert.equal((await x.engines.target.blockers({ date: DATE })).official_reason, 'OFFICIAL_STALE');
+  // A version that passes is saved only when the builder wrote the central source; any other (or none) is V_SOURCE_MISMATCH.
   const B = mods.TargetV1Builder, pass = (extra) => Object.freeze({ ...B, finalizeBlockers: () => ({ blockers: [], check: { reasons: [] }, basis_changed: false }),
-    finalize: (s, x) => ({ ...s, versions: [...s.versions, { version: 'v1', date: x.date, rows: [{ symbol: 'NVDA', pct: 10 }], ...extra }], rule_c: { start: x.date, version: 'v1' } }) });
-  e.win.TargetV1Builder = pass({ v_source: 'ELSEWHERE' }); const keep = e.saved();
-  await assert.rejects(engines.target.finalize(e.click(), { date: DATE }), /V_SOURCE_MISMATCH/); assert.equal(e.saved(), keep);
-  e.win.TargetV1Builder = pass({});
+    finalize: (s, y) => ({ ...s, versions: [...s.versions, { version: 'v1', date: y.date, rows: [{ symbol: 'NVDA', pct: 10 }], ...extra }], rule_c: { start: y.date, version: 'v1' } }) });
+  for (const bad of [{ v_source: 'ELSEWHERE' }, {}, { v_source: 'DEVICE_TEMPORARY' }]) {
+    e.win.TargetV1Builder = pass(bad); const keep = e.saved();
+    await assert.rejects(engines.target.finalize(e.click(), { date: DATE }), /V_SOURCE_MISMATCH/, JSON.stringify(bad)); assert.equal(e.saved(), keep);
+  }
+  e.win.TargetV1Builder = pass({ v_source: 'OFFICIAL_CENTRAL', publication_id: rec.publication_id, price_basis_date: rec.price_basis_date, official_inputs_as_of: rec.inputs_as_of });
   const ok = await engines.target.finalize(e.click(), { date: DATE });
-  assert.equal(ok.outcome, 'FINALIZED'); assert.equal(pg.engine_v_source.id, 'DEVICE_TEMPORARY');
-  assert.equal(engines.target.state().versions.at(-1).v_source, pg.engine_v_source.id); assert.deepEqual(ok.version, engines.target.state().versions.at(-1));
-  e.win.TargetV1Builder = pass({ v_source: 'DEVICE_TEMPORARY' });
-  assert.equal((await engines.target.finalize(e.click(), { date: DATE })).version.v_source, 'DEVICE_TEMPORARY');
-  // The version takes the V source its draft was built with (here a draft marked as built from another source), not the page's.
-  const doc = JSON.parse(e.saved()); doc.target_v1.draft.v_source = 'OFFICIAL_CENTRAL'; e.win.localStorage.setItem(mods.PlaybookScreen.KEY, JSON.stringify(doc));
-  e.win.TargetV1Builder = pass({});
-  assert.equal((await engines.target.finalize(e.click(), { date: DATE })).version.v_source, 'OFFICIAL_CENTRAL', 'from the draft');
-  e.win.TargetV1Builder = pass({ v_source: 'DEVICE_TEMPORARY' }); const kept = e.saved();
-  await assert.rejects(engines.target.finalize(e.click(), { date: DATE }), /V_SOURCE_MISMATCH/, 'the builder\'s own id disagrees with the draft'); assert.equal(e.saved(), kept);
-  await assert.rejects(engines.target.finalize(e.click(), { date: DATE, page: { engine_v_source: { id: 'DEVICE_TEMPORARY' } } }), /PAGE_UNKNOWN/); assert.equal(e.saved(), kept);
+  assert.equal(ok.outcome, 'FINALIZED'); assert.equal(Object.hasOwn(pg, 'engine_v_source'), false);
+  assert.equal(engines.target.state().versions.at(-1).v_source, 'OFFICIAL_CENTRAL'); assert.equal(engines.target.state().versions.at(-1).price_basis_date, off.payload.times.price_basis_date); assert.deepEqual(ok.version, engines.target.state().versions.at(-1));
+  const kept = e.saved();
+  await assert.rejects(engines.target.finalize(e.click(), { date: DATE, page: { v_source: { id: 'OFFICIAL_CENTRAL' } } }), /PAGE_UNKNOWN/); assert.equal(e.saved(), kept);
   assert.deepEqual(e.priv(), []);
 });
 
