@@ -146,7 +146,7 @@ const noteWords=c=>NOTE_WORDS[c]||'저장하지 못했습니다';
 /* ---------------------------------------------------------------- the screen */
 function screen(route,{root,box,chosen,slots}){
  const signal=route.signal,layer=typeof I.loadState==='function'&&I.loadState()==='READY';
- const S={row:null,dev:{busy:false,code:null,data:null},repaints:new Set()};
+ const S={row:null,dev:{busy:false,code:null,data:null},repaints:new Set()};let xp=null;
  const onChange=fn=>{S.repaints.add(fn);return fn;};
  const changed=()=>{for(const fn of[...S.repaints]){try{fn();}catch(_){}}};
  // ---- notes store (read at every draw; the facade refuses before / after a failed layer)
@@ -167,7 +167,7 @@ function screen(route,{root,box,chosen,slots}){
    h('span',{class:'meta'},r.code,' · ',I.companies.scope().label,r.name_ko?' · '+r.name_ko:'')),
    r.status==='WITHDRAWN'?h('p',{class:'reason',dataset:{listingEnded:r.withdrawn_on}},'상장 종료 ',r.withdrawn_on,' · 점수 없음 · 일봉을 묻지 않습니다'):null,
    h('a',{class:'more',href:href('company',r.id)},'→ 기업 화면'));}
- function choose(row){if(S.row===row)return;S.row=row;S.dev={busy:false,code:null,data:null};paintChosen();changed();}
+ function choose(row){if(S.row===row)return;S.row=row;if(xp)xp.reset();S.dev={busy:false,code:null,data:null};paintChosen();changed();}
  function attachBox(){
   if(!layer){box.input.disabled=true;return;}
   let done=false;
@@ -199,15 +199,24 @@ function screen(route,{root,box,chosen,slots}){
  const rangeSel=h('select',{id:'tech-range','aria-label':'일봉 기간',dataset:{techRange:''},onchange:e=>{V.range=e.target.value;}},RANGES.map(r=>h('option',{value:r,selected:r===V.range},RANGE_KO[r])));
  const loadBtn=h('button',{type:'button',class:'btn mine',dataset:{techLoad:''},onclick:e=>load(e)},'일봉 불러오기 · 이 기기에서만');
  const supported=row=>!!(row&&window.PrivateHistory&&typeof window.PrivateHistory.symbolFor==='function'&&window.PrivateHistory.symbolFor(row.id));
+ // Owner-private (owner 2026-11-15): the daily bars come from the private Worker's /history, so before a sign-in this place shows only
+ // the short login-required state; after it the controls work as before (the Worker still checks the owner on every read).
+ const signedIn=()=>{if(!layer)return false;try{const st=I.prices.status();return!!(st&&st.google&&st.google.connected===true);}catch(_){return false;}};
+ const gate=h('p',{class:'pending',role:'status',dataset:{privateGate:'tech-history',privateState:'LOGIN_REQUIRED'}},h('span',{class:'chip',dataset:{privateLabel:''}},'비공개'),' 로그인 필요');
+ const devNote=h('p',{class:'reason'},'누를 때만 이 기기의 비공개 Worker에 묻고 RAM에만 둠 · 저장·전송 안 함 · 공개 값 아님 · 판정·신호·매매 기능 없음');
+ const loadRow=h('div',{class:'load-row'},h('label',{for:'tech-range',class:'check'},'기간 ',rangeSel),loadBtn);
+ if(layer)try{I.prices.subscribe(()=>{if(!signal.aborted)changed();},{signal});}catch(_){}
  function load(e){if(S.dev.busy||!S.row)return;const row=S.row;let p;
   try{p=I.prices.history(e,row.id,{range:V.range});}catch(err){S.dev={busy:false,code:errCode(err),data:null};changed();return;}
   S.dev={busy:true,code:null,data:null};changed();
   Promise.resolve(p).then(data=>{if(signal.aborted||S.row!==row)return;S.dev={busy:false,code:null,data};changed();},
    err=>{if(signal.aborted||S.row!==row)return;S.dev={busy:false,code:errCode(err),data:null};changed();});}
- const paintDevice=onChange(()=>{const r=S.row,d=S.dev,ok=layer&&r&&r.status!=='WITHDRAWN'&&supported(r);
+ const paintDevice=onChange(()=>{const owner=signedIn();if(!owner&&(S.dev.data||S.dev.code))S.dev={busy:false,code:null,data:null};
+  gate.hidden=owner;for(const n of[devNote,loadRow,dev.status,dev.chart,dev.lines,dev.facts])n.hidden=!owner;
+  const r=S.row,d=S.dev,ok=owner&&layer&&r&&r.status!=='WITHDRAWN'&&supported(r);
   loadBtn.disabled=!ok;rangeSel.disabled=!ok||d.busy;loadBtn.setAttribute('aria-busy',String(d.busy));
   dev.why.textContent=!layer?'층을 불러오지 못해 일봉을 물을 수 없습니다':!r?'기업을 고르면 누를 수 있습니다':r.status==='WITHDRAWN'?'상장 종료 기업은 일봉을 묻지 않습니다':!supported(r)?HIST_WORDS.HISTORY_UNAVAILABLE+' · 공개 화면은 그대로':'';
-  dev.why.hidden=!dev.why.textContent;
+  dev.why.hidden=!owner||!dev.why.textContent;
   dev.status.replaceChildren(...(d.busy?['이 기기 일봉 경로로 묻는 중']:d.code?[h('span',{dataset:{na:d.code}},'— · ',histWords(d.code),' · ',code(d.code))]:d.data?['이 기기 일봉을 이 화면에만 보였습니다 · 저장·전송 안 함 · 새로고침하면 사라짐']:[]));
   if(!d.data){dev.chart.replaceChildren();dev.facts.replaceChildren();dev.lines.replaceChildren();dev.chart.dataset.state=d.code?'NA':'BEFORE';return;}
   dev.chart.dataset.state='OK';drawChart();});
@@ -242,12 +251,13 @@ function screen(route,{root,box,chosen,slots}){
    if(m.kind==='RANGE')return h('svg:rect',{x:m.x,y:m.y,width:m.w,height:m.h,...line,dataset:{noteMark:m.id,noteKind:m.kind}},title);
    return h('svg:path',{d:m.d,...line,dataset:{noteMark:m.id,noteKind:m.kind}},title);});}
  const panelChart=I.parts.privatePanel({id:'tech-kis-chart',title:'실가격 차트 · 지표 (KIS 통합 일봉)'});
+ // 비공개 펼치기 (owner 2026-11-05, DC-44): the same panel, filled after the owner signs in; the public part above is unchanged.
+ if(I.privateExpand)xp=I.privateExpand.attach(panelChart,{signal,kind:'technical',target:()=>({symbol:S.row&&typeof S.row.ticker==='string'?S.row.ticker.replace('.','-'):null}),publicBasis:()=>null});
  const b311=block('3.1.1',sub('차트 탐색','3.1.1','공개 · 이 기기 · 비공개 세 층'),
   h('p',{dataset:{publicChart:'NONE',na:HOLD.code}},h('b',null,'공개 차트 없음'),' · ',HOLD.text,' (',code(HOLD.code),')'),
   h('p',{class:'reason',dataset:{na:IEX.code}},IEX.text,' (',code(IEX.code),') · 합성 시험 봉은 화면에 싣지 않음'),
   h('div',{class:'sk mine outside',dataset:{techDevice:''}},h('h4',null,'이 기기 일봉 · 차트만 · 판정 보류'),
-   h('p',{class:'reason'},'누를 때만 이 기기의 비공개 Worker에 묻고 RAM에만 둠 · 저장·전송 안 함 · 공개 값 아님 · 판정·신호·매매 기능 없음'),
-   h('div',{class:'load-row'},h('label',{for:'tech-range',class:'check'},'기간 ',rangeSel),loadBtn),dev.why,dev.status,dev.chart,dev.lines,dev.facts),
+   devNote,gate,loadRow,dev.why,dev.status,dev.chart,dev.lines,dev.facts),
   h('p',{class:'reason',dataset:{privateWhy:'tech-kis-chart'}},'비공개 층: KIS 원주가(MODP=0)는 조정 완료 가격으로 보지 않음 · 차트 계열 = 원주가 + 확인된 분할(원주가÷수정주가 정수비 계단 + SEC 주식수 교차 확인) · MODP=1은 대조용 · 확인 구간만 판정 · KIS 값은 공개 파일·화면·로그에 넣지 않음'));
 
  // 3.1.2 지표와 정도 설정

@@ -76,8 +76,24 @@ class WebAppPreviewTest(unittest.TestCase):
         own = {p.name for p in WEB_APP.iterdir() if p.is_file()} - {'index.html'}
         shared = {n for n in own if (self.without / n).is_file()}
         self.assertEqual(shared, {'jua-regular-ksx1001.woff2', 'jua-OFL.txt', 'screen-detail.js'})
-        expected = (own - shared) | {'app.html', 'preview-banner.css', 'app-screen-detail.js'}
+        expected = (own - shared - set(self.preview.OWNER_PRIVATE)) | {'app.html', 'preview-banner.css', 'app-screen-detail.js'}
         self.assertEqual(self.added(), expected)
+
+    def test_owner_private_files_are_not_published_and_the_loader_does_not_list_them(self):
+        # kis-private.js names the private Worker routes and schemas; the guard refuses both in published code (DC-52 note).
+        web_app = load('build_web_app')
+        self.assertEqual(set(self.preview.OWNER_PRIVATE), {'kis-private.js', 'private-expand-live.js'})
+        source = web_app.load_order()
+        self.assertEqual(source[-2:], list(self.preview.OWNER_PRIVATE))
+        for name in self.preview.OWNER_PRIVATE:
+            self.assertTrue((WEB_APP / name).is_file(), name)
+            self.assertFalse((self.with_preview / name).exists(), name)
+        published = web_app.parse_load_order((self.with_preview / 'loader.js').read_text(encoding='utf-8'))
+        self.assertEqual(published, source[:-2])
+        self.assertEqual(self.preview.loader_js((WEB_APP / 'loader.js').read_text(encoding='utf-8')),
+                         (self.with_preview / 'loader.js').read_text(encoding='utf-8'))
+        with self.assertRaisesRegex(ValueError, 'exactly once'):
+            self.preview.loader_js('const LOAD_ORDER=Object.freeze([]);')
 
     def test_guard_passes_and_pins_every_added_file(self):
         receipt = self.guard.scan_artifact(self.with_preview)
@@ -113,8 +129,10 @@ class WebAppPreviewTest(unittest.TestCase):
     def test_every_script_the_page_loads_is_published(self):
         page = parse((self.with_preview / 'app.html').read_text(encoding='utf-8'))
         web_app = load('build_web_app')
-        for name in page.scripts + page.styles + web_app.load_order():
+        published = web_app.parse_load_order((self.with_preview / 'loader.js').read_text(encoding='utf-8'))
+        for name in page.scripts + page.styles + published:
             self.assertTrue((self.with_preview / name).is_file(), name)
+        self.assertEqual([n for n in web_app.load_order() if n not in published], list(self.preview.OWNER_PRIVATE))
         for name in web_app.reused_old_files():
             self.assertEqual((self.with_preview / name).read_bytes(), (web_app.OLD / name).read_bytes(), name)
 
