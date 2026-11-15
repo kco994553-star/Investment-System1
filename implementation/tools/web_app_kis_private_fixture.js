@@ -79,7 +79,7 @@ function measures({ symbol = 'NVDA', signalDay = '2026-10-30', adopted = true, b
 }
 // Raw-only numbers of measures(): never on a page (the adopted 12.4242 may be, inside [data-ram-price] only).
 const MEASURE_RAW = ['20.4242', '4242000.5'];
-// Codex #556's own output (research/private_kis_reference.py at 0235eeb1, run on tools/kis_contract_fixture.py's synthetic
+// Codex #556's own output (research/private_kis_reference.py at 2abdd286, partial totals masked, run on tools/kis_contract_fixture.py's synthetic
 // contracts; tests/fixtures/kis_private_reference_556_synthetic.json says how): the display tiers as the producer writes them.
 // Schema names are stored as '@kis:<rest>' and rebuilt here. codex556(case) → {chart, technical, measures} for case 'available'
 // (one VERIFIED indicator), 'reference' (one UNVERIFIED_REFERENCE indicator with its reference_value) or 'withheld' (a raw

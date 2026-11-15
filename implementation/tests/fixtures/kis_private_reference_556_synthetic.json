@@ -2,8 +2,8 @@
  "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
  "generated_by": {
   "code": "research/private_kis_reference.py reference_files (technical) and official_reference (qgv)",
-  "commit": "0235eeb145caf8c608529e428ccd9a3299e8d638",
-  "full_qgv_bytes": 1136184,
+  "commit": "2abdd286d83400fd2686a4f49eeb7d495f704689",
+  "full_qgv_bytes": 1153835,
   "full_qgv_rows": 523,
   "inputs": "tools/kis_contract_fixture.py fixtures() synthetic-raw (available; identity UNKNOWN for reference; closes x2 from the third session for withheld) and tests/fixtures/sec_qgv2_vectors_v1.json base (one code fed from the synthetic contract)",
   "pull_request": 556
@@ -23,7 +23,11 @@
    "QGV": 0,
    "V": 0,
    "codes": 504,
-   "engine_total_computed": 27
+   "total": 0
+  },
+  "diagnostics": {
+   "original_engine_total_count": 27,
+   "suppressed_partial_totals": 27
   },
   "display": {
    "label": "검증 전(참고)",
@@ -701,7 +705,7 @@
     "q_industry_percentile": null,
     "selected_types": [],
     "total": null,
-    "total_reason": "AXIS_WEIGHT_INSUFFICIENT",
+    "total_reason": "THREE_AXES_REQUIRED",
     "type_reason": "TYPE_UNCONFIRMED",
     "type_weights": {
      "G": 33.0,
@@ -710,6 +714,7 @@
     },
     "v_excluded": null,
     "value_trap_gate": false,
+    "verification": "UNVERIFIED_REFERENCE",
     "weights": {
      "G": 33.0,
      "Q": 34.0,
@@ -823,8 +828,8 @@
     ],
     "q_industry_percentile": 0.0,
     "selected_types": [],
-    "total": 14.553336259877085,
-    "total_reason": null,
+    "total": null,
+    "total_reason": "THREE_AXES_REQUIRED",
     "type_reason": "NO_RECOGNIZED_TYPE",
     "type_weights": {
      "G": 33.0,
@@ -833,6 +838,7 @@
     },
     "v_excluded": "VALUE_TRAP_GATE",
     "value_trap_gate": true,
+    "verification": "UNVERIFIED_REFERENCE",
     "weights": {
      "G": 33.0,
      "Q": 34.0,
@@ -945,8 +951,8 @@
     ],
     "q_industry_percentile": 41.666666666666664,
     "selected_types": [],
-    "total": 49.276412057360254,
-    "total_reason": null,
+    "total": null,
+    "total_reason": "THREE_AXES_REQUIRED",
     "type_reason": "NO_RECOGNIZED_TYPE",
     "type_weights": {
      "G": 33.0,
@@ -955,6 +961,7 @@
     },
     "v_excluded": null,
     "value_trap_gate": false,
+    "verification": "UNVERIFIED_REFERENCE",
     "weights": {
      "G": 33.0,
      "Q": 34.0,
@@ -969,6 +976,7 @@
    "raw_any": 0,
    "role_any": 0
   },
+  "total_policy": "THREE_AXES_REQUIRED_PRIVATE_OUTPUT",
   "weights": {
    "default_preset": "balanced",
    "gate": true,

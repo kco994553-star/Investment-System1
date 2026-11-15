@@ -196,7 +196,12 @@ const validateMeasures=wrap(m=>{const at='$';
    with Codex (#437); until then the #493 reader shape below is the contract, and QGV_FIELDS / QGV_OPTIONAL are the one place to
    adjust it. calc_version, price_basis_date and source (optional; KIS when absent) are what the panel shows. */
 const QGV_FIELDS=Object.freeze(['schema','layer','calc_version','price_basis_date','calculated_at','financial_input_as_of','rows','coverage','rank','rank_reason','official_publication_replaced','TARGET_modified','population']);
-const QGV_OPTIONAL=Object.freeze(['source','price_status','historical_pit_proven']);
+const QGV_OPTIONAL=Object.freeze(['source','price_status','historical_pit_proven','display','stages','share_count_basis','identity_basis','total_policy','diagnostics']);
+/* Codex #556 2abdd286 (mask_incomplete_totals): with total_policy THREE_AXES_REQUIRED_PRIVATE_OUTPUT every row is verification
+   UNVERIFIED_REFERENCE, a row with any axis score missing has total null and total_reason THREE_AXES_REQUIRED, coverage.total and
+   diagnostics {original_engine_total_count, suppressed_partial_totals} are given and coverage.engine_total_computed is gone. A file
+   that contradicts this is refused. Without the policy (the earlier shape) a partial total is still never shown (qgvView). */
+const TOTAL_POLICY='THREE_AXES_REQUIRED_PRIVATE_OUTPUT',THREE_AXES='THREE_AXES_REQUIRED';
 const validateQgv=wrap(q=>{const at='$';
  need(q,QGV_FIELDS,at);
  if(typeof q.calc_version!=='string'||!q.calc_version)refuse('TYPE',at+'.calc_version');
@@ -208,7 +213,18 @@ const validateQgv=wrap(q=>{const at='$';
  if(!isObj(q.rows))refuse('TYPE',at+'.rows');
  for(const[k,r]of Object.entries(q.rows)){const p=at+'.rows.'+k;need(r,['axes','total'],p);need(r.axes,['Q','G','V'],p+'.axes');
   for(const ax of['Q','G','V']){const x=r.axes[ax];need(x,['score'],p+'.axes.'+ax);if(x.score!==null&&(typeof x.score!=='number'||!Number.isFinite(x.score)))refuse('SCORE_INVALID',p+'.axes.'+ax);}
-  if(r.total!==null&&(typeof r.total!=='number'||!Number.isFinite(r.total)))refuse('SCORE_INVALID',p+'.total');}
+  if(r.total!==null&&(typeof r.total!=='number'||!Number.isFinite(r.total)))refuse('SCORE_INVALID',p+'.total');
+  const partial=['Q','G','V'].some(ax=>r.axes[ax].score===null);
+  if(own(r,'verification')&&r.verification!==TIER.REFERENCE)refuse('ENUM',p+'.verification');
+  if(own(r,'total_reason')&&r.total_reason===THREE_AXES&&r.total!==null)refuse('TOTAL_POLICY_VIOLATION',p+'.total');
+  if(own(q,'total_policy')){if(r.verification!==TIER.REFERENCE)refuse('KEY_MISSING',p+'.verification');
+   if(partial&&(r.total!==null||r.total_reason!==THREE_AXES))refuse('TOTAL_POLICY_VIOLATION',p+'.total');}}
+ if(own(q,'total_policy')){if(q.total_policy!==TOTAL_POLICY)refuse('ENUM',at+'.total_policy');
+  if(!intOk(q.coverage.total)||q.coverage.total>q.coverage.codes)refuse('COUNT_INVALID',at+'.coverage.total');
+  if(own(q.coverage,'engine_total_computed'))refuse('COUNT_CONFLICT',at+'.coverage.engine_total_computed');
+  need(q.diagnostics,['original_engine_total_count','suppressed_partial_totals'],at+'.diagnostics');
+  if(q.diagnostics.original_engine_total_count!==null&&!intOk(q.diagnostics.original_engine_total_count))refuse('COUNT_INVALID',at+'.diagnostics.original_engine_total_count');
+  if(!intOk(q.diagnostics.suppressed_partial_totals))refuse('COUNT_INVALID',at+'.diagnostics.suppressed_partial_totals');}
  return q;});
 
 const REASON=Object.freeze({SPLIT_ADJUSTED_DISPLAY_ADAPTER_PENDING:'분할 반영 계열의 지표 어댑터 준비 중 (#498 이전 판 결과)',HELD_RANGE_IN_WINDOW:'보류 구간이 계산 창에 있음',
@@ -308,15 +324,18 @@ function tierRows(o,label,unit,order){const d=displayOf(o),ids=order||Object.key
 const analysisTiers=a=>tierRows(a,id=>id,()=>'');
 const measuresTiers=m=>tierRows(m,id=>MEASURE_LABEL[id]||id,x=>own(UNIT_TEXT,x.unit)?' '+UNIT_TEXT[x.unit]:'',MEASURES.map(([id])=>id));
 function qgvView(q,code){const c=q.coverage,n=c.codes;
- const lines=['Q 산출 '+c.Q+' / '+n,'G 산출 '+c.G+' / '+n,'V 산출 '+c.V+' / '+n,'Q·G·V 모두 '+c.QGV+' / '+n];
+ const lines=['Q 산출 '+c.Q+' / '+n,'G 산출 '+c.G+' / '+n,'V 산출 '+c.V+' / '+n,'Q·G·V 모두 '+c.QGV+' / '+n,...(intOk(c.total)?['총점 '+c.total+' / '+n]:[])];
+ const dg=isObj(q.diagnostics)?q.diagnostics:null;
  const r=code&&own(q.rows,code)?q.rows[code]:null,st=code&&isObj(q.price_status)&&own(q.price_status,code)?q.price_status[code]:null;
  const axis=ax=>{const x=r.axes[ax];return x.score===null?ax+' 미산출'+(x.reason?' · '+reasonText(x.reason):''):ax+' '+(Math.round(x.score*10)/10);};
  return Object.freeze({coverage:Object.freeze(lines),price_basis_date:q.price_basis_date,calc_version:q.calc_version,source:own(q,'source')?q.source:'KIS',display:displayOf(q,{stateful:false}),
   // Codex #556 stage 1 facts for the 상태 box (counts as given, never recomputed); absent fields stay out.
   stages:isObj(q.stages)&&['price','raw_any','role_any'].every(k=>intOk(q.stages[k]))?'가격 반영 '+q.stages.price+' · V 원시값 '+q.stages.raw_any+' · V 요소 '+q.stages.role_any:null,
   bases:[q.share_count_basis,q.identity_basis].filter(x=>typeof x==='string'&&x).join(' · ')||null,
+  diagnostics:dg&&intOk(dg.suppressed_partial_totals)?(intOk(dg.original_engine_total_count)?'엔진 총점 '+dg.original_engine_total_count+' · ':'')+'부분 총점 미표시 '+dg.suppressed_partial_totals:null,
   rank:'비공개 순위 없음 · '+reasonText(q.rank_reason),official:'공개 공식 순위·TARGET은 이 결과로 바뀌지 않음',
-  row:r?Object.freeze({code,axes:Object.freeze(['Q','G','V'].map(axis)),total:r.axes.V.score===null?'QGV 총점 미산출 · V 미산출':r.total===null?'QGV 총점 미산출':'QGV '+(Math.round(r.total*10)/10),
+  row:r?Object.freeze({code,axes:Object.freeze(['Q','G','V'].map(axis)),// A total only with all three axes (any file shape); otherwise one short reason line.
+   total:['Q','G','V'].some(ax=>r.axes[ax].score===null)||r.total_reason===THREE_AXES?'총점 미산출 · 세 축 필요':r.total===null?'총점 미산출':'QGV '+(Math.round(r.total*10)/10),
    price:st==='SUPPLIED'?'KIS 가격 반영':st?'가격 미반영 · '+reasonText(st):null}):null});}
 
 /* The authenticated client. win = the page window (google), origin = the approved private Worker origin, send(url, init) =
@@ -351,5 +370,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

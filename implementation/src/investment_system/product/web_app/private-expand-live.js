@@ -93,7 +93,7 @@ function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){cons
 
 function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q=K.validateQgv(qRaw);if(!q.ok)throw Error(q.code);
  const v=K.qgvView(q.value,code),cmp=K.basisCompare(publicBasis,v.price_basis_date),d=v.display;
- status.push(['재무 입력 기준',q.value.financial_input_as_of||'없음'],['계산 시각',q.value.calculated_at],v.stages?['단계',v.stages]:null,v.bases?['기준',v.bases]:null,
+ status.push(['재무 입력 기준',q.value.financial_input_as_of||'없음'],['계산 시각',q.value.calculated_at],v.stages?['단계',v.stages]:null,v.diagnostics?['총점 진단',v.diagnostics]:null,v.bases?['기준',v.bases]:null,
   ['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],['순위',v.rank,{privateRank:'NONE'}]);
  // A missing or unknown display shows no value (fails closed); the file's values are shown as given, never recomputed.
  const row=d.state==='UNKNOWN'?warn(d.line,{privateDisplay:'UNKNOWN',privateRow:'NONE'})

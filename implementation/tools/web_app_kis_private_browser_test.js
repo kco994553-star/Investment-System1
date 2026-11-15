@@ -256,7 +256,7 @@ let phase = 'START', pass = 0, where = '';
       assert.equal(await text(page, '[data-private-layer=qgv]'), 'KIS · 비공개 · 공식 아님 · 가격 기준일 2026-10-23 · 출처 KIS · 계산 판 ' + Q556.calc_version + ' 검증 전(참고)', phase + ': label, price basis day, source, calc version and the producer\'s tag');
       assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td').allTextContents(),
         [r1(row.axes.Q.score), r1(row.axes.G.score), '미산출 · 사유 코드 ' + row.axes.V.reason], phase + ': the file\'s scores as given, V 미산출 with its reason, never 0');
-      assert.equal(await text(page, '[data-private-total] td'), 'QGV 총점 미산출 · V 미산출', phase + ': no total without V');
+      assert.equal(await text(page, '[data-private-total] td'), '총점 미산출 · 세 축 필요', phase + ': the producer masked the partial total: no total, one short reason');
       assert.deepEqual(await ranks(), r0, phase + ': the public ranks are unchanged');
       // RAM rule for the private values (the synthetic scores also occur on the public board, so they cannot be page-wide sentinels):
       // each private score is text inside [data-ram-price] only, and no attribute of the panel carries it.
