@@ -3,6 +3,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import re
 import subprocess
 import tempfile
 import unittest
@@ -28,6 +29,27 @@ else:
 class HelperAvailabilityTests(unittest.TestCase):
     def test_diagnostic_entry_point_exists(self):
         self.assertTrue(HELPER.exists(), "Testable deployment diagnostic helper is missing")
+
+
+class DeploymentApprovalTests(unittest.TestCase):
+    def test_cloudflare_credentials_are_confined_to_the_owner_approved_job(self):
+        workflows = ROOT.parent / ".github/workflows"
+        credential_users = []
+        for path in workflows.glob("*.yml"):
+            text = path.read_text()
+            if re.search(r"secrets\s*(?:\.\s*|\[\s*['\"])CLOUDFLARE_", text, re.I):
+                credential_users.append(path.name)
+        self.assertEqual(credential_users, ["private-history-deploy.yml"])
+
+        text = (workflows / credential_users[0]).read_text()
+        jobs = re.split(r"(?m)^  ([A-Za-z0-9_-]+):\s*\n", text.split("\njobs:\n", 1)[1])
+        self.assertEqual(jobs[1::2], ["deploy"])
+        deploy = jobs[2]
+        self.assertRegex(deploy, r"(?m)^    environment: private-worker\s*$")
+        self.assertIn("if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)", deploy)
+        self.assertIn("  workflow_dispatch:", text)
+        for name in ("CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"):
+            self.assertIn("${{ secrets." + name + " }}", deploy)
 
 
 @unittest.skipIf(helper is None, "Helper not implemented yet")
