@@ -69,6 +69,8 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'IEX 중앙 V 경로는 없앤다.',
         '기술적 분석은 공개 화면에서 계속 제공한다.',
         '기능별 대체 표가 다 차면 정식 전환한다.',
+        '공개 전진검증 장부에 바구니 수익률을 기록한다.',
+        '검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산',
     ]
     good = [
         '현재 공식 모집단은 Universe504이고 목표는 시총 Top500 교체다.',
@@ -79,6 +81,7 @@ def test_rules_catch_old_directions_and_pass_explanations():
         '만료 설정이 비면 무기한이 아니라 설정 오류다(DC-53).',
         '새 공급처 → 공개 중앙 V는 보류한다(DC-54).',
         'IEX 중앙 V 경로는 없애지 않고 유지한다.',
+        '공개 장부에는 바구니 수익률을 넣지 않는다(FV3-PUBLIC 철회).',
         '기술적 분석은 비공개 구역 전용으로 가는 방향이다(DC-55).',
         'Universe504는 S&P 500 구성에서 출발한 고정 목록이다(UNI-DEF).',
         'Universe504는 시가총액 상위 504가 아니다.',
