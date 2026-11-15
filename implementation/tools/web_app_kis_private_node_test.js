@@ -77,7 +77,7 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     const v = KP.qgvView(KP.validateQgv(X.qgv()).value, 'NASDAQ:NVDA');
     assert.deepEqual(v.coverage, ['Q 산출 2 / 2', 'G 산출 2 / 2', 'V 산출 0 / 2', 'Q·G·V 모두 0 / 2']);
     assert.deepEqual(v.row.axes, ['Q 70.3', 'G 60.5', 'V 미산출 · 사유 코드 V_INPUTS_NOT_AVAILABLE']);
-    assert.equal(v.row.total, 'QGV 총점 미산출 · V 미산출');
+    assert.equal(v.row.total, '총점 미산출 · 세 축 필요');
     assert.match(v.rank, /비공개 순위 없음 · 같은 모집단·입력 비교가 확인되지 않아 순위 없음/);
     assert.equal(v.official, '공개 공식 순위·TARGET은 이 결과로 바뀌지 않음');
     assert.equal(KP.qgvView(KP.validateQgv(X.qgv()).value, 'NYSE:NONE').row, null);
@@ -282,7 +282,7 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     assert.deepEqual([v.calc_version, v.price_basis_date, v.source, v.display.state, v.display.tag], [X.C556.qgv.calc_version, '2026-10-23', 'KIS', 'AVAILABLE', '검증 전(참고)']);
     const row = r.value.rows['NASDAQ:AAPL'];
     assert.deepEqual(v.row.axes.slice(0, 2), ['Q ' + Math.round(row.axes.Q.score * 10) / 10, 'G ' + Math.round(row.axes.G.score * 10) / 10], 'the file\'s scores, only rounded for display');
-    assert.equal(v.row.total, row.axes.V.score === null ? 'QGV 총점 미산출 · V 미산출' : 'QGV ' + Math.round(row.total * 10) / 10, 'no total without V');
+    assert.equal(v.row.total, row.axes.V.score === null ? '총점 미산출 · 세 축 필요' : 'QGV ' + Math.round(row.total * 10) / 10, 'no total without V');
     assert.match(v.rank, /^비공개 순위 없음 · 비공개 참고 결과라 순위 없음$/);
     assert.equal(KP.qgvView(r.value, 'NASDAQ:NVDA').row.price, 'KIS 가격 반영', 'the code fed from the synthetic contract');
     assert.match(v.stages, /^가격 반영 \d+ · V 원시값 \d+ · V 요소 \d+$/);
@@ -292,12 +292,44 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     }
     assert.equal(KP.qgvView(KP.validateQgv({ ...X.qgv(), source: 'KIS retained dailyprice MODP0' }).value, null).source, 'KIS retained dailyprice MODP0');
   });
+  await ok('Codex #556 total policy (2abdd286): partial totals masked by the producer, counts as given, contradictions refused', () => {
+    const q = X.codexQgv(), r = KP.validateQgv(q); assert.equal(r.ok, true, JSON.stringify(r));
+    assert.equal(q.total_policy, KP.TOTAL_POLICY);
+    assert.ok(Object.values(q.rows).every((x) => x.verification === 'UNVERIFIED_REFERENCE' && x.total === null && x.total_reason === 'THREE_AXES_REQUIRED'));
+    const v = KP.qgvView(r.value, 'NASDAQ:AAPL');
+    assert.equal(v.row.total, '총점 미산출 · 세 축 필요', 'no total, one short reason');
+    assert.equal(v.coverage.at(-1), '총점 ' + q.coverage.total + ' / ' + q.coverage.codes, 'coverage.total as given');
+    assert.equal(v.diagnostics, '엔진 총점 ' + q.diagnostics.original_engine_total_count + ' · 부분 총점 미표시 ' + q.diagnostics.suppressed_partial_totals, 'diagnostics as given, never recomputed');
+    assert.equal(Object.hasOwn(q.coverage, 'engine_total_computed'), false);
+    // A complete row (all three axes) keeps its total under the policy.
+    const full = X.codexQgv(); const row = full.rows['NASDAQ:AAPL']; row.axes.V.score = 42.42; row.total = 50.55; delete row.total_reason;
+    assert.equal(KP.qgvView(KP.validateQgv(full).value, 'NASDAQ:AAPL').row.total, 'QGV 50.6');
+    for (const [change, code, path] of [
+      [(x) => { x.rows['NASDAQ:AAPL'].total = 12.5; }, 'TOTAL_POLICY_VIOLATION', '$.rows.NASDAQ:AAPL.total'],
+      [(x) => { delete x.rows['NASDAQ:AAPL'].total_reason; }, 'TOTAL_POLICY_VIOLATION', '$.rows.NASDAQ:AAPL.total'],
+      [(x) => { delete x.rows['NASDAQ:AAPL'].verification; }, 'KEY_MISSING', '$.rows.NASDAQ:AAPL.verification'],
+      [(x) => { x.rows['NASDAQ:AAPL'].verification = 'VERIFIED'; }, 'ENUM', '$.rows.NASDAQ:AAPL.verification'],
+      [(x) => { x.total_policy = 'ANY'; }, 'ENUM', '$.total_policy'],
+      [(x) => { x.coverage.engine_total_computed = 3; }, 'COUNT_CONFLICT', '$.coverage.engine_total_computed'],
+      [(x) => { delete x.coverage.total; }, 'COUNT_INVALID', '$.coverage.total'],
+      [(x) => { x.coverage.total = x.coverage.codes + 1; }, 'COUNT_INVALID', '$.coverage.total'],
+      [(x) => { delete x.diagnostics; }, 'TYPE', '$.diagnostics'],
+      [(x) => { x.diagnostics.suppressed_partial_totals = -1; }, 'COUNT_INVALID', '$.diagnostics.suppressed_partial_totals'],
+    ]) { const x = X.codexQgv(); change(x); assert.deepEqual(KP.validateQgv(x), { ok: false, code, path }, code + ' ' + path); }
+    // The earlier shape (no policy): a partial total is never shown, and a THREE_AXES_REQUIRED row with a total is refused.
+    const old = X.qgv(); old.rows['NASDAQ:NVDA'].axes.V.score = null;
+    assert.equal(KP.qgvView(KP.validateQgv(old).value, 'NASDAQ:NVDA').row.total, '총점 미산출 · 세 축 필요');
+    const qOld = X.qgv(); qOld.rows['NASDAQ:NVDA'].axes.Q.score = null; qOld.rows['NASDAQ:NVDA'].axes.V.score = 40;
+    assert.equal(KP.qgvView(KP.validateQgv(qOld).value, 'NASDAQ:NVDA').row.total, '총점 미산출 · 세 축 필요', 'any missing axis, not V only');
+    const bad = X.qgv(); bad.rows['NASDAQ:NVDA'].total_reason = 'THREE_AXES_REQUIRED';
+    assert.equal(KP.validateQgv(bad).code, 'TOTAL_POLICY_VIOLATION');
+  });
   await ok('the Codex #556 synthetic payloads pass every reader unchanged (chart, technical, measures; three cases)', () => {
     for (const kase of ['available', 'reference', 'withheld']) {
       const f = X.codex556(kase);
       for (const [fn, raw] of [[KP.validateBars, f.chart], [KP.validateAnalysis, f.technical], [KP.validateMeasures, f.measures]]) { const r = fn(raw); assert.equal(r.ok, true, kase + ' ' + JSON.stringify(r)); }
     }
-    assert.equal(X.C556.generated_by.commit, '0235eeb145caf8c608529e428ccd9a3299e8d638');
+    assert.equal(X.C556.generated_by.commit, '2abdd286d83400fd2686a4f49eeb7d495f704689');
   });
 
   // ---- client
