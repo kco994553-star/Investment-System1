@@ -1,7 +1,8 @@
 'use strict';
 // Owner-private KIS panels (owner 2026-11-05 DC-44, 2026-11-14 DC-52, 2026-11-15 DC-53; Codex #480 contract) in a real browser,
 // on the development build (index.html) and on the published Pages artifact (tools/build_pages_cockpit.py, app.html; owner
-// 2026-11-15 narrow Pages guard exception: both owner-private files are published): 2-1 of #/technical (tech-kis-chart) and the KIS V panel of #/qgv (qgv-kis). Google and the private
+// 2026-11-15 narrow Pages guard exception: both owner-private files are published): 2-1 of #/technical (tech-kis-chart) and
+// the KIS V panel of #/qgv (qgv-kis). Google and the private
 // Worker are stand-ins; every payload is the synthetic fixture tools/web_app_kis_private_fixture.js (no company, no KIS value).
 // Behaviour and boundary only (owner 2026-11-15: no appearance checks beyond these):
 //  - Public by default: before any click each panel is LOGIN_REQUIRED (로그인 필요) with an empty body and nothing goes to the
