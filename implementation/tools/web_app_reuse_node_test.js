@@ -451,7 +451,8 @@ test('web_app text files pass the Pages guard secret patterns', () => {
 // ---------------------------------------------------------------- loader (P2-1a)
 const freshLoader = () => { delete require.cache[require.resolve(R.newPath(LOADER))]; return R.requireNew(LOADER); };
 // The views and results the layer hands only to old modules and engines.js (source rules): no facade member.
-const INTERNAL = { prices: ['priceView', 'storeFacade'], store: ['storage'], qgv: ['scoreView', 'forEngines', 'centralComputed', 'engineInputs'] };
+// qgv.forEngines (the TARGET v1 builder's hidden device result) is gone since 2026-11-15 (DC-31): the builder reads the central V.
+const INTERNAL = { prices: ['priceView', 'storeFacade'], store: ['storage'], qgv: ['scoreView', 'centralComputed', 'engineInputs'] }, REMOVED = { qgv: ['forEngines'] };
 // Arguments for the non-async members that return a promise (each is called once on the real layer).
 const SAMPLE = { 'data.static': ['entities.json'] };
 test('the loader facade API is the real layer API: every member, each kind matching the function', async () => {
@@ -485,6 +486,7 @@ test('the loader facade API is the real layer API: every member, each kind match
   };
   for (const [ns, spec] of Object.entries(L.API)) walk(spec, real[ns], ns, INTERNAL[ns] || []);
   for (const [ns, list] of Object.entries(INTERNAL)) for (const k of list) assert.ok(k in real[ns], ns + '.' + k + ' exists (internal)');
+  for (const [ns, list] of Object.entries(REMOVED)) for (const k of list) assert.ok(!(k in real[ns]), ns + '.' + k + ' is removed');
   // A promise member gives a promise; a getter never does (called on the real layer; a throw is fine for a getter).
   for (const [at, call, promise] of checks) {
     let v; try { v = call(); } catch (e) { assert.ok(!promise, at + ' threw instead of giving a promise: ' + e.message); continue; }

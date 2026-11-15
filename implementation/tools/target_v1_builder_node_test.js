@@ -22,6 +22,28 @@ function universe(list){
 }
 const SICS=['7372','3674','3559','3612','3812','3823','2834','5812','4911','1311','2080','6798'];
 function wide(n=40,extra=[]){const list=[];for(let i=0;i<n;i++)list.push({symbol:'S'+String(i).padStart(2,'0'),total:90-i*0.5,sic:SICS[i%SICS.length],ig:'grp'+(i%SICS.length)});return universe([...list,...extra]);}
+/* Owner decision 2026-11-15 (DC-31): the builder's only V source is a central V publication QgvOfficial accepted. The pipeline
+   tests below keep their synthetic accessor rows by publishing them: central(u) turns a synthetic universe into a publication
+   object holding those scores, and QgvOfficial.state() (wrapped here, test only) answers OFFICIAL for exactly these objects. The
+   real reader's validation of real publications is exercised by the PR-D tests below (fixture) and qgv_official_node_test.js.
+   A synthetic factors_available below 15 (fa) is published as that many factor scores: the weakest Q·G factors become null
+   (the templates' strongest three and V1..V5 stay). */
+const QO_REAL=require(W+'qgv-official.js'),SYN=new WeakSet(),PUBS=new Map(),CALC_DEFAULT='qgv2-calc/2026-10-15.1';
+require.cache[require.resolve(W+'qgv-official.js')].exports=Object.freeze({...QO_REAL,state:p=>SYN.has(p)?'OFFICIAL':QO_REAL.state(p)});
+const WEAK=['g_recent_acceleration','g_consistency','g_growth_efficiency','g_per_share_growth','q_capital_allocation'];let synN=0;
+// Each Universe code publishes the accessor row of its ticker (the identity mapping the screens use); TARGET rows are not rows.
+function central(u,{calc=CALC_DEFAULT,basisDay='2026-10-13'}={}){const c=u.computed,rows={},byTicker=new Map(),tk=s=>String(s).replaceAll('.','-').toUpperCase();
+ for(const r of Object.values(c.rows))if(r&&r.ticker&&r.v2&&!byTicker.has(tk(r.ticker)))byTicker.set(tk(r.ticker),r);
+ for(const code of u.universeCodes||Object.values(c.rows).map(r=>r.code)){const r=typeof code==='string'&&!code.startsWith('TARGET:')?byTicker.get(tk(code.slice(code.indexOf(':')+1))):null;if(!r)continue;
+  const v=r.v2,rec=u.inputs.records[code]||{},f={};for(const[k,x]of Object.entries(v.factors||{}))f[k]={score:Number.isFinite(x?.score)?x.score:null,reason:null};
+  const drop=Math.max(0,(v.factors_total??15)-(v.factors_available??15));for(const k of WEAK.slice(0,drop))if(f[k])f[k].score=null;
+  rows[code]={cik:rec.cik??null,state:'LIVE',industry_group:rec.industry_group??null,total:v.total??null,axes:structuredClone(v.axes),factors:f,q_industry_percentile:v.q_industry_percentile??null,value_trap_gate:v.value_trap_gate===true,selected_types:[...(v.selected_types||[])]};}
+ const pub={publication_id:'qgvpub-'+(++synN).toString(16).padStart(64,'0'),calc_version:calc,times:{price_basis_date:basisDay,inputs_as_of:basisDay+'T21:00:00Z'},weights:{profile_id:c.profile?.id??null},price_source:{supplied:c.priced_codes??null},rows};
+ SYN.add(pub);PUBS.set(pub.publication_id,pub);return pub;}
+// buildDraft / regenerateDraft over central(u) (the publication's own adapted rows); pubOf: the publication a state's draft holds.
+function bd({computed,inputs,universeCodes,calc,...rest}){const pub=central({computed,inputs,universeCodes},{calc});return B.buildDraft({...rest,computed:B.officialComputed(pub),inputs,universeCodes,official:pub});}
+function rg(state,{computed,inputs,universeCodes,calc,...rest}){const pub=central({computed,inputs,universeCodes},{calc});return B.regenerateDraft(state,{...rest,computed:B.officialComputed(pub),inputs,universeCodes,official:pub});}
+const pubOf=state=>PUBS.get(state?.draft?.official?.publication_id)||null;
 
 test('filters: axis coverage, value-trap gate, financial safety fail and financial safety NA (excluded, 2026-10-15)',()=>{
  assert.equal(B.safety({net_debt_to_ebitda:3,interest_coverage:10}).state,'FAIL');
@@ -33,13 +55,16 @@ test('filters: axis coverage, value-trap gate, financial safety fail and financi
  const rows=B.universeRows({...u,existing:['OK']}),why=Object.fromEntries(rows.map(r=>[r.symbol,B.exclusions(r)]));
  assert.deepEqual(why,{OK:[],AXIS:['AXIS_COVERAGE_LOW'],THIN:['AXIS_COVERAGE_LOW'],TRAP:['VALUE_TRAP_GATE'],DEBT:['FINANCIAL_SAFETY_FAIL'],COVER:['FINANCIAL_SAFETY_FAIL'],MISS:['FINANCIAL_SAFETY_NOT_AVAILABLE'],NOV:['AXIS_COVERAGE_LOW']});
  assert.equal(rows.find(r=>r.symbol==='MISS').safety.state,'UNKNOWN');assert.equal(rows.find(r=>r.symbol==='OK').in19,true);
- const draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});
+ const draft=bd({...u,existing:[],date:'2026-10-14'});
  assert.deepEqual(draft.pool.map(r=>r.symbol),['OK']);assert.deepEqual(draft.excluded_counts,{AXIS_COVERAGE_LOW:3,VALUE_TRAP_GATE:1,FINANCIAL_SAFETY_FAIL:2,FINANCIAL_SAFETY_NOT_AVAILABLE:1});
  assert.deepEqual(draft.excluded.find(r=>r.symbol==='MISS'),{symbol:'MISS',total:74,reasons:['FINANCIAL_SAFETY_NOT_AVAILABLE'],safety:'UNKNOWN'});
  // One value missing is NA too (excluded); when the data appears the next build re-evaluates it (nothing is frozen per name).
  const half=universe([{symbol:'HALF',total:80,metrics:{interest_coverage:null}}]);assert.deepEqual(B.exclusions(B.universeRows({...half,existing:[]})[0]),['FINANCIAL_SAFETY_NOT_AVAILABLE']);
  const later=universe([{symbol:'HALF',total:80}]);assert.deepEqual(B.exclusions(B.universeRows({...later,existing:[]})[0]),[]);
- assert.throws(()=>B.buildDraft({...u,computed:{...u.computed,v2_state:'NOT_AVAILABLE'},existing:[],date:'2026-10-14'}),/QGV2_NOT_READY/);
+ // A publication without any total (the adapter's v2_state NOT_AVAILABLE) makes no draft.
+ const none=universe([{symbol:'N1',total:null},{symbol:'N2',total:null}]);assert.throws(()=>bd({...none,existing:[],date:'2026-10-14'}),/QGV2_NOT_READY/);
+ // No central V publication → no draft at all (2026-11-15: no other V source).
+ assert.throws(()=>B.buildDraft({...u,existing:[],date:'2026-10-14'}),/OFFICIAL_V_REQUIRED/);assert.throws(()=>B.buildDraft({...u,existing:[],date:'2026-10-14',official:null}),/OFFICIAL_V_REQUIRED/);
 });
 
 test('normal NA row (no value, NA reason): no rank, not a candidate, Q·G denominator stays 504 (2026-10-15 evening)',()=>{
@@ -50,7 +75,7 @@ test('normal NA row (no value, NA reason): no rank, not a candidate, Q·G denomi
  assert.deepEqual([na.total,na.rank,na.industry_rank],[null,null,null]);
  assert.deepEqual(rows.filter(r=>r!==na).map(r=>[r.symbol,r.rank]),[['A1',1],['A2',2]],'the NA row takes no rank');
  assert.ok(B.exclusions(na).includes('TOTAL_NOT_AVAILABLE'));
- const draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});
+ const draft=bd({...u,existing:[],date:'2026-10-14'});
  assert.deepEqual(draft.pool.map(r=>r.symbol),['A1','A2']);assert.deepEqual(B.candidates(draft).map(r=>r.symbol),['A1','A2']);
  assert.equal(draft.excluded_counts.TOTAL_NOT_AVAILABLE,1);
  assert.deepEqual([draft.coverage.q,draft.coverage.g,draft.coverage.size],[2,2,504],'NA stays in the 504 denominator');
@@ -69,7 +94,7 @@ test('sector spread: at most 4 per sub-group, semis + equipment one §16 group',
  assert.equal(B.subgroupOf('NVDA',null,null).subgroup,'semiconductors');assert.equal(B.subgroupOf('ZZZ',null,'retail').subgroup,'industry:retail');
  assert.equal(B.groupOf('semi_equipment'),'semiconductor_combined');assert.equal(B.groupOf('semiconductors'),'semiconductor_combined');
  const list=[];for(let i=0;i<8;i++)list.push({symbol:'SEMI'+i,total:99-i,sic:'3674'});for(let i=0;i<8;i++)list.push({symbol:'EQ'+i,total:89-i,sic:'3559'});for(let i=0;i<30;i++)list.push({symbol:'O'+String(i).padStart(2,'0'),total:70-i*0.1,sic:SICS[3+(i%9)],ig:'g'+(i%9)});
- const u=universe(list),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'}),cands=B.candidates(draft);
+ const u=universe(list),draft=bd({...u,existing:[],date:'2026-10-14'}),cands=B.candidates(draft);
  assert.equal(cands.length,30);const per={};for(const r of cands)per[r.subgroup]=(per[r.subgroup]||0)+1;assert.ok(Object.values(per).every(n=>n<=4),JSON.stringify(per));
  assert.deepEqual(cands.slice(0,8).map(r=>r.symbol),['SEMI0','SEMI1','SEMI2','SEMI3','EQ0','EQ1','EQ2','EQ3']);
  const sel=B.currentSelection({...B.emptyState(),draft});const semis=sel.rows.filter(r=>B.groupOf(r.subgroup)==='semiconductor_combined');
@@ -79,7 +104,7 @@ test('sector spread: at most 4 per sub-group, semis + equipment one §16 group',
 
 test('selection and weights: core 5 × 8% + general 10 × 6% = 100, core needs factors ≥ 80% and safety PASS',()=>{
  const extra=[{symbol:'TOPLOW',total:99,fa:11},{symbol:'TOPMISS',total:98.5,metrics:{net_debt_to_ebitda:null}}];
- const u=wide(40,extra),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'}),sel=B.currentSelection({...B.emptyState(),draft});
+ const u=wide(40,extra),draft=bd({...u,existing:[],date:'2026-10-14'}),sel=B.currentSelection({...B.emptyState(),draft});
  assert.equal(sel.rows.length,15);assert.equal(sel.core_count,5);assert.equal(sel.cash_pct,0);
  const core=sel.rows.filter(r=>r.grade==='CORE'),general=sel.rows.filter(r=>r.grade==='GENERAL');assert.equal(core.length,5);assert.equal(general.length,10);
  assert.ok(core.every(r=>r.pct===8)&&general.every(r=>r.pct===6));let sum=0;for(const r of sel.rows)sum+=r.pct;assert.equal(sum,100);
@@ -88,30 +113,30 @@ test('selection and weights: core 5 × 8% + general 10 × 6% = 100, core needs f
  assert.deepEqual(sel.rows.map(r=>r.symbol),[...sel.rows].sort((a,b)=>b.total-a.total).map(r=>r.symbol));assert.equal(sel.limits.ok,true);
  // Fewer qualifying core names → the shortfall stays cash (never filled), limits still checked against 100%.
  const few=universe(Array.from({length:20},(_,i)=>({symbol:'F'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6),fa:i<3?15:10})));
- const s2=B.currentSelection({...B.emptyState(),draft:B.buildDraft({...few,existing:[],date:'2026-10-14'})});assert.equal(s2.core_count,3);assert.equal(s2.rows.length,15);assert.equal(s2.cash_pct,4);assert.equal(s2.limits.ok,true);
+ const s2=B.currentSelection({...B.emptyState(),draft:bd({...few,existing:[],date:'2026-10-14'})});assert.equal(s2.core_count,3);assert.equal(s2.rows.length,15);assert.equal(s2.cash_pct,4);assert.equal(s2.limits.ok,true);
  // R-B: equal weight 100/15 with the same spread and caps.
  const seg=B.ruleBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length),'2026-10-14');assert.equal(seg.rows.length,15);assert.ok(seg.rows.every(r=>Math.abs(r.pct-100/15)<1e-3));assert.equal(seg.limits_ok,true);assert.equal(seg.ready,true);
  assert.equal(B.ruleBSegment(B.universeRows({...u,existing:[]}).filter(r=>!B.exclusions(r).length).slice(0,20),'2026-10-14').ready,false);
 });
 
 test('templates: 3 reasons and 3 numerically checkable invalidations from the strongest factors, deterministic',()=>{
- const u=wide(20),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'}),row=draft.pool[0];
+ const u=wide(20),draft=bd({...u,existing:[],date:'2026-10-14'}),row=draft.pool[0];
  assert.equal(row.reasons.length,3);assert.equal(row.invalidations.length,3);
  // strongest: q_profitability 90 (ROIC 25% × 0.7 = 17.5%), g_revenue_growth 85 (12% − 5%p = 7%), q_moat_proxy 80 (20% × 0.7 = 14%).
  assert.deepEqual(row.invalidations.map(c=>[c.factor,c.metric,c.op,c.threshold]),[['q_profitability','roic','LT',0.175],['g_revenue_growth','revenue_cagr_3y','LT',0.07],['q_moat_proxy','moat_return_mean_5y','LT',0.14]]);
  assert.match(row.invalidations[0].text,/ROIC가 17\.5% 아래로 내려가면 \(현재 25\.0%\)/);assert.match(row.reasons[0],/수익성 점수 90\.0 · ROIC 25\.0%/);
- assert.deepEqual(B.buildDraft({...u,existing:[],date:'2026-10-14'}).pool[0],row);
+ assert.deepEqual(bd({...u,existing:[],date:'2026-10-14'}).pool[0],row);
  assert.equal(B.invalidated(row.invalidations[0],0.18),false);assert.equal(B.invalidated(row.invalidations[0],0.17),true);assert.equal(B.invalidated(row.invalidations[0],null),null);
  // Missing metrics are skipped (never 0); the fallback templates fill the rest.
  const bare=universe([{symbol:'BARE',total:80,metrics:{roic:null,gross_profit_to_assets:null,moat_return_mean_5y:null,fcf_to_net_income:null,revenue_cagr_3y:null,eps_cagr_3y:null,incremental_roic_3y:null,revenue_positive_growth_share:null,revenue_ttm_growth:null,interest_coverage:12,net_debt_to_ebitda:1},factors:{q_profitability:90}}]);
- const r2=B.buildDraft({...bare,existing:[],date:'2026-10-14'}).pool[0];assert.deepEqual(r2.invalidations.map(c=>c.metric),['v2_rank','q_industry_percentile','g_axis']);
+ const r2=bd({...bare,existing:[],date:'2026-10-14'}).pool[0];assert.deepEqual(r2.invalidations.map(c=>c.metric),['v2_rank','q_industry_percentile','g_axis']);
  assert.match(r2.invalidations[0].text,/30위 밖/);assert.equal(r2.invalidations[1].threshold,30);assert.equal(r2.invalidations[2].threshold,45);
  // Lower-is-better FIXED rule only when the current value is inside the threshold.
  const t=B.templates({factor_scores:{q_financial_safety:95},metrics:{net_debt_to_ebitda:1.2},total:70,rank:3,q_pct:60,g:50});assert.equal(t.invalidations[0].metric,'net_debt_to_ebitda');assert.equal(t.invalidations[0].op,'GTE');assert.equal(t.invalidations[0].threshold,3);
 });
 
 test('반대 replaces the name with the next-ranked one, re-checks limits; 모름 keeps it as 미확인; records validate in the playbook store',()=>{
- const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14'});let state={...B.emptyState(),draft};
+ const u=wide(40),draft=bd({...u,existing:[],date:'2026-10-14'});let state={...B.emptyState(),draft};
  const before=B.currentSelection(state),victim=before.rows[0].symbol,sixteenth=draft.pool.filter(r=>!before.rows.some(x=>x.symbol===r.symbol))[0].symbol;
  assert.throws(()=>B.answer(state,{symbol:victim,answer:'DISAGREE',reason:'  ',date:'2026-10-14'}),/DISAGREE_REASON_REQUIRED/);
  assert.throws(()=>B.answer(state,{symbol:victim,answer:'DISAGREE',reason:'line\nbreak',date:'2026-10-14'}),/REASON_INVALID/);
@@ -144,7 +169,7 @@ function published({calc='qgv2-calc/2026-10-15.1',records=calc,asOf='2026-10-14T
 const notPassed={...CFG,number_check:{...CFG.number_check,result:{calc_version:null,passed:false,date:null,companies:0}}};
 const passed=(calc='qgv2-calc/2026-10-15.1',extra={})=>({...CFG,number_check:{...CFG.number_check,result:{calc_version:calc,passed:true,date:'2026-10-15',companies:10,...extra}}});
 // finalize with the basis of the payload computed the way the screen does; → the new state, or the error's blockers.
-async function tryFinalize(state,{date='2026-10-15',pub=null,cfg=passed()}={}){const basis=pub?await B.inputBasis(pub):null;try{return B.finalize(state,{date,published:pub,basis,cfg});}catch(e){if(!e.blockers)throw e;return e.blockers;}}
+async function tryFinalize(state,{date='2026-10-15',pub=null,cfg=passed(),official=pubOf(state)}={}){const basis=pub?await B.inputBasis(pub):null;try{return B.finalize(state,{date,published:pub,basis,official,cfg});}catch(e){if(!e.blockers)throw e;return e.blockers;}}
 const NA_ROW=r=>{r.state='NOT_AVAILABLE';r.reason_codes=['NOT_COLLECTED'];r.acquired_at=null;r.axes={Q:{score:null},G:{score:null}};r.metrics={};delete r.calc_version;};
 
 test('production calc_version: published check and input basis retain the exact production version',async()=>{
@@ -193,13 +218,16 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  assert.equal(Object.hasOwn(CFG,'number_check_passed'),false);assert.deepEqual(CFG.number_check.result,{calc_version:'qgv2-calc/2026-10-23.1',passed:true,date:'2026-10-29',companies:10});assert.equal(CFG.number_check.companies_required,10);
  assert.equal(CFG.status,'v0');assert.equal(CFG.calibration,'UNCALIBRATED');assert.equal(CFG.finalize_check.freshness_max_days,7);assert.equal(CFG.finalize_check.freshness_basis,'ROW_ACQUIRED_AT');
  const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.calc_version,'qgv2-calc/2026-10-15.1');assert.equal(basis.shard_count,7);assert.match(basis.shards,/^(\d=2026-10-13T20:00:00Z\|?)+$/);
- const draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis});assert.deepEqual(draft.basis,basis);let state={...B.emptyState(),draft};B.validateState(state);
+ const draft=bd({...u,existing:[],date:'2026-10-14',basis});assert.deepEqual(draft.basis,basis);let state={...B.emptyState(),draft};B.validateState(state);
  assert.equal((await tryFinalize(state,{pub}))[0],'TARGET_V1_CARDS_PENDING');
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});assert.equal(B.currentSelection(state).complete,true);
  // Nothing re-read → blocked; the draft-time pass is never reused.
  assert.ok((await tryFinalize(state)).includes('SEC_QGV2_NOT_AVAILABLE'));
  // (a) calc_version: legacy file; valued rows without / with another calc_version → CALC_VERSION_MIXED.
- assert.deepEqual(await tryFinalize(state,{pub:published({u,calc:null,records:null})}),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ // (the draft's central V publication is of 2026-10-15.1, so a file without that calc_version also has no usable central V)
+ assert.deepEqual(await tryFinalize(state,{pub:published({u,calc:null,records:null})}),['CALC_VERSION_MISSING','DRAFT_BASIS_CHANGED','OFFICIAL_V_REQUIRED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ // No usable central V now (the caller found none) → blocked and waits; never finalized on another V (2026-11-15).
+ assert.deepEqual(await tryFinalize(state,{pub,official:null}),['OFFICIAL_V_REQUIRED']);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,records:null})}),['CALC_VERSION_MIXED']);
  assert.deepEqual(await tryFinalize(state,{pub:published({u,records:'qgv2-calc/2026-10-14.1'})}),['CALC_VERSION_MIXED']);
  // Normal NA vs version mixing: 1 normal-NA row (no value, NA reason, no calc_version) + the rest current → allowed;
@@ -235,12 +263,13 @@ test('finalize: cards, shortfall, limits, LATEST file (calc_version, row freshne
  assert.equal(done.versions.length,1);assert.equal(done.versions[0].version,'v1');assert.deepEqual(done.rule_c,{start:'2026-10-15',version:'v1'});
  assert.equal(done.versions[0].calc_version,'qgv2-calc/2026-10-15.1');assert.equal(done.versions[0].sec_qgv2_as_of,'2026-10-14T21:00:00Z');assert.equal(done.versions[0].input_shards,basis.shards);
  assert.deepEqual(done.versions[0].number_check,{calc_version:'qgv2-calc/2026-10-15.1',passed:true,date:'2026-10-15',companies:10});
- assert.equal(done.versions[0].v_source,'DEVICE_TEMPORARY');assert.equal(B.V_SOURCE.ko,'임시 V');  // a device draft stays device V (PR-D: official only from a usable publication)
+ // The version is the central V's (2026-11-15: the only source), with the publication id and its own price basis day.
+ const dp=pubOf(state);assert.deepEqual([done.versions[0].v_source,done.versions[0].publication_id,done.versions[0].price_basis_date],['OFFICIAL_CENTRAL',dp.publication_id,'2026-10-13']);assert.equal(B.V_SOURCE.ko,'공식 V');
  let sum=done.versions[0].cash_pct;for(const r of done.versions[0].rows)sum+=r.pct;assert.equal(sum,100);assert.ok(done.versions[0].rows.every(r=>r.confirmed));
  // A later file with a new calc_version: changed basis + a new number check needed; after regeneration (all names kept) → v1.1.
  const next=published({u,calc:'qgv2-calc/2026-11-16.1',asOf:'2026-11-15T00:00:00Z',acquired:'2026-11-14T00:00:00Z'});
- assert.deepEqual(await tryFinalize(done,{date:'2026-11-16',pub:next}),['DRAFT_BASIS_CHANGED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
- const re=B.regenerateDraft(done,{...u,existing:[],date:'2026-11-16',basis:await B.inputBasis(next)});assert.deepEqual(re.fresh,[]);assert.equal(re.carried.length,15);
+ assert.deepEqual(await tryFinalize(done,{date:'2026-11-16',pub:next}),['DRAFT_BASIS_CHANGED','OFFICIAL_V_REQUIRED','NUMBER_CHECK_CALC_VERSION_MISMATCH']);
+ const re=rg(done,{...u,calc:'qgv2-calc/2026-11-16.1',existing:[],date:'2026-11-16',basis:await B.inputBasis(next)});assert.deepEqual(re.fresh,[]);assert.equal(re.carried.length,15);
  assert.equal((await tryFinalize(re.state,{date:'2026-11-16',pub:next,cfg:passed('qgv2-calc/2026-11-16.1')})).versions[1].version,'v1.1');B.validateState(done);
  // The stored version rides in the playbook store.
  const s=memory(),pb=P.empty();pb.target_v1=done;P.write(s,pb);assert.equal(P.read(s).target_v1.versions[0].number_check.calc_version,'qgv2-calc/2026-10-15.1');
@@ -322,7 +351,7 @@ test('V factor count n/5 on draft rows; V without V3 or V4 stays in the draft bu
  assert.equal(B.vFactors({v:null,factors:V5}).n,0);assert.equal(B.vFactors(null).n,0);assert.equal(B.vFactors({v:50}).required_ok,false);
  const miss=k=>({...FACTORS,[k]:null});
  const u=wide(40,[{symbol:'NOV3',total:99,sic:'2834',ig:'grpA',factors:miss('v_vs_industry')},{symbol:'NOV4',total:98.8,sic:'4911',ig:'grpB',factors:miss('v_vs_own_history')},{symbol:'NOV1',total:98.6,sic:'1311',ig:'grpC',factors:miss('v_earnings_yield')}]);
- const pub=published({u}),basis=await B.inputBasis(pub),draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis}),row=s=>draft.pool.find(r=>r.symbol===s);
+ const pub=published({u}),basis=await B.inputBasis(pub),draft=bd({...u,existing:[],date:'2026-10-14',basis}),row=s=>draft.pool.find(r=>r.symbol===s);
  // The draft is allowed and carries the count and the missing ids per row.
  assert.deepEqual([row('NOV3').v_n,row('NOV3').v_total,row('NOV3').v_missing],[4,5,['v_vs_industry']]);assert.deepEqual(row('NOV4').v_missing,['v_vs_own_history']);
  assert.deepEqual([row('NOV1').v_n,row('NOV1').v_missing],[4,['v_earnings_yield']]);assert.deepEqual([row('S00').v_n,row('S00').v_missing],[5,[]]);
@@ -367,15 +396,15 @@ test('type_scope in the input basis: a scope change alone regenerates the draft;
  assert.equal(B.basisChanged(oldBasis,basis),true);assert.equal(B.basisChanged(basis,await B.inputBasis(pub)),false);
  const{type_scope:_,...legacy}=basis;assert.equal(B.basisChanged(legacy,basis),true,'a draft basis from before the scope id counts as changed');
  assert.equal(B.basisChanged({...basis,type_scope:null},basis),true);
- assert.throws(()=>B.validateState({...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis:{...basis,type_scope:{bad:1}}})}),/TARGET_V1_STATE_INVALID/);
+ assert.throws(()=>B.validateState({...B.emptyState(),draft:bd({...u,existing:[],date:'2026-10-14',basis:{...basis,type_scope:{bad:1}}})}),/TARGET_V1_STATE_INVALID/);
  // All cards answered (one 반대) on a draft built under the old scope → finalize blocked by DRAFT_BASIS_CHANGED only.
- let state={...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis:oldBasis})};B.validateState(state);
+ let state={...B.emptyState(),draft:bd({...u,existing:[],date:'2026-10-14',basis:oldBasis})};B.validateState(state);
  const no=B.currentSelection(state).rows[0].symbol;state=B.answer(state,{symbol:no,answer:'DISAGREE',reason:'합성',date:'2026-10-14'});
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});assert.equal(B.currentSelection(state).complete,true);
  assert.deepEqual(await tryFinalize(state,{pub}),['DRAFT_BASIS_CHANGED']);
  // Scores under the new scope: a new top name enters and a former name leaves the Universe.
  const gone=B.currentSelection(state).rows[2].symbol,u2=wide(40,[{symbol:'NEWTOP',total:99}]);u2.universeCodes=u2.universeCodes.filter(c=>c!=='NASDAQ:'+gone);
- const pub2=published({u:u2}),basis2=await B.inputBasis(pub2),re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-10-15',basis:basis2});
+ const pub2=published({u:u2}),basis2=await B.inputBasis(pub2),re=rg(state,{...u2,existing:[],date:'2026-10-15',basis:basis2});
  assert.equal(re.state.draft.basis.type_scope,V2.TYPE_SCOPE);assert.equal(B.basisChanged(re.state.draft.basis,basis2),false);
  assert.ok(re.dropped.includes(gone));assert.ok(!re.state.answers.some(a=>a.symbol===gone),'an answer for a name outside the new pool is not carried');
  assert.ok(re.fresh.includes('NEWTOP'));assert.ok(!re.state.answers.some(a=>a.symbol==='NEWTOP'),'a new name needs a fresh card');
@@ -391,7 +420,7 @@ test('type_scope in the input basis: a scope change alone regenerates the draft;
 // finalize is blocked until the draft is regenerated, and the regenerated draft drops the stopped issuer.
 test('withdrawal in the input basis: a new TARGET or Universe withdrawal blocks finalize until the draft is regenerated without it',async()=>{
  const u=wide(40),pub=published({u}),basis=await B.inputBasis(pub);assert.equal(basis.withdrawn,'');
- let state={...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis})};
+ let state={...B.emptyState(),draft:bd({...u,existing:[],date:'2026-10-14',basis})};
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
  const victim=B.currentSelection(state).rows[0],cik=u.inputs.records[victim.code].cik,when={detected_at:'2026-10-14T22:00:00Z',withdrawn_acquired_at:'2026-10-13T20:00:00Z'};
  // TARGET withdrawal (same CIK as a selected Universe code): the raw Universe row keeps its values, so only the basis catches it.
@@ -405,7 +434,7 @@ test('withdrawal in the input basis: a new TARGET or Universe withdrawal blocks 
  const{withdrawn:_,...legacy}=basis;assert.equal(B.basisChanged(legacy,basis),true);
  // Regenerate from the device scores (Qgv2Inputs marks the stopped code identity_withdrawn): the issuer leaves the pool.
  const u2=wide(40);u2.inputs.records[victim.code]={...u2.inputs.records[victim.code],identity_withdrawn:true};
- const re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-10-15',basis:bT});assert.ok(re.dropped.includes(victim.symbol));
+ const re=rg(state,{...u2,existing:[],date:'2026-10-15',basis:bT});assert.ok(re.dropped.includes(victim.symbol));
  assert.ok(!re.state.draft.pool.some(r=>r.code===victim.code));assert.equal(re.state.draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);
  assert.equal(B.basisChanged(re.state.draft.basis,bT),false);B.validateState(re.state);
  let next=re.state;for(const s of B.currentSelection(next).pending)next=B.answer(next,{symbol:s,answer:'AGREE',date:'2026-10-15'});
@@ -414,13 +443,13 @@ test('withdrawal in the input basis: a new TARGET or Universe withdrawal blocks 
 });
 
 test('draft regeneration: answers carry over only for the same symbols; new names need a fresh card',()=>{
- const u=wide(40),draft=B.buildDraft({...u,existing:[],date:'2026-10-14',basis:{calc_version:'qgv2-calc/2026-10-14.1',as_of:null,shard_count:7,shards:'0=x'}});let state={...B.emptyState(),draft};
+ const u=wide(40),draft=bd({...u,existing:[],date:'2026-10-14',basis:{calc_version:'qgv2-calc/2026-10-14.1',as_of:null,shard_count:7,shards:'0=x'}});let state={...B.emptyState(),draft};
  const sel=B.currentSelection(state);state=B.answer(state,{symbol:sel.rows[1].symbol,answer:'DISAGREE',reason:'합성',date:'2026-10-14'});
  for(const r of B.currentSelection(state).rows)state=B.answer(state,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
  // New scores: a new top name appears and the former #3 leaves the Universe (its answer is dropped).
  const gone=B.currentSelection(state).rows[2].symbol,u2=wide(40,[{symbol:'NEWTOP',total:99}]);
  u2.universeCodes=u2.universeCodes.filter(c=>c!=='NASDAQ:'+gone);
- const re=B.regenerateDraft(state,{...u2,existing:[],date:'2026-11-16',basis:{calc_version:'qgv2-calc/2026-11-16.1',as_of:null,shard_count:7,shards:'0=y'}});
+ const re=rg(state,{...u2,existing:[],date:'2026-11-16',basis:{calc_version:'qgv2-calc/2026-11-16.1',as_of:null,shard_count:7,shards:'0=y'}});
  assert.deepEqual(re.fresh,['NEWTOP'].concat(re.fresh.filter(x=>x!=='NEWTOP')));assert.ok(re.fresh.includes('NEWTOP'));assert.ok(re.dropped.includes(gone));
  assert.equal(re.state.draft.basis.calc_version,'qgv2-calc/2026-11-16.1');assert.equal(re.state.draft.created,'2026-11-16');
  const after=B.currentSelection(re.state);assert.ok(!after.rows.some(r=>r.symbol===sel.rows[1].symbol),'반대 stays applied');assert.ok(after.pending.includes('NEWTOP'));assert.equal(after.complete,false);
@@ -429,7 +458,7 @@ test('draft regeneration: answers carry over only for the same symbols; new name
 
 test('name shortfall (< 15 eligible): shown with reasons, nothing relaxed or re-added, finalize blocked',async()=>{
  const few=universe(Array.from({length:12},(_,i)=>({symbol:'N'+String(i).padStart(2,'0'),total:80-i,sic:SICS[i%SICS.length],ig:'g'+(i%6)})).concat([{symbol:'NA1',total:99,metrics:{net_debt_to_ebitda:null}},{symbol:'BAD',total:98,metrics:{interest_coverage:1}}]));
- const pub=published({u:few}),draft=B.buildDraft({...few,existing:[],date:'2026-10-14',basis:await B.inputBasis(pub)});let state={...B.emptyState(),draft};
+ const pub=published({u:few}),draft=bd({...few,existing:[],date:'2026-10-14',basis:await B.inputBasis(pub)});let state={...B.emptyState(),draft};
  let sel=B.currentSelection(state);assert.equal(sel.rows.length,12);assert.equal(sel.shortfall,3);assert.ok(!sel.rows.some(r=>['NA1','BAD'].includes(r.symbol)));
  assert.deepEqual(sel.shortfall_reasons,{FINANCIAL_SAFETY_NOT_AVAILABLE:1,FINANCIAL_SAFETY_FAIL:1});
  state=B.answer(state,{symbol:'N00',answer:'DISAGREE',reason:'합성',date:'2026-10-14'});sel=B.currentSelection(state);assert.equal(sel.rows.length,11);assert.equal(sel.shortfall,4);assert.equal(sel.shortfall_reasons.USER_DISAGREE,1);
@@ -594,7 +623,7 @@ test('identity-conflict withdrawal: same-CIK Universe codes are excluded from th
  const rows=B.universeRows({computed,inputs,universeCodes:codes,existing:[]});
  const hit=rows.filter(x=>x.cik===cik);assert.equal(hit.length,1);   // one point per issuer (share classes deduped)
  for(const r of hit){assert.equal(r.withdrawn,true);assert.equal(r.total,null);assert.deepEqual(B.exclusions(r),['IDENTITY_CONFLICT_WITHDRAWN']);}
- const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'}),pooled=new Set(draft.pool.map(r=>r.code));
+ const draft=bd({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'}),pooled=new Set(draft.pool.map(r=>r.code));
  assert.ok(same.every(c=>!pooled.has(c)));assert.ok(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN>=1);
  assert.ok(rows.filter(r=>r.cik!==cik).every(r=>r.withdrawn===false));assert.equal(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);   // the pool may be empty here: the fixture has no safety metrics (NA excluded)
 });
@@ -613,7 +642,7 @@ test('identity-conflict withdrawal: a withdrawn Universe code never borrows a sa
  const computed=QS.compute({identities,publicScreens:{[SQ.FILE]:inputs},v2Inputs:inputs,quotes});
  const rows=B.universeRows({computed,inputs,universeCodes:codes,existing:[]}),nv=rows.find(r=>r.code==='NASDAQ:NVDA');
  assert.ok(nv);assert.deepEqual([nv.withdrawn,nv.total,nv.rank],[true,null,null]);assert.deepEqual(B.exclusions(nv),['IDENTITY_CONFLICT_WITHDRAWN']);
- const draft=B.buildDraft({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'});
+ const draft=bd({computed,inputs,universeCodes:codes,existing:[],date:'2026-10-17'});
  assert.ok(!draft.pool.some(r=>r.symbol==='NVDA'));assert.equal(draft.excluded_counts.IDENTITY_CONFLICT_WITHDRAWN,1);
 });
 
@@ -632,7 +661,7 @@ test('canonical shared QGV page result feeds TARGET without QG-only candidates o
   globalThis.QgvScores={...Q,compute(){throw Error('unexpected separate computation');}};
   const computed=await P.prepareScores(view,{catalog,screens:{'sec-qgv2.json':inputs},idByTicker:new Map(ids.map(r=>[r.ticker,r.company_id])),universeCodes:codes});
   assert.equal(computed.rows,page.computed.rows,'same shared evaluated rows');
-  const draft=B.buildDraft({computed,inputs,universeCodes:codes,date:'2026-10-14'});
+  const draft=bd({computed,inputs,universeCodes:codes,date:'2026-10-14'});
   assert.ok(draft.pool.length>0,'strict synthetic fixture has eligible names');
   const byTicker=new Map(Object.values(computed.rows).map(r=>[r.ticker,r]));
   for(const r of draft.pool){const source=byTicker.get(r.symbol);assert.ok(Number.isInteger(source.rank));assert.equal(source.qg_reference,null);assert.ok(Number.isFinite(r.v));assert.equal(r.safety,'PASS');assert.ok(Math.abs(r.total-source.v2.total)<0.0001);
@@ -672,11 +701,14 @@ function walkKeys(v,out=new Set()){if(v&&typeof v==='object'){for(const[k,x]of O
 // A fetch-like source answering qgv-official.json (QgvOfficial.resolve's one request).
 const served=(status,text=FIX.base_text)=>async()=>({status,ok:status>=200&&status<300,headers:{get:()=>null},arrayBuffer:async()=>enc(text).buffer});
 
-test('PR-D V sources: V_SOURCE unchanged (web_app pin), V_SOURCES = web_app/qgv.js text with DEVICE_TEMPORARY the same object',()=>{
- assert.deepEqual({...B.V_SOURCE},{id:'DEVICE_TEMPORARY',ko:'임시 V',note:'기기 시세로 계산 · 중앙 V 미게시'});assert.ok(Object.isFrozen(B.V_SOURCE));
- assert.equal(B.V_SOURCES.DEVICE_TEMPORARY,B.V_SOURCE);assert.deepEqual(Object.keys(B.V_SOURCES),['DEVICE_TEMPORARY','OFFICIAL_CENTRAL']);
+test('V sources (owner decision 2026-11-15, DC-31): the central V only; V_SOURCES = web_app/qgv.js and QgvOfficial text; the device id only as readable history',()=>{
+ assert.deepEqual({...B.V_SOURCE},{id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'});assert.ok(Object.isFrozen(B.V_SOURCE));
+ assert.equal(B.V_SOURCES.OFFICIAL_CENTRAL,B.V_SOURCE);assert.deepEqual(Object.keys(B.V_SOURCES),['OFFICIAL_CENTRAL']);
  const WQ=require('../src/investment_system/product/web_app/qgv.js');assert.deepEqual(JSON.parse(JSON.stringify(B.V_SOURCES)),JSON.parse(JSON.stringify(WQ.V_SOURCES)));
- assert.deepEqual(JSON.parse(JSON.stringify(B.V_SOURCES)),JSON.parse(JSON.stringify(QO.V_SOURCES)));assert.ok(Object.isFrozen(B.V_SOURCES.OFFICIAL_CENTRAL));
+ assert.deepEqual(JSON.parse(JSON.stringify(B.V_SOURCES)),JSON.parse(JSON.stringify(QO.V_SOURCES)));assert.ok(Object.isFrozen(B.V_SOURCES)&&Object.isFrozen(B.V_SOURCES.OFFICIAL_CENTRAL));
+ // The earlier device source is no V source any more: only its id, so that saved drafts / versions of it load (history).
+ assert.deepEqual(Object.keys(B.LEGACY_V_SOURCES),['DEVICE_TEMPORARY']);assert.equal(B.LEGACY_V_SOURCES.DEVICE_TEMPORARY.id,'DEVICE_TEMPORARY');assert.ok(Object.isFrozen(B.LEGACY_V_SOURCES.DEVICE_TEMPORARY));
+ for(const S of [B.V_SOURCES,WQ.V_SOURCES,QO.V_SOURCES])assert.equal(Object.hasOwn(S,'DEVICE_TEMPORARY'),false);
 });
 
 test('PR-D adapter: officialComputed maps published rows only (the TARGET row as on the device, NA kept null, no price key); not for an unchecked payload',async()=>{
@@ -697,16 +729,18 @@ test('PR-D adapter: officialComputed maps published rows only (the TARGET row as
  assert.deepEqual(B.officialRecord(pub),{publication_id:pub.publication_id,price_basis_date:'2026-10-13',calc_version:OFFICIAL_CALC,inputs_as_of:pub.times.inputs_as_of});
 });
 
-test('PR-D draft: the official pool equals the device pool for the same scores (builder logic unchanged); only official adds v_source + official',async()=>{
+test('PR-D draft: the central draft runs the unchanged builder logic on the adapted rows; v_source + official always; no draft without a publication',async()=>{
  const pub=await officialPub(),inputs=officialInputs(pub),universeCodes=universeOf(pub),args={inputs,universeCodes,existing:['AMD'],date:'2026-10-14',basis:null};
- const official=B.buildDraft({...args,computed:B.officialComputed(pub),official:pub}),device=B.buildDraft({...args,computed:deviceTwin(pub)});
- const{v_source,official:rec,...rest}=official;assert.equal(v_source,'OFFICIAL_CENTRAL');assert.deepEqual(rec,B.officialRecord(pub));
- assert.deepEqual(rest,device,'same rank, issuer dedupe, exclusions, pool and templates from the same scores');assert.deepEqual(Object.keys(device).sort(),DRAFT_KEYS,'a device draft gains no key');
+ const official=B.buildDraft({...args,computed:B.officialComputed(pub),official:pub});
+ const{v_source,official:rec,...rest}=official;assert.equal(v_source,'OFFICIAL_CENTRAL');assert.deepEqual(rec,B.officialRecord(pub));assert.deepEqual(Object.keys(rest).sort(),DRAFT_KEYS);
+ // Same rank, issuer dedupe and exclusions as the device identity mapping gives for the same published scores (builder logic unchanged).
+ assert.deepEqual(B.universeRows({...args,computed:B.officialComputed(pub)}),B.universeRows({...args,computed:deviceTwin(pub)}),'same rows from the same scores');
  assert.deepEqual(official.pool.map(r=>r.symbol),['AFL','AMD','AES','APD','ALLE','ACN','LNT','ADBE','A']);assert.equal(official.pool.find(r=>r.symbol==='AMD').in19,true);
  // NA never 0: the V-null rows are excluded by axis coverage, never ranked on a filled V.
  const rows=B.universeRows({...args,computed:B.officialComputed(pub)});for(const s of ['ARE','MMM']){const r=rows.find(x=>x.symbol===s);assert.equal(r.v,null);assert.ok(B.exclusions(r).includes('AXIS_COVERAGE_LOW'));}
- // Device drafts are as before: official null / absent are the same call; device scores never carry an official label.
- const plainDevice=B.buildDraft({...u0(),existing:[],date:'2026-10-14'});assert.deepEqual(B.buildDraft({...u0(),existing:[],date:'2026-10-14',official:null}),plainDevice);assert.deepEqual(Object.keys(plainDevice).sort(),DRAFT_KEYS);
+ // 2026-11-15: no publication → no draft (official null / absent are the same call); device-path scores never make a draft.
+ assert.throws(()=>B.buildDraft({...u0(),existing:[],date:'2026-10-14'}),/OFFICIAL_V_REQUIRED/);assert.throws(()=>B.buildDraft({...u0(),existing:[],date:'2026-10-14',official:null}),/OFFICIAL_V_REQUIRED/);
+ assert.throws(()=>B.buildDraft({...args,computed:deviceTwin(pub)}),/OFFICIAL_V_REQUIRED/);
  // No mixing: official needs its own adapted scores; an unchecked payload is refused.
  assert.throws(()=>B.buildDraft({...args,computed:deviceTwin(pub),official:pub}),/V_SOURCE_MIXED/);
  assert.throws(()=>B.buildDraft({...args,computed:B.officialComputed(pub),official:JSON.parse(FIX.base_text)}),/OFFICIAL_INVALID/);
@@ -715,11 +749,11 @@ test('PR-D draft: the official pool equals the device pool for the same scores (
  const st={...B.emptyState(),draft:official};B.validateState(st);const s=memory(),pb=P.empty();pb.target_v1=st;P.write(s,pb);assert.deepEqual(P.read(s).target_v1.draft.official,rec);
  for(const bad of [{...official,v_source:'ELSEWHERE'},{...official,official:{...rec,publication_id:'qgvpub-x'}},{...official,official:{...rec,extra:1}},{...official,official:{...rec,price_basis_date:'2026-02-30'}},{...official,official:{...rec,inputs_as_of:'later'}},{...official,official:null}])
   assert.throws(()=>B.validateState({...B.emptyState(),draft:bad}),/TARGET_V1_STATE_INVALID/);
- B.validateState({...B.emptyState(),draft:{...device,v_source:'DEVICE_TEMPORARY'}});   // web_app records its device source on the draft
+ B.validateState({...B.emptyState(),draft:{...rest,v_source:'DEVICE_TEMPORARY'}});B.validateState({...B.emptyState(),draft:rest});   // saved before 2026-11-15: still loads
 });
 const u0=()=>wide(40);
 
-test('PR-D adapter: every Universe code reads the record the device path reads (second share class, unplaced TARGET, TARGET of another calc_version)',async()=>{
+test('PR-D adapter: every Universe code reads the record the screens\' identity mapping reads (second share class, unplaced TARGET, TARGET of another calc_version)',async()=>{
  assert.deepEqual(Object.fromEntries(PAGE_TARGETS.map(t=>[t.company_id,t.ticker])),{...QO.TARGET_TICKERS},'the reader\'s TARGET tickers are the device catalog');
  const expect={
   // D-CV8 ranks the GOOG/GOOGL issuer through TARGET:googl for both codes (rank_row); the device reads TARGET:googl for GOOGL only
@@ -739,7 +773,8 @@ test('PR-D adapter: every Universe code reads the record the device path reads (
   const c=B.officialComputed(pub),twin=deviceTwin(pub,inputs),byTicker=new Map(Object.values(twin.rows).map(r=>[r.ticker,r.code]));
   for(const code of universeCodes)assert.equal(c.rows[code].code,byTicker.get(code.split(':')[1]),id+' '+code);
   check(pub,c,B.universeRows({...args,computed:c}));
-  const{v_source,official:rec,...rest}=B.buildDraft({...args,computed:c,official:pub});assert.equal(v_source,'OFFICIAL_CENTRAL');assert.deepEqual(rest,B.buildDraft({...args,computed:twin}),id+': same draft as the device path on the same scores');
+  const{v_source,official:rec,...rest}=B.buildDraft({...args,computed:c,official:pub});assert.equal(v_source,'OFFICIAL_CENTRAL');assert.deepEqual(rec,B.officialRecord(pub),id);
+  assert.deepEqual(B.universeRows({...args,computed:c}),B.universeRows({...args,computed:twin}),id+': same rows as the identity mapping gives on the same scores');
   assert.ok(!rest.pool.some(r=>r.symbol==='GOOGL'||(id!=='target_for_two_share_classes_valid'&&r.symbol==='AMD')),id);}
 });
 
@@ -754,52 +789,71 @@ test('PR-D state: the publication record rides only with OFFICIAL_CENTRAL (draft
   official_version_without_basis_day:state({},[{...row,v_source:'OFFICIAL_CENTRAL',publication_id:rec.publication_id,official_inputs_as_of:rec.inputs_as_of}]),
   device_version_with_basis_day_only:state({},[{...row,v_source:'DEVICE_TEMPORARY',price_basis_date:'2026-10-13'}])}))
   assert.throws(()=>B.validateState(bad),/TARGET_V1_STATE_INVALID/,name);
- // Still readable (web_app's engines record the draft's id on a version, web_app_engines_node_test.js): an OFFICIAL_CENTRAL id without
- // the record. The screen shows no 공식 V value for such a draft and finalize calls it V_SOURCE_CHANGED.
- B.validateState(state({v_source:'OFFICIAL_CENTRAL'},[{...row,v_source:'OFFICIAL_CENTRAL'}]));
- const bare={...state({v_source:'OFFICIAL_CENTRAL'}),answers:[]};assert.ok(B.finalizeBlockers(bare,{date:'2026-10-15',published:null,official:pub}).blockers.includes('V_SOURCE_CHANGED'));
+ // Still readable (an earlier web_app engines draft): an OFFICIAL_CENTRAL id without the record. The screen shows no 공식 V value
+ // for such a draft and finalize calls it V_SOURCE_CHANGED against the usable publication.
+ B.validateState(state({v_source:'OFFICIAL_CENTRAL'},[{...row,v_source:'OFFICIAL_CENTRAL'}]));const sec=published({calc:OFFICIAL_CALC});
+ const bare={...state({v_source:'OFFICIAL_CENTRAL'}),answers:[]};assert.ok(B.finalizeBlockers(bare,{date:'2026-10-15',published:sec,official:pub}).blockers.includes('V_SOURCE_CHANGED'));
+ // Saved before 2026-11-15 (owner decision: the central V only): a draft of the earlier device source or without a source, and
+ // versions of it, still load (no crash) and stay as history; such a draft is V_SOURCE_CHANGED (regenerate from the central V),
+ // with OFFICIAL_V_REQUIRED too while no central V is usable.
+ for(const[name,legacy]of Object.entries({device:state({v_source:'DEVICE_TEMPORARY'},[{...row,v_source:'DEVICE_TEMPORARY'}]),untagged:state({},[{...row}])})){
+  B.validateState(legacy);const st={...legacy,answers:[]},b=B.finalizeBlockers(st,{date:'2026-10-15',published:sec,official:pub}),none=B.finalizeBlockers(st,{date:'2026-10-15',published:sec,official:null});
+  assert.ok(b.blockers.includes('V_SOURCE_CHANGED')&&!b.blockers.includes('OFFICIAL_V_REQUIRED'),name);assert.deepEqual([b.v_source_changed,b.basis_changed],[true,true],name);
+  assert.ok(none.blockers.includes('V_SOURCE_CHANGED')&&none.blockers.includes('OFFICIAL_V_REQUIRED'),name);assert.equal(B.latestVersion(legacy).v_source,legacy.versions[0].v_source,name);}
 });
 
-test('PR-D use rule at the click: not published / unavailable / invalid / calc differs / stale → no publication, the device draft as before',async()=>{
+test('PR-D use rule at the click: not published / unavailable / invalid / calc differs / stale → no publication, so no draft (2026-11-15: TARGET v1 waits)',async()=>{
  const sec=OFFICIAL_CALC,ok=await QO.resolve(served(200),{secCalcVersion:sec,nyToday:'2026-10-14'});assert.equal(ok.ok,true);assert.equal(B.officialRecord(ok.payload).publication_id,JSON.parse(FIX.base_text).publication_id);
  const tampered=FIX.base_text.replace('"price_basis_date":"2026-10-13"','"price_basis_date":"2026-10-12"');
  const cases={OFFICIAL_NOT_PUBLISHED:[served(404),sec,'2026-10-14'],OFFICIAL_UNAVAILABLE:[served(500),sec,'2026-10-14'],OFFICIAL_INVALID:[served(200,tampered),sec,'2026-10-14'],
   OFFICIAL_CALC_VERSION_DIFFERS:[served(200),'qgv2-calc/2026-10-23.2','2026-10-14'],OFFICIAL_STALE:[served(200),sec,'2026-10-16']};
- const u=u0(),device=B.buildDraft({...u,existing:[],date:'2026-10-14'});
+ const u=u0();
  for(const[code,[src,calc,day]]of Object.entries(cases)){const r=await QO.resolve(src,{secCalcVersion:calc,nyToday:day});assert.deepEqual([r.ok,r.reason,r.payload],[false,code,null],code);
-  // The screen passes official only when ok; otherwise exactly today's device call and draft (no new key).
-  assert.deepEqual(B.buildDraft({...u,existing:[],date:'2026-10-14',official:r.ok?r.payload:null}),device,code);}
+  // The screen passes official only when ok; otherwise no draft is made (never one from another V).
+  assert.throws(()=>B.buildDraft({...u,existing:[],date:'2026-10-14',official:r.ok?r.payload:null}),/OFFICIAL_V_REQUIRED/,code);}
  assert.deepEqual(QO.REASONS,Object.keys(cases));
+ // The usable one drafts from its own rows, with its original price basis day.
+ const d=B.buildDraft({inputs:officialInputs(ok.payload),universeCodes:universeOf(ok.payload),existing:[],date:'2026-10-14',computed:B.officialComputed(ok.payload),official:ok.payload});assert.deepEqual([d.v_source,d.official.price_basis_date],['OFFICIAL_CENTRAL','2026-10-13']);
 });
 
-test('PR-D finalize: official version records OFFICIAL_CENTRAL + publication; V_SOURCE_CHANGED both ways and on a new publication → regenerate',async()=>{
+test('PR-D finalize: the version records OFFICIAL_CENTRAL + publication; no usable central V → OFFICIAL_V_REQUIRED (waits); a device / untagged / other-publication draft → V_SOURCE_CHANGED → regenerate',async()=>{
  const pub=await officialPub(),pub2=await officialPub(FIX.base_text.replace(pub.publication_id,OTHER_ID)),rec=B.officialRecord(pub);assert.equal(B.officialRecord(pub2).publication_id,OTHER_ID);
- // A 15-name device-scored draft stamped with the publication's record (the mini publication has 9 eligible names; the source
- // logic does not depend on the pool), all cards answered; the re-read sec-qgv2.json has the publication's calc_version.
+ // A 15-name central draft (synthetic publication of the re-read file's calc_version) re-stamped with the fixture publication's
+ // record (the mini publication has 9 eligible names; the source logic does not depend on the pool), all cards answered.
  const u=wide(40),secPub=published({u,calc:OFFICIAL_CALC}),basis=await B.inputBasis(secPub),cfg=passed(OFFICIAL_CALC);
- let device={...B.emptyState(),draft:B.buildDraft({...u,existing:[],date:'2026-10-14',basis})};for(const r of B.currentSelection(device).rows)device=B.answer(device,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
- const stamped={...device,draft:{...device.draft,v_source:'OFFICIAL_CENTRAL',official:rec}};B.validateState(stamped);
+ let base={...B.emptyState(),draft:bd({...u,calc:OFFICIAL_CALC,existing:[],date:'2026-10-14',basis})};for(const r of B.currentSelection(base).rows)base=B.answer(base,{symbol:r.symbol,answer:'AGREE',date:'2026-10-14'});
+ const stamped={...base,draft:{...base.draft,official:rec}};B.validateState(stamped);
+ // Saved before 2026-11-15: the same draft of the earlier device source, and one without a source. Both still load.
+ const{v_source:_vs,official:_rec,...plainDraft}=base.draft,device={...base,draft:{...plainDraft,v_source:'DEVICE_TEMPORARY'}},untagged={...base,draft:plainDraft};B.validateState(device);B.validateState(untagged);
  const fb=(state,official,pubSec=secPub)=>B.finalizeBlockers(state,{date:'2026-10-15',published:pubSec,basis,official,cfg});
- // Same source and publication → no new blocker; the version keeps the source, the publication id and its days.
- assert.deepEqual(fb(stamped,pub).blockers,[]);assert.deepEqual(fb(stamped,pub).official,rec);
+ // Same source and publication → no new blocker; the version keeps the source, the publication id and its own days.
+ assert.deepEqual(fb(stamped,pub).blockers,[]);assert.deepEqual(fb(stamped,pub).official,rec);assert.equal(fb(stamped,pub).official_required,false);
  const done=B.finalize(stamped,{date:'2026-10-15',published:secPub,basis,official:pub,cfg}),v=done.versions[0];
  assert.deepEqual([v.v_source,v.publication_id,v.price_basis_date,v.official_inputs_as_of,v.calc_version,v.sec_qgv2_as_of],['OFFICIAL_CENTRAL',pub.publication_id,'2026-10-13',pub.times.inputs_as_of,OFFICIAL_CALC,secPub.as_of]);
+ assert.deepEqual(Object.keys(v).sort(),[...VERSION_KEYS,'official_inputs_as_of','price_basis_date','publication_id'].sort());
  B.validateState(done);assert.throws(()=>B.validateState({...done,versions:[{...v,publication_id:'x'}]}),/TARGET_V1_STATE_INVALID/);assert.throws(()=>B.validateState({...done,versions:[{...v,v_source:'X'}]}),/TARGET_V1_STATE_INVALID/);
- // A device draft finalized on the device path: the version is exactly as before (no new key).
- const plain=B.finalize(device,{date:'2026-10-15',published:secPub,basis,cfg}).versions[0];assert.deepEqual(Object.keys(plain).sort(),VERSION_KEYS);assert.equal(plain.v_source,'DEVICE_TEMPORARY');
- assert.deepEqual(B.finalize(device,{date:'2026-10-15',published:secPub,basis,official:null,cfg}).versions[0],plain);
- // Official draft, publication gone / stale / of another calc_version (the caller passes null) → V_SOURCE_CHANGED, a changed basis.
- const gone=fb(stamped,null);assert.deepEqual(gone.blockers,['V_SOURCE_CHANGED']);assert.deepEqual([gone.basis_changed,gone.v_source_changed,gone.official],[true,true,null]);
- assert.deepEqual(fb(stamped,pub,published({u,calc:'qgv2-calc/2026-10-24.1'})).blockers.includes('V_SOURCE_CHANGED'),true,'a publication of another calc_version than the re-read file is not usable');
- // Device draft and a usable publication now → V_SOURCE_CHANGED (the other direction); a new publication id → V_SOURCE_CHANGED.
- assert.deepEqual(fb(device,pub).blockers,['V_SOURCE_CHANGED']);assert.deepEqual(fb(stamped,pub2).blockers,['V_SOURCE_CHANGED']);
+ // Old versions stay readable history next to the new one (device source, or none recorded).
+ const{v_source:_v2,publication_id:_p,price_basis_date:_d,official_inputs_as_of:_i,...oldRow}=v;B.validateState({...done,versions:[{...oldRow,v_source:'DEVICE_TEMPORARY'},{...oldRow,version:'v1.1'},v]});
+ // Official draft, publication gone / stale / of another calc_version / unchecked (the caller passes null or it does not count)
+ // → OFFICIAL_V_REQUIRED only: TARGET v1 waits; nothing is regenerated and no other V fills it.
+ const gone=fb(stamped,null);assert.deepEqual(gone.blockers,['OFFICIAL_V_REQUIRED']);assert.deepEqual([gone.basis_changed,gone.v_source_changed,gone.official,gone.official_required],[false,false,null,true]);
+ assert.throws(()=>B.finalize(stamped,{date:'2026-10-15',published:secPub,basis,official:null,cfg}),e=>e.message==='OFFICIAL_V_REQUIRED'&&e.blockers.join()==='OFFICIAL_V_REQUIRED');
+ assert.deepEqual(fb(stamped,pub,published({u,calc:'qgv2-calc/2026-10-24.1'})).blockers.includes('OFFICIAL_V_REQUIRED'),true,'a publication of another calc_version than the re-read file is not usable');
+ assert.deepEqual(fb(stamped,JSON.parse(FIX.base_text)).blockers,['OFFICIAL_V_REQUIRED'],'an unchecked payload never counts as official');
+ // A device or untagged draft (saved before 2026-11-15) → V_SOURCE_CHANGED (a changed basis: regenerate from the central V); with
+ // no usable central V also OFFICIAL_V_REQUIRED. A new publication id → V_SOURCE_CHANGED.
+ for(const old of [device,untagged]){assert.deepEqual(fb(old,pub).blockers,['V_SOURCE_CHANGED']);assert.deepEqual([fb(old,pub).basis_changed,fb(old,pub).v_source_changed],[true,true]);
+  assert.deepEqual(fb(old,null).blockers,['OFFICIAL_V_REQUIRED','V_SOURCE_CHANGED']);assert.deepEqual(fb(old,JSON.parse(FIX.base_text)).blockers,['OFFICIAL_V_REQUIRED','V_SOURCE_CHANGED']);
+  assert.throws(()=>B.finalize(old,{date:'2026-10-15',published:secPub,basis,official:pub,cfg}),e=>e.blockers.join()==='V_SOURCE_CHANGED');}
+ assert.deepEqual(fb(stamped,pub2).blockers,['V_SOURCE_CHANGED']);
  assert.throws(()=>B.finalize(stamped,{date:'2026-10-15',published:secPub,basis,official:pub2,cfg}),e=>e.blockers.join()==='V_SOURCE_CHANGED');
- // An unchecked payload never counts as official.
- assert.deepEqual(fb(device,JSON.parse(FIX.base_text)).blockers,[]);assert.deepEqual(fb(stamped,JSON.parse(FIX.base_text)).blockers,['V_SOURCE_CHANGED']);
- // Regenerate path (the screen's): official gone → device scores, the draft loses the official keys, answers kept, finalize as device.
- const back=B.regenerateDraft(stamped,{...u,existing:[],date:'2026-10-15',basis,official:null});assert.equal(back.state.draft.v_source,undefined);assert.equal(back.state.draft.official,undefined);
- assert.equal(back.carried.length,15);assert.deepEqual(fb(back.state,null).blockers,[]);assert.equal(B.finalize(back.state,{date:'2026-10-15',published:secPub,basis,cfg}).versions[0].v_source,'DEVICE_TEMPORARY');
- // Usable publication now → regenerate from its rows (official draft of the new publication); the change blocker is gone.
+ // Regenerate path (the screen's): only from a usable publication; without one it is refused (the draft stays, TARGET v1 waits).
+ assert.throws(()=>B.regenerateDraft(stamped,{...u,existing:[],date:'2026-10-15',basis,official:null}),/OFFICIAL_V_REQUIRED/);
+ assert.throws(()=>B.regenerateDraft(device,{...u,existing:[],date:'2026-10-15',basis}),/OFFICIAL_V_REQUIRED/);
+ // A device draft regenerated from the usable publication becomes OFFICIAL_CENTRAL of it; the change blocker is gone.
+ const up=B.regenerateDraft(device,{computed:B.officialComputed(pub),inputs:officialInputs(pub),universeCodes:universeOf(pub),existing:[],date:'2026-10-15',basis,official:pub});
+ assert.deepEqual([up.state.draft.v_source,up.state.draft.official.publication_id],['OFFICIAL_CENTRAL',pub.publication_id]);assert.ok(!fb(up.state,pub).blockers.includes('V_SOURCE_CHANGED'));
+ // Usable new publication now → regenerate from its rows (official draft of the new publication); the change blocker is gone.
  const inputs=officialInputs(pub2),fwd=B.regenerateDraft(stamped,{computed:B.officialComputed(pub2),inputs,universeCodes:universeOf(pub2),existing:[],date:'2026-10-15',basis,official:pub2});
  assert.deepEqual([fwd.state.draft.v_source,fwd.state.draft.official.publication_id],['OFFICIAL_CENTRAL',OTHER_ID]);assert.ok(!fb(fwd.state,pub2).blockers.includes('V_SOURCE_CHANGED'));
  assert.ok(fb(fwd.state,pub2).blockers.includes('TARGET_V1_SHORTFALL'),'the mini publication has fewer than 15 eligible names: shown, nothing relaxed');
@@ -810,13 +864,13 @@ test('PR-D finalize: official version records OFFICIAL_CENTRAL + publication; V_
  assert.ok(at({...CFG,number_check:{...CFG.number_check,result:{...CFG.number_check.result,calc_version:'qgv2-calc/2026-10-17.1'}}}).includes('NUMBER_CHECK_CALC_VERSION_MISMATCH'));
 });
 
-test('PR-D without QgvOfficial on the page (web_app): never official, the device path as before',async()=>{
+test('PR-D without QgvOfficial on the page: no central V, so no draft and finalize waits (OFFICIAL_V_REQUIRED)',async()=>{
  const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path'),src=fs.readFileSync(path.join(__dirname,W,'target-v1-builder.js'),'utf8');
  const box={PlaybookEngine:require(W+'playbook-engine.js'),PlaybookConfigDefaults:PCFG,TargetV1ConfigDefaults:CFG,TextEncoder,crypto:globalThis.crypto};vm.createContext(box);vm.runInContext(src,box);
  const WB=box.TargetV1Builder,pub=await officialPub();assert.ok(WB&&WB.V_SOURCES.OFFICIAL_CENTRAL);
  assert.equal(WB.officialComputed(pub),null);assert.equal(WB.officialRecord(pub),null);
- const u=u0();assert.throws(()=>WB.buildDraft({...u,existing:[],date:'2026-10-14',official:pub}),/OFFICIAL_INVALID/);
- const draft=WB.buildDraft({...u,existing:[],date:'2026-10-14'});assert.deepEqual(Object.keys(draft).sort(),DRAFT_KEYS);
- let st={...WB.emptyState(),draft:{...draft,v_source:'OFFICIAL_CENTRAL',official:B.officialRecord(pub)}};
- assert.ok(WB.finalizeBlockers(st,{date:'2026-10-15',published:null,official:pub}).blockers.includes('V_SOURCE_CHANGED'),'an official draft cannot be confirmed without the reader');
+ const u=u0();assert.throws(()=>WB.buildDraft({...u,existing:[],date:'2026-10-14',official:pub}),/OFFICIAL_INVALID/);assert.throws(()=>WB.buildDraft({...u,existing:[],date:'2026-10-14'}),/OFFICIAL_V_REQUIRED/);
+ const draft=bd({...u,existing:[],date:'2026-10-14'});let st={...WB.emptyState(),draft:{...draft,official:B.officialRecord(pub)}};
+ const b=WB.finalizeBlockers(st,{date:'2026-10-15',published:published({u,calc:OFFICIAL_CALC}),official:pub});
+ assert.ok(b.blockers.includes('OFFICIAL_V_REQUIRED')&&b.official===null&&b.official_required===true,'an official draft cannot be confirmed without the reader: it waits');
 });

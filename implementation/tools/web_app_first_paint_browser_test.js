@@ -92,7 +92,7 @@ function initMeasure(oldGlobals) {
       const I = window.IS2 || {}, chip = document.querySelector('[data-device-chip]'), NR = I.NOT_READY;
       fp.snap = { search: !!document.querySelector('[data-search-input]'), menu: document.querySelectorAll('.top .menu a').length, tabs: document.querySelectorAll('.tabbar [data-tab]').length,
         chip: chip ? chip.textContent : null, notice: !!document.querySelector('[data-load-failed]'), state: typeof I.loadState === 'function' ? I.loadState() : null, oldGlobals: oldGlobals.filter((g) => typeof window[g] !== 'undefined'),
-        facades: NR ? [I.data.FILES === NR, I.qgv.rankLabel('DEVICE_TEMPORARY') === NR, I.prices.status() === NR, I.store.prefs() === NR] : null,
+        facades: NR ? [I.data.FILES === NR, I.qgv.rankLabel('OFFICIAL_CENTRAL') === NR, I.prices.status() === NR, I.store.prefs() === NR] : null,
         scripts: [...document.scripts].map((s) => s.getAttribute('src')) };
     }
     if (name === 'is2-ready' || name === 'is2-load-failed') done(name);
@@ -219,7 +219,7 @@ async function contractHold(browser, srv) {
       I.qgv.subscribe(() => { window.__sub++; });
       const ac = new AbortController(); I.qgv.subscribe(() => { window.__sub += 100; }, { signal: ac.signal }); ac.abort();
       return { state: I.loadState(), chip: document.querySelector('[data-device-chip]').textContent, globals: typeof window.QgvScores,
-        getters: [I.prices.status(), I.data.FILES, I.qgv.rankLabel('DEVICE_TEMPORARY'), I.store.prefs(), I.engines.target.state(), I.prices.universeView.prices(), typeof I.store.marketQuotes.clear === 'function'].map((x) => x === NR || x),
+        getters: [I.prices.status(), I.data.FILES, I.qgv.rankLabel('OFFICIAL_CENTRAL'), I.store.prefs(), I.engines.target.state(), I.prices.universeView.prices(), typeof I.store.marketQuotes.clear === 'function'].map((x) => x === NR || x),
         marker: NR, log: [...window.__log] };
     });
     assert.deepEqual(pre.marker, { state: 'NOT_READY', reason: 'LAYER_NOT_READY' });
@@ -234,7 +234,7 @@ async function contractHold(browser, srv) {
     const post = await page.evaluate(() => {
       const I = window.IS2, F = window.__f; I.qgv.setProfile({ preset: null, gate: null });
       return { log: [...window.__log], sub: window.__sub, chip: document.querySelector('[data-device-chip]').textContent, notice: !!document.querySelector('[data-load-failed]'), replaced: Object.keys(F).every((k) => I[k] !== F[k]),
-        rank: F.qgv.rankLabel('DEVICE_TEMPORARY'), connected: F.prices.status().google.connected, files: Array.isArray(F.data.FILES) && F.data.FILES.includes('sec-qgv2.json'),
+        rank: F.qgv.rankLabel('OFFICIAL_CENTRAL'), connected: F.prices.status().google.connected, files: Array.isArray(F.data.FILES) && F.data.FILES.includes('sec-qgv2.json'),
         nested: F.engines.target.ruleBDue === I.engines.target.ruleBDue ? 'same' : typeof F.engines.target.ruleBDue(), scripts: [...document.scripts].map((s) => s.getAttribute('src')) };
     });
     assert.deepEqual(post.log, ['ready', 'count 0'], 'the promise method ran on the layer after ready');
@@ -242,7 +242,7 @@ async function contractHold(browser, srv) {
     assert.equal(post.chip, '로그인 안 함 · 이 기기 기준');
     assert.equal(post.notice, false, 'no failure notice once the layer is ready');
     assert.equal(post.replaced, true, 'the layer files replaced the facades on IS2');
-    assert.deepEqual([post.rank, post.connected, post.files, post.nested], ['임시 V 기준 순위 · 공식 순위 아님', false, true, 'boolean'], 'a kept facade forwards to the layer');
+    assert.deepEqual([post.rank, post.connected, post.files, post.nested], ['공식 순위 · 중앙 게시 V', false, true, 'boolean'], 'a kept facade forwards to the layer');
     assert.deepEqual(post.scripts, R.scripts(), 'index.html\'s scripts, then LOAD_ORDER, in order');
     await quiet(page, seen, 'hold');
   } finally { await context.close(); }

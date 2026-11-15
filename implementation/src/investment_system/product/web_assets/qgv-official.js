@@ -3,7 +3,8 @@
    qgv/qgv_official.py parse() / require_qgv_official(); JS==Python vectors: tests/fixtures/qgv_official_vectors_v1.json
    (tests/build_qgv_official_vectors.py). The file carries scores, ranks, reasons, counts and basis times only: nothing here
    attaches a quote to anything, and a null score stays null with its reason (NA is never 0). One same-origin fetch on demand
-   (no-store), no storage, no logging; any failure is a fixed code and the screen keeps the device V ("임시 V").
+   (no-store), no storage, no logging; any failure is a fixed code: the screen shows V as NA with it, and the TARGET v1 builder
+   makes no draft and waits (OFFICIAL_V_REQUIRED, 2026-11-15); a missing central V is never filled with another V.
    Stricter than Python: times.verified_at must be set. Not mirrored, by design (the Pages guard runs the Python validator on every
    deploy, so such bytes never ship): int vs float spelling (5 vs 5.0), hence Python's exact canonical size (whole floats are
    counted as ints here: a lower bound), and which code wins when two rules fail in an order JS cannot see (integer-like object
@@ -34,8 +35,9 @@ const SUPPLY_MIN=0.95,V_TARGET_SHARE=0.9,MAX_MONTHS=1200,POPULATION_VERSION='sec
 const ATTRIBUTION=deep({text:'Data provided for free by IEX. By accessing or using IEX Historical Data, you agree to the IEX Historical Data Terms of Use.',terms_url:'https://www.iex.io/legal/hist-data-terms',label_ko:'IEX 마지막 체결가 기준(공식 종가 아님)'});
 const PRICE_SOURCE=deep({provider:'IEX_HIST',feed:'TOPS 1.6',basis_kind:'IEX_LAST_REGULAR_SESSION_TRADE',adjustment_basis:'AS_TRADED',currency:'USD'}),MONTH_END=deep({store:'iex-monthend/1',basis:'RAW_DIVIDED_BY_SHARE_BASIS_FACTOR'});
 const TARGET_TICKERS=deep({amd:'AMD',amzn:'AMZN',asml:'ASML',avgo:'AVGO',etn:'ETN',gev:'GEV',googl:'GOOGL',hanmi:'042700',hubb:'HUBB',intc:'INTC',klac:'KLAC',lrcx:'LRCX',msft:'MSFT',nvda:'NVDA',qcom:'QCOM',rok:'ROK',rtx:'RTX',stry:'SYK',tokyo_electron:'8035'});
-// Same text as web_app/qgv.js V_SOURCES (DEVICE_TEMPORARY = TargetV1Builder.V_SOURCE); OFFICIAL_CENTRAL is draft wording.
-const V_SOURCES=deep({DEVICE_TEMPORARY:{id:'DEVICE_TEMPORARY',ko:'임시 V',note:'기기 시세로 계산 · 중앙 V 미게시'},OFFICIAL_CENTRAL:{id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'}});
+// Same text as web_app/qgv.js V_SOURCES and TargetV1Builder.V_SOURCES (parity tests): the central V is the only V source (DC-31;
+// the TARGET v1 builder too since 2026-11-15). OFFICIAL_CENTRAL is draft wording.
+const V_SOURCES=deep({OFFICIAL_CENTRAL:{id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'}});
 // Why the official V was not used (one short line on the screen) and the codes thrown (Python's three + two JS environment codes).
 const REASONS=deep(['OFFICIAL_NOT_PUBLISHED','OFFICIAL_UNAVAILABLE','OFFICIAL_INVALID','OFFICIAL_CALC_VERSION_DIFFERS','OFFICIAL_STALE']);
 const ERRORS=deep(['OFFICIAL_INVALID','OFFICIAL_FORBIDDEN_KEY','OFFICIAL_TOO_LARGE','OFFICIAL_UNAVAILABLE','OFFICIAL_DIGEST_UNAVAILABLE']);

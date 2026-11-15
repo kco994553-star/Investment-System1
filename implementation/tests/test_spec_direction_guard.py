@@ -69,6 +69,10 @@ def test_rules_catch_old_directions_and_pass_explanations():
         'IEX 중앙 V 경로는 없앤다.',
         '기술적 분석은 공개 화면에서 계속 제공한다.',
         '기능별 대체 표가 다 차면 정식 전환한다.',
+        # 2026-11-15: the TARGET v1 exempt words of DC-31a / DC-31b are removed (the planned 11/16 change).
+        'TARGET v1 빌더는 11/16까지 PR-D 규칙(공식 V 우선, 없으면 임시 V)을 유지한다.',
+        'The TARGET v1 builder falls back to the device V until 11/16.',
+        '확정 창에는 중앙 V가 늦으면 임시 V로 채운다.',
         '공개 전진검증 장부에 바구니 수익률을 기록한다.',
         '검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산',
     ]
@@ -99,7 +103,7 @@ def test_rules_catch_old_directions_and_pass_explanations():
         # DC-31: sentences that describe the abolition pass
         '기기 V는 폐지했다(DC-31): 공식 V가 없으면 사유와 NA, 기기 값으로 채우지 않는다.',
         'Device V was abolished (DC-31); no fallback: stale central V is shown with STALE.',
-        'TARGET v1 빌더는 11/16까지 PR-D 규칙(공식 V 우선, 없으면 임시 V)을 유지한다.',
+        'TARGET v1 빌더는 중앙 V만 쓴다: 게시본이 없으면 확정을 미루고 기기 V로 채우지 않는다(DC-31).',
         '중앙 V 게시가 늦으면 마지막 중앙 V와 갱신 시각을 보이고 STALE로 표시한다.',
         'V 이력이 필요하면 중앙에서 날짜별로 게시한다(DC-31).',
         'The radar V axis reads the central publication (qgv-official.json).',

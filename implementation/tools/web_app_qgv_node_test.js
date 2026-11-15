@@ -18,10 +18,10 @@
 //  - qgv (DC-31, device V abolished): the page rows are an exact projection of QgvScores.officialPage over the publication
 //    data.official() validated (tests/fixtures/qgv_official_vectors_v1.json base_text, synthetic); no device page result for a screen;
 //    no price or price-derived field leaves; a null value always has its reason; V source OFFICIAL_CENTRAL on every page and row
-//    (V_SOURCES unchanged until 11/16); the central basis (basis day, times, STALE past 2 sessions, attempt, attribution); without
+//    (V_SOURCES = the central V only since 2026-11-15); the central basis (basis day, times, STALE past 2 sessions, attempt, attribution); without
 //    a usable publication every V is NA with its OFFICIAL_* reason and the Q·G totals stand in the QG reference list; the status
-//    file is checked like Python require_status; personal preview = compute({publication, weights}); forEngines is the hidden device
-//    result for TARGET v1 only; the device V history keys read absent and are never written (STOPPED.localStorage).
+//    file is checked like Python require_status; personal preview = compute({publication, weights}); no hidden device result for TARGET v1
+//    either (2026-11-15: no forEngines; engines read engineInputs beside the central publication); the device V history keys read absent and are never written (STOPPED.localStorage).
 //  - P2-2a: model(page) is the price-free projection of QgvScores.officialModel over the held result (null without a publication or
 //    when sec-qgv2.json is not its input, PAGE_NOT_READY without a result, frozen, no price-like key); band / return codes worded.
 // Synthetic data only (tools/qgv_v2_fixture.js, tests/fixtures); sentinel prices are made up.
@@ -39,7 +39,8 @@ const CUSTOM = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/test
 // The public identity catalog (19 TARGET), exactly as the build writes actual-catalog.json.
 const CATALOG = JSON.parse(execFileSync('python3', ['-c', 'import json;from investment_system.product.device_actual_catalog import public_actual_catalog as c;print(json.dumps(c()))'],
   { env: { ...process.env, PYTHONPATH: path.join(R.ROOT, 'implementation/src') }, encoding: 'utf8' }));
-// #391 TargetV1Builder.V_SOURCE (origin/claude/target-v1-temp-v-label target-v1-builder.js:302), byte for byte.
+// #391 TargetV1Builder.V_SOURCE (origin/claude/target-v1-temp-v-label target-v1-builder.js:302), byte for byte: since 2026-11-15
+// only the id survives, as the builder's readable history source (TargetV1Builder.LEGACY_V_SOURCES), never in V_SOURCES.
 const V391 = { id: 'DEVICE_TEMPORARY', ko: '임시 V', note: '기기 시세로 계산 · 중앙 V 미게시' };
 // The central V publication (synthetic, valid) and a status file of a failed later attempt; sec-qgv2.json with the publication's
 // input as_of (the fixture's own; its codes are a subset of the fixture's) so the publication's input is the loaded file.
@@ -501,10 +502,10 @@ test('qgv.page: an exact projection of QgvScores.officialPage over the validated
   assert.equal(await qgv.page(), pg); assert.equal(qgv.coverage(pg), pg.coverage); assert.equal(qgv.centralComputed(pg), c);
   assert.equal(qgv.row(pg, 'NASDAQ:AMD'), qgv.row(pg, 'amd'), 'a TARGET in the Universe is that code row');
   assert.throws(() => qgv.rows(pg, { scope: 'X' }), /SCOPE_UNKNOWN/); assert.throws(() => qgv.rows({ rows: [] }), /PAGE_UNKNOWN/);
-  // TARGET v1 only (until 11/16): the hidden device result, computed when engines ask, on the score view (no request, RAM prices).
-  const device = await qgv.forEngines(pg); assert.equal(calls.length, 1); const { view, opts } = calls[0];
-  assert.equal(device, (await calls[0].p).computed); assert.equal(await qgv.forEngines(pg), device, 'the same read and profile: pageResult\'s memo, the same result');
-  await assert.rejects(view.fetch(QGV2), /SCORE_PATH_NO_NETWORK/); assert.equal(view.PrivateSubsetView, U.view); assert.equal(opts.v2Inputs, data.get(QGV2)); assert.equal(qgv.engineInputs(pg), data.get(QGV2));
+  // 2026-11-15 (DC-31): no hidden device result for TARGET v1 either. Engines read the page's sec-qgv2.json (engineInputs) next to
+  // the central publication; the score view (news fill only) never makes a request.
+  assert.equal(qgv.forEngines, undefined, 'no hidden device result'); assert.equal(calls.length, 0, 'no device page result at all');
+  const view = qgv.scoreView; await assert.rejects(view.fetch(QGV2), /SCORE_PATH_NO_NETWORK/); assert.equal(view.PrivateSubsetView, U.view); assert.equal(qgv.engineInputs(pg), data.get(QGV2));
   for (const sv of U.sentinels) assert.ok(!JSON.stringify(pg).includes(sv), 'sentinel price leaked');
   assert.deepEqual(win.requests.filter((r) => !data.FILES.includes(r.name)), [], 'only public files were requested');
 });
@@ -536,21 +537,17 @@ test('qgv.page: v_last_trade = QgvOfficial.lastTrade of the row\'s own publicati
   const keys = keysDeep(pg); for (const k of PRICE_KEYS) assert.ok(!keys.has(k), 'no ' + k);
 });
 
-test('forEngines: a Universe read or a profile change after the first ask reaches the TARGET device result although the central page stays the same object', async () => {
+test('TARGET v1 inputs (2026-11-15, central V only): a Universe read or a profile change leaves the central page, its engine inputs and its V as they are; no device page result', async () => {
   const U = universeView(), live = { prices: () => null, priceBasis: () => null, readStatus: () => null }, E = env({ prices: { universeView: live } }), { qgv, mods } = E, calls = spy(E);
-  const pg = await qgv.page(), hasV = (c) => Object.values(c.rows).some((r) => Number.isFinite(r.primary.v));
-  const before = await qgv.forEngines(pg); assert.equal(hasV(before), false, 'before the read: no device price, no device V');
+  const pg = await qgv.page(), hasV = (c) => Object.values(c.rows).some((r) => Number.isFinite(r.primary.v)), vOf = (c) => JSON.stringify(Object.values(c.rows).map((r) => [r.company_id, r.primary.v]));
+  const before = qgv.centralComputed(pg), inputs = qgv.engineInputs(pg); assert.equal(hasV(before), true, 'the central V without any device price');
   live.prices = U.view.prices; live.priceBasis = U.view.priceBasis;
-  assert.equal(await qgv.page(), pg, 'the central page does not depend on the Universe read');
-  const after = await qgv.forEngines(pg); assert.notEqual(after, before); assert.equal(hasV(after), true, 'after the read: the device V of that read');
-  assert.equal(await qgv.forEngines(pg), after, 'the same read: the same result');
+  assert.equal(await qgv.page(), pg, 'the central page does not depend on the Universe read'); assert.equal(qgv.centralComputed(pg), before); assert.equal(qgv.engineInputs(pg), inputs);
   const other = Object.keys(mods.QgvV2.PRESETS).find((k) => k !== mods.QgvV2.DEFAULT_PRESET);
-  qgv.setProfile({ preset: other, gate: false }); assert.equal(await qgv.page(), pg);
-  const prof = await qgv.forEngines(pg); assert.notEqual(prof, after); assert.equal(prof.profile.preset, other); assert.equal(prof.profile.gate, false);
-  assert.deepEqual(calls.map((c) => [c.opts.preset, c.opts.gate]).slice(-1), [[other, false]], 'the current profile is passed');
+  qgv.setProfile({ preset: other, gate: false }); assert.equal(await qgv.page(), pg); assert.equal(vOf(qgv.centralComputed(pg)), vOf(before), 'a profile never changes the central V');
+  assert.equal(calls.length, 0, 'no device page result was computed'); assert.equal(qgv.forEngines, undefined);
   for (const sv of U.sentinels) assert.ok(!JSON.stringify(pg).includes(sv), 'no device price on the page');
 });
-
 test('central basis on a fixed clock: fresh at 2 completed New York sessions, STALE at 3, not countable before the basis day; calc_differs; OFFICIAL_INPUTS_DIFFER', async () => {
   // The basis day 2026-10-13 (Tue). 21:00Z = 17:00 New York (after the 16:00 cut).
   const clock = fixedClock(Date.parse('2026-10-15T21:00:00Z'));
@@ -572,14 +569,17 @@ test('central basis on a fixed clock: fresh at 2 completed New York sessions, ST
   assert.equal(pd.rows.filter((r) => Number.isInteger(r.rank.official)).length, PUB.coverage.ranked, 'the publication values only');
 });
 
-test('V source: OFFICIAL_CENTRAL on every page and row; V_SOURCES unchanged until 11/16; final wording; engines record DEVICE_TEMPORARY for TARGET only', async () => {
+test('V source: OFFICIAL_CENTRAL on every page and row; V_SOURCES = the central V only (2026-11-15; QgvOfficial and TargetV1Builder parity); final wording; no engine V source', async () => {
   const { qgv, mods } = env(), Q = qgv;
-  assert.deepEqual(Q.V_SOURCES.DEVICE_TEMPORARY, V391); assert.ok(Object.isFrozen(Q.V_SOURCES) && Object.isFrozen(Q.V_SOURCES.DEVICE_TEMPORARY));
+  assert.deepEqual(Object.keys(Q.V_SOURCES), ['OFFICIAL_CENTRAL']); assert.equal(Object.hasOwn(Q.V_SOURCES, V391.id), false); assert.ok(Object.isFrozen(Q.V_SOURCES) && Object.isFrozen(Q.V_SOURCES.OFFICIAL_CENTRAL));
+  assert.equal(mods.TargetV1Builder.LEGACY_V_SOURCES[V391.id].id, V391.id, 'the #391 id stays readable history in the builder only');
+  assert.deepEqual(JSON.parse(JSON.stringify(Q.V_SOURCES)), JSON.parse(JSON.stringify(mods.TargetV1Builder.V_SOURCES)), 'TargetV1Builder parity');
+  assert.deepEqual(Object.keys(Q.RANK_LABELS), ['OFFICIAL_CENTRAL', 'PERSONAL_PREVIEW']); assert.match(qgv.rankLabel(V391.id), /^순위 출처 미확인 · 공식 순위 아님$/, 'the earlier device id is no rank source');
   assert.deepEqual(Q.V_SOURCES.OFFICIAL_CENTRAL, { id: 'OFFICIAL_CENTRAL', ko: '공식 V', note: '중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)' });
   assert.deepEqual(JSON.parse(JSON.stringify(Q.V_SOURCES)), JSON.parse(JSON.stringify(mods.QgvOfficial.V_SOURCES)), 'QgvOfficial parity');
   assert.equal(qgv.vSource(), 'OFFICIAL_CENTRAL'); assert.ok(Q.READERS.includes('QgvOfficial'));
   const pg = await qgv.page();
-  assert.equal(pg.v_source, Q.V_SOURCES.OFFICIAL_CENTRAL); assert.equal(pg.engine_v_source, Q.V_SOURCES.DEVICE_TEMPORARY);
+  assert.equal(pg.v_source, Q.V_SOURCES.OFFICIAL_CENTRAL); assert.equal(Object.hasOwn(pg, 'engine_v_source'), false, 'no hidden engine V source on a page');
   assert.ok(pg.rows.every((r) => r.source === 'OFFICIAL_CENTRAL' && r.source_label === '공식 V'));
   const src = fs.readFileSync(R.newPath('qgv.js'), 'utf8');
   assert.equal((src.match(/const OFFICIAL_READER='QgvOfficial';/g) || []).length, 1); assert.doesNotMatch(src, /초안 문구|draft wording/);
@@ -624,7 +624,7 @@ test('qgv states without a usable file: NO_DATA (404), DATA_FORMAT_NEWER (newer 
     const { qgv, data } = env({ files: { [QGV2]: f, 'qgv-official.json': null } }), pg = await qgv.page();
     if (f === huge) assert.deepEqual([data.state(QGV2).state, data.state(QGV2).why], ['FAILED', 'INVALID'], 'over 2 MiB: an invalid file, not a network failure');
     assert.equal(pg.state, state); assert.equal(pg.reason, reason); assert.deepEqual(pg.rows, []); assert.deepEqual(qgv.rows(pg, { scope: 'TARGET' }), []);
-    assert.equal(pg.v_source.id, 'OFFICIAL_CENTRAL'); assert.equal(pg.price_basis.reason, 'OFFICIAL_NOT_PUBLISHED'); assert.equal(pg.identities, null); assert.throws(() => qgv.forEngines(pg), /PAGE_NOT_READY/);
+    assert.equal(pg.v_source.id, 'OFFICIAL_CENTRAL'); assert.equal(pg.price_basis.reason, 'OFFICIAL_NOT_PUBLISHED'); assert.equal(pg.identities, null); assert.throws(() => qgv.engineInputs(pg), /PAGE_NOT_READY/); assert.equal(qgv.forEngines, undefined);
     assert.notEqual(qgv.reasonText(reason), '계산 불가 (' + reason + ')', reason + ' worded');
   }
 });

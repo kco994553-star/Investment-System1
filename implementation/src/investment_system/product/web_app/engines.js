@@ -3,9 +3,12 @@
    - Scores (owner decision 2026-10-31, DC-31): the playbook facts and the rehearsal read the page's central result
      (qgv.centralComputed: the official V of qgv-official.json, no price), v_source page.v_source.id (OFFICIAL_CENTRAL); there is no
      device V history, so the facts' 20-session V comparison is NA (v_prev20 null, V_HISTORY_NOT_PUBLISHED) and the V-change
-     playbook rules report it missing (engine unchanged). The TARGET v1 builder keeps its V source until the 11/16 PR: its draft,
-     R-B rows and finalize read the hidden device result (await qgv.forEngines) and record page.engine_v_source.id
-     (DEVICE_TEMPORARY). The playbook store's records are exact-key formats and carry no source (P1_DATA_LAYER.md §8, §10).
+     playbook rules report it missing (engine unchanged). The TARGET v1 builder reads the central V only (owner decision
+     2026-11-15, DC-31): its draft, R-B rows and finalize use the publication data.official() validated, when QgvOfficial.usable
+     accepts it against the sec-qgv2.json re-read at that click (TargetV1Builder.officialComputed of it, v_source
+     OFFICIAL_CENTRAL, the publication's own price basis day kept). Without a usable one nothing is drafted or selected
+     (OFFICIAL_V_REQUIRED) and finalize is BLOCKED (OFFICIAL_V_REQUIRED): TARGET v1 waits, no other V fills it. The playbook
+     store's records are exact-key formats and carry no source (P1_DATA_LAYER.md §8, §10).
    - Every write is a user action on the store's gated storage (WRITE; SYNC when the user's own Sheet is written too). The old
      screens wrote some of these on open (R-B selection, playbook occurrences); here they need the user's click (owner 2026-10-24:
      kept). A judgement says whether this device's playbook store holds what record() writes for it (recorded / recorded_reason
@@ -27,8 +30,9 @@ const out=v=>deepFreeze(copy(v));
 const key=t=>String(t||'').replaceAll('.','-').toUpperCase();// target-v1-screen.js / target-v1-builder.js key()
 // The old screens' default days: TARGET and the playbook use the UTC day, the virtual report the Seoul day (app.js paintReport).
 const today=()=>new Date().toISOString().slice(0,10),seoulDay=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
-function create({win,action,data,prices,store,qgv}){
- if(!action||typeof action.run!=='function'||!data||typeof data.ready!=='function'||!prices||!prices.priceView||!store||!store.storage||!qgv||typeof qgv.forEngines!=='function')throw Error('LAYER_MISSING');
+// nyNow (test seam): the New York day and minutes QgvOfficial.usable counts completed sessions with (default QgvOfficial.nyNow()).
+function create({win,action,data,prices,store,qgv,nyNow=null}){
+ if(!action||typeof action.run!=='function'||!data||typeof data.ready!=='function'||typeof data.official!=='function'||!prices||!prices.priceView||!store||!store.storage||!qgv||typeof qgv.engineInputs!=='function')throw Error('LAYER_MISSING');
  const need=n=>{const m=win[n];if(!m)throw Error('READER_MISSING');return m;};
  const storage=store.storage,priceView=prices.priceView,config=()=>object(win.InvestmentAppConfig)?win.InvestmentAppConfig:{};
  const TB=()=>need('TargetV1Builder'),TS=()=>need('TargetV1Screen'),PB=()=>need('PlaybookScreen'),CFG=()=>need('TargetV1ConfigDefaults');
@@ -37,53 +41,68 @@ function create({win,action,data,prices,store,qgv}){
  const idsOf=catalog=>{try{return need('DeviceWatchlist').identities(catalog);}catch(_){return[];}};
  // The shared page, or one the caller got from qgv.page(); anything else is PAGE_UNKNOWN before a field of it is read.
  const pageOf=async page=>{if(page===undefined||page===null)return qgv.page();if(typeof qgv.isPage!=='function'||!qgv.isPage(page))throw Error('PAGE_UNKNOWN');return page;};
- const sourceOf=pg=>pg.engine_v_source.id;
  // The V source a stored draft was built with (null: a draft from before sources were kept, or from the old screen).
  const draftSource=st=>st&&st.draft&&typeof st.draft.v_source==='string'?st.draft.v_source:null;
- // The page's device result and the sec-qgv2.json value it was computed from; a page without one is the builder's QGV2_NOT_READY.
- // TARGET v1 only (until the 11/16 PR): the hidden device result, computed when the builder first asks.
- async function scored(page){const pg=await pageOf(page);try{const computed=await qgv.forEngines(pg);return{pg,computed,inputs:qgv.engineInputs(pg)};}catch(e){if(e&&e.message==='PAGE_NOT_READY')throw Error('QGV2_NOT_READY');throw e;}}
+ /* The central V for the builder (2026-11-15, DC-31): the publication data.official() validated, usable only when
+    QgvOfficial.usable accepts it against the re-read file p's calc_version and the New York clock (verified, the same
+    calc_version, at most FRESH_SESSIONS completed sessions after its own price basis day; target-v1-screen.js officialNow).
+    → {ok, reason, sessions, payload}; never throws. reason: OFFICIAL_NOT_PUBLISHED | OFFICIAL_UNAVAILABLE | OFFICIAL_INVALID |
+    OFFICIAL_CALC_VERSION_DIFFERS | OFFICIAL_STALE. */
+ async function officialFor(p){const none=reason=>({ok:false,reason,sessions:null,payload:null});let off,QO;
+  try{QO=need('QgvOfficial');off=await data.official();}catch(_){return none('OFFICIAL_UNAVAILABLE');}
+  if(!off||off.state!=='OFFICIAL'||!off.payload)return none(off&&off.reason?off.reason:'OFFICIAL_NOT_PUBLISHED');
+  let ny=null;try{ny=nyNow?nyNow():QO.nyNow();}catch(_){ny=null;}
+  const u=QO.usable(off.payload,{secCalcVersion:p&&typeof p.calc_version==='string'?p.calc_version:null,nyToday:ny?ny.date:null,nyMinutes:ny?ny.minutes:null});
+  return{ok:u.ok===true,reason:u.ok===true?null:u.reason,sessions:u.sessions,payload:u.ok===true?off.payload:null};}
+ const required=reason=>Object.assign(Error('OFFICIAL_V_REQUIRED'),{reason});
 
  // ---------------------------------------------------------------- TARGET v1 (2.1.7, detail screen target-v1)
  // Its state lives inside the playbook store (TargetV1Screen.readState / writeState); an unreadable store is never overwritten.
  function readState(){try{return TS().readState(PB(),storage);}catch(e){if(e&&e.message==='READER_MISSING')throw e;throw Error('TARGET_V1_STATE_INVALID');}}
  const save=next=>TS().writeState(PB(),storage,next);
  const state=()=>out(readState());
- // The builder's arguments as the old screen built them (target-v1-screen.js mount: computed, inputs, universeCodes, existing).
- async function builderArgs(page,date){const{pg,computed,inputs}=await scored(page),catalog=await catalogNow();return{pg,args:{computed,inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date}};}
+ // The builder's arguments as the old screen's build click made them (target-v1-screen.js: computed, inputs, universeCodes,
+ // existing, official) over the central V usable against the re-read file p (officialFor): computed = officialComputed of it.
+ // A page without a result is QGV2_NOT_READY; no usable publication is OFFICIAL_V_REQUIRED (error .reason: officialFor's).
+ async function builderArgs(page,date,p){const pg=await pageOf(page);let inputs;try{inputs=qgv.engineInputs(pg);}catch(e){if(e&&e.message==='PAGE_NOT_READY')throw Error('QGV2_NOT_READY');throw e;}
+  const off=await officialFor(p);if(!off.ok)throw required(off.reason);const catalog=await catalogNow();
+  return{pg,args:{computed:TB().officialComputed(off.payload),inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,official:off.payload}};}
  // latestPublished: the published file re-read now, the raw JSON that passed SecQgv2.validate; any failure is null (as before).
  async function published(){try{return await data.peek(QGV2);}catch(_){return null;}}
  async function basisOf(p){if(!p)return null;try{return await TB().inputBasis(p);}catch(_){return null;}}
- // The draft's input basis: only when the re-read file is the file the page's scores were computed from (same as_of).
- async function basis({page}={}){const pg=await pageOf(page);let inputs=null;try{inputs=qgv.engineInputs(pg);}catch(_){inputs=null;}
-  const p=await published();return p&&inputs&&inputs.as_of&&p.as_of===inputs.as_of?basisOf(p):null;}
- // The draft the rules give now (no write): TargetV1Builder.buildDraft with the page's result and the basis (basis() or null),
- // with the V source its pool's V came from.
- async function draft({date=today(),basis:b=null,page}={}){const{pg,args}=await builderArgs(page,date);return out({...TB().buildDraft({...args,basis:b,cfg:CFG()}),v_source:sourceOf(pg)});}
+ // The draft's input basis: only when the re-read file p is the file the page's scores were computed from (same as_of).
+ async function basisFor(pg,p){let inputs=null;try{inputs=qgv.engineInputs(pg);}catch(_){inputs=null;}return p&&inputs&&inputs.as_of&&p.as_of===inputs.as_of?basisOf(p):null;}
+ async function basis({page}={}){const pg=await pageOf(page);return basisFor(pg,await published());}
+ // The draft the rules give now (no write): TargetV1Builder.buildDraft over the central V usable now and the basis (basis() or
+ // null); the builder records v_source OFFICIAL_CENTRAL and the publication record (ids and days).
+ async function draft({date=today(),basis:b=null,page}={}){const{args}=await builderArgs(page,date,await published());return out(TB().buildDraft({...args,basis:b,cfg:CFG()}));}
  // "규칙으로 초안 만들기": the new draft replaces the old one and clears the card answers. The old button asked for a second tap
  // when answers existed; here the caller passes reset:true after asking.
  function build(event,{date=today(),page,reset=false}={}){return action.run(event,'WRITE',async()=>{
   const before=readState();if(before.draft&&before.answers.length&&reset!==true)throw Error('TARGET_V1_ANSWERS_RESET');
-  const pg=await pageOf(page),b=await basis({page:pg}),{args}=await builderArgs(pg,date),d={...TB().buildDraft({...args,basis:b,cfg:CFG()}),v_source:sourceOf(pg)};save({...readState(),draft:d,answers:[]});return out(d);});}
- // Every finalize blocker now, against the file re-read now (the old finalize click's check, shown before the user finalizes).
- async function blockers({date=today()}={}){const p=await published(),b=await basisOf(p),st=readState();return out({...TB().finalizeBlockers(st,{date,published:p,basis:b,cfg:CFG()}),v_source:draftSource(st)});}
- /* "TARGET v1 확정 저장" (target-v1-screen.js finalize click): re-read the published file now and re-check everything. A changed
-    input basis on a usable file regenerates the draft (answers kept for the same names) when the page's scores are of that file,
-    else the page must be reloaded. A saved version records the v_source its draft was built with (a draft without one: the page's
-    engine_v_source.id); #391's builder writes the device id itself, and a different id is V_SOURCE_MISMATCH (nothing saved). */
+  const pg=await pageOf(page),p=await published(),b=await basisFor(pg,p),{args}=await builderArgs(pg,date,p),d=TB().buildDraft({...args,basis:b,cfg:CFG()});save({...readState(),draft:d,answers:[]});return out(d);});}
+ // Every finalize blocker now, against the file and the central V re-read now (the old finalize click's check, shown before the
+ // user finalizes); official_reason: why there is no usable central V (null when there is one).
+ async function blockers({date=today()}={}){const p=await published(),b=await basisOf(p),st=readState(),off=await officialFor(p);
+  return out({...TB().finalizeBlockers(st,{date,published:p,basis:b,official:off.payload,cfg:CFG()}),v_source:draftSource(st),official_reason:off.reason});}
+ /* "TARGET v1 확정 저장" (target-v1-screen.js finalize click): re-read the published file and the central V now and re-check
+    everything. A changed input basis (or V source) on a usable file regenerates the draft from the central V usable now (answers
+    kept for the same names) when the page's inputs are of that file, else the page must be reloaded. Without a usable central V
+    nothing is regenerated or saved: BLOCKED with OFFICIAL_V_REQUIRED (and official_reason), TARGET v1 waits. A saved version is
+    OFFICIAL_CENTRAL with its publication id and price basis day (the builder writes them); any other id is V_SOURCE_MISMATCH. */
  function finalize(event,{date=today(),page}={}){return action.run(event,'WRITE',async()=>{
-  const B=TB(),cfg=CFG(),pg=await pageOf(page),p=await published(),b=await basisOf(p),st=readState();let check=B.finalizeBlockers(st,{date,published:p,basis:b,cfg});
-  if(check.basis_changed&&check.check&&!check.check.reasons.some(r=>NO_REGEN.includes(r))){
-   let computed=null,inputs=null;try{computed=await qgv.forEngines(pg);inputs=qgv.engineInputs(pg);}catch(_){computed=null;}
-   if(computed&&computed.v2_state==='READY'&&inputs&&inputs.as_of&&p.as_of===inputs.as_of){const catalog=await catalogNow();
-    const r=B.regenerateDraft(st,{computed,inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,basis:b,cfg}),next={...r.state,draft:{...r.state.draft,v_source:sourceOf(pg)}};
-    save(next);check=B.finalizeBlockers(next,{date,published:p,basis:b,cfg});
+  const B=TB(),cfg=CFG(),pg=await pageOf(page),p=await published(),b=await basisOf(p),st=readState(),off=await officialFor(p),official=off.payload;
+  let check=B.finalizeBlockers(st,{date,published:p,basis:b,official,cfg});
+  if(official&&check.basis_changed&&check.check&&!check.check.reasons.some(r=>NO_REGEN.includes(r))){
+   let inputs=null;try{inputs=qgv.engineInputs(pg);}catch(_){inputs=null;}
+   if(inputs&&inputs.as_of&&p.as_of===inputs.as_of){const catalog=await catalogNow();
+    const r=B.regenerateDraft(st,{computed:B.officialComputed(official),inputs,universeCodes:await codesNow(),existing:TS().existingSymbols(catalog),date,basis:b,official,cfg});
+    save(r.state);check=B.finalizeBlockers(r.state,{date,published:p,basis:b,official,cfg});
     return out({outcome:'DRAFT_REGENERATED',carried:r.carried,fresh:r.fresh,blockers:check.blockers,check:check.check});}
    return out({outcome:'RELOAD_REQUIRED',blockers:check.blockers,check:check.check});}
-  let next;try{next=B.finalize(st,{date,published:p,basis:b,cfg});}catch(e){if(e&&Array.isArray(e.blockers))return out({outcome:'BLOCKED',blockers:e.blockers,check:e.check||null});throw e;}
-  const src=draftSource(st)||sourceOf(pg),versions=[...next.versions],last=versions[versions.length-1];
-  if(last.v_source!==undefined&&last.v_source!==src)throw Error('V_SOURCE_MISMATCH');versions[versions.length-1]={...last,v_source:src};save({...next,versions});
-  return out({outcome:'FINALIZED',version:versions[versions.length-1]});});}
+  let next;try{next=B.finalize(st,{date,published:p,basis:b,official,cfg});}catch(e){if(e&&Array.isArray(e.blockers))return out({outcome:'BLOCKED',blockers:e.blockers,check:e.check||null,official_reason:off.reason});throw e;}
+  const last=next.versions[next.versions.length-1];if(last.v_source!==B.V_SOURCE.id)throw Error('V_SOURCE_MISMATCH');save(next);
+  return out({outcome:'FINALIZED',version:last});});}
  // A card answer (target-v1-screen.js card click): one judgement record in the playbook store, then the latest answer per name;
  // 반대 drops the name and the next-ranked one comes in (limits re-checked by the builder).
  function answer(event,{symbol,answer:kind,reason='',date=today()}={}){return action.run(event,'WRITE',()=>{
@@ -91,11 +110,13 @@ function create({win,action,data,prices,store,qgv}){
   PB().saveRecord(storage,B.judgementRecord({row,answer:kind,reason:saved.reason,date,id:'TV1-'+date+'-'+symbol+'-'+kind+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,6)},cfg));save(next);
   const after=B.currentSelection(next,cfg);return out({symbol,answer:kind,added:after.rows.filter(r=>!sel.rows.some(x=>x.symbol===r.symbol)).map(r=>r.symbol),limits_ok:after.limits.ok===true});});}
  const ruleBDue=(date=today())=>TB().ruleBDue(readState(),date,CFG());
- // R-B (규칙 지수) selection on a due day (target-v1-screen.js mount ran it on open; here on the user's click). No partial start.
+ // R-B (규칙 지수) selection on a due day, on the user's click, from the central V usable now (none: OFFICIAL_V_REQUIRED). No
+ // partial start.
  function selectRuleB(event,{date=today(),page}={}){return action.run(event,'WRITE',async()=>{
-  const B=TB(),cfg=CFG(),{pg,args}=await builderArgs(page,date),st=readState();if(args.computed.v2_state!=='READY')return out({state:'QGV2_NOT_READY'});if(!B.ruleBDue(st,date,cfg))return out({state:'NOT_DUE'});
+  const B=TB(),cfg=CFG(),st=readState();let a;try{a=await builderArgs(page,date,await published());}catch(e){if(e&&e.message==='OFFICIAL_V_REQUIRED')return out({state:'OFFICIAL_V_REQUIRED',reason:e.reason||null});throw e;}
+  const{args}=a;if(args.computed.v2_state!=='READY')return out({state:'QGV2_NOT_READY'});if(!B.ruleBDue(st,date,cfg))return out({state:'NOT_DUE'});
   const eligible=B.universeRows({computed:args.computed,inputs:args.inputs,universeCodes:args.universeCodes,existing:args.existing,cfg}).filter(r=>!B.exclusions(r,cfg).length),seg=B.ruleBSegment(eligible,date,cfg);
-  if(!seg.ready)return out({state:'NOT_READY',eligible:eligible.length});const{ready:_,...rest}=seg,row={...rest,v_source:sourceOf(pg)};save({...st,rule_b:[...st.rule_b,row]});return out({state:'SELECTED',date,names:row.rows.length,v_source:row.v_source});});}
+  if(!seg.ready)return out({state:'NOT_READY',eligible:eligible.length});const{ready:_,...rest}=seg,row={...rest,v_source:B.V_SOURCE.id};save({...st,rule_b:[...st.rule_b,row]});return out({state:'SELECTED',date,names:row.rows.length,v_source:row.v_source});});}
  /* Set comparison (target-v1-screen.js load-compare click): daily closes of A (v0), R-B, R-C and the S&P 500 benchmark from the
     user's price tabs, missing tails fetched through the Worker and appended first (PriceStore.dailyCloses fetch:true, price view),
     then compareSets and the fixed review rule. The index values are price-derived: RAM only. */

@@ -14,28 +14,25 @@
      candidates (QgvScores.officialModel) on the official result.
    - preview() recomputes the user's weights from the published factor scores (QgvScores.compute({publication, weights})): never
      primary, never an official rank; weight stages are NA (WEIGHT_STAGES_NOT_REBUILT).
-   - The TARGET v1 builder keeps its V source until the 11/16 PR: forEngines (engines.js only) is the hidden device result
-     (QgvScores.pageResult on the score view: RAM prices of a click only), labelled engine_v_source DEVICE_TEMPORARY. */
+   - The TARGET v1 builder reads the central V only too (owner decision 2026-11-15, DC-31): engines.js gives it the publication
+     data.official() validated and the page's sec-qgv2.json (engineInputs); nothing here computes a device V for it. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.qgv=api.create({win:root,data:I.data,prices:I.prices,action:I.action});}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-// Byte-identical to QgvOfficial.V_SOURCES and TargetV1Builder.V_SOURCES until the 11/16 PR (parity test). DEVICE_TEMPORARY labels
-// only the hidden TARGET engine result (engine_v_source), never a page or a row. Screens show source_label only.
+// Byte-identical to QgvOfficial.V_SOURCES and TargetV1Builder.V_SOURCES (parity tests): the central V is the only V source of
+// every page, row and engine result (DC-31; the TARGET v1 builder too since 2026-11-15). Screens show source_label only.
 const V_SOURCES=Object.freeze({
- DEVICE_TEMPORARY:Object.freeze({id:'DEVICE_TEMPORARY',ko:'임시 V',note:'기기 시세로 계산 · 중앙 V 미게시'}),
  OFFICIAL_CENTRAL:Object.freeze({id:'OFFICIAL_CENTRAL',ko:'공식 V',note:'중앙 게시 · IEX 마지막 체결가 기준(공식 종가 아님)'})});
-// What a rank is called: the published official rank, a personal preview recomputed from the published scores, and the hidden
-// TARGET engine result (never shown as a page rank).
+// What a rank is called: the published official rank and a personal preview recomputed from the published scores.
 const RANK_LABELS=Object.freeze({
  OFFICIAL_CENTRAL:Object.freeze({ko:'공식 순위 · 중앙 게시 V',en:'Official ranking · central V'}),
- PERSONAL_PREVIEW:Object.freeze({ko:'내 설정 순위 · 공식 V로 다시 계산 · 공식 순위 아님',en:'My-setting rank · recomputed from the official V · not the official ranking'}),
- DEVICE_TEMPORARY:Object.freeze({ko:'임시 V 기준 순위 · 공식 순위 아님',en:'Ranked on the temporary V · not the official ranking'})});
+ PERSONAL_PREVIEW:Object.freeze({ko:'내 설정 순위 · 공식 V로 다시 계산 · 공식 순위 아님',en:'My-setting rank · recomputed from the official V · not the official ranking'})});
 // The strict qgv-official/1 reader (DC-02, DC-31): web_assets/qgv-official.js (window.QgvOfficial, loader.js LOAD_ORDER).
 const OFFICIAL_READER='QgvOfficial';
 const vSource=()=>'OFFICIAL_CENTRAL';
 const QGV2='sec-qgv2.json',CATALOG='actual-catalog.json';
 // Without these the score would change silently (PlaybookEngine: cyclical V basis; SecQgv2: light sec-qgv2 path): READER_MISSING.
 const READERS=Object.freeze(['QgvScores','QgvV2','Qgv2Inputs','SecQgv2','ScoringDefault','PlaybookEngine','PlaybookConfigDefaults','DeviceWatchlist','TargetV1Builder',OFFICIAL_READER]);
-// Without a price layer (a node test that passes none): the hidden TARGET engine result gets no device price either.
+// Without a price layer (a node test that passes none): the score view gets no device price either.
 const NO_UNIVERSE=Object.freeze({prices:()=>null,priceBasis:()=>null,readStatus:()=>null});
 const NO_STORE=Object.freeze({status:()=>null,coverage:()=>null,subscribe:()=>()=>{},monthEndCloses:()=>Promise.resolve({}),dailyCloses:()=>Promise.resolve({}),runnerHistories:()=>Promise.resolve(null)});
 // Codes the old reason table (QgvScores.REASON, which words the central V codes) does not word: P1 states, rank reasons and the
@@ -114,7 +111,7 @@ function create({win,data,prices,action}){
  function check(){if(READERS.some(n=>!win[n]))throw Error('READER_MISSING');}
  const stop=signal=>{if(signal&&signal.aborted)throw Error('ABORTED');};
  // A page without a result: neither a usable publication nor a usable sec-qgv2.json.
- function emptyPage(state,reason,pub,off){const pg=deepFreeze({v_source:V_SOURCES.OFFICIAL_CENTRAL,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,rank_label:RANK_LABELS.OFFICIAL_CENTRAL.ko,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
+ function emptyPage(state,reason,pub,off){const pg=deepFreeze({v_source:V_SOURCES.OFFICIAL_CENTRAL,rank_label:RANK_LABELS.OFFICIAL_CENTRAL.ko,state,reason,as_of:null,calc_version:null,type_scope:null,profile_id:null,preset:null,gate:null,
   generation:pub?pub.generation:0,basis_id:null,price_basis:centralBasis(off,null),identities:null,coverage:null,rows:[]});known.add(pg);return pg;}
  function absent(){const s=data.state(QGV2);
   if(s.state==='FAILED'&&s.why==='SCHEMA_NEWER')return['DATA_FORMAT_NEWER','SEC_QGV2_SCHEMA_NEWER'];
@@ -170,7 +167,7 @@ function create({win,data,prices,action}){
   const QS=win.QgvScores,c=result.computed,vs=V_SOURCES.OFFICIAL_CENTRAL,weights=QS.provenance({kind:'QGV',profile:c.profile}).weights,targets=new Set(ids.map(x=>x.company_id)),P=held_.pub;
   const of=object(c.official)&&Number.isInteger(c.official.ranked)?c.official.ranked:Object.values(c.rows).filter(r=>Number.isInteger(r.rank)).length;
   const calc=P?P.calc_version:inputs?str(inputs.calc_version):null,basis=centralBasis(off,inputs,result.inputs_match);
-  return deepFreeze({v_source:vs,engine_v_source:V_SOURCES.DEVICE_TEMPORARY,rank_label:RANK_LABELS[vs.id].ko,state:'READY',
+  return deepFreeze({v_source:vs,rank_label:RANK_LABELS[vs.id].ko,state:'READY',
    reason:!P?result.v_reason:c.v2_state==='READY'?(result.inputs_match===false?'OFFICIAL_INPUTS_DIFFER':null):c.v2_reason?c.v2_reason:'V2_SCORES_NOT_AVAILABLE',
    as_of:str(c.v2_as_of),calc_version:calc,type_scope:str(c.profile.type_scope),profile_id:c.profile.id,preset:c.profile.preset,gate:c.profile.gate,generation:pub.generation,
    basis_id:JSON.stringify([str(c.v2_as_of),calc,basis.publication_id,basis.stale,basis.attempt&&basis.attempt.at,c.profile.id,pub.generation,epoch]),
@@ -238,18 +235,13 @@ function create({win,data,prices,action}){
  function constants(){check();if(!consts){const V2=win.QgvV2,TB=win.TargetV1Builder;consts=deepFreeze(JSON.parse(JSON.stringify({WEIGHTS:V2.WEIGHTS,PRESETS:V2.PRESETS,DEFAULT_PRESET:V2.DEFAULT_PRESET,GATE_DEFAULT:V2.GATE_DEFAULT,
   FACTORS:V2.FACTORS,MIN_AXIS_WEIGHT:V2.MIN_AXIS_WEIGHT,SUBMETRICS:win.SecQgv2.SUBMETRICS,V_FACTORS:TB.V_FACTORS,V_REQUIRED:TB.V_REQUIRED})));}return consts;}
  function subscribe(fn,{signal}={}){if(typeof fn!=='function')throw Error('SUBSCRIBER_INVALID');if(signal&&signal.aborted)return()=>{};subs.add(fn);const off=()=>{subs.delete(fn);};if(signal)signal.addEventListener('abort',off,{once:true});return off;}
- /* engines.js only (source rule). forEngines: the TARGET v1 builder's hidden device result until the 11/16 PR (DC-31: the builder
-    keeps its V source), computed when engines ask (never for a screen): QgvScores.pageResult on the score view, RAM prices of a
-    click only, the current profile; engines record page.engine_v_source for it. Asked again on every call: pageResult memoizes by
-    the Universe read, the device inputs and preset / gate, so a later read or setProfile reaches the builder although the central
-    page (keyed by the publication) stays the same object. Resolves the computed result; PAGE_NOT_READY without one. */
- function forEngines(pg){const h=result_(pg);if(!h.inputs)return Promise.reject(Error('PAGE_NOT_READY'));
-  return(async()=>{await action.stores();const r=await win.QgvScores.pageResult(scoreView,{v2Inputs:h.inputs,catalog:h.catalog,identities:ids,preset:profile.preset,gate:profile.gate});if(!r)throw Error('PAGE_NOT_READY');return r.computed;})();}
- // The central result exactly as QgvScores made it (playbook facts, the rehearsal's Q·G rows: price-free).
+ // engines.js only (source rule). The central result exactly as QgvScores made it (playbook facts, the rehearsal's Q·G rows:
+ // price-free).
  const centralComputed=pg=>result_(pg).result.computed;
- // The sec-qgv2.json value (Qgv2Inputs output) the page read (a re-judgement can replace data.get's value later; null without one).
+ // The sec-qgv2.json value (Qgv2Inputs output) the page read (a re-judgement can replace data.get's value later; null without one):
+ // the TARGET v1 builder's inputs next to the central V publication.
  const engineInputs=pg=>result_(pg).inputs;
- return Object.freeze({V_SOURCES,RANK_LABELS,READERS,vSource,page,isPage,row,rows,coverage,preview,model,setProfile,profile:()=>profile,reasonText,rankLabel,constants,subscribe,forEngines,centralComputed,engineInputs,scoreView});
+ return Object.freeze({V_SOURCES,RANK_LABELS,READERS,vSource,page,isPage,row,rows,coverage,preview,model,setProfile,profile:()=>profile,reasonText,rankLabel,constants,subscribe,centralComputed,engineInputs,scoreView});
 }
 return Object.freeze({create,V_SOURCES,RANK_LABELS,READERS});
 });

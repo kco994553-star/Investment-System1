@@ -693,16 +693,17 @@ def test_no_stored_copy_of_data_or_scores_can_outlive_a_rejected_file():
 
 
 def test_screens_reach_no_device_price_path_by_ticker():
-    """DC-31 (PR-1b): the withdrawal guards of the device price path (collectQuotes by ticker, UNI-TARGET above) now protect only
-    the TARGET v1 builder's device result until the 11/16 PR. Every screen reads the central publication (QgvScores.officialPage),
-    whose own rows carry the withdrawal (state WITHDRAWN, price_status PRICE_IDENTITY_CONFLICT): no screen module calls the device
-    path any more, so no screen can price a withdrawn code by its ticker."""
-    allowed = {'qgv-scores.js', 'playbook-screen.js', 'data-refresh.js', 'target-v1-builder.js', 'target-v1-screen.js'}
+    """DC-31 (PR-1b; the TARGET v1 builder too since the 2026-11-15 owner decision): every screen and the TARGET v1 builder read the
+    central publication (QgvScores.officialPage / TargetV1Builder.officialComputed), whose own rows carry the withdrawal (state
+    WITHDRAWN, price_status PRICE_IDENTITY_CONFLICT): no screen module and neither TARGET v1 module calls the device path, so none
+    can price a withdrawn code by its ticker. The withdrawal guards of the device path (collectQuotes by ticker, UNI-TARGET above)
+    stay for PlaybookScreen.prepareScores' remaining caller."""
+    allowed = {'qgv-scores.js', 'playbook-screen.js', 'data-refresh.js'}
     for path in sorted(WEB.glob('*.js')):
         if path.name in allowed:
             continue
         text = path.read_text(encoding='utf-8')
         assert 'collectQuotes(' not in text and '.pageResult(' not in text, path.name
     playbook = (WEB / 'playbook-screen.js').read_text(encoding='utf-8')
-    # The playbook keeps the device result only for TargetV1Screen; its facts and candidates read officialPage.
-    assert 'officialPage(' in playbook and 'computed:device' in playbook
+    # The playbook's facts and candidates read officialPage; its mount runs no device result, and TargetV1Screen gets none.
+    assert 'officialPage(' in playbook and 'computed:device' not in playbook and 'await prepareScores(' not in playbook
