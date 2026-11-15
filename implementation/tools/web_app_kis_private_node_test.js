@@ -229,25 +229,75 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     assert.deepEqual([...KP.ETFS], ['SPY', 'HYG', 'IEF', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI']);
     for (const sym of KP.ETFS) { assert.equal(KP.validateBars(X.bars({ symbol: sym })).ok, true, sym); assert.equal(KP.validateMeasures(X.measures({ symbol: sym })).ok, true, sym); }
   });
-  await ok('two verification levels, one short tag each: 검증됨 only when every file says so, else 검증 전(참고)', () => {
+  await ok('display tiers come only from Codex #556 fields: 검증됨 = tier VERIFIED with the adopted value, 검증 전(참고) = reference_value', () => {
     assert.deepEqual({ ...KP.VERIFICATION }, { VERIFIED: '검증됨', REFERENCE: '검증 전(참고)' });
-    const ref = KP.verification([X.bars(), X.analysis()]);
-    assert.deepEqual([ref.code, ref.text], ['REFERENCE', '검증 전(참고)'], 'the synthetic files are not verified');
-    const b = { ...X.bars(), price_scope_status: 'CONFIRMED' }, a = { ...X.analysis(), pit_status: 'VERIFIED' };
-    assert.equal(KP.verification([b, a]).text, '검증됨');
-    assert.equal(KP.verification([b, X.analysis()]).text, '검증 전(참고)', 'one unverified file makes the cell 검증 전');
-    assert.equal(KP.verification([]).text, '검증 전(참고)');
-    assert.equal(KP.qgvView(KP.validateQgv({ ...X.qgv(), historical_pit_proven: true }).value, null).verification.text, '검증됨');
-    assert.equal(KP.qgvView(KP.validateQgv(X.qgv()).value, null).verification.text, '검증 전(참고)');
+    assert.equal(KP.verification, undefined, 'no Main-derived verification is left');
+    const tiers = (kase) => { const f = X.codex556(kase); return [KP.analysisTiers(KP.validateAnalysis(f.technical).value), KP.measuresTiers(KP.validateMeasures(f.measures).value), KP.displayOf(KP.validateBars(f.chart).value)]; };
+    let [a, m, c] = tiers('available');
+    assert.deepEqual([a.display.state, c.state, c.tag], ['AVAILABLE', 'AVAILABLE', '검증 전(참고)']);
+    assert.deepEqual(a.rows.filter((r) => r.value !== null).map((r) => [r.id, r.kind, r.value, r.tag]), [['SMA_5', 'VERIFIED', '11', '검증됨']], 'the adopted value with 검증됨');
+    assert.ok(a.rows.filter((r) => r.value === null).every((r) => r.kind === 'HELD' && /^미산출 · /.test(r.text) && r.tag === null), 'held: one-line reason, no tag');
+    assert.ok(m.rows.every((r) => r.kind === 'HELD'), 'measures without a raw value are held');
+    [a] = tiers('reference');
+    const sma = a.rows.find((r) => r.id === 'SMA_5'), file = KP.validateAnalysis(X.codex556('reference').technical).value;
+    assert.deepEqual([sma.kind, sma.value, sma.tag], ['REFERENCE', '11', '검증 전(참고)'], 'the reference_value with 검증 전(참고)');
+    assert.equal(file.metrics.SMA_5.value, null, 'never promoted into the adopted value');
+    assert.deepEqual(KP.analysisView(file).adopted, [], 'the adopted list stays empty');
+    [a, m, c] = tiers('withheld');
+    assert.deepEqual([a.display.state, c.state, a.display.line], ['WITHHELD', 'WITHHELD', '보류 · 분할 같은 원주가 급변 · 검토 필요'], 'one line naming the hold reason');
+    assert.ok(a.withheld > 0 && a.rows.every((r) => r.kind === 'VERIFIED'), 'WITHHELD: no reference row, only verified adopted values');
+    assert.deepEqual([m.rows.length, m.withheld], [0, 5]);
+    assert.ok(!JSON.stringify([a.rows, m.rows]).includes('"REFERENCE"'));
   });
-  await ok('KIS V (stage 1): calc_version, price basis day and source read in one place; the field list is one constant', () => {
-    assert.ok(KP.QGV_FIELDS.includes('calc_version') && KP.QGV_FIELDS.includes('price_basis_date'));
-    const v = KP.qgvView(KP.validateQgv(X.qgv()).value, 'NASDAQ:NVDA');
-    assert.deepEqual([v.calc_version, v.price_basis_date, v.source], ['SYNTHETIC-CALC', '2026-10-30', 'KIS'], 'source KIS when the file names none');
-    assert.equal(KP.qgvView(KP.validateQgv({ ...X.qgv(), source: 'KIS retained dailyprice MODP0' }).value, null).source, 'KIS retained dailyprice MODP0');
-    for (const [change, code] of [[(q) => { q.calc_version = ''; }, 'TYPE'], [(q) => { q.source = 5; }, 'TYPE'], [(q) => { delete q.calc_version; }, 'KEY_MISSING']]) {
-      const q = X.qgv(); change(q); assert.equal(KP.validateQgv(q).code, code);
+  await ok('absent or unknown display / tier fields fail closed: no value, no 검증됨, one 검증 표시 없음 line', () => {
+    // The #493-shaped synthetic files carry no display: nothing of their values is shown.
+    for (const t of [KP.analysisTiers(KP.validateAnalysis(X.analysis({ adopted: true })).value), KP.measuresTiers(KP.validateMeasures(X.measures()).value)]) {
+      assert.equal(t.display.state, 'UNKNOWN'); assert.ok(t.rows.every((r) => r.kind === 'HELD' && r.value === null && r.text === '검증 표시 없음'));
     }
+    const base = X.codex556('available');
+    const variants = [
+      (f) => { f.technical.display.validation_tier = 'VERIFIED'; }, (f) => { f.technical.display.official = true; }, (f) => { f.technical.display.state = 'SHOWN'; },
+      (f) => { f.technical.display.label = '검증됨'; }, (f) => { delete f.technical.display.hold_reasons; }, (f) => { delete f.technical.display; },
+    ];
+    for (const change of variants) {
+      const f = JSON.parse(JSON.stringify(base)); change(f);
+      const t = KP.analysisTiers(KP.validateAnalysis(f.technical).value);
+      assert.equal(t.display.state, 'UNKNOWN'); assert.ok(!t.rows.some((r) => r.tag === '검증됨' || r.value !== null), String(change));
+    }
+    // A metric tier that does not match its values, or an unknown tier, is held (never 검증됨, never a value).
+    for (const change of [(m) => { m.validation_tier = 'CONFIRMED'; }, (m) => { delete m.validation_tier; }, (m) => { m.validation_tier = 'UNVERIFIED_REFERENCE'; }]) {
+      const f = JSON.parse(JSON.stringify(base)); change(f.technical.metrics.SMA_5);
+      const r = KP.analysisTiers(KP.validateAnalysis(f.technical).value).rows.find((x) => x.id === 'SMA_5');
+      assert.deepEqual([r.kind, r.value, r.tag], ['HELD', null, null], String(change));
+    }
+    const f = JSON.parse(JSON.stringify(X.codex556('reference'))); f.technical.metrics.SMA_5.validation_tier = 'VERIFIED';
+    assert.equal(KP.analysisTiers(KP.validateAnalysis(f.technical).value).rows.find((x) => x.id === 'SMA_5').kind, 'HELD', 'VERIFIED without an adopted value is held');
+    assert.equal(KP.displayOf(KP.validateQgv(X.qgv()).value, { stateful: false }).state, 'UNKNOWN', 'a qgv file without display');
+  });
+  await ok('KIS V (stage 1): Codex #556 official_reference output is read as given; calc_version, basis day, source, tag; rank null', () => {
+    assert.ok(KP.QGV_FIELDS.includes('calc_version') && KP.QGV_FIELDS.includes('price_basis_date'));
+    const r = KP.validateQgv(X.codexQgv()); assert.equal(r.ok, true, JSON.stringify(r));
+    assert.equal(r.value.rank, null);
+    const v = KP.qgvView(r.value, 'NASDAQ:AAPL');
+    assert.deepEqual([v.calc_version, v.price_basis_date, v.source, v.display.state, v.display.tag], [X.C556.qgv.calc_version, '2026-10-23', 'KIS', 'AVAILABLE', '검증 전(참고)']);
+    const row = r.value.rows['NASDAQ:AAPL'];
+    assert.deepEqual(v.row.axes.slice(0, 2), ['Q ' + Math.round(row.axes.Q.score * 10) / 10, 'G ' + Math.round(row.axes.G.score * 10) / 10], 'the file\'s scores, only rounded for display');
+    assert.equal(v.row.total, row.axes.V.score === null ? 'QGV 총점 미산출 · V 미산출' : 'QGV ' + Math.round(row.total * 10) / 10, 'no total without V');
+    assert.match(v.rank, /^비공개 순위 없음 · 비공개 참고 결과라 순위 없음$/);
+    assert.equal(KP.qgvView(r.value, 'NASDAQ:NVDA').row.price, 'KIS 가격 반영', 'the code fed from the synthetic contract');
+    assert.match(v.stages, /^가격 반영 \d+ · V 원시값 \d+ · V 요소 \d+$/);
+    assert.ok(v.bases.includes('WEIGHTED_AVERAGE_DILUTED_PROXY_NOT_ACTUAL_OUTSTANDING'));
+    for (const [change, code] of [[(q) => { q.rank = 1; }, 'RANK_NOT_ALLOWED'], [(q) => { q.calc_version = ''; }, 'TYPE'], [(q) => { q.source = 5; }, 'TYPE'], [(q) => { delete q.calc_version; }, 'KEY_MISSING']]) {
+      const q = X.codexQgv(); change(q); assert.equal(KP.validateQgv(q).code, code);
+    }
+    assert.equal(KP.qgvView(KP.validateQgv({ ...X.qgv(), source: 'KIS retained dailyprice MODP0' }).value, null).source, 'KIS retained dailyprice MODP0');
+  });
+  await ok('the Codex #556 synthetic payloads pass every reader unchanged (chart, technical, measures; three cases)', () => {
+    for (const kase of ['available', 'reference', 'withheld']) {
+      const f = X.codex556(kase);
+      for (const [fn, raw] of [[KP.validateBars, f.chart], [KP.validateAnalysis, f.technical], [KP.validateMeasures, f.measures]]) { const r = fn(raw); assert.equal(r.ok, true, kase + ' ' + JSON.stringify(r)); }
+    }
+    assert.equal(X.C556.generated_by.commit, '0235eeb145caf8c608529e428ccd9a3299e8d638');
   });
 
   // ---- client

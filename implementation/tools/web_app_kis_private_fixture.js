@@ -79,4 +79,23 @@ function measures({ symbol = 'NVDA', signalDay = '2026-10-30', adopted = true, b
 }
 // Raw-only numbers of measures(): never on a page (the adopted 12.4242 may be, inside [data-ram-price] only).
 const MEASURE_RAW = ['20.4242', '4242000.5'];
-module.exports = { K, DAYS, SETTINGS, bars, analysis, qgv, measures, MEASURE_RAW };
+// Codex #556's own output (research/private_kis_reference.py at 0235eeb1, run on tools/kis_contract_fixture.py's synthetic
+// contracts; tests/fixtures/kis_private_reference_556_synthetic.json says how): the display tiers as the producer writes them.
+// Schema names are stored as '@kis:<rest>' and rebuilt here. codex556(case) → {chart, technical, measures} for case 'available'
+// (one VERIFIED indicator), 'reference' (one UNVERIFIED_REFERENCE indicator with its reference_value) or 'withheld' (a raw
+// split-like jump: display WITHHELD); symbol renames the synthetic SYN. codexQgv(codes) → the kis-qgv/1 of official_reference
+// with its three kept rows renamed to the given codes (the first is the one fed from the synthetic contract).
+const C556 = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '../tests/fixtures/kis_private_reference_556_synthetic.json'), 'utf8'));
+const unmark = (v) => (Array.isArray(v) ? v.map(unmark) : v && typeof v === 'object'
+  ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, (k === 'schema' || k === 'schema_version') && typeof x === 'string' && x.startsWith('@kis:') ? K(x.slice(5)) : unmark(x)])) : v);
+function codex556(kase, { symbol = 'SYN' } = {}) {
+  const f = unmark(C556.technical[kase]);
+  for (const k of ['chart', 'measures']) f[k].symbol = symbol;
+  return f;
+}
+function codexQgv(codes = ['NASDAQ:NVDA', 'NASDAQ:AAPL', 'NASDAQ:AMD']) {
+  const q = unmark(C556.qgv), kept = q.fixture_rows_kept, ren = (m) => Object.fromEntries(kept.map((k, i) => [codes[i], m[k]]));
+  delete q.fixture_rows_kept;
+  return { ...q, rows: ren(q.rows), private_raw_detail: ren(q.private_raw_detail), price_status: ren(q.price_status) };
+}
+module.exports = { K, DAYS, SETTINGS, bars, analysis, qgv, measures, MEASURE_RAW, C556, codex556, codexQgv };

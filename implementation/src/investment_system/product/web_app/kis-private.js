@@ -7,8 +7,8 @@
    - A click asks for the owner's Google token (scope exactly openid email, include_granted_scopes false; NO_ZT §4.2), keeps it
      in this module's memory only, and reads the routes of the private Worker, which checks the owner on the server before it
      reads anything. 연결 끊기 drops the token; an expired token is dropped before use.
-   - Readers refuse a file that breaks its contract (first fault, code + path). Adopted values only: an indicator's raw_value
-     is never shown as its value; a null value is 미산출 with its reasons, never 0. A private QGV row never carries a rank
+   - Readers refuse a file that breaks its contract (first fault, code + path). An indicator's raw_value is never shown as its
+     adopted value (the screen shows the producer's reference_value apart, tagged 검증 전(참고); see the display tiers below); a null value is 미산출 with its reasons, never 0. A private QGV row never carries a rank
      (rank null + reason) and the public official ranks and TARGET are not touched by anything here. The five technical
      measures (#480 follow-up: momentum 3/6/12m, volatility 6m, dollar volume 6m) show a value only when its value is not
      null; raw_value and the dollar-volume proxy stay diagnostics (a count); a rank refuses the file.
@@ -216,7 +216,8 @@ const REASON=Object.freeze({SPLIT_ADJUSTED_DISPLAY_ADAPTER_PENDING:'분할 반�
  VOLUME_SCOPE_UNCONFIRMED:'거래량 범위 미확인',INSUFFICIENT_HISTORY:'이력 부족',PRICE_NOT_AVAILABLE:'가격 없음',PRICE_BASIS_DATE_MISSING:'기준일 가격 없음',
  SOURCE_SECURITY_UNCONFIRMED:'공급처 증권 신원 미확인',PRICE_IDENTITY_CONFLICT:'가격 신원 충돌',PRICE_INPUT_HELD:'보류 구간 가격',SPLIT_AFTER_SHARE_COUNT:'주식수 기준일 뒤 분할',
  PAIRED_COMPARISON_POPULATION_NOT_ESTABLISHED:'같은 모집단·입력 비교가 확인되지 않아 순위 없음',PRICE_WINDOW_INCOMPLETE_OR_INVALID:'가격 창이 모자라거나 맞지 않음',
- RETURN_WINDOW_INCOMPLETE_OR_INVALID:'수익률 창이 모자라거나 맞지 않음',VOLUME_WINDOW_INCOMPLETE_OR_INVALID:'거래량 창이 모자라거나 맞지 않음',TRADE_SCOPE_UNCONFIRMED:'거래 범위 미확인'});
+ RETURN_WINDOW_INCOMPLETE_OR_INVALID:'수익률 창이 모자라거나 맞지 않음',VOLUME_WINDOW_INCOMPLETE_OR_INVALID:'거래량 창이 모자라거나 맞지 않음',TRADE_SCOPE_UNCONFIRMED:'거래 범위 미확인',
+ RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED:'분할 같은 원주가 급변 · 검토 필요',PRIVATE_REFERENCE_NOT_OFFICIAL_RANK:'비공개 참고 결과라 순위 없음',WARMUP:'계산 시작 구간'});
 const reasonText=c=>(typeof c==='string'&&own(REASON,c)?REASON[c]:'사유 코드 '+c);
 // Codex #480: NORMAL is relative to the evaluation day, never a claim that the quote is current.
 const STATUS_TEXT=Object.freeze({NORMAL:'평가일 기준 정상 · 현재 시세 최신 아님',STALE:'갱신 지연',MISSING:'자료 없음'});
@@ -267,18 +268,53 @@ function measuresView(m){const ids=MEASURES.map(([id])=>id),M=m.metrics;
   rank:'그룹 순위 미산출 · 한 기업 측정만 있음 (순위는 같은 날·같은 그룹 보드에서만 · 그룹 보드는 비공개 경로 미연결)',
   rows:Object.freeze(ids.map(id=>{const x=M[id];return Object.freeze(x.value!==null?{id,label:MEASURE_LABEL[id],kind:'VALUE',value:String(x.value)+' '+UNIT_TEXT[x.unit],window:win(x)}
    :{id,label:MEASURE_LABEL[id],kind:x.state,value:null,window:win(x),text:'미산출 · '+x.null_reasons.map(reasonText).join(' · ')+(x.state==='DIAGNOSTIC'?' · 진단값만 있음 (값 미표시)':'')});}))});}
-/* The two verification levels of a private cell (owner 2026-11-15), one short tag each: 검증됨 only when every file of the cell says
-   so in its own field (bars price_scope_status CONFIRMED, analysis / measures pit_status VERIFIED, qgv historical_pit_proven true);
-   anything else, a missing field included, is 검증 전(참고). */
-const VERIFIED_BY=Object.freeze([['price_scope_status','CONFIRMED'],['pit_status','VERIFIED'],['historical_pit_proven',true]]);
+/* The two private display tiers (owner 2026-11-15) come only from the producer's own display fields (Codex #556
+   research/private_kis_reference.py reference_files / official_reference); nothing here derives a verification:
+   - a chart / technical / measures file carries display {state AVAILABLE|WITHHELD, validation_tier UNVERIFIED_REFERENCE,
+     label 검증 전(참고), official false, hold_reasons}; each of its metrics validation_tier VERIFIED (the adopted value is not
+     null) or UNVERIFIED_REFERENCE, reference_value and reference_reasons. The qgv file carries display {validation_tier
+     UNVERIFIED_REFERENCE, label, official false} and rank null.
+   - 검증됨 only for a metric of tier VERIFIED with its adopted value; 검증 전(참고) for tier UNVERIFIED_REFERENCE with its
+     reference_value, never put in the adopted value's place. WITHHELD: no reference value at all, one line naming the hold
+     reason. A missing or unknown display or tier fails closed: no value and no 검증됨, the one line 검증 표시 없음. */
+const TIER=Object.freeze({VERIFIED:'VERIFIED',REFERENCE:'UNVERIFIED_REFERENCE'});
 const VERIFICATION=Object.freeze({VERIFIED:'검증됨',REFERENCE:'검증 전(참고)'});
-function verification(files){const ok=files.length>0&&files.every(f=>isObj(f)&&VERIFIED_BY.some(([k,v])=>own(f,k)&&f[k]===v));
- return Object.freeze({code:ok?'VERIFIED':'REFERENCE',text:VERIFICATION[ok?'VERIFIED':'REFERENCE']});}
+const NO_DISPLAY='검증 표시 없음';
+// The file's display: {state AVAILABLE | WITHHELD | UNKNOWN, holds (reason codes), line (the WITHHELD / UNKNOWN line), tag}.
+// stateful = a file with display.state (chart / technical / measures); the qgv file has none and reads AVAILABLE when valid.
+function displayOf(o,{stateful=true}={}){const d=isObj(o)&&isObj(o.display)?o.display:null;
+ const ok=!!d&&d.validation_tier===TIER.REFERENCE&&d.official===false&&d.label===VERIFICATION.REFERENCE
+  &&(!stateful||(['AVAILABLE','WITHHELD'].includes(d.state)&&Array.isArray(d.hold_reasons)&&d.hold_reasons.every(x=>typeof x==='string')));
+ if(!ok)return Object.freeze({state:'UNKNOWN',holds:Object.freeze([]),line:NO_DISPLAY,tag:null});
+ const state=stateful?d.state:'AVAILABLE',holds=stateful?Object.freeze([...d.hold_reasons]):Object.freeze([]);
+ return Object.freeze({state,holds,line:state==='WITHHELD'?'보류 · '+(holds.map(reasonText).join(' · ')||'사유 없음'):null,tag:VERIFICATION.REFERENCE});}
+const numeric=v=>(typeof v==='number'&&Number.isFinite(v))||isDec(v);
+// One metric under its file's display: VERIFIED (adopted value), REFERENCE (reference value), WITHHELD (named once by the file's
+// line) or HELD (one-line reason). A tier that does not match the values fails closed.
+function metricTier(d,m,reasonsOf){
+ if(d.state==='UNKNOWN')return Object.freeze({kind:'HELD',value:null,tag:null,text:NO_DISPLAY});
+ if(m.validation_tier===TIER.VERIFIED&&m.value!==null&&numeric(m.value))return Object.freeze({kind:'VERIFIED',value:String(m.value),tag:VERIFICATION.VERIFIED});
+ if(m.validation_tier===TIER.REFERENCE&&m.value===null){
+  if(d.state==='WITHHELD')return Object.freeze({kind:'WITHHELD',value:null,tag:null,text:d.line});
+  if(m.reference_value!==null&&m.reference_value!==undefined&&numeric(m.reference_value))return Object.freeze({kind:'REFERENCE',value:String(m.reference_value),tag:VERIFICATION.REFERENCE});
+  const r=Array.isArray(m.reference_reasons)&&m.reference_reasons.length?m.reference_reasons:reasonsOf;
+  return Object.freeze({kind:'HELD',value:null,tag:null,text:'미산출 · '+(r.map(reasonText).join(' · ')||'원시값 없음')});}
+ return Object.freeze({kind:'HELD',value:null,tag:null,text:NO_DISPLAY});}
+// A cell's metric rows from a validated analysis or measures file: [{id, label, kind, value, tag, text}], WITHHELD rows left out
+// (the file's line names them once).
+function tierRows(o,label,unit,order){const d=displayOf(o),ids=order||Object.keys(o.metrics).sort();
+ const rows=ids.map(id=>{const m=o.metrics[id],t=metricTier(d,m,m.null_reasons);return Object.freeze({id,label:label(id),...t,value:t.value===null?null:t.value+unit(m)});});
+ return Object.freeze({display:d,rows:Object.freeze(rows.filter(r=>r.kind!=='WITHHELD')),withheld:rows.filter(r=>r.kind==='WITHHELD').length});}
+const analysisTiers=a=>tierRows(a,id=>id,()=>'');
+const measuresTiers=m=>tierRows(m,id=>MEASURE_LABEL[id]||id,x=>own(UNIT_TEXT,x.unit)?' '+UNIT_TEXT[x.unit]:'',MEASURES.map(([id])=>id));
 function qgvView(q,code){const c=q.coverage,n=c.codes;
  const lines=['Q 산출 '+c.Q+' / '+n,'G 산출 '+c.G+' / '+n,'V 산출 '+c.V+' / '+n,'Q·G·V 모두 '+c.QGV+' / '+n];
  const r=code&&own(q.rows,code)?q.rows[code]:null,st=code&&isObj(q.price_status)&&own(q.price_status,code)?q.price_status[code]:null;
  const axis=ax=>{const x=r.axes[ax];return x.score===null?ax+' 미산출'+(x.reason?' · '+reasonText(x.reason):''):ax+' '+(Math.round(x.score*10)/10);};
- return Object.freeze({coverage:Object.freeze(lines),price_basis_date:q.price_basis_date,calc_version:q.calc_version,source:own(q,'source')?q.source:'KIS',verification:verification([q]),
+ return Object.freeze({coverage:Object.freeze(lines),price_basis_date:q.price_basis_date,calc_version:q.calc_version,source:own(q,'source')?q.source:'KIS',display:displayOf(q,{stateful:false}),
+  // Codex #556 stage 1 facts for the 상태 box (counts as given, never recomputed); absent fields stay out.
+  stages:isObj(q.stages)&&['price','raw_any','role_any'].every(k=>intOk(q.stages[k]))?'가격 반영 '+q.stages.price+' · V 원시값 '+q.stages.raw_any+' · V 요소 '+q.stages.role_any:null,
+  bases:[q.share_count_basis,q.identity_basis].filter(x=>typeof x==='string'&&x).join(' · ')||null,
   rank:'비공개 순위 없음 · '+reasonText(q.rank_reason),official:'공개 공식 순위·TARGET은 이 결과로 바뀌지 않음',
   row:r?Object.freeze({code,axes:Object.freeze(['Q','G','V'].map(axis)),total:r.axes.V.score===null?'QGV 총점 미산출 · V 미산출':r.total===null?'QGV 총점 미산출':'QGV '+(Math.round(r.total*10)/10),
    price:st==='SUPPLIED'?'KIS 가격 반영':st?'가격 미반영 · '+reasonText(st):null}):null});}
@@ -315,5 +351,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,VERIFICATION,requestSymbol,universeCode,verification,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

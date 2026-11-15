@@ -10,15 +10,17 @@
      settings version, basis comparison) and the read-token status go to the 상태 box. 읽기 토큰 상태 확인 reads the Worker's
      status route on its own click; NO_EXPIRY reads 만료일 없음.
    - kind 'technical': the analysis, chart and technical routes for target().symbol (one click, three reads, 5 s apart). Label
-     KIS · 비공개 and the chart's basis (원주가 / 확인된 분할 반영). Adopted indicators and adopted measures only; a held one is
-     미산출 with its reasons; raw diagnostics are never shown. A result whose basis differs from the chart file's is not
+     KIS · 비공개 and the chart's basis (원주가 / 확인된 분할 반영). Indicators and measures by their producer tier (below); a held one is
+     미산출 with its reasons; a raw value appears only as the producer's reference_value, tagged. A result whose basis differs from the chart file's is not
      attached (IS2.kisPrivate.basisAgreement): that part shows the mismatch line and no value ([data-private-basis-agreement]).
      A missing measures file (404) is that part's 자료 없음; a refused one that part's refusal; the analysis and chart stay.
    - kind 'qgv': the qgv route → label KIS · 비공개 · 공식 아님, the price basis day and the source, the target().code row's
      Q / G / V (미산출 + reason, never 0), the total only when V exists, no rank, and the coverage counts. Nothing here
      recomputes a score or a rank: the file's values are shown as they are.
-   - Each READY cell carries one verification tag, 검증됨 or 검증 전(참고) (IS2.kisPrivate.verification over the cell's files); a
-     held item shows its one-line reason only. Class shares: a file names BRK/B or BF/B for the asked BRK-B / BF-B.
+   - Tiers come only from the producer's display fields (Codex #556; IS2.kisPrivate displayOf / analysisTiers / measuresTiers):
+     a VERIFIED metric shows its adopted value with 검증됨, an UNVERIFIED_REFERENCE one its reference_value with 검증 전(참고);
+     WITHHELD shows no reference value, one line naming the hold reason; a missing or unknown display shows no value
+     (검증 표시 없음). A held item shows its one-line reason only. Class shares: a file names BRK/B or BF/B for BRK-B / BF-B.
    Values are text inside [data-ram-price] only (never an attribute, storage or log); nothing here makes a request outside a
    click. */
 (function(){
@@ -38,8 +40,6 @@ const table=(rows,d)=>h('table',{class:'tbl',dataset:d||{}},h('tbody',null,rows.
 // The 상태 box lines: label → text.
 const facts=(rows,part)=>h('dl',{class:'card-body',dataset:{privateFacts:part}},rows.filter(Boolean).map(([k,v,data])=>[h('dt',null,k),h('dd',data?{dataset:data}:null,v)]));
 const warn=(text,data)=>h('p',{class:'reason',dataset:data||{}},text);
-// One short verification tag (검증됨 / 검증 전(참고)), never a sentence.
-const tag=vf=>h('span',{class:'chip',dataset:{privateVerification:vf.code}},vf.text);
 
 function chart(bars,symbol){const TC=window.TechnicalChart;const nums=bars.map(b=>({close:b.close===null?null:Number(b.close)}));
  const g=TC&&typeof TC.geometry==='function'?TC.geometry(nums,[]):null;
@@ -49,48 +49,61 @@ function chart(bars,symbol){const TC=window.TechnicalChart;const nums=bars.map(b
 
 // The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
 // is not the chart's: the mismatch line only, no value) or READY.
-function measuresPart(K,raw,symbol,chartBasis,status,files){
+// A metric's value cell: the value as RAM text with its tier tag (검증됨 / 검증 전(참고)), or its one-line reason.
+const valueCell=x=>x.value!==null?[ram(x.value),' ',h('span',{class:'chip',dataset:{privateVerification:x.kind}},x.tag)]:x.text;
+// The metric rows of one file under its display (IS2.kisPrivate tiers): the WITHHELD line once, VERIFIED / REFERENCE / HELD rows.
+function tierPart(t,data,empty){
+ if(t.display.state==='UNKNOWN')return[warn(t.display.line,{privateDisplay:'UNKNOWN',...data})];
+ return[t.display.state==='WITHHELD'?warn(t.display.line,{privateDisplay:'WITHHELD',...data}):null,
+  t.rows.length?table(t.rows.map(x=>[x.label,valueCell(x),{privateMetric:x.id,privateTier:x.kind}]),data):t.display.state==='WITHHELD'?null:warn(empty,data)];}
+
+// The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
+// is not the chart's: the mismatch line only, no value) or READY.
+function measuresPart(K,raw,symbol,chartBasis,status){
  const part=(st,...c)=>h('div',{class:'sk card',dataset:{privateMeasures:st}},h('h4',null,'다섯 측정값'),...c);
  if(raw===null)return part('EMPTY',warn('자료 없음'));
  const r=K.validateMeasures(raw);
  if(!r.ok||K.requestSymbol(r.value.symbol)!==symbol){const code=r.ok?'SYMBOL_MISMATCH':r.code;return part('REFUSED',warn('형식 오류 · '+code,{na:code}));}
- const v=K.measuresView(r.value),g=K.basisAgreement(chartBasis,r.value);files.push(r.value);
+ const v=K.measuresView(r.value),g=K.basisAgreement(chartBasis,r.value);
  status.push(['측정 평가일',v.evaluation_day,{privateEvaluationDay:'measures'}],['측정 가격 기준',v.basisText,{privateMeasuresBasis:v.basis}],
   ['측정 설정 판',v.settings_version,{privateSettingsVersion:''}],['측정 수집 시각',v.collected_at],['측정 분할 증거',v.evidence],['측정 개수',v.summary,{privateMeasuresCounts:''}]);
  if(!g.same)return part('BASIS_MISMATCH',warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'measures'}));
- return part('READY',v.status!=='NORMAL'?warn(v.statusText,{privateMeasuresStatus:v.status}):null,
-  table(v.rows.map(x=>[x.label,x.kind==='VALUE'?ram(x.value):x.text,{privateMeasure:x.id,privateMeasureKind:x.kind}])));}
+ return part('READY',v.status!=='NORMAL'?warn(v.statusText,{privateMeasuresStatus:v.status}):null,...tierPart(K.measuresTiers(r.value),{privateMeasuresRows:''},'측정값 없음'));}
 
 function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
  if(!a.ok||!b.ok){const r=a.ok?b:a;throw Error(r.code);}
  // The chart must be the company asked for (a class share's file names it BRK/B for BRK-B).
  if(K.requestSymbol(b.value.symbol)!==symbol)throw Error('SYMBOL_MISMATCH');
  const v=K.analysisView(a.value),m=K.barsMeta(b.value),cmp=K.basisCompare(publicBasis,m.price_basis_date),last=b.value.bars[b.value.bars.length-1];
- const g=K.basisAgreement(m.basisCode,a.value);
+ const g=K.basisAgreement(m.basisCode,a.value),dc=K.displayOf(b.value);
  status.push(['공급처',m.source],['수집 시각',m.collected_at],['정정',m.corrected],['평가일',v.evaluation_day,{privateEvaluationDay:'analysis'}],v.signal_day?['신호일',v.signal_day]:null,
   ['상태',v.statusText,{privateStatusWord:v.status}],['지표 가격 기준',v.basisText,{privateIndicatorBasis:v.basis}],['분할 증거',v.evidence],v.adjustment?['분할 상태',v.adjustment,{privateAdjustmentStates:''}]:null,
   m.note||v.note?['분할 반영',m.note||v.note,{privateAdjustedNote:'technical'}]:null,['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],['지표 개수',v.summary,{privateCounts:''}]);
  // Indicators only on a chart of the same basis; otherwise the mismatch line and nothing of the indicators (no value, no count).
- const rows=[...v.adopted.map(x=>[x.id,ram(x.value),{privateIndicator:x.id}]),...v.held.map(x=>[x.id,x.text,{privateHeld:x.id}])];
- const indicators=g.same?(rows.length?table(rows,{privateAdopted:String(v.adopted.length)}):warn('지표 없음',{privateAdopted:'0'}))
-  :warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'analysis'});
- const files=[b.value,a.value],measures=measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,status,files),vf=K.verification(files);
- I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'KIS · 비공개 · 가격 기준일 ',h('span',{dataset:{privateBasisDate:''}},m.price_basis_date||'없음'),' · ',h('span',{dataset:{privateChartBasis:m.basisCode}},m.basis),' ',tag(vf)),
+ const indicators=g.same?tierPart(K.analysisTiers(a.value),{privateIndicators:''},'지표 없음'):[warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'analysis'})];
+ // The chart's closes are reference values: drawn only when its display is AVAILABLE; WITHHELD / unknown leave one line.
+ const closes=dc.state==='AVAILABLE'?[last?table([['마지막 종가',[ram(last.date,' · ',last.close===null?'NA':last.close)]]],{privateLast:''}):null,chart(b.value.bars,symbol)]
+  :[warn(dc.line,{privateDisplay:dc.state,privateDisplayPart:'chart'})];
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'KIS · 비공개 · 가격 기준일 ',h('span',{dataset:{privateBasisDate:''}},m.price_basis_date||'없음'),' · ',h('span',{dataset:{privateChartBasis:m.basisCode}},m.basis),
+   dc.state==='AVAILABLE'?[' ',h('span',{class:'chip',dataset:{privateVerification:'REFERENCE'}},dc.tag)]:null),
   v.status!=='NORMAL'?warn(v.statusText,{privateStatusLine:v.status}):null,
-  last?table([['마지막 종가',ram(last.date,' · ',last.close===null?'NA':last.close)]],{privateLast:''}):null,
-  chart(b.value.bars,symbol),
-  indicators,
-  measures]);}
+  ...closes,
+  ...indicators,
+  measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,status)]);}
 
 function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q=K.validateQgv(qRaw);if(!q.ok)throw Error(q.code);
- const v=K.qgvView(q.value,code),cmp=K.basisCompare(publicBasis,v.price_basis_date);
- status.push(['재무 입력 기준',q.value.financial_input_as_of||'없음'],['계산 시각',q.value.calculated_at],
+ const v=K.qgvView(q.value,code),cmp=K.basisCompare(publicBasis,v.price_basis_date),d=v.display;
+ status.push(['재무 입력 기준',q.value.financial_input_as_of||'없음'],['계산 시각',q.value.calculated_at],v.stages?['단계',v.stages]:null,v.bases?['기준',v.bases]:null,
   ['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],['순위',v.rank,{privateRank:'NONE'}]);
- I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'qgv'}},'KIS · 비공개 · 공식 아님 · 가격 기준일 ',h('span',{dataset:{privateBasisDate:''}},v.price_basis_date),' · 출처 ',
-   h('span',{dataset:{privateSource:''}},v.source),' · 계산 판 ',h('span',{dataset:{privateCalcVersion:''}},v.calc_version),' ',tag(v.verification)),
-  v.row?table([...v.row.axes.map(t=>[t.slice(0,1),ram(t.slice(2)),{privateAxis:t.slice(0,1)}]),['총점',ram(v.row.total),{privateTotal:''}],
+ // A missing or unknown display shows no value (fails closed); the file's values are shown as given, never recomputed.
+ const row=d.state==='UNKNOWN'?warn(d.line,{privateDisplay:'UNKNOWN',privateRow:'NONE'})
+  :v.row?table([...v.row.axes.map(t=>[t.slice(0,1),ram(t.slice(2)),{privateAxis:t.slice(0,1)}]),['총점',ram(v.row.total),{privateTotal:''}],
    v.row.price?['가격',v.row.price]:null],{privateRow:v.row.code})
-   :warn(code?'이 기업은 KIS 계산 대상에 없습니다':'기업을 고르세요',{privateRow:'NONE'}),
+   :warn(code?'이 기업은 KIS 계산 대상에 없습니다':'기업을 고르세요',{privateRow:'NONE'});
+ I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'qgv'}},'KIS · 비공개 · 공식 아님 · 가격 기준일 ',h('span',{dataset:{privateBasisDate:''}},v.price_basis_date),' · 출처 ',
+   h('span',{dataset:{privateSource:''}},v.source),' · 계산 판 ',h('span',{dataset:{privateCalcVersion:''}},v.calc_version),
+   d.tag?[' ',h('span',{class:'chip',dataset:{privateVerification:'REFERENCE'}},d.tag)]:null),
+  row,
   h('p',{class:'sub',dataset:{privateCoverage:''}},v.coverage.join(' · '))]);}
 
 const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]]});

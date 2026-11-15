@@ -7,8 +7,9 @@
 //    Worker; a synthetic click sends nothing.
 //  - Sign-in inside clicks (Google script, then a token for scope exactly openid email); reads only after a click, only the
 //    Worker's /kis routes, each with the Bearer header alone (no cookie, no referrer), the reads of one click 5 s apart.
-//  - Owner states: READY (label, price basis day, numbers; raw diagnostic values never on the page; values only as text inside
-//    [data-ram-price]), BASIS_MISMATCH (no indicator attached), EMPTY (404 KIS_SERIES_NOT_FOUND: 자료 없음, session kept) apart
+//  - Owner states: READY (label, price basis day, numbers; values only as text inside [data-ram-price]). Tiers from Codex #556's
+//    own synthetic output: 검증됨 = VERIFIED adopted value, 검증 전(참고) = reference_value, WITHHELD = one hold line and no reference
+//    value or chart, no display fields = 검증 표시 없음 and no value (fail closed); BASIS_MISMATCH (no indicator attached), EMPTY (404 KIS_SERIES_NOT_FOUND: 자료 없음, session kept) apart
 //    from ERROR (a refused payload, a 500), a server 403 back to LOGIN_REQUIRED, 연결 끊기.
 //  - Read token status in the 상태 box, on its own click: NO_EXPIRY reads 만료일 없음; a rejection and a mismatch have their own
 //    words and one short line on the panel.
@@ -132,26 +133,49 @@ let phase = 'START', pass = 0;
       assert.ok(w.log.every((l) => l.path === '/kis/status'), phase + ': the status route only');
       w.log.length = 0;
 
-      phase = 'technical READY';
-      w.answers.analysis = () => ({ status: 200, body: X.analysis() });
-      w.answers.chart = (sym) => ({ status: 200, body: X.bars({ symbol: sym }) });
-      w.answers.technical = (sym) => ({ status: 200, body: X.measures({ symbol: sym }) });
-      delete w.lastAt;
+      // Codex #556's own synthetic output (tools/web_app_kis_private_fixture.js codex556): the tiers as the producer writes them.
+      phase = 'technical READY (available)';
+      const answer = (kase) => { const f = X.codex556(kase, { symbol: 'NVDA' });
+        w.answers.analysis = () => ({ status: 200, body: f.technical }); w.answers.chart = () => ({ status: 200, body: f.chart }); w.answers.technical = () => ({ status: 200, body: f.measures }); };
+      const tiers = () => page.locator('[data-private-metric]').evaluateAll((n) => n.map((x) => [x.dataset.privateMetric, x.dataset.privateTier]));
+      answer('available'); delete w.lastAt;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual(w.log.map((l) => l.path), ['/kis/analysis?symbol=NVDA', '/kis/chart?symbol=NVDA', '/kis/technical?symbol=NVDA'], phase + ': exactly the three reads for the click');
       assert.equal(w.refused || 0, 0, phase + ': no read refused by the one-at-a-time limiter');
-      assert.match(await text(page, '[data-private-layer=technical]'), /^KIS · 비공개 · 가격 기준일 2026-10-30 · 원주가 검증 전\(참고\)$/, phase + ': label, basis day, basis and the verification tag');
-      assert.equal(await page.locator('[data-private-layer=technical] [data-private-verification]').getAttribute('data-private-verification'), 'REFERENCE');
+      assert.match(await text(page, '[data-private-layer=technical]'), /^KIS · 비공개 · 가격 기준일 2026-10-23 · 원주가 검증 전\(참고\)$/, phase + ': label, basis day, basis and the chart\'s tag');
       assert.equal(await count(page, 'svg[data-private-chart=NVDA] [data-private-close-line]'), 1, phase + ': the close line');
-      assert.deepEqual(await page.locator('[data-private-held]').evaluateAll((n) => n.map((x) => x.dataset.privateHeld)), ['MACD_12_26', 'RSI_14', 'SMA_20'], phase + ': held indicators as 미산출');
+      assert.deepEqual((await tiers()).filter(([, t]) => t !== 'HELD'), [['SMA_5', 'VERIFIED']], phase + ': the one adopted indicator');
+      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^SMA_5\s*11 검증됨$/, phase + ': its adopted value with 검증됨');
+      assert.ok((await tiers()).some(([, t]) => t === 'HELD'), phase + ': held indicators by their one-line reason');
       assert.equal(await count(page, '[data-private-measures=READY]'), 1);
-      assert.deepEqual(await page.locator('[data-private-measure]').evaluateAll((n) => n.map((x) => [x.dataset.privateMeasure, x.dataset.privateMeasureKind])),
-        [['momentum_3m', 'VALUE'], ['momentum_6m', 'DIAGNOSTIC'], ['momentum_12m', 'NOT_COMPUTED'], ['volatility_6m', 'NOT_COMPUTED'], ['dollar_volume_6m', 'NOT_COMPUTED']]);
-      assert.deepEqual(site.leaks([await page.content()], [...RAW, ...X.MEASURE_RAW]), [], phase + ': no raw diagnostic value anywhere on the page');
-      assert.deepEqual(await page.locator('[data-private-panel=tech-kis-chart] [data-ram-price]').allTextContents(), ['2026-10-30 · 105.5', '12.4242 %'], phase + ': values as RAM text only');
-      await site.assertRamOnly(page, ['105.5', '12.4242'], phase);
-      assert.ok((await text(page, '[data-private-facts=technical]')).includes('KIS 보관 일봉 (MODP=0)'), phase + ': the file facts are in the 상태 box');
+      assert.deepEqual(await page.locator('[data-private-panel=tech-kis-chart] [data-ram-price]').allTextContents(), ['2026-10-23 · 11', '11'], phase + ': values as RAM text only');
+      assert.ok((await text(page, '[data-private-facts=technical]')).includes('공급처'), phase + ': the file facts are in the 상태 box');
       assert.equal(await count(page, '[data-indicator] [data-verdict]'), holds, phase + ': the public verdicts are unchanged');
+
+      phase = 'technical reference';
+      await expand(page, 'technical'); answer('reference'); delete w.lastAt;
+      await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
+      assert.deepEqual((await tiers()).filter(([, t]) => t !== 'HELD'), [['SMA_5', 'REFERENCE']], phase + ': the reference value, not an adopted one');
+      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^SMA_5\s*11 검증 전\(참고\)$/);
+      assert.equal(await count(page, '[data-private-verification=VERIFIED]'), 0, phase + ': no 검증됨');
+
+      phase = 'technical WITHHELD';
+      await expand(page, 'technical'); answer('withheld'); delete w.lastAt;
+      await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
+      assert.deepEqual(await page.locator('[data-private-display=WITHHELD]').allTextContents(), Array(3).fill('보류 · 분할 같은 원주가 급변 · 검토 필요'), phase + ': one hold line per file (chart, indicators, measures)');
+      assert.equal(await count(page, '[data-private-tier=REFERENCE]'), 0, phase + ': no reference value');
+      assert.equal(await count(page, 'svg[data-private-chart]'), 0, phase + ': no chart of withheld closes');
+      assert.deepEqual((await tiers()).map(([, t]) => t), ['VERIFIED'], phase + ': only the producer\'s verified adopted value stays');
+
+      phase = 'technical fail closed (no display fields)';
+      await expand(page, 'technical'); delete w.lastAt;
+      w.answers.analysis = () => ({ status: 200, body: X.analysis({ adopted: true }) });
+      w.answers.chart = (sym) => ({ status: 200, body: X.bars({ symbol: sym }) });
+      w.answers.technical = (sym) => ({ status: 200, body: X.measures({ symbol: sym }) });
+      await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
+      assert.deepEqual(await page.locator('[data-private-display=UNKNOWN]').allTextContents(), Array(3).fill('검증 표시 없음'), phase + ': one line per file');
+      assert.deepEqual([await count(page, '[data-private-verification]'), await count(page, '[data-private-panel=tech-kis-chart] [data-ram-price]'), await count(page, 'svg[data-private-chart]')], [0, 0, 0], phase + ': no tag, no value, no chart');
+      assert.deepEqual(site.leaks([await page.content()], [...RAW, ...X.MEASURE_RAW, '12.4242', '105.5']), [], phase + ': none of the file\'s values anywhere on the page');
 
       phase = 'technical BASIS_MISMATCH';
       await expand(page, 'technical'); w.log.length = 0; delete w.lastAt;
@@ -160,7 +184,7 @@ let phase = 'START', pass = 0;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual(await page.locator('[data-private-basis-agreement]').evaluateAll((n) => n.map((x) => [x.dataset.privateBasisPart, x.dataset.privateBasisAgreement])),
         [['analysis', 'BASIS_MISMATCH'], ['measures', 'BASIS_MISMATCH']], phase + ': both results refused on a 원주가 chart');
-      assert.deepEqual([await count(page, '[data-private-indicator]'), await count(page, '[data-private-measure]')], [0, 0], phase + ': no value attached');
+      assert.equal(await count(page, '[data-private-metric]'), 0, phase + ': no value attached');
 
       phase = 'technical measures 404 alone';
       await expand(page, 'technical'); delete w.lastAt;
@@ -205,14 +229,25 @@ let phase = 'START', pass = 0;
       await publicByDefault(page, w, 'qgv', 'qgv-kis');
       await signIn(page, 'qgv', 'qgv-kis');
       await page.evaluate((c) => window.IS2.selection.set(c), id);
-      w.answers.qgv = () => ({ status: 200, body: X.qgv({ codes: [code, other], priceBasis: '2026-10-30' }) });
+      // Codex #556 official_reference output (codexQgv): the chosen company gets a kept row that has Q and G.
+      const Q556 = X.codexQgv([other, code, 'NYSE:ZZZZ']), row = Q556.rows[code], r1 = (x) => String(Math.round(x * 10) / 10);
+      w.answers.qgv = () => ({ status: 200, body: Q556 });
       await expand(page, 'qgv'); await page.locator('[data-private-row="' + code + '"]').waitFor({ timeout: 20000 });
       assert.deepEqual(w.log.map((l) => l.path), ['/kis/qgv'], phase + ': one read for the click');
-      assert.equal(await text(page, '[data-private-layer=qgv]'), 'KIS · 비공개 · 공식 아님 · 가격 기준일 2026-10-30 · 출처 KIS · 계산 판 SYNTHETIC-CALC 검증 전(참고)', phase + ': label, price basis day, source, calc version and the verification tag');
-      assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td').allTextContents(), ['70.3', '60.5', '미산출 · 사유 코드 V_INPUTS_NOT_AVAILABLE'], phase + ': V 미산출 with its reason, never 0');
+      assert.equal(await text(page, '[data-private-layer=qgv]'), 'KIS · 비공개 · 공식 아님 · 가격 기준일 2026-10-23 · 출처 KIS · 계산 판 ' + Q556.calc_version + ' 검증 전(참고)', phase + ': label, price basis day, source, calc version and the producer\'s tag');
+      assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td').allTextContents(),
+        [r1(row.axes.Q.score), r1(row.axes.G.score), '미산출 · 사유 코드 ' + row.axes.V.reason], phase + ': the file\'s scores as given, V 미산출 with its reason, never 0');
       assert.equal(await text(page, '[data-private-total] td'), 'QGV 총점 미산출 · V 미산출', phase + ': no total without V');
       assert.deepEqual(await ranks(), r0, phase + ': the public ranks are unchanged');
-      await site.assertRamOnly(page, ['70.3', '60.5'], phase);
+      // RAM rule for the private values (the synthetic scores also occur on the public board, so they cannot be page-wide sentinels):
+      // each private score is text inside [data-ram-price] only, and no attribute of the panel carries it.
+      assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td [data-ram-price]').allTextContents(), [r1(row.axes.Q.score), r1(row.axes.G.score), '미산출 · 사유 코드 ' + row.axes.V.reason], phase + ': private values as RAM text');
+      assert.ok(await page.locator('[data-private-panel=qgv-kis]').evaluate((p, v) => ![...p.querySelectorAll('*')].some((e) => [...e.attributes].some((a) => v.some((x) => a.value.includes(x)))), [r1(row.axes.Q.score), r1(row.axes.G.score)]), phase + ': no private value in an attribute');
+      // No display fields (the #493 shape): fail closed, no value.
+      await expand(page, 'qgv'); delete w.lastAt;
+      w.answers.qgv = () => ({ status: 200, body: X.qgv({ codes: [code, other] }) });
+      await expand(page, 'qgv'); await page.locator('[data-private-display=UNKNOWN]').waitFor({ timeout: 20000 });
+      assert.deepEqual([await text(page, '[data-private-display=UNKNOWN]'), await count(page, '[data-private-axis]'), await count(page, '[data-private-verification]')], ['검증 표시 없음', 0, 0], phase + ': fail closed');
       // A refused file (a rank) is ERROR, a missing one EMPTY, 403 back to a sign-in.
       await expand(page, 'qgv'); delete w.lastAt;
       w.answers.qgv = () => { const q = X.qgv({ codes: [code, other] }); q.rank = 1; return { status: 200, body: q }; };
@@ -225,7 +260,7 @@ let phase = 'START', pass = 0;
       assert.deepEqual(await ranks(), r0, phase + ': public ranks unchanged after a refusal');
       await boundaries(page, seen, w, phase); await ctx.close(); pass++;
     }
-    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, three reads, BASIS_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), qgv 390 (KIS V label, V 미산출, ERROR / EMPTY / 403, public ranks unchanged))');
+    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, three reads, BASIS_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), technical tiers from Codex #556 output (검증됨, 검증 전(참고), WITHHELD, fail closed), qgv 390 (Codex #556 kis-qgv/1, KIS V label, V 미산출, fail closed, ERROR / EMPTY / 403, public ranks unchanged))');
   } catch (e) {
     console.error('web_app_kis_private_browser_test failed at ' + phase + ':', e && e.stack || e);
     process.exitCode = 1;

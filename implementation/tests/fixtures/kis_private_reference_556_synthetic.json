@@ -1,0 +1,4589 @@
+{
+ "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
+ "generated_by": {
+  "code": "research/private_kis_reference.py reference_files (technical) and official_reference (qgv)",
+  "commit": "0235eeb145caf8c608529e428ccd9a3299e8d638",
+  "full_qgv_bytes": 1136184,
+  "full_qgv_rows": 523,
+  "inputs": "tools/kis_contract_fixture.py fixtures() synthetic-raw (available; identity UNKNOWN for reference; closes x2 from the third session for withheld) and tests/fixtures/sec_qgv2_vectors_v1.json base (one code fed from the synthetic contract)",
+  "pull_request": 556
+ },
+ "qgv": {
+  "TARGET_modified": false,
+  "calc_version": "qgv2-calc/2026-10-23.1",
+  "calculated_at": "2026-10-24T04:00:00Z",
+  "calculation_path": "qgv_official.prepare/price_status/engine_quotes/score/projection",
+  "config_versions": {
+   "dcf_parameters": "dcf_parameters/v1.1-default",
+   "type_config": "type_config/1"
+  },
+  "coverage": {
+   "G": 27,
+   "Q": 27,
+   "QGV": 0,
+   "V": 0,
+   "codes": 504,
+   "engine_total_computed": 27
+  },
+  "display": {
+   "label": "검증 전(참고)",
+   "official": false,
+   "validation_tier": "UNVERIFIED_REFERENCE"
+  },
+  "engine_version": "qgv-v2",
+  "financial_input_as_of": "2026-10-13T22:30:00Z",
+  "fixture_rows_kept": [
+   "BATS:CBOE",
+   "NASDAQ:ABNB",
+   "NASDAQ:ADBE"
+  ],
+  "historical_pit_proven": false,
+  "identity_basis": "OFFICIAL_CALC_RULES_AND_PINNED_PROVIDER_LOOKUP_NOT_FIXED_SECURITY_VERIFICATION",
+  "input_sha256": "5dbbe25465d3f9f7ac9a5bd1e6898660b56e789a7c7388ca8688ec52169a744a",
+  "layer": "OWNER_PRIVATE",
+  "lookup_sha256": "bcf257a2e26579e30eac8e180672c2a35e71efd4fd74bc8fff31302fa425e7c0",
+  "monthend_exclusions": {},
+  "official_publication_replaced": false,
+  "population": [
+   "BATS:CBOE",
+   "NASDAQ:AAPL",
+   "NASDAQ:ABNB",
+   "NASDAQ:ACGL",
+   "NASDAQ:ADBE",
+   "NASDAQ:ADI",
+   "NASDAQ:ADP",
+   "NASDAQ:ADSK",
+   "NASDAQ:AEP",
+   "NASDAQ:AKAM",
+   "NASDAQ:ALGN",
+   "NASDAQ:AMAT",
+   "NASDAQ:AMD",
+   "NASDAQ:AMGN",
+   "NASDAQ:AMZN",
+   "NASDAQ:APA",
+   "NASDAQ:APP",
+   "NASDAQ:ASML",
+   "NASDAQ:AVGO",
+   "NASDAQ:AXON",
+   "NASDAQ:BIIB",
+   "NASDAQ:BKNG",
+   "NASDAQ:BKR",
+   "NASDAQ:CASY",
+   "NASDAQ:CDNS",
+   "NASDAQ:CDW",
+   "NASDAQ:CEG",
+   "NASDAQ:CHRW",
+   "NASDAQ:CHTR",
+   "NASDAQ:CINF",
+   "NASDAQ:CMCSA",
+   "NASDAQ:CME",
+   "NASDAQ:COIN",
+   "NASDAQ:COO",
+   "NASDAQ:COST",
+   "NASDAQ:CPRT",
+   "NASDAQ:CRWD",
+   "NASDAQ:CSCO",
+   "NASDAQ:CSGP",
+   "NASDAQ:CSX",
+   "NASDAQ:CTAS",
+   "NASDAQ:CTSH",
+   "NASDAQ:DASH",
+   "NASDAQ:DDOG",
+   "NASDAQ:DLTR",
+   "NASDAQ:DPZ",
+   "NASDAQ:DXCM",
+   "NASDAQ:EBAY",
+   "NASDAQ:ECHO",
+   "NASDAQ:EQIX",
+   "NASDAQ:ERIE",
+   "NASDAQ:EVRG",
+   "NASDAQ:EXC",
+   "NASDAQ:EXE",
+   "NASDAQ:EXPE",
+   "NASDAQ:FANG",
+   "NASDAQ:FAST",
+   "NASDAQ:FFIV",
+   "NASDAQ:FISV",
+   "NASDAQ:FLEX",
+   "NASDAQ:FOX",
+   "NASDAQ:FOXA",
+   "NASDAQ:FSLR",
+   "NASDAQ:FTNT",
+   "NASDAQ:GEHC",
+   "NASDAQ:GEN",
+   "NASDAQ:GILD",
+   "NASDAQ:GOOG",
+   "NASDAQ:GOOGL",
+   "NASDAQ:HAS",
+   "NASDAQ:HBAN",
+   "NASDAQ:HON",
+   "NASDAQ:HONA",
+   "NASDAQ:HOOD",
+   "NASDAQ:HSIC",
+   "NASDAQ:HST",
+   "NASDAQ:IBKR",
+   "NASDAQ:IDXX",
+   "NASDAQ:INCY",
+   "NASDAQ:INTC",
+   "NASDAQ:INTU",
+   "NASDAQ:ISRG",
+   "NASDAQ:JBHT",
+   "NASDAQ:JKHY",
+   "NASDAQ:KDP",
+   "NASDAQ:KLAC",
+   "NASDAQ:KMB",
+   "NASDAQ:LIN",
+   "NASDAQ:LITE",
+   "NASDAQ:LNT",
+   "NASDAQ:LRCX",
+   "NASDAQ:LULU",
+   "NASDAQ:MAR",
+   "NASDAQ:MCHP",
+   "NASDAQ:MDLZ",
+   "NASDAQ:META",
+   "NASDAQ:MNST",
+   "NASDAQ:MPWR",
+   "NASDAQ:MRNA",
+   "NASDAQ:MRVL",
+   "NASDAQ:MSFT",
+   "NASDAQ:MU",
+   "NASDAQ:NDAQ",
+   "NASDAQ:NDSN",
+   "NASDAQ:NFLX",
+   "NASDAQ:NTAP",
+   "NASDAQ:NTRS",
+   "NASDAQ:NVDA",
+   "NASDAQ:NWS",
+   "NASDAQ:NWSA",
+   "NASDAQ:NXPI",
+   "NASDAQ:ODFL",
+   "NASDAQ:ON",
+   "NASDAQ:ORLY",
+   "NASDAQ:PANW",
+   "NASDAQ:PAYX",
+   "NASDAQ:PCAR",
+   "NASDAQ:PEP",
+   "NASDAQ:PFG",
+   "NASDAQ:PLTR",
+   "NASDAQ:PODD",
+   "NASDAQ:PSKY",
+   "NASDAQ:PTC",
+   "NASDAQ:PYPL",
+   "NASDAQ:QCOM",
+   "NASDAQ:REG",
+   "NASDAQ:REGN",
+   "NASDAQ:ROP",
+   "NASDAQ:ROST",
+   "NASDAQ:SBAC",
+   "NASDAQ:SBUX",
+   "NASDAQ:SMCI",
+   "NASDAQ:SNDK",
+   "NASDAQ:SNPS",
+   "NASDAQ:STLD",
+   "NASDAQ:STX",
+   "NASDAQ:SWKS",
+   "NASDAQ:TECH",
+   "NASDAQ:TER",
+   "NASDAQ:TMUS",
+   "NASDAQ:TRMB",
+   "NASDAQ:TROW",
+   "NASDAQ:TSCO",
+   "NASDAQ:TSLA",
+   "NASDAQ:TTD",
+   "NASDAQ:TTWO",
+   "NASDAQ:TXN",
+   "NASDAQ:UAL",
+   "NASDAQ:ULTA",
+   "NASDAQ:VRSK",
+   "NASDAQ:VRSN",
+   "NASDAQ:VRTX",
+   "NASDAQ:VTRS",
+   "NASDAQ:WBD",
+   "NASDAQ:WDAY",
+   "NASDAQ:WDC",
+   "NASDAQ:WMT",
+   "NASDAQ:WTW",
+   "NASDAQ:WYNN",
+   "NASDAQ:XEL",
+   "NASDAQ:ZBRA",
+   "NYSE:A",
+   "NYSE:ABBV",
+   "NYSE:ABT",
+   "NYSE:ACN",
+   "NYSE:ADM",
+   "NYSE:AEE",
+   "NYSE:AES",
+   "NYSE:AFL",
+   "NYSE:AIG",
+   "NYSE:AIZ",
+   "NYSE:AJG",
+   "NYSE:ALB",
+   "NYSE:ALL",
+   "NYSE:ALLE",
+   "NYSE:AMCR",
+   "NYSE:AME",
+   "NYSE:AMP",
+   "NYSE:AMT",
+   "NYSE:ANET",
+   "NYSE:AON",
+   "NYSE:AOS",
+   "NYSE:APD",
+   "NYSE:APH",
+   "NYSE:APO",
+   "NYSE:APTV",
+   "NYSE:ARE",
+   "NYSE:ARES",
+   "NYSE:ATO",
+   "NYSE:AVY",
+   "NYSE:AWK",
+   "NYSE:AXP",
+   "NYSE:AZO",
+   "NYSE:BA",
+   "NYSE:BAC",
+   "NYSE:BALL",
+   "NYSE:BAX",
+   "NYSE:BBY",
+   "NYSE:BDX",
+   "NYSE:BEN",
+   "NYSE:BF.B",
+   "NYSE:BG",
+   "NYSE:BLDR",
+   "NYSE:BLK",
+   "NYSE:BMY",
+   "NYSE:BNY",
+   "NYSE:BR",
+   "NYSE:BRK.B",
+   "NYSE:BRO",
+   "NYSE:BSX",
+   "NYSE:BX",
+   "NYSE:BXP",
+   "NYSE:C",
+   "NYSE:CAH",
+   "NYSE:CARR",
+   "NYSE:CAT",
+   "NYSE:CB",
+   "NYSE:CBRE",
+   "NYSE:CCI",
+   "NYSE:CCL",
+   "NYSE:CF",
+   "NYSE:CFG",
+   "NYSE:CHD",
+   "NYSE:CI",
+   "NYSE:CIEN",
+   "NYSE:CL",
+   "NYSE:CLX",
+   "NYSE:CMG",
+   "NYSE:CMI",
+   "NYSE:CMS",
+   "NYSE:CNC",
+   "NYSE:CNP",
+   "NYSE:COF",
+   "NYSE:COHR",
+   "NYSE:COP",
+   "NYSE:COR",
+   "NYSE:CPAY",
+   "NYSE:CPT",
+   "NYSE:CRH",
+   "NYSE:CRL",
+   "NYSE:CRM",
+   "NYSE:CTVA",
+   "NYSE:CVNA",
+   "NYSE:CVS",
+   "NYSE:CVX",
+   "NYSE:D",
+   "NYSE:DAL",
+   "NYSE:DD",
+   "NYSE:DE",
+   "NYSE:DECK",
+   "NYSE:DELL",
+   "NYSE:DG",
+   "NYSE:DGX",
+   "NYSE:DHI",
+   "NYSE:DHR",
+   "NYSE:DIS",
+   "NYSE:DLR",
+   "NYSE:DOC",
+   "NYSE:DOV",
+   "NYSE:DOW",
+   "NYSE:DRI",
+   "NYSE:DTE",
+   "NYSE:DUK",
+   "NYSE:DVA",
+   "NYSE:DVN",
+   "NYSE:ECL",
+   "NYSE:ED",
+   "NYSE:EFX",
+   "NYSE:EG",
+   "NYSE:EIX",
+   "NYSE:EL",
+   "NYSE:ELV",
+   "NYSE:EME",
+   "NYSE:EMR",
+   "NYSE:EOG",
+   "NYSE:EQT",
+   "NYSE:ES",
+   "NYSE:ESS",
+   "NYSE:ETN",
+   "NYSE:ETR",
+   "NYSE:EW",
+   "NYSE:EXPD",
+   "NYSE:EXR",
+   "NYSE:F",
+   "NYSE:FCX",
+   "NYSE:FDS",
+   "NYSE:FDX",
+   "NYSE:FDXF",
+   "NYSE:FE",
+   "NYSE:FERG",
+   "NYSE:FICO",
+   "NYSE:FIS",
+   "NYSE:FITB",
+   "NYSE:FIX",
+   "NYSE:FRT",
+   "NYSE:FTV",
+   "NYSE:GD",
+   "NYSE:GDDY",
+   "NYSE:GE",
+   "NYSE:GEV",
+   "NYSE:GIS",
+   "NYSE:GL",
+   "NYSE:GLW",
+   "NYSE:GM",
+   "NYSE:GNRC",
+   "NYSE:GPC",
+   "NYSE:GPN",
+   "NYSE:GRMN",
+   "NYSE:GS",
+   "NYSE:GWW",
+   "NYSE:HAL",
+   "NYSE:HCA",
+   "NYSE:HD",
+   "NYSE:HIG",
+   "NYSE:HII",
+   "NYSE:HLT",
+   "NYSE:HPE",
+   "NYSE:HPQ",
+   "NYSE:HRL",
+   "NYSE:HSY",
+   "NYSE:HUBB",
+   "NYSE:HUM",
+   "NYSE:HWM",
+   "NYSE:IBM",
+   "NYSE:ICE",
+   "NYSE:IEX",
+   "NYSE:IFF",
+   "NYSE:INVH",
+   "NYSE:IP",
+   "NYSE:IQV",
+   "NYSE:IR",
+   "NYSE:IRM",
+   "NYSE:IT",
+   "NYSE:ITW",
+   "NYSE:IVZ",
+   "NYSE:J",
+   "NYSE:JBL",
+   "NYSE:JCI",
+   "NYSE:JNJ",
+   "NYSE:JPM",
+   "NYSE:KEY",
+   "NYSE:KEYS",
+   "NYSE:KHC",
+   "NYSE:KIM",
+   "NYSE:KKR",
+   "NYSE:KMI",
+   "NYSE:KO",
+   "NYSE:KR",
+   "NYSE:KVUE",
+   "NYSE:L",
+   "NYSE:LDOS",
+   "NYSE:LEN",
+   "NYSE:LH",
+   "NYSE:LHX",
+   "NYSE:LII",
+   "NYSE:LLY",
+   "NYSE:LMT",
+   "NYSE:LOW",
+   "NYSE:LUV",
+   "NYSE:LVS",
+   "NYSE:LYB",
+   "NYSE:LYV",
+   "NYSE:MA",
+   "NYSE:MAA",
+   "NYSE:MAS",
+   "NYSE:MCD",
+   "NYSE:MCK",
+   "NYSE:MCO",
+   "NYSE:MDT",
+   "NYSE:MET",
+   "NYSE:MGM",
+   "NYSE:MKC",
+   "NYSE:MLM",
+   "NYSE:MMM",
+   "NYSE:MO",
+   "NYSE:MOS",
+   "NYSE:MPC",
+   "NYSE:MRK",
+   "NYSE:MRSH",
+   "NYSE:MS",
+   "NYSE:MSCI",
+   "NYSE:MSI",
+   "NYSE:MTB",
+   "NYSE:MTD",
+   "NYSE:NCLH",
+   "NYSE:NEE",
+   "NYSE:NEM",
+   "NYSE:NI",
+   "NYSE:NKE",
+   "NYSE:NOC",
+   "NYSE:NOW",
+   "NYSE:NRG",
+   "NYSE:NSC",
+   "NYSE:NUE",
+   "NYSE:NVR",
+   "NYSE:O",
+   "NYSE:OKE",
+   "NYSE:OMC",
+   "NYSE:ORCL",
+   "NYSE:OTIS",
+   "NYSE:OXY",
+   "NYSE:PCG",
+   "NYSE:PEG",
+   "NYSE:PFE",
+   "NYSE:PG",
+   "NYSE:PGR",
+   "NYSE:PH",
+   "NYSE:PHM",
+   "NYSE:PKG",
+   "NYSE:PLD",
+   "NYSE:PM",
+   "NYSE:PNC",
+   "NYSE:PNR",
+   "NYSE:PNW",
+   "NYSE:PPG",
+   "NYSE:PPL",
+   "NYSE:PRU",
+   "NYSE:PSA",
+   "NYSE:PSX",
+   "NYSE:PWR",
+   "NYSE:Q",
+   "NYSE:RCL",
+   "NYSE:RDDT",
+   "NYSE:RF",
+   "NYSE:RJF",
+   "NYSE:RL",
+   "NYSE:RMD",
+   "NYSE:ROK",
+   "NYSE:ROL",
+   "NYSE:RSG",
+   "NYSE:RTX",
+   "NYSE:RVTY",
+   "NYSE:SCHW",
+   "NYSE:SHW",
+   "NYSE:SJM",
+   "NYSE:SLB",
+   "NYSE:SNA",
+   "NYSE:SO",
+   "NYSE:SOLV",
+   "NYSE:SPG",
+   "NYSE:SPGI",
+   "NYSE:SRE",
+   "NYSE:STE",
+   "NYSE:STT",
+   "NYSE:STZ",
+   "NYSE:SW",
+   "NYSE:SWK",
+   "NYSE:SYF",
+   "NYSE:SYK",
+   "NYSE:SYY",
+   "NYSE:T",
+   "NYSE:TAP",
+   "NYSE:TDG",
+   "NYSE:TDY",
+   "NYSE:TEL",
+   "NYSE:TFC",
+   "NYSE:TGT",
+   "NYSE:TJX",
+   "NYSE:TKO",
+   "NYSE:TMO",
+   "NYSE:TPL",
+   "NYSE:TPR",
+   "NYSE:TRGP",
+   "NYSE:TRV",
+   "NYSE:TSN",
+   "NYSE:TT",
+   "NYSE:TXT",
+   "NYSE:TYL",
+   "NYSE:UBER",
+   "NYSE:UDR",
+   "NYSE:UHS",
+   "NYSE:UNH",
+   "NYSE:UNP",
+   "NYSE:UPS",
+   "NYSE:URI",
+   "NYSE:USB",
+   "NYSE:V",
+   "NYSE:VEEV",
+   "NYSE:VICI",
+   "NYSE:VLO",
+   "NYSE:VLTO",
+   "NYSE:VMC",
+   "NYSE:VMRK",
+   "NYSE:VRT",
+   "NYSE:VST",
+   "NYSE:VTR",
+   "NYSE:VZ",
+   "NYSE:WAB",
+   "NYSE:WAT",
+   "NYSE:WEC",
+   "NYSE:WELL",
+   "NYSE:WFC",
+   "NYSE:WM",
+   "NYSE:WMB",
+   "NYSE:WRB",
+   "NYSE:WSM",
+   "NYSE:WST",
+   "NYSE:WY",
+   "NYSE:XOM",
+   "NYSE:XYL",
+   "NYSE:XYZ",
+   "NYSE:YUM",
+   "NYSE:ZBH",
+   "NYSE:ZTS"
+  ],
+  "population_sha256": "93b959e1e1c145f450d3f5269dcf937d95548e15b4a7a3eb2c8080755f09ccaf",
+  "price_basis_date": "2026-10-23",
+  "price_rows_supplied": 1,
+  "price_status": {
+   "BATS:CBOE": "SUPPLIED",
+   "NASDAQ:ABNB": "PRICE_NOT_AVAILABLE",
+   "NASDAQ:ADBE": "PRICE_NOT_AVAILABLE"
+  },
+  "private_raw_detail": {
+   "BATS:CBOE": {
+    "earnings_basis": "REPORTED",
+    "ebit_yield": null,
+    "expectation_gap": null,
+    "fcf_yield": null,
+    "implied_growth": null,
+    "industry_basis": null,
+    "industry_peers": null,
+    "realized_growth": null
+   },
+   "NASDAQ:ABNB": {
+    "earnings_basis": "REPORTED",
+    "ebit_yield": null,
+    "expectation_gap": null,
+    "fcf_yield": null,
+    "implied_growth": null,
+    "industry_basis": null,
+    "industry_peers": null,
+    "realized_growth": null
+   },
+   "NASDAQ:ADBE": {
+    "earnings_basis": "NORMALIZED",
+    "ebit_yield": null,
+    "expectation_gap": null,
+    "fcf_yield": null,
+    "implied_growth": null,
+    "industry_basis": null,
+    "industry_peers": null,
+    "realized_growth": null
+   }
+  },
+  "rank": null,
+  "rank_reason": "PRIVATE_REFERENCE_NOT_OFFICIAL_RANK",
+  "rows": {
+   "BATS:CBOE": {
+    "axes": {
+     "G": {
+      "factors_available": 0,
+      "reason": "AXIS_NOT_PUBLISHED",
+      "score": null,
+      "state": "NOT_AVAILABLE",
+      "weight_available": 0.0
+     },
+     "Q": {
+      "factors_available": 0,
+      "reason": "AXIS_NOT_PUBLISHED",
+      "score": null,
+      "state": "NOT_AVAILABLE",
+      "weight_available": 0.0
+     },
+     "V": {
+      "factors_available": 0,
+      "reason": "AXIS_WEIGHT_INSUFFICIENT",
+      "score": null,
+      "state": "NOT_AVAILABLE",
+      "weight_available": 0.0
+     }
+    },
+    "factors": {
+     "g_consistency": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "g_growth_efficiency": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "g_per_share_growth": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "g_recent_acceleration": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "g_revenue_growth": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "q_capital_allocation": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "q_earnings_quality": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "q_financial_safety": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "q_moat_proxy": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "q_profitability": {
+      "basis": null,
+      "reason": "SEC_FACTOR_NOT_AVAILABLE",
+      "score": null
+     },
+     "v_earnings_yield": {
+      "basis": null,
+      "reason": "V_INPUTS_NOT_AVAILABLE",
+      "score": null
+     },
+     "v_expectation_check": {
+      "basis": null,
+      "reason": "V_INPUTS_NOT_AVAILABLE",
+      "score": null
+     },
+     "v_fcf_yield": {
+      "basis": null,
+      "reason": "V_INPUTS_NOT_AVAILABLE",
+      "score": null
+     },
+     "v_vs_industry": {
+      "basis": null,
+      "reason": "V_INPUTS_NOT_AVAILABLE",
+      "score": null
+     },
+     "v_vs_own_history": {
+      "basis": null,
+      "reason": "V_INPUTS_NOT_AVAILABLE",
+      "score": null
+     }
+    },
+    "flags": [
+     "GATE_NOT_EVALUATED",
+     "V_NOT_AVAILABLE"
+    ],
+    "q_industry_percentile": null,
+    "selected_types": [],
+    "total": null,
+    "total_reason": "AXIS_WEIGHT_INSUFFICIENT",
+    "type_reason": "TYPE_UNCONFIRMED",
+    "type_weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    },
+    "v_excluded": null,
+    "value_trap_gate": false,
+    "weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    }
+   },
+   "NASDAQ:ABNB": {
+    "axes": {
+     "G": {
+      "factors_available": 5,
+      "reason": null,
+      "score": 17.426470588235293,
+      "state": "READY",
+      "weight_available": 1.0
+     },
+     "Q": {
+      "factors_available": 5,
+      "reason": null,
+      "score": 11.764705882352942,
+      "state": "READY",
+      "weight_available": 1.0
+     },
+     "V": {
+      "factors_available": 0,
+      "reason": "AXIS_WEIGHT_INSUFFICIENT",
+      "score": null,
+      "state": "NOT_AVAILABLE",
+      "weight_available": 0.0
+     }
+    },
+    "factors": {
+     "g_consistency": {
+      "basis": null,
+      "reason": null,
+      "score": 42.64705882352941
+     },
+     "g_growth_efficiency": {
+      "basis": null,
+      "reason": null,
+      "score": 5.882352941176471
+     },
+     "g_per_share_growth": {
+      "basis": null,
+      "reason": null,
+      "score": 8.823529411764707
+     },
+     "g_recent_acceleration": {
+      "basis": null,
+      "reason": null,
+      "score": 11.764705882352942
+     },
+     "g_revenue_growth": {
+      "basis": null,
+      "reason": null,
+      "score": 23.529411764705884
+     },
+     "q_capital_allocation": {
+      "basis": null,
+      "reason": null,
+      "score": 25.0
+     },
+     "q_earnings_quality": {
+      "basis": null,
+      "reason": null,
+      "score": 0.0
+     },
+     "q_financial_safety": {
+      "basis": null,
+      "reason": null,
+      "score": 8.823529411764707
+     },
+     "q_moat_proxy": {
+      "basis": null,
+      "reason": null,
+      "score": 0.0
+     },
+     "q_profitability": {
+      "basis": null,
+      "reason": null,
+      "score": 25.0
+     },
+     "v_earnings_yield": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_expectation_check": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_fcf_yield": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_vs_industry": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_vs_own_history": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     }
+    },
+    "flags": [
+     "VALUE_TRAP_CAUTION",
+     "V_NOT_AVAILABLE"
+    ],
+    "q_industry_percentile": 0.0,
+    "selected_types": [],
+    "total": 14.553336259877085,
+    "total_reason": null,
+    "type_reason": "NO_RECOGNIZED_TYPE",
+    "type_weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    },
+    "v_excluded": "VALUE_TRAP_GATE",
+    "value_trap_gate": true,
+    "weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    }
+   },
+   "NASDAQ:ADBE": {
+    "axes": {
+     "G": {
+      "factors_available": 5,
+      "reason": null,
+      "score": 53.89705882352941,
+      "state": "READY",
+      "weight_available": 1.0
+     },
+     "Q": {
+      "factors_available": 5,
+      "reason": null,
+      "score": 44.79166666666667,
+      "state": "READY",
+      "weight_available": 1.0
+     },
+     "V": {
+      "factors_available": 0,
+      "reason": "AXIS_WEIGHT_INSUFFICIENT",
+      "score": null,
+      "state": "NOT_AVAILABLE",
+      "weight_available": 0.0
+     }
+    },
+    "factors": {
+     "g_consistency": {
+      "basis": null,
+      "reason": null,
+      "score": 51.470588235294116
+     },
+     "g_growth_efficiency": {
+      "basis": null,
+      "reason": null,
+      "score": 47.05882352941177
+     },
+     "g_per_share_growth": {
+      "basis": null,
+      "reason": null,
+      "score": 47.05882352941177
+     },
+     "g_recent_acceleration": {
+      "basis": null,
+      "reason": null,
+      "score": 88.23529411764706
+     },
+     "g_revenue_growth": {
+      "basis": null,
+      "reason": null,
+      "score": 47.05882352941177
+     },
+     "q_capital_allocation": {
+      "basis": null,
+      "reason": null,
+      "score": 37.5
+     },
+     "q_earnings_quality": {
+      "basis": null,
+      "reason": null,
+      "score": 58.333333333333336
+     },
+     "q_financial_safety": {
+      "basis": null,
+      "reason": null,
+      "score": 33.333333333333336
+     },
+     "q_moat_proxy": {
+      "basis": null,
+      "reason": null,
+      "score": 41.666666666666664
+     },
+     "q_profitability": {
+      "basis": null,
+      "reason": null,
+      "score": 50.0
+     },
+     "v_earnings_yield": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_expectation_check": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_fcf_yield": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_vs_industry": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     },
+     "v_vs_own_history": {
+      "basis": null,
+      "reason": "NO_DEVICE_PRICE",
+      "score": null
+     }
+    },
+    "flags": [
+     "V_NOT_AVAILABLE"
+    ],
+    "q_industry_percentile": 41.666666666666664,
+    "selected_types": [],
+    "total": 49.276412057360254,
+    "total_reason": null,
+    "type_reason": "NO_RECOGNIZED_TYPE",
+    "type_weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    },
+    "v_excluded": null,
+    "value_trap_gate": false,
+    "weights": {
+     "G": 33.0,
+     "Q": 34.0,
+     "V": 33.0
+    }
+   }
+  },
+  "schema": "@kis:qgv/1",
+  "share_count_basis": "WEIGHTED_AVERAGE_DILUTED_PROXY_NOT_ACTUAL_OUTSTANDING",
+  "stages": {
+   "price": 1,
+   "raw_any": 0,
+   "role_any": 0
+  },
+  "weights": {
+   "default_preset": "balanced",
+   "gate": true,
+   "profile_id": "qgv-v2/balanced/gate-on",
+   "type_weights": true,
+   "weights_version": "f8642c7ab04e6422"
+  }
+ },
+ "technical": {
+  "available": {
+   "chart": {
+    "amount_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "basis": "RAW",
+    "calendar": "NYSE",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "confirmed_ranges": [
+     {
+      "evidence": "SYNTHETIC",
+      "from": "2026-10-19",
+      "to": "2026-10-23"
+     }
+    ],
+    "corrected_at": null,
+    "currency": "USD",
+    "currency_reference": "SYNTHETIC",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE",
+     "verified_metric_values_are_separate": true
+    },
+    "dividend_adjustment": "NONE",
+    "exchange": "NASDAQ",
+    "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
+    "held_ranges": [],
+    "historical_available_at": null,
+    "identity": {
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED"
+    },
+    "issuer_id": null,
+    "price_basis_date": "2026-10-23",
+    "price_scope_status": "UNCONFIRMED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "raw_bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "rejected_rows": [],
+    "schema": "@kis:bars/1",
+    "security_id": "SYNTHETIC-SECURITY-1",
+    "session_scope": "PROVIDER_UNCONFIRMED",
+    "source": "KIS retained dailyprice MODP0",
+    "source_query": {
+     "BYMD": "20261023",
+     "EXCD": "NAS",
+     "GUBN": "0",
+     "MODP": "0",
+     "SYMB": "SYN"
+    },
+    "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+    "splits": [],
+    "suspensions": [],
+    "symbol": "SYN",
+    "timestamp_basis": "SESSION_DATE_ONLY_NO_PROVIDER_INTRADAY_TIME",
+    "timezone": "America/New_York",
+    "trade_count": null,
+    "volume_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "vwap": null
+   },
+   "measures": {
+    "adopted_count": 0,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED",
+     "no_split_end": "2026-10-23",
+     "no_split_reference": "SYNTHETIC",
+     "no_split_start": "2026-10-19",
+     "price_basis": "RAW",
+     "security_id": null,
+     "trade_scope_reference": null,
+     "trade_scope_status": "UNCONFIRMED"
+    },
+    "historical_available_at": null,
+    "identity_status": "CONFIRMED",
+    "metrics": {
+     "dollar_volume_6m": {
+      "anchor_day": null,
+      "approximation": "PROVIDER_ROUNDED_AGGREGATE_NOT_EXACT_TRADE_SUM",
+      "close_volume_proxy": {
+       "invalid_dates": [],
+       "mean_complete": null,
+       "mean_observed": "1100",
+       "reason": "INCOMPLETE_WINDOW",
+       "valid_days": 5
+      },
+      "expected_days": 127,
+      "gt_zero": null,
+      "mean_observed": null,
+      "null_reasons": [
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "TRADING_DAYS",
+      "observed_days": 0,
+      "raw_gt_zero": null,
+      "raw_unit": "SOURCE_QUOTE_CURRENCY_PER_TRADING_DAY",
+      "raw_value": null,
+      "reference_reasons": [
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "trade_scope_status": "UNCONFIRMED",
+      "unit": "USD_PER_TRADING_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "momentum_12m": {
+      "anchor_day": "2025-10-23",
+      "expected_days": 252,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2025-10-23"
+     },
+     "momentum_3m": {
+      "anchor_day": "2026-07-23",
+      "expected_days": 66,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-07-23"
+     },
+     "momentum_6m": {
+      "anchor_day": "2026-04-23",
+      "expected_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "volatility_6m": {
+      "anchor_day": "2026-04-23",
+      "annualized": false,
+      "ddof": 1,
+      "expected_days": 127,
+      "expected_price_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "DAILY_RETURNS",
+      "observed_days": 4,
+      "observed_price_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT_PER_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     }
+    },
+    "pit_status": "NOT_VERIFIED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "qgv_join_key": null,
+    "rank_count": 0,
+    "raw_count": 0,
+    "reference_count": 0,
+    "result_kind": "SINGLE_COMPANY_MEASURES",
+    "schema": "@kis:technical-measures/1",
+    "security_id": null,
+    "series_id": "SYN",
+    "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+    "settings_version": "technical-leaderboard/2026-11-03.1",
+    "signal_day": "2026-10-23",
+    "source": "KIS retained dailyprice MODP0",
+    "status": "NORMAL",
+    "symbol": "SYN"
+   },
+   "technical": {
+    "QGV_coverage_change": null,
+    "QGV_reason": "OFFICIAL_MODEL_UNCHANGED_NOT_RECALCULATED",
+    "adopted_count": 1,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "corrected_at": null,
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED",
+     "no_split_end": "2026-10-23",
+     "no_split_reference": "SYNTHETIC",
+     "no_split_start": "2026-10-19",
+     "price_basis": "RAW",
+     "security_id": "SYNTHETIC-SECURITY-1"
+    },
+    "excluded_future_rows": 0,
+    "historical_available_at": null,
+    "history_count": 5,
+    "input_start": "2026-10-19",
+    "last_success_at": "2026-10-24T04:00:00Z",
+    "metrics": {
+     "ATR_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_LOWER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_MIDDLE_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_UPPER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "EMA_20": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_12_26": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_SIGNAL_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "RSI_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_120": {
+      "expected_days": 120,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_5": {
+      "expected_days": 5,
+      "null_reasons": [],
+      "observation_days": 5,
+      "raw_value": 11.0,
+      "reference_reasons": [],
+      "reference_value": 11.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "VERIFIED",
+      "value": 11.0,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_60": {
+      "expected_days": 60,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     }
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "pit_status": "NOT_VERIFIED",
+    "price_basis": "RAW",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "rank": null,
+    "raw_count": 1,
+    "readiness": {
+     "as_of": "2026-10-23",
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "availability_status": "RETAINED_CAPTURE",
+     "metrics": {
+      "ATR_14": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_LOWER_20_2": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_MIDDLE_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_UPPER_20_2": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "EMA_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_12_26": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_SIGNAL_9": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "RSI_14": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_120": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_5": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "VALUE",
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       }
+      },
+      "SMA_60": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      }
+     },
+     "schema": "technical-display-readiness/1",
+     "source_available_at": "2026-10-24T04:00:00Z",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "stale_status": "NORMAL",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION"
+    },
+    "reference_count": 1,
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "schema": "@kis:bars/1/analysis",
+    "series_id": "SYN",
+    "signal_day": "2026-10-23",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "status": "NORMAL",
+    "symbol": "SYN",
+    "update_state": "RETAINED_ARCHIVE",
+    "volume_latest": {
+     "last_observed_session": "2026-10-23",
+     "null_reasons": [
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_value": 100.0,
+     "unit": "SHARES",
+     "value": null
+    },
+    "volume_note": {
+     "null_reasons": [
+      "INSUFFICIENT_BARS",
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_state": "NOT_AVAILABLE",
+     "reason": "INSUFFICIENT_BARS",
+     "state": null,
+     "window_end": "2026-10-23",
+     "window_start": "2026-10-19"
+    }
+   }
+  },
+  "reference": {
+   "chart": {
+    "amount_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "basis": "RAW",
+    "calendar": "NYSE",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "confirmed_ranges": [],
+    "corrected_at": null,
+    "currency": "USD",
+    "currency_reference": "SYNTHETIC",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "dividend_adjustment": "NONE",
+    "exchange": "NASDAQ",
+    "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
+    "held_ranges": [],
+    "historical_available_at": null,
+    "identity": {
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "UNKNOWN"
+    },
+    "issuer_id": null,
+    "price_basis_date": "2026-10-23",
+    "price_scope_status": "UNCONFIRMED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "raw_bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "rejected_rows": [],
+    "schema": "@kis:bars/1",
+    "security_id": "SYNTHETIC-SECURITY-1",
+    "session_scope": "PROVIDER_UNCONFIRMED",
+    "source": "KIS retained dailyprice MODP0",
+    "source_query": {
+     "BYMD": "20261023",
+     "EXCD": "NAS",
+     "GUBN": "0",
+     "MODP": "0",
+     "SYMB": "SYN"
+    },
+    "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+    "splits": [],
+    "suspensions": [],
+    "symbol": "SYN",
+    "timestamp_basis": "SESSION_DATE_ONLY_NO_PROVIDER_INTRADAY_TIME",
+    "timezone": "America/New_York",
+    "trade_count": null,
+    "volume_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "vwap": null
+   },
+   "measures": {
+    "adopted_count": 0,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "UNKNOWN",
+     "price_basis": "RAW",
+     "security_id": null,
+     "trade_scope_reference": null,
+     "trade_scope_status": "UNCONFIRMED"
+    },
+    "historical_available_at": null,
+    "identity_status": "UNKNOWN",
+    "metrics": {
+     "dollar_volume_6m": {
+      "anchor_day": null,
+      "approximation": "PROVIDER_ROUNDED_AGGREGATE_NOT_EXACT_TRADE_SUM",
+      "close_volume_proxy": {
+       "invalid_dates": [],
+       "mean_complete": null,
+       "mean_observed": "1100",
+       "reason": "INCOMPLETE_WINDOW",
+       "valid_days": 5
+      },
+      "expected_days": 127,
+      "gt_zero": null,
+      "mean_observed": null,
+      "null_reasons": [
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "TRADING_DAYS",
+      "observed_days": 0,
+      "raw_gt_zero": null,
+      "raw_unit": "SOURCE_QUOTE_CURRENCY_PER_TRADING_DAY",
+      "raw_value": null,
+      "reference_reasons": [
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "trade_scope_status": "UNCONFIRMED",
+      "unit": "USD_PER_TRADING_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "momentum_12m": {
+      "anchor_day": "2025-10-23",
+      "expected_days": 252,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2025-10-23"
+     },
+     "momentum_3m": {
+      "anchor_day": "2026-07-23",
+      "expected_days": 66,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-07-23"
+     },
+     "momentum_6m": {
+      "anchor_day": "2026-04-23",
+      "expected_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "volatility_6m": {
+      "anchor_day": "2026-04-23",
+      "annualized": false,
+      "ddof": 1,
+      "expected_days": 127,
+      "expected_price_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "DAILY_RETURNS",
+      "observed_days": 4,
+      "observed_price_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT_PER_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     }
+    },
+    "pit_status": "NOT_VERIFIED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "qgv_join_key": null,
+    "rank_count": 0,
+    "raw_count": 0,
+    "reference_count": 0,
+    "result_kind": "SINGLE_COMPANY_MEASURES",
+    "schema": "@kis:technical-measures/1",
+    "security_id": null,
+    "series_id": "SYN",
+    "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+    "settings_version": "technical-leaderboard/2026-11-03.1",
+    "signal_day": "2026-10-23",
+    "source": "KIS retained dailyprice MODP0",
+    "status": "NORMAL",
+    "symbol": "SYN"
+   },
+   "technical": {
+    "QGV_coverage_change": null,
+    "QGV_reason": "OFFICIAL_MODEL_UNCHANGED_NOT_RECALCULATED",
+    "adopted_count": 0,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "corrected_at": null,
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [],
+     "state": "AVAILABLE",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "UNKNOWN",
+     "price_basis": "RAW",
+     "security_id": "SYNTHETIC-SECURITY-1"
+    },
+    "excluded_future_rows": 0,
+    "historical_available_at": null,
+    "history_count": 5,
+    "input_start": "2026-10-19",
+    "last_success_at": "2026-10-24T04:00:00Z",
+    "metrics": {
+     "ATR_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_LOWER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_MIDDLE_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_UPPER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "EMA_20": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_12_26": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_SIGNAL_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "RSI_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_120": {
+      "expected_days": 120,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_5": {
+      "expected_days": 5,
+      "null_reasons": [
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": 11.0,
+      "reference_reasons": [
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": 11.0,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_60": {
+      "expected_days": 60,
+      "null_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "WARMUP",
+       "IDENTITY_UNCONFIRMED",
+       "ACTION_BASIS_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     }
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "pit_status": "NOT_VERIFIED",
+    "price_basis": "RAW",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "rank": null,
+    "raw_count": 1,
+    "readiness": {
+     "as_of": "2026-10-23",
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "availability_status": "RETAINED_CAPTURE",
+     "metrics": {
+      "ATR_14": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_LOWER_20_2": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_MIDDLE_20": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_UPPER_20_2": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "EMA_20": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_12_26": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_SIGNAL_9": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "RSI_14": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_120": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_20": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_5": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "DIAGNOSTIC",
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       }
+      },
+      "SMA_60": {
+       "adjustment": {
+        "evidence_end": null,
+        "evidence_start": null,
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "UNCONFIRMED"
+       },
+       "block_reasons": [
+        "WARMUP",
+        "IDENTITY_UNCONFIRMED",
+        "ACTION_BASIS_UNCONFIRMED"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "UNKNOWN"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      }
+     },
+     "schema": "technical-display-readiness/1",
+     "source_available_at": "2026-10-24T04:00:00Z",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "stale_status": "NORMAL",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION"
+    },
+    "reference_count": 1,
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "schema": "@kis:bars/1/analysis",
+    "series_id": "SYN",
+    "signal_day": "2026-10-23",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "status": "NORMAL",
+    "symbol": "SYN",
+    "update_state": "RETAINED_ARCHIVE",
+    "volume_latest": {
+     "last_observed_session": "2026-10-23",
+     "null_reasons": [
+      "IDENTITY_UNCONFIRMED",
+      "ACTION_BASIS_UNCONFIRMED",
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_value": 100.0,
+     "unit": "SHARES",
+     "value": null
+    },
+    "volume_note": {
+     "null_reasons": [
+      "IDENTITY_UNCONFIRMED",
+      "ACTION_BASIS_UNCONFIRMED",
+      "INSUFFICIENT_BARS",
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_state": "NOT_AVAILABLE",
+     "reason": "INSUFFICIENT_BARS",
+     "state": null,
+     "window_end": "2026-10-23",
+     "window_start": "2026-10-19"
+    }
+   }
+  },
+  "withheld": {
+   "chart": {
+    "amount_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "basis": "RAW",
+    "calendar": "NYSE",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "confirmed_ranges": [
+     {
+      "evidence": "SYNTHETIC",
+      "from": "2026-10-19",
+      "to": "2026-10-23"
+     }
+    ],
+    "corrected_at": null,
+    "currency": "USD",
+    "currency_reference": "SYNTHETIC",
+    "display": {
+     "hold_reasons": [
+      "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+     ],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [
+      {
+       "candidate_close_ratio": "2",
+       "confirmed": false,
+       "date": "2026-10-21",
+       "observed_close_ratio": "2",
+       "policy": "raw-integer-jump-screen/1",
+       "reason": "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+      }
+     ],
+     "state": "WITHHELD",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "dividend_adjustment": "NONE",
+    "exchange": "NASDAQ",
+    "fixture_kind": "SYNTHETIC_NOT_A_COMPANY",
+    "held_ranges": [],
+    "historical_available_at": null,
+    "identity": {
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED"
+    },
+    "issuer_id": null,
+    "price_basis_date": "2026-10-23",
+    "price_scope_status": "UNCONFIRMED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "raw_bars": [
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-19",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "11",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-20",
+      "high": "12",
+      "low": "9",
+      "open": "10",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-21",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-22",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     },
+     {
+      "amount": "1100",
+      "close": "22",
+      "collected_at": "2026-10-24T04:00:00Z",
+      "corrected": null,
+      "date": "2026-10-23",
+      "high": "24",
+      "low": "18",
+      "open": "20",
+      "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+      "volume": "100"
+     }
+    ],
+    "rejected_rows": [],
+    "schema": "@kis:bars/1",
+    "security_id": "SYNTHETIC-SECURITY-1",
+    "session_scope": "PROVIDER_UNCONFIRMED",
+    "source": "KIS retained dailyprice MODP0",
+    "source_query": {
+     "BYMD": "20261023",
+     "EXCD": "NAS",
+     "GUBN": "0",
+     "MODP": "0",
+     "SYMB": "SYN"
+    },
+    "source_sha256": "5b9d0da820b64829b3b805e2f71ea736d8cc9206362f70f6ada54fb6bc89614c",
+    "splits": [],
+    "suspensions": [],
+    "symbol": "SYN",
+    "timestamp_basis": "SESSION_DATE_ONLY_NO_PROVIDER_INTRADAY_TIME",
+    "timezone": "America/New_York",
+    "trade_count": null,
+    "volume_basis": "PROVIDER_REPORTED_UNCONFIRMED",
+    "vwap": null
+   },
+   "measures": {
+    "adopted_count": 0,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [
+      "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+     ],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [
+      {
+       "candidate_close_ratio": "2",
+       "confirmed": false,
+       "date": "2026-10-21",
+       "observed_close_ratio": "2",
+       "policy": "raw-integer-jump-screen/1",
+       "reason": "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+      }
+     ],
+     "state": "WITHHELD",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED",
+     "no_split_end": "2026-10-23",
+     "no_split_reference": "SYNTHETIC",
+     "no_split_start": "2026-10-19",
+     "price_basis": "RAW",
+     "security_id": null,
+     "trade_scope_reference": null,
+     "trade_scope_status": "UNCONFIRMED"
+    },
+    "historical_available_at": null,
+    "identity_status": "CONFIRMED",
+    "metrics": {
+     "dollar_volume_6m": {
+      "anchor_day": null,
+      "approximation": "PROVIDER_ROUNDED_AGGREGATE_NOT_EXACT_TRADE_SUM",
+      "close_volume_proxy": {
+       "invalid_dates": [],
+       "mean_complete": null,
+       "mean_observed": "1760",
+       "reason": "INCOMPLETE_WINDOW",
+       "valid_days": 5
+      },
+      "expected_days": 127,
+      "gt_zero": null,
+      "mean_observed": null,
+      "null_reasons": [
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "TRADING_DAYS",
+      "observed_days": 0,
+      "raw_gt_zero": null,
+      "raw_unit": "SOURCE_QUOTE_CURRENCY_PER_TRADING_DAY",
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "VOLUME_WINDOW_INCOMPLETE_OR_INVALID",
+       "TRADE_SCOPE_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "trade_scope_status": "UNCONFIRMED",
+      "unit": "USD_PER_TRADING_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "momentum_12m": {
+      "anchor_day": "2025-10-23",
+      "expected_days": 252,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2025-10-23"
+     },
+     "momentum_3m": {
+      "anchor_day": "2026-07-23",
+      "expected_days": 66,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-07-23"
+     },
+     "momentum_6m": {
+      "anchor_day": "2026-04-23",
+      "expected_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "CLOSES",
+      "observed_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "PRICE_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     },
+     "volatility_6m": {
+      "anchor_day": "2026-04-23",
+      "annualized": false,
+      "ddof": 1,
+      "expected_days": 127,
+      "expected_price_days": 128,
+      "gt_zero": null,
+      "null_reasons": [
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "observation_unit": "DAILY_RETURNS",
+      "observed_days": 4,
+      "observed_price_days": 5,
+      "raw_gt_zero": null,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "RETURN_WINDOW_INCOMPLETE_OR_INVALID",
+       "ACTION_BASIS_UNCONFIRMED",
+       "IDENTITY_RANGE_UNCONFIRMED"
+      ],
+      "reference_value": null,
+      "state": "NOT_COMPUTED",
+      "unit": "PERCENT_PER_DAY",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-04-23"
+     }
+    },
+    "pit_status": "NOT_VERIFIED",
+    "publication_scope": "OWNER_PRIVATE_ONLY",
+    "qgv_join_key": null,
+    "rank_count": 0,
+    "raw_count": 0,
+    "reference_count": 0,
+    "result_kind": "SINGLE_COMPANY_MEASURES",
+    "schema": "@kis:technical-measures/1",
+    "security_id": null,
+    "series_id": "SYN",
+    "settings_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+    "settings_version": "technical-leaderboard/2026-11-03.1",
+    "signal_day": "2026-10-23",
+    "source": "KIS retained dailyprice MODP0",
+    "status": "NORMAL",
+    "symbol": "SYN"
+   },
+   "technical": {
+    "QGV_coverage_change": null,
+    "QGV_reason": "OFFICIAL_MODEL_UNCHANGED_NOT_RECALCULATED",
+    "adopted_count": 1,
+    "chart_basis": "RAW",
+    "collected_at": "2026-10-24T04:00:00Z",
+    "corrected_at": null,
+    "data_asof": "2026-10-23",
+    "diagnostic_basis": "RAW",
+    "display": {
+     "hold_reasons": [
+      "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+     ],
+     "label": "검증 전(참고)",
+     "official": false,
+     "screen_policy": {
+      "minimum_absolute_return": "0.30",
+      "new_old_ratios": [
+       "1.5",
+       "2",
+       "3",
+       "4",
+       "5",
+       "10",
+       "20"
+      ],
+      "relative_tolerance": "0.08",
+      "version": "raw-integer-jump-screen/1",
+      "window_sessions": 100
+     },
+     "split_candidates": [
+      {
+       "candidate_close_ratio": "2",
+       "confirmed": false,
+       "date": "2026-10-21",
+       "observed_close_ratio": "2",
+       "policy": "raw-integer-jump-screen/1",
+       "reason": "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+      }
+     ],
+     "state": "WITHHELD",
+     "validation_tier": "UNVERIFIED_REFERENCE"
+    },
+    "evaluation_day": "2026-10-23",
+    "evidence": {
+     "currency": "USD",
+     "currency_reference": "SYNTHETIC",
+     "identity_end": "2026-10-23",
+     "identity_reference": "SYNTHETIC",
+     "identity_start": "2026-10-19",
+     "identity_status": "CONFIRMED",
+     "no_split_end": "2026-10-23",
+     "no_split_reference": "SYNTHETIC",
+     "no_split_start": "2026-10-19",
+     "price_basis": "RAW",
+     "security_id": "SYNTHETIC-SECURITY-1"
+    },
+    "excluded_future_rows": 0,
+    "historical_available_at": null,
+    "history_count": 5,
+    "input_start": "2026-10-19",
+    "last_success_at": "2026-10-24T04:00:00Z",
+    "metrics": {
+     "ATR_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_LOWER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_MIDDLE_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "BOLL_UPPER_20_2": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "EMA_20": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_12_26": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_HISTOGRAM_12_26_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "MACD_SIGNAL_9": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "RSI_14": {
+      "expected_days": 5,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "PERCENT",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_120": {
+      "expected_days": 120,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_20": {
+      "expected_days": 20,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_5": {
+      "expected_days": 5,
+      "null_reasons": [],
+      "observation_days": 5,
+      "raw_value": 17.6,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "VERIFIED",
+      "value": 17.6,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     },
+     "SMA_60": {
+      "expected_days": 60,
+      "null_reasons": [
+       "WARMUP"
+      ],
+      "observation_days": 5,
+      "raw_value": null,
+      "reference_reasons": [
+       "RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED",
+       "WARMUP"
+      ],
+      "reference_value": null,
+      "unit": "SOURCE_CURRENCY_PER_SHARE",
+      "validation_tier": "UNVERIFIED_REFERENCE",
+      "value": null,
+      "window_end": "2026-10-23",
+      "window_start": "2026-10-19"
+     }
+    },
+    "pattern_status": "EXISTING_RULES_ONLY_NO_NEW_PATTERN_OR_SUCCESS_DEFINITION",
+    "pit_status": "NOT_VERIFIED",
+    "price_basis": "RAW",
+    "publication_status": "RESEARCH_PRIVATE_ONLY",
+    "rank": null,
+    "raw_count": 1,
+    "readiness": {
+     "as_of": "2026-10-23",
+     "availability_reason": "HISTORICAL_SOURCE_AVAILABILITY_NOT_VERIFIED",
+     "availability_status": "RETAINED_CAPTURE",
+     "metrics": {
+      "ATR_14": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_TRUE_RANGES_MEAN_THEN_WILDER_RESET_AFTER_OHLC_GAP",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_LOWER_20_2": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_MIDDLE_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "BOLL_UPPER_20_2": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_20_CLOSE_POPULATION_STDDEV",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "EMA_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_20_CLOSE_SMA_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_12_26": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FULL_INPUT_SMA_SEEDED_EMA_12_MINUS_26",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 26,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_HISTOGRAM_12_26_9": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "MACD_MINUS_SIGNAL",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "MACD_SIGNAL_9": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_9_VALID_MACD_MEAN_THEN_EMA",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 34,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "RSI_14": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "FIRST_14_CHANGES_MEAN_THEN_WILDER",
+        "policy": "GSQ015_FULL_RETAINED_HISTORY"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 15,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_120": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 120,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_20": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 20,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      },
+      "SMA_5": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "VALUE",
+       "warmup": {
+        "minimum_sessions": 5,
+        "observed_sessions": 5,
+        "state": "READY"
+       }
+      },
+      "SMA_60": {
+       "adjustment": {
+        "evidence_end": "2026-10-23",
+        "evidence_start": "2026-10-19",
+        "price_basis": "RAW",
+        "required_end": "2026-10-23",
+        "required_start": "2026-10-19",
+        "state": "DOCUMENTED_NO_SPLIT"
+       },
+       "block_reasons": [
+        "WARMUP"
+       ],
+       "continuity": {
+        "reasons": [],
+        "state": "COMPLETE"
+       },
+       "identity": {
+        "fixed_security_id_state": "PRESENT_NOT_RANKED",
+        "reference_present": true,
+        "state": "CONFIRMED"
+       },
+       "initialization": {
+        "input_start": "2026-10-19",
+        "method": "ROLLING_CLOSE_MEAN",
+        "policy": "GSQ015_ROLLING_WINDOW"
+       },
+       "state": "NOT_COMPUTED",
+       "warmup": {
+        "minimum_sessions": 60,
+        "observed_sessions": 5,
+        "state": "INSUFFICIENT"
+       }
+      }
+     },
+     "schema": "technical-display-readiness/1",
+     "source_available_at": "2026-10-24T04:00:00Z",
+     "stale_reason": "UPDATE_SCHEDULE_NOT_CONNECTED",
+     "stale_status": "NORMAL",
+     "value_scope": "PRIVATE_RESEARCH_DOCUMENT_RECONSTRUCTION"
+    },
+    "reference_count": 0,
+    "result_kind": "RAW_SERIES_DIAGNOSTIC",
+    "schema": "@kis:bars/1/analysis",
+    "series_id": "SYN",
+    "signal_day": "2026-10-23",
+    "source_kind": "NORMALIZED_PROVIDER_DAILY_BARS",
+    "status": "NORMAL",
+    "symbol": "SYN",
+    "update_state": "RETAINED_ARCHIVE",
+    "volume_latest": {
+     "last_observed_session": "2026-10-23",
+     "null_reasons": [
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_value": 100.0,
+     "unit": "SHARES",
+     "value": null
+    },
+    "volume_note": {
+     "null_reasons": [
+      "INSUFFICIENT_BARS",
+      "VOLUME_SCOPE_UNCONFIRMED"
+     ],
+     "raw_state": "NOT_AVAILABLE",
+     "reason": "INSUFFICIENT_BARS",
+     "state": null,
+     "window_end": "2026-10-23",
+     "window_start": "2026-10-19"
+    }
+   }
+  }
+ }
+}
