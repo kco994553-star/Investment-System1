@@ -11,6 +11,11 @@ index.html, at the artifact root like every other published file, so both workfl
   - The old modules the new app reuses (loader.js LOAD_ORDER names with no web_app file, plan A) are not copied again: the
     page loads the current site's files of those names, which must be byte-identical to web_assets (build_web_app.py rule).
   - The data files are the current site's: data.js fetches them by plain name, page-relative, and nothing new is written.
+  - The owner-private KIS panels (DC-52) are published like every other web_app file: kis-private.js, private-expand-live.js
+    and the full loader.js (owner approval 2026-11-15 of the narrow Pages guard exception; it replaced the former
+    OWNER_PRIVATE exclusion). kis-private.js names the five private Worker routes and its private schema names, which the
+    guard admits in that one root file only, at its pinned bytes (pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS). A public
+    visitor still sends nothing to the Worker: every read waits for a sign-in click, and the Worker checks the owner.
 The guard pins every added file by exact name and SHA-256 (pages_artifact_guard.py APPROVED_SHA256); no limit changes.
 """
 from __future__ import annotations

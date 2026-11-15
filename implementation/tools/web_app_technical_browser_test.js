@@ -6,8 +6,8 @@
 //    blocks and the two private panels are drawn. A fresh open with no company reads no file at all.
 //  - Verdict on hold: the band 지표 판정 보류 (NO_APPROVED_PRICE_SERIES, the IEX last-trade path is not chart OHLCV), six indicator
 //    rows and five pattern rows each 판정 보류 with that code, no public chart, no price, no other verdict.
-//  - Private layer: two IS2.parts.privatePanel (tech-kis-chart in 2-1, tech-kis-pattern in 2-2) in NOT_READY with the shared words,
-//    empty bodies, nothing sent or stored.
+//  - Private layer: two IS2.parts.privatePanel (tech-kis-chart in 2-1 in LOGIN_REQUIRED with its 비공개 펼치기 button, tech-kis-pattern
+//    in 2-2 in NOT_READY) with the shared words, empty bodies, nothing sent or stored.
 //  - Company pick only through IS2.companies (the shared search part): the list is read on the first focus of the box (its two
 //    files, once), a keyboard pick shows the company and sets IS2.selection; a listing-ended code (WBD) and a company outside the
 //    device history path (FIX) ask for no price; the route parameter and the selection open the chosen company.
@@ -17,6 +17,8 @@
 //    investment.web.v1.chart-user-objects (chart-user-objects/1, ChartWorkbench's exact fields, price_basis RAW_CLOSE, author USER),
 //    per company, newest first, delete, kept across routes and after a reload, invalid input refused.
 //  - Degree: 스윙 (D) / 장기 (W) switches the pattern-rules/1 table, the minimum bars and the scenario horizon.
+//  - Daily bars are owner-private (owner 2026-11-15): before a sign-in that place shows only the 로그인 필요 gate (no button, no
+//    request); signed in, a synthetic click is CLICK_REQUIRED and a click without the approved Worker address ORIGIN_UNAPPROVED.
 //  - Device chart after a sign-in (Google and Worker stand-ins, synthetic bars from tools/web_app_technical_fixture.js): one real
 //    click asks the Worker once; the close line, optional SMA lines and the user's notes draw; prices show only as text inside
 //    [data-ram-price]: the closes' sentinel decimals (.718, six significant digits, so the six-digit display keeps them) are
@@ -41,7 +43,9 @@ const NOW = '2026-10-14T21:00:00.000Z', TODAY = NOW.slice(0, 10);
 const NOTE_KEY = 'investment.web.v1.chart-user-objects', ORIGIN_KEY = 'investment.web.v1.private-history-origin';
 const NOTE_FIELDS = ['schema', 'id', 'kind', 'symbol', 'interval', 'price_basis', 'author', 'points', 'text', 'created_at', 'updated_at'];
 const SCENARIO_FIELDS = ['schema', 'id', 'symbol', 'interval', 'price_basis', 'author', 'text', 'anchor_time', 'created_at', 'updated_at', 'horizon', 'direction', 'levels', 'condition', 'invalidation', 'invalidation_price'];
-const PANELS = [['tech-kis-chart', '실가격 차트 · 지표 (KIS 통합 일봉)', '2-1'], ['tech-kis-pattern', '패턴 탐색 (KIS 분할 반영 계열, 탐색 전용)', '2-2']];
+// 2-1 carries 비공개 펼치기 (owner 2026-11-05, DC-44; tools/web_app_kis_private_browser_test.js): with the approved Worker in the
+// site settings it waits for a sign-in (LOGIN_REQUIRED); 2-2 has no private path yet (NOT_READY).
+const PANELS = [['tech-kis-chart', '실가격 차트 · 지표 (KIS 통합 일봉)', '2-1', 'LOGIN_REQUIRED', '로그인 필요'], ['tech-kis-pattern', '패턴 탐색 (KIS 분할 반영 계열, 탐색 전용)', '2-2', 'NOT_READY', '비공개 기능 준비 중']];
 const INDICATORS = ['SMA', 'EMA', 'BOLL', 'RSI', 'MACD', 'ATR'], PATTERNS = ['SUPPORT_RESISTANCE_ZONE', 'BOX_BREAKOUT_UP', 'BOX_BREAKDOWN', 'DOUBLE_BOTTOM', 'DOUBLE_TOP'];
 const HOLD = 'NO_APPROVED_PRICE_SERIES', CONT = 'PRICE_BASIS_CONTINUITY_UNCONFIRMED';
 // Google and Worker stand-ins for the device chart (as web_app_macro_browser_test.js): the GIS script and the Worker's /history.
@@ -65,6 +69,13 @@ let phase = 'START', pass = 0;
   }
   const reads = (from) => s.requests.slice(from).map((r) => r.name).filter((n) => n.endsWith('.json')).sort();
   const text = (page, sel) => page.locator(sel).first().evaluate((e) => (e instanceof HTMLElement ? e.innerText : e.textContent));
+  // The words a hidden element keeps (the daily-bars controls stay hidden until a sign-in, owner 2026-11-15).
+  const kept = (page, sel) => page.locator(sel).first().evaluate((e) => e.textContent);
+  // Before a sign-in the daily-bars place shows only the login-required gate; its controls are hidden and off.
+  async function gated(page, label) {
+    assert.deepEqual(await page.locator('[data-private-gate=tech-history]').evaluate((e) => [e.dataset.privateState, e.hidden, e.textContent]), ['LOGIN_REQUIRED', false, '비공개 로그인 필요'], label + ': only 로그인 필요');
+    assert.deepEqual([await page.locator('[data-tech-load]').isVisible(), await page.locator('[data-tech-load]').isDisabled(), await page.locator('[data-tech-load-why]').isVisible()], [false, true, false], label + ': no daily-bars control before a sign-in');
+  }
   const count = (page, sel) => page.locator(sel).count();
   const settle = (page, ms = 150) => page.evaluate((t) => new Promise((r) => setTimeout(r, t)), ms);
   const drawn = (page) => page.locator('[data-block="3.4"], [data-tech-slot] [data-state=error]').first().waitFor();
@@ -92,10 +103,10 @@ let phase = 'START', pass = 0;
     const st = await site.storage(page);
     assert.deepEqual([Object.keys(st.localItems).sort(), st.session], [[...keys].sort(), 0], label + ': nothing stored on the device but the keys a click wrote');
   }
-  async function panels(page, label) {
+  async function panels(page, label, { layerFailed = false } = {}) {
     const got = await page.locator('[data-private-panel]').evaluateAll((n) => n.map((x) => [x.dataset.privatePanel, x.dataset.privateState, x.querySelector('[data-private-status]').textContent,
       x.querySelector('.card-title').textContent, x.closest('[data-section]').dataset.section, x.querySelectorAll('[data-mascot]').length, x.querySelector('.private-body').textContent]));
-    assert.deepEqual(got, PANELS.map(([id, title, sec]) => [id, 'NOT_READY', '비공개 기능 준비 중', '비공개 ' + title, sec, 0, '']), label + ': two private panels, NOT_READY');
+    assert.deepEqual(got, PANELS.map(([id, title, sec, st, word]) => [id, layerFailed ? 'NOT_READY' : st, layerFailed ? '비공개 기능 준비 중' : word, '비공개 ' + title, sec, 0, '']), label + ': two private panels (2-1 waits for a sign-in, 2-2 not ready)');
   }
   async function keyboard(page, label) {
     const n = await page.evaluate(() => {
@@ -162,8 +173,8 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-block="3.1.3"] [data-prep]'), 1, phase + ': the official scenario is 준비 중');
       // ---- before a company: the button is off, notes say why
       tag('no company');
-      assert.equal(await page.locator('[data-tech-load]').isDisabled(), true);
-      assert.equal(await text(page, '[data-tech-load-why]'), '기업을 고르면 누를 수 있습니다');
+      await gated(page, phase);
+      assert.equal(await kept(page, '[data-tech-load-why]'), '기업을 고르면 누를 수 있습니다');
       assert.equal(await count(page, '[data-notes] [data-state=empty][data-na=NO_COMPANY]'), 1);
       assert.match(await text(page, '[data-scenario-form]'), /기업을 고르면/);
       // ---- degree (3.2.2)
@@ -200,17 +211,16 @@ let phase = 'START', pass = 0;
       assert.equal(await page.locator('#tech-q').inputValue(), '');
       // ---- no price request without a click
       tag('no request');
-      assert.equal(await page.locator('[data-tech-load]').isDisabled(), false);
-      assert.equal(await page.locator('[data-tech-load-why]').isHidden(), true);
+      // Public visitor with a company chosen: still only the gate (the CLICK_REQUIRED / ORIGIN_UNAPPROVED steps run after the
+      // sign-in in 'device chart 390').
+      await gated(page, phase);
+      assert.equal(await kept(page, '[data-tech-load-why]'), '');
       const atQ = s.requests.length, outQ = seen.outside.length;
       await synthetic(page, '[data-tech-load]');
-      await page.locator('[data-tech-load-status] [data-na=CLICK_REQUIRED]').waitFor();
-      assert.match(await text(page, '[data-tech-load-status]'), /^— · 버튼을 직접 눌러 주세요 · CLICK_REQUIRED$/);
-      await page.locator('[data-tech-load]').focus(); await page.keyboard.press('Enter');
-      await page.locator('[data-tech-load-status] [data-na=ORIGIN_UNAPPROVED]').waitFor();
-      assert.match(await text(page, '[data-tech-load-status]'), /^— · Worker 주소 설정 필요 · 승인된 주소가 이 기기에 없습니다 · ORIGIN_UNAPPROVED$/, phase + ': the reason words, never a code alone');
-      assert.equal(await page.locator('[data-tech-chart]').getAttribute('data-state'), 'NA');
-      assert.deepEqual([s.requests.slice(atQ).map((r) => r.name), seen.outside.slice(outQ)], [[], []], phase + ': neither click requested anything');
+      await page.waitForTimeout(100);
+      assert.equal(await kept(page, '[data-tech-load-status]'), '', phase + ': a click on the hidden button does nothing');
+      assert.equal(await page.locator('[data-tech-chart]').getAttribute('data-state'), 'BEFORE');
+      assert.deepEqual([s.requests.slice(atQ).map((r) => r.name), seen.outside.slice(outQ)], [[], []], phase + ': nothing requested');
       assert.deepEqual([await count(page, '[data-ram-price]'), await count(page, '[data-verdict-device]')], [0, 0], phase + ': no number, verdicts unchanged');
       // ---- notes kept on this device (3.3)
       tag('notes');
@@ -273,10 +283,11 @@ let phase = 'START', pass = 0;
       await pick(page, 'WBD', 'NASDAQ:WBD');
       assert.equal(await page.locator('[data-tech-chosen] [data-listing-ended]').getAttribute('data-listing-ended'), '2026-10-06');
       assert.match(await text(page, '[data-tech-chosen] [data-listing-ended]'), /^상장 종료 2026-10-06 · 점수 없음 · 일봉을 묻지 않습니다$/);
-      assert.equal(await page.locator('[data-tech-load]').isDisabled(), true); assert.equal(await text(page, '[data-tech-load-why]'), '상장 종료 기업은 일봉을 묻지 않습니다');
+      assert.equal(await page.locator('[data-tech-load]').isDisabled(), true); assert.equal(await kept(page, '[data-tech-load-why]'), '상장 종료 기업은 일봉을 묻지 않습니다');
       await pick(page, 'NYSE:FIX', 'NYSE:FIX');
       assert.equal(await page.locator('[data-tech-load]').isDisabled(), true);
-      assert.match(await text(page, '[data-tech-load-why]'), /^이 기업은 기기 일봉 경로에 없습니다 · 지원: TARGET 19개 기업 · 공개 화면은 그대로$/);
+      assert.match(await kept(page, '[data-tech-load-why]'), /^이 기업은 기기 일봉 경로에 없습니다 · 지원: TARGET 19개 기업 · 공개 화면은 그대로$/);
+      await gated(page, phase);
       await panels(page, phase + ' after picks');
       await keyboard(page, phase);
       await boundaries(page, seen, phase, { stored: [NOTE_KEY] });
@@ -309,8 +320,18 @@ let phase = 'START', pass = 0;
         document.body.prepend(bar);
       }, WORKER);
       const testClick = async (name) => { await page.locator('[data-test-action="' + name + '"]').click(); return page.evaluate((n) => window.__out[n], name); };
-      // Signed in but no Worker address: the reason, no request.
+      await gated(page, phase + ' before the sign-in');
+      // Signed in: the controls appear (owner 2026-11-15). A synthetic click is refused; without a Worker address the reason, no request.
       assert.equal(await testClick('prepare'), 'OK'); assert.equal(await testClick('login'), 'OK');
+      await page.locator('[data-tech-load]').waitFor();
+      assert.deepEqual([await page.locator('[data-private-gate=tech-history]').isVisible(), await page.locator('[data-tech-load]').isDisabled(), await page.locator('[data-tech-load-why]').isHidden()], [false, false, true], phase + ': signed in, the button is on');
+      await synthetic(page, '[data-tech-load]');
+      await page.locator('[data-tech-load-status] [data-na=CLICK_REQUIRED]').waitFor();
+      assert.match(await text(page, '[data-tech-load-status]'), /^— · 버튼을 직접 눌러 주세요 · CLICK_REQUIRED$/);
+      await page.locator('[data-tech-load]').focus(); await page.keyboard.press('Enter');
+      await page.locator('[data-tech-load-status] [data-na=ORIGIN_UNAPPROVED]').waitFor();
+      assert.match(await text(page, '[data-tech-load-status]'), /^— · Worker 주소 설정 필요 · 승인된 주소가 이 기기에 없습니다 · ORIGIN_UNAPPROVED$/, phase + ': the reason words, never a code alone');
+      assert.equal(await page.locator('[data-tech-chart]').getAttribute('data-state'), 'NA');
       await page.locator('[data-tech-load]').click(); await page.locator('[data-tech-load-status] [data-na=ORIGIN_UNAPPROVED]').waitFor();
       assert.deepEqual(worker, [], phase + ': no Worker request without the approved address');
       assert.equal(await testClick('origin'), 'OK');
@@ -431,7 +452,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, '[data-notes] [data-na=LOADER_FAILED]'), 1);
       assert.equal(await count(page, '[data-indicator] [data-verdict=HOLD]'), 6, phase + ': the structure still draws');
       assert.equal(await page.locator('[data-tech-load]').isDisabled(), true);
-      await panels(page, phase);
+      await panels(page, phase, { layerFailed: true });
       await boundaries(page, seen, phase, { errors: [/status of 404/] });
       await ctx.close();
       phase = 'live file 404 390';

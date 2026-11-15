@@ -2,6 +2,7 @@
 import contextlib
 from collections import Counter
 from copy import deepcopy
+import hashlib
 import importlib.util
 import base64
 import io
@@ -51,7 +52,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         receipt = json.loads(result.stdout)
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 176)  # 137 + the public preview (DC-51, owner 2026-11-14): app.html, preview-banner.css, app-screen-detail.js and 36 web_app files (tests/test_web_app_preview.py); 136 + qgv-official.js (central V reader, PR-D, owner decision D8 (b)); 133 + three TARGET v1 assets (#248); 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 178)  # 176 + the owner-private panels kis-private.js and private-expand-live.js (owner 2026-11-15 narrow Pages guard exception, PAGES_PRIVATE_EXCEPTIONS); 137 + the public preview (DC-51, owner 2026-11-14): app.html, preview-banner.css, app-screen-detail.js and 36 web_app files (tests/test_web_app_preview.py); 136 + qgv-official.js (central V reader, PR-D, owner decision D8 (b)); 133 + three TARGET v1 assets (#248); 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
         self.assertEqual(result.stderr, "")
 
@@ -504,7 +505,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
     def test_github_pages_tar_shape_passes_same_guard(self):
         receipt = self.tar_receipt()
         self.assertEqual(receipt["pages_artifact_guard"], "PASS")
-        self.assertEqual(receipt["files_scanned"], 176)  # 137 + the public preview (DC-51, owner 2026-11-14): app.html, preview-banner.css, app-screen-detail.js and 36 web_app files (tests/test_web_app_preview.py); 136 + qgv-official.js (central V reader, PR-D, owner decision D8 (b)); 133 + three TARGET v1 assets (#248); 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
+        self.assertEqual(receipt["files_scanned"], 178)  # 176 + the owner-private panels kis-private.js and private-expand-live.js (owner 2026-11-15 narrow Pages guard exception, PAGES_PRIVATE_EXCEPTIONS); 137 + the public preview (DC-51, owner 2026-11-14): app.html, preview-banner.css, app-screen-detail.js and 36 web_app files (tests/test_web_app_preview.py); 136 + qgv-official.js (central V reader, PR-D, owner decision D8 (b)); 133 + three TARGET v1 assets (#248); 129 + self-hosted OFL fonts (IA-11, 2026-10-20): jua/gaegu WOFF2 subsets + jua-OFL.txt/gaegu-OFL.txt; 129 = 126 + macro evidence (#351, owner approval 2026-10-20): macro-evidence.js/.css/.json; 119 (macro-cycle-ring.js/.css; incl. TA P1 modules chart-bars.js, pattern-config-defaults.js, pattern-engine.js, pattern-history.js, 2026-10-20) + chart renderer (P1-7/P1-8, 2026-10-20): chart-renderer.js, chart-workbench.js/.css, vendored lightweight-charts 5.2.1 + LICENSE/NOTICE/third-party notices; before that: 106 - the four removed home-bg-*.svg (2026-10-18) + universe-company.js/.css + doodles.js + ia-screens.js (owner IA 2026-10-18) + company-names-ko.json (KR-NAMES 2026-10-18) + stat-radar.js/.css + v-coverage.js/.css + price-time.js (D10 price time 2026-10-18) + data-refresh.js (2026-10-18)
         self.assertEqual(receipt["violations"], {})
         size = self.make_tar().stat().st_size
         if size > self.guard().ARCHIVE_WARN_BYTES:  # owner decision 2026-10-23: pass, but report the growth
@@ -867,6 +868,157 @@ class PagesArtifactGuardTests(unittest.TestCase):
         for category in ("kis_markers", "private_area_schema", "private_area_paths"):
             self.assertGreater(receipt["violations"].get(category, 0), 0)
         self.assertEqual(self.tar_receipt(self.make_tar()), receipt)
+
+    # ---- the one narrow exception: owner-private panels on Pages (owner approval 2026-11-15; PAGES_PRIVATE_EXCEPTIONS) ------
+    # The five paths and the schema names are assembled at run time like the canaries above.
+    EXCEPTED = "kis-private.js"
+    KIS_PATHS = tuple("/" + "k" + "is/" + route for route in ("status", "chart", "analysis", "technical", "qgv"))
+    KIS_SCHEMAS = tuple("k" + "is-" + name for name in ("bars/1", "bars/1/analysis", "technical-measures/1", "qgv/1", "status/1"))
+
+    def repinned(self, guard, name, payload, exception=True):
+        """Pin `payload` as the approved bytes of `name` (and as the exception's bytes when `exception`), on this guard copy."""
+        digest = hashlib.sha256(payload).hexdigest()
+        guard.APPROVED_SHA256[name] = digest
+        if exception and name in guard.PAGES_PRIVATE_EXCEPTIONS:
+            guard.PAGES_PRIVATE_EXCEPTIONS[name]["sha256"] = digest
+        return guard
+
+    def check_with(self, guard, name, payload):
+        violations = Counter()
+        guard._check_payload(name, payload, violations)
+        return violations
+
+    def test_pages_private_exception_is_one_file_with_fixed_lists_and_pinned_bytes(self):
+        guard = self.guard()
+        self.assertEqual(set(guard.PAGES_PRIVATE_EXCEPTIONS), {self.EXCEPTED})
+        record = guard.PAGES_PRIVATE_EXCEPTIONS[self.EXCEPTED]
+        self.assertEqual(set(record), {"sha256", "paths", "schemas"})
+        self.assertEqual(record["paths"], self.KIS_PATHS)
+        self.assertEqual(record["schemas"], self.KIS_SCHEMAS)
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        source = GUARD_PATH.parents[1] / "src/investment_system/product/web_app" / self.EXCEPTED
+        self.assertEqual(published, source.read_bytes(), "published byte-identical to the source")
+        self.assertEqual(record["sha256"], hashlib.sha256(published).hexdigest())
+        self.assertEqual(record["sha256"], guard.APPROVED_SHA256[self.EXCEPTED])
+        # Exactly the names in the file: every whole schema-name token the guard's own patterns find is listed, and every
+        # listed name is there (no stale entry). Each path is there exactly once as a single-quoted literal.
+        text = published.decode("utf-8")
+        tokens = {guard._whole_token(text, m.start(), m.end()) for m in guard.PRIVATE_SCHEMA_NAME.finditer(text)}
+        tokens |= {m.group(1) for m in guard.PRIVATE_SCHEMA_FIELD.finditer(text)}
+        self.assertEqual(tokens, set(self.KIS_SCHEMAS))
+        for path in self.KIS_PATHS:
+            self.assertEqual(text.count("'" + path + "'"), 1, path)
+        # Without the exception the same bytes fail both rules: 5 paths and 10 schema-name hits (the published build passes).
+        self.assertEqual(guard.private_code_paths(text), 5)
+        self.assertEqual(guard.private_schema_names(text), 10)
+        self.assertEqual(self.check_with(guard, self.EXCEPTED, published), Counter())
+        # private-expand-live.js needs no exception: it trips no rule, and only kis-private.js is excepted.
+        expand = (self.baseline / "private-expand-live.js").read_bytes().decode("utf-8")
+        self.assertEqual((guard.private_code_paths(expand), guard.private_schema_names(expand), guard.kis_marker_count(expand)),
+                         (0, 0, 0))
+        self.assertEqual(self.check_with(guard, "private-expand-live.js", expand.encode("utf-8")), Counter())
+        # Nothing else moves: limits stay.
+        self.assertEqual((guard.MAX_FILE_BYTES, guard.MAX_ENTRIES), (2 * 1024 * 1024, 192))
+
+    def test_pages_private_exception_fails_an_extra_kis_path_even_when_repinned(self):
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        for extra, expected in (("f('/" + "k" + "is/news')", 1), ("f('/" + "k" + "is/status/x')", 1), ("'/lab" + "/x'", 1),
+                                ("'/priv" + "ate/x'", 1), ("'/K" + "IS/STATUS'", 1), ('"' + self.KIS_PATHS[0] + '"', 1),
+                                ("'" + self.KIS_PATHS[0] + "'", 6)):  # a listed path named twice excuses none of the five
+            with self.subTest(extra=extra):
+                payload = published + ("\n" + extra + "\n").encode()
+                guard = self.repinned(self.guard(), self.EXCEPTED, payload)
+                self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, payload)), {"private_area_paths": expected})
+                (self.site / self.EXCEPTED).write_bytes(payload)
+                receipt = guard.scan_artifact(self.site)
+                self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
+                self.assertEqual(receipt["violations"], {"private_area_paths": expected})
+
+    def test_pages_private_exception_fails_an_extra_schema_name_even_when_repinned(self):
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        k, p = "k" + "is", "private"
+        for extra in ("const X='" + k + "-news/1';", "const X='" + p + "-bars/1';", "const X='" + k.upper() + "-QGV/1';",
+                      "'" + k + "-qgv/1.2'", "'" + k + "-qgv/2'", "x='a." + k + "-qgv/1'", "x={schema:'" + k + "-qgv/1," + k + "-x'}",
+                      "x={schema:'" + k + "-other'}", "'" + k + "-bars/1/other'"):
+            with self.subTest(extra=extra):
+                payload = published + ("\n" + extra + "\n").encode()
+                guard = self.repinned(self.guard(), self.EXCEPTED, payload)
+                self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, payload)), {"private_area_schema": 1})
+                (self.site / self.EXCEPTED).write_bytes(payload)
+                self.assertEqual(guard.scan_artifact(self.site)["violations"], {"private_area_schema": 1})
+        # A listed name repeated in prose is still the listed name.
+        payload = published + ("\n/* " + self.KIS_SCHEMAS[3] + " again */\n").encode()
+        self.assertEqual(self.check_with(self.repinned(self.guard(), self.EXCEPTED, payload), self.EXCEPTED, payload), Counter())
+
+    def test_pages_private_exception_fails_a_changed_byte_without_a_repin(self):
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        changed = published.replace(b"Owner-private", b"Owner-Private", 1)
+        self.assertNotEqual(changed, published)
+        # Neither pin moved: no exception at all, every rule on the whole file, and the hash pin fails.
+        guard = self.guard()
+        both = {"private_area_paths": 5, "private_area_schema": 10}
+        self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, changed)), {**both, "unapproved_content": 1})
+        (self.site / self.EXCEPTED).write_bytes(changed)
+        self.assertEqual(guard.scan_artifact(self.site)["violations"], {**both, "unapproved_content": 1})
+        self.assertEqual(self.tar_receipt(self.tar_of_site())["violations"], {**both, "unapproved_content": 1})
+        # Only APPROVED_SHA256 re-pinned: the exception's own pin still binds it to the old bytes.
+        guard = self.repinned(self.guard(), self.EXCEPTED, changed, exception=False)
+        self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, changed)), both)
+        # Only the exception re-pinned: the hash pin fails.
+        guard = self.guard()
+        guard.PAGES_PRIVATE_EXCEPTIONS[self.EXCEPTED]["sha256"] = hashlib.sha256(changed).hexdigest()
+        self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, changed)), {"unapproved_content": 1})
+        # Both re-pinned (an approved change): passes.
+        self.assertEqual(self.check_with(self.repinned(self.guard(), self.EXCEPTED, changed), self.EXCEPTED, changed), Counter())
+
+    def test_pages_private_exception_strings_fail_in_every_other_file(self):
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        literals = "const R={" + ",".join("a%d:'%s'" % (i, path) for i, path in enumerate(self.KIS_PATHS)) + "};" \
+                   + "const S={" + ",".join("b%d:'%s'" % (i, name) for i, name in enumerate(self.KIS_SCHEMAS)) + "};"
+        for name in ("private-expand-live.js", "screen-qgv-live.js", "loader.js", "app.js", "app.html", "index.html"):
+            with self.subTest(file=name):
+                # The whole excepted file under another published name, re-pinned there: no exception.
+                guard = self.repinned(self.guard(), name, published)
+                self.assertEqual(dict(self.check_with(guard, name, published)), {"private_area_paths": 5, "private_area_schema": 10})
+                # The listed strings alone, appended to that file and re-pinned: each counts (kis-bars/1/analysis holds one hit).
+                payload = (self.baseline / name).read_bytes() + ("\n" + literals + "\n").encode()
+                guard = self.repinned(self.guard(), name, payload)
+                self.assertEqual(dict(self.check_with(guard, name, payload)), {"private_area_paths": 5, "private_area_schema": 5})
+                (self.site / name).write_bytes(payload)
+                self.assertEqual(guard.scan_artifact(self.site)["violations"], {"private_area_paths": 5, "private_area_schema": 5})
+                (self.site / name).write_bytes((self.baseline / name).read_bytes())
+        # In JSON there is no exception either.
+        data = json.loads((self.baseline / "data.json").read_text(encoding="utf-8"))
+        data["nested"] = {"schema": self.KIS_SCHEMAS[3], "link": self.KIS_PATHS[0]}
+        violations = self.check("data.json", json.dumps(data).encode())
+        self.assertEqual((violations["private_area_schema"], violations["private_area_paths"]), (1, 1))
+
+    def test_pages_private_exception_file_at_another_location_fails(self):
+        published = (self.baseline / self.EXCEPTED).read_bytes()
+        guard = self.guard()
+        # Directory mode: in a subdirectory, or under another name, it is an unexpected entry and the root file is missing.
+        for place in ("owner/" + self.EXCEPTED, "kis-private-2.js", "KIS-PRIVATE.JS", self.EXCEPTED + ".js"):
+            with self.subTest(place=place):
+                with tempfile.TemporaryDirectory() as folder:
+                    site = Path(folder) / "site"
+                    shutil.copytree(self.baseline, site)
+                    (site / self.EXCEPTED).unlink()
+                    (site / place).parent.mkdir(parents=True, exist_ok=True)
+                    (site / place).write_bytes(published)
+                    receipt = guard.scan_artifact(site)
+                    self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
+                    self.assertGreater(receipt["violations"].get("unexpected_entries", 0), 0)
+                    self.assertEqual(receipt["violations"].get("missing_files"), 1)
+        # Tar mode: the root member passes with the same receipt as the directory; a nested member is unexpected.
+        self.assertEqual(self.scan()["pages_artifact_guard"], "PASS")
+        self.assertEqual(self.tar_receipt(self.tar_of_site()), self.scan())
+        names = {p.name for p in self.site.iterdir()} - {self.EXCEPTED}
+        for member in ("./owner/" + self.EXCEPTED, "owner/" + self.EXCEPTED, "./a/../" + self.EXCEPTED):
+            with self.subTest(member=member):
+                receipt = self.tar_receipt(self.tar_of_site(extra=((member, published),), names=names))
+                self.assertEqual(receipt["pages_artifact_guard"], "FAIL")
+                self.assertGreater(receipt["violations"].get("unexpected_entries", 0), 0)
+                self.assertNotIn("private_area_paths", receipt["violations"])  # an unexpected entry is never read as the file
 
 
 def random_bytes(size, seed):

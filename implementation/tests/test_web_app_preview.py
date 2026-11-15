@@ -79,6 +79,19 @@ class WebAppPreviewTest(unittest.TestCase):
         expected = (own - shared) | {'app.html', 'preview-banner.css', 'app-screen-detail.js'}
         self.assertEqual(self.added(), expected)
 
+    def test_owner_private_files_and_the_full_loader_are_published_byte_identical(self):
+        # Owner 2026-11-15: the narrow Pages guard exception (pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS) replaced the
+        # former OWNER_PRIVATE exclusion; the preview publishes both owner-private files and loader.js exactly as in web_app.
+        web_app = load('build_web_app')
+        owner_private = ['kis-private.js', 'private-expand-live.js']
+        self.assertFalse(hasattr(self.preview, 'OWNER_PRIVATE'))
+        self.assertFalse(hasattr(self.preview, 'loader_js'))
+        source = web_app.load_order()
+        self.assertEqual(source[-2:], owner_private)
+        for name in owner_private + ['loader.js']:
+            self.assertEqual((self.with_preview / name).read_bytes(), (WEB_APP / name).read_bytes(), name)
+        self.assertEqual(web_app.parse_load_order((self.with_preview / 'loader.js').read_text(encoding='utf-8')), source)
+        self.assertEqual(set(self.guard.PAGES_PRIVATE_EXCEPTIONS), {'kis-private.js'})
     def test_guard_passes_and_pins_every_added_file(self):
         receipt = self.guard.scan_artifact(self.with_preview)
         self.assertEqual(receipt['pages_artifact_guard'], 'PASS', receipt)
@@ -86,6 +99,7 @@ class WebAppPreviewTest(unittest.TestCase):
         # the preview must fit with all of them, so a web_app that grows past the entry limit fails here, not at deploy.
         live_only = {n for n in self.guard.ALLOWED_NAMES if n.endswith('.json')} - {p.name for p in self.with_preview.iterdir()}
         self.assertLessEqual(receipt['files_scanned'] + len(live_only), self.guard.MAX_ENTRIES)
+        self.assertEqual((receipt['files_scanned'], len(live_only)), (178, 7))  # 185 of 192 (owner 2026-11-15: +2)
         self.assertEqual(self.guard.MAX_ENTRIES, 192)
         self.assertEqual(self.guard.MAX_FILE_BYTES, 2 * 1024 * 1024)
         for name in self.added():
@@ -113,8 +127,10 @@ class WebAppPreviewTest(unittest.TestCase):
     def test_every_script_the_page_loads_is_published(self):
         page = parse((self.with_preview / 'app.html').read_text(encoding='utf-8'))
         web_app = load('build_web_app')
-        for name in page.scripts + page.styles + web_app.load_order():
+        published = web_app.parse_load_order((self.with_preview / 'loader.js').read_text(encoding='utf-8'))
+        for name in page.scripts + page.styles + published:
             self.assertTrue((self.with_preview / name).is_file(), name)
+        self.assertEqual(published, web_app.load_order())  # the full list, the two owner-private files included
         for name in web_app.reused_old_files():
             self.assertEqual((self.with_preview / name).read_bytes(), (web_app.OLD / name).read_bytes(), name)
 

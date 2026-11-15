@@ -10,7 +10,9 @@
      of them download in parallel and run in list order. No inline code, no eval; the CSP is unchanged ('self').
    - IS2.ready resolves when every file ran and the layer installed itself (IS2.action and the eight namespaces). It rejects with
      Error('LOADER_FAILED <file>') for the first file in list order that did not arrive, threw while it ran, or did not install
-     its namespace; it never retries (a reload does).
+     its namespace; it never retries (a reload does). The OWNER_PRIVATE files (the owner-private KIS panels, DC-52) are the one
+     exception: one that is missing or throws never fails the layer, so the public screens load as before; it is named in
+     IS2.loadSkipped() and its panels stay in their first state (no reader, no request).
    - Until then IS2.data / qgv / prices / store / engines and the common base's IS2.companies / privateArea / lab (2026-10-31:
      the one company list, the private area's state and the Lab reader; COMMON_BASE_20261031.md) are facades with the layer's
      own members (API below):
@@ -28,7 +30,10 @@
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
 // then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
-// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing.
+// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. kis-private.js
+// is the owner-private reader and client (IS2.kisPrivate, DC-44 / DC-52; network through prices.js) and private-expand-live.js its
+// common panel component on the technical and QGV private panels (IS2.privateExpand). Both stay last, on their own line (OWNER_PRIVATE
+// below): one that is missing or throws never fails the public layer. The Pages preview publishes both (owner 2026-11-15).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',
@@ -44,6 +49,7 @@ const LOAD_ORDER=Object.freeze([
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
  'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
+ 'kis-private.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
 const NAME=/^[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.js$/;
@@ -55,7 +61,7 @@ const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.j
 const API=Object.freeze({
  data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',strictFetch:'p',ready:'p',get:'s',screens:'s',state:'s',
   publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
- prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
+ prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',kisState:'s',kisSubscribe:'sub',kisConnect:'a',kisDisconnect:'a',kisRead:'a',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',
@@ -74,11 +80,13 @@ const API=Object.freeze({
  lab:{SCHEMA:'v',SCHEMA_V2:'v',SCHEMAS:'v',METRICS:'v',TEXT:'v',validate:'s',status:'s',nullText:'s',reasonText:'s',source:'p'}});
 const NOT_READY=Object.freeze({state:'NOT_READY',reason:'LAYER_NOT_READY'}),LOAD_FAILED=Object.freeze({state:'NOT_READY',reason:'LOADER_FAILED'});
 const MARK_READY='is2-ready',MARK_FAILED='is2-load-failed',PAINT_WAIT_MS=3000,IDLE_WAIT_MS=200;
+// Owner-private files whose failure leaves the public layer loading (see the notes above); both install no namespace of NAMESPACES.
+const OWNER_PRIVATE=Object.freeze(['kis-private.js','private-expand-live.js']);
 
 function create(win,{list=LOAD_ORDER}={}){
  if(!Array.isArray(list)||!list.every(n=>typeof n==='string'&&NAME.test(n))||new Set(list).size!==list.length)throw Error('LOADER_NAME_INVALID');
  const order=Object.freeze([...list]);
- let phase='WAITING',error=null,real=null,settle=null,started=false;
+ let phase='WAITING',error=null,real=null,settle=null,started=false;const skipped=new Set();
  const ready=new Promise((resolve,reject)=>{settle={resolve,reject};});
  ready.catch(()=>{});// the failure is reported through IS2.ready and the facades; it is not an unhandled rejection
  const parentOf=path=>{let o=real[path[0]];for(let i=1;i<path.length-1;i++)o=o[path[i]];return o;};
@@ -115,7 +123,7 @@ function create(win,{list=LOAD_ORDER}={}){
  function insert(){
   phase='LOADING';
   const doc=win.document,origin=win.location.origin,I=win.IS2;let first=null;
-  const fail=name=>{const i=order.indexOf(name);if(first===null||(i>=0&&i<order.indexOf(first)))first=name;};
+  const fail=name=>{if(OWNER_PRIVATE.includes(name)){skipped.add(name);return;}const i=order.indexOf(name);if(first===null||(i>=0&&i<order.indexOf(first)))first=name;};
   const fileOf=url=>{try{const u=new URL(String(url));return u.origin===origin?u.pathname.split('/').pop():null;}catch(_){return null;}};
   // A listed file that throws while it runs still fires 'load'; the window's error event names it.
   const thrown=e=>{const n=fileOf(e&&e.filename);if(n&&order.includes(n))fail(n);};
@@ -144,9 +152,9 @@ function create(win,{list=LOAD_ORDER}={}){
  function install(){
   const I=win.IS2=win.IS2||{};
   for(const[ns,f]of Object.entries(facades))if(I[ns]===undefined)I[ns]=f;
-  Object.assign(I,{ready,load,loadState:()=>phase,NOT_READY,LOAD_FAILED,LOAD_ORDER:order});
+  Object.assign(I,{ready,load,loadState:()=>phase,loadSkipped:()=>Object.freeze([...skipped]),NOT_READY,LOAD_FAILED,LOAD_ORDER:order});
   return I;}
  return Object.freeze({ready,load,install,facades,state:()=>phase,list:order});
 }
-return Object.freeze({LOAD_ORDER,NAME,NAMESPACES,API,NOT_READY,LOAD_FAILED,MARK_READY,MARK_FAILED,create,install:root=>create(root).install()});
+return Object.freeze({LOAD_ORDER,NAME,NAMESPACES,API,NOT_READY,LOAD_FAILED,MARK_READY,MARK_FAILED,OWNER_PRIVATE,create,install:root=>create(root).install()});
 });
