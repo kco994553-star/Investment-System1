@@ -1,215 +1,382 @@
 {
-  "schema": "direction-rules/1",
-  "note": "DIRECTION_CHANGES.md의 '금지 표현'을 기계 검사로 옮긴 것. 줄 단위 정규식. 같은 줄에 exempt 단어가 있으면 옛 방향이 바뀌었다고 설명하는 줄로 보고 통과시킨다. 규칙을 더하거나 뺄 때는 DIRECTION_CHANGES.md와 함께 고친다.",
-  "rules": [
-    {
-      "id": "DC-01a",
-      "title": "Universe504를 시가총액 상위 504로 단정 (2026-10-24 UNI-DEF=a: S&P 500 구성에서 출발한 고정 목록)",
-      "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,30}(시가총액 상위|시총 상위|market[- ]cap top|largest 50[04])",
-      "flags": "i",
-      "exempt": [
-        "아니",
-        "아님",
-        "≠",
-        "not ",
-        "DC-01",
-        "UNI-DEF",
-        "C-18"
-      ]
-    },
-    {
-      "id": "DC-01b",
-      "title": "Universe504를 S&P 500 지수 자체(편입·편출 자동 추종)로 단정",
-      "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,12}(=|는|은|is|:|\\()\\s*(the )?S&P ?500|S&P ?500[^\\n]{0,6}(=|\\()\\s*(Universe ?504|유니버스 ?504)|(Universe ?504|유니버스 ?504)[^\\n]{0,40}(지수 추종|index[- ]following)",
-      "flags": "i",
-      "exempt": [
-        "아니",
-        "아님",
-        "≠",
-        "not ",
-        "별개",
-        "출발",
-        "고정",
-        "fixed",
-        "snapshot",
-        "스냅샷",
-        "DC-01",
-        "UNI-DEF",
-        "결정 대기"
-      ]
-    },
-    {
-      "id": "DC-02",
-      "title": "V를 기기 전용·비공개로 단정 (2026-10-23 GSQ-024로 바뀜)",
-      "pattern": "(?<![A-Za-z])V(는|가)? ?기기 ?전용|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is|stays|remains) device[- ]only|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,40}\\bnever (be )?published",
-      "flags": "",
-      "exempt": [
-        "GSQ-024",
-        "바뀐다",
-        "바뀌었다",
-        "바뀜",
-        "superseded",
-        "replaced",
-        "이전 규칙",
-        "DC-02"
-      ]
-    },
-    {
-      "id": "DC-06",
-      "title": "균형형을 Q34/G33/V33(균등)으로 단정",
-      "pattern": "균형형\\s*(=|:|\\()\\s*Q ?34|balanced\\s*(=|:)\\s*Q ?34",
-      "flags": "i",
-      "exempt": [
-        "아니",
-        "아님",
-        "≠",
-        "not ",
-        "DC-06",
-        "코드의"
-      ]
-    },
-    {
-      "id": "DC-22",
-      "title": "공개 자료(QGV 점수·순위, Universe504 목록, TARGET 목록, 기업 검색, 갱신 시각·calc_version)가 로그인·시트 연결·기기 저장값이 있어야 보인다고 단정 (2026-10-27 공개/개인 경계)",
-      "pattern": "(QGV ?(v2 )?(점수|순위)|Universe ?504 목록|공개 (점수|순위|자료)|TARGET 목록|기업 검색|calc_version|갱신 시각)[^\\n]{0,40}(로그인|시트 연결|기기에 저장(된|한)? ?(값|자료)?)[^\\n]{0,20}(해야|뒤에만|있어야|있을 때만|필요)",
-      "flags": "i",
-      "exempt": [
-        "아니",
-        "없이",
-        "필요 없",
-        "않",
-        "DC-22",
-        "가격",
-        "시세",
-        "임시 V",
-        "개인",
-        "가중치",
-        "포트폴리오",
-        "보유",
-        "고친다",
-        "고침",
-        "어긋"
-      ]
-    },
-    {
-      "id": "DC-24",
-      "title": "공개 TARGET을 카탈로그 19(TARGET v0)로 단정하거나 TARGET v0을 QGV 결과로 단정 (2026-10-27: TARGET v0은 QGV와 전혀 무관, 공개 TARGET = 확정된 v1만)",
-      "pattern": "(공개|public) ?TARGET ?(=|은|는|:|\\bis\\b)\\s*[^\\n]{0,20}(v0|19|카탈로그|catalog)|TARGET ?(v0|19)[^\\n]{0,12}(=|은|는|\\bis\\b)\\s*(the )?QGV",
-      "flags": "i",
-      "exempt": [
-        "무관",
-        "아님",
-        "아니",
-        "없이",
-        "DC-04",
-        "DC-24",
-        "unrelated",
-        "not ",
-        "제외",
-        "빼"
-      ]
-    },
-    {
-      "id": "DC-31a",
-      "title": "중앙 V가 없거나 늦을 때 기기 V·임시 V로 채운다고 단정 (2026-10-31 기기 V 폐지; TARGET v1 예외 단어는 11/16 PR에서 지운다)",
-      "pattern": "(기기|임시) ?V[\"”’)\\]]?(로|으로) ?(대체|채우|채움|채운|채워|표시|폴백|대신)|(없으면|없을 때|실패하면|늦으면|미게시면|게시 전에는|아니면)[,\\s]{0,3}[\"“]?(기기|임시) ?V(?![A-Za-z0-9_])|(STALE이면|오래되면|늦을 때는?|늦으면|없을 때는?|없으면|실패하면|미게시면)[^\\n]{0,25}((기기|임시) ?V|기기에서 계산한 V)(를|을)? ?(보여|보인|표시|쓴|쓰|사용|대신)",
-      "flags": "i",
-      "exempt": [
-        "폐지",
-        "abolish",
-        "DC-31",
-        "되살리지",
-        "채우지 않",
-        "대체하지 않",
-        "쓰지 않는다",
-        "never fill",
-        "no device v",
-        "without device v",
-        "no fallback",
-        "옛 방향",
-        "superseded",
-        "TARGET v1",
-        "target-v1",
-        "tv1",
-        "TARGET 빌더",
-        "확정 창",
-        "11/16",
-        "11-16"
-      ]
-    },
-    {
-      "id": "DC-31b",
-      "title": "Falling back to a device / temporary V (English; 2026-10-31 device V abolished; the TARGET v1 exempt words expire with the 11/16 PR)",
-      "pattern": "\\b(fall(s|ing)?[ -]?back|fallback)\\b[^\\n]{0,30}\\b(device|temporary)[- ]V\\b|\\b(device|temporary)[- ]V\\b[^\\n]{0,20}\\b(fallback|instead)\\b|\\botherwise\\b[^\\n]{0,40}\\b(device|temporary)[- ]V\\b|\\b(missing|stale|late|unavailable|absent)\\b[^\\n]{0,40}\\b(show|use|display)s?\\b[^\\n]{0,20}\\b(device|temporary)[- ]V\\b",
-      "flags": "i",
-      "exempt": [
-        "폐지",
-        "abolish",
-        "DC-31",
-        "되살리지",
-        "채우지 않",
-        "대체하지 않",
-        "쓰지 않는다",
-        "never fill",
-        "no device v",
-        "without device v",
-        "no fallback",
-        "옛 방향",
-        "superseded",
-        "TARGET v1",
-        "target-v1",
-        "tv1",
-        "TARGET 빌더",
-        "확정 창",
-        "11/16",
-        "11-16"
-      ]
-    },
-    {
-      "id": "DC-31c",
-      "title": "화면의 V를 기기 가격으로 계산한 V(기기 V)로 단정 (2026-10-31: 화면은 중앙 V만)",
-      "pattern": "화면의 V[^\\n]{0,20}기기 V|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is |are )?(computed|calculated) (on|in) (this|the) device\\b|(?<![A-Za-z])V[^\\n]{0,6}(는|가) (이 )?기기(에서|의) (시세|가격)(으)?로 계산|(?<![A-Za-z])V( 점수)?(는|가) (이 )?기기에서 (계산|산출)",
-      "flags": "i",
-      "exempt": [
-        "폐지",
-        "abolish",
-        "DC-31",
-        "되살리지",
-        "채우지 않",
-        "대체하지 않",
-        "쓰지 않는다",
-        "never fill",
-        "no device v",
-        "without device v",
-        "no fallback",
-        "옛 방향",
-        "superseded"
-      ]
-    },
-    {
-      "id": "DC-31d",
-      "title": "기기에 V 이력을 쌓는다고 단정 (2026-10-31: 기기 V 이력 없음, 필요하면 중앙에서 날짜별 공개)",
-      "pattern": "(기기|device)[^\\n]{0,12}V ?(이력|기록|history)[^\\n]{0,30}(저장|기록(한다|함)|남긴|capture|store|record)",
-      "flags": "i",
-      "exempt": [
-        "폐지",
-        "abolish",
-        "DC-31",
-        "되살리지",
-        "채우지 않",
-        "대체하지 않",
-        "쓰지 않는다",
-        "never fill",
-        "no device v",
-        "without device v",
-        "no fallback",
-        "옛 방향",
-        "superseded",
-        "read only",
-        "읽기만",
-        "not recorded",
-        "기록하지 않"
-      ]
-    }
-  ]
+ "schema": "direction-rules/1",
+ "note": "DIRECTION_CHANGES.md의 '금지 표현'을 기계 검사로 옮긴 것. 줄 단위 정규식. 같은 줄에 exempt 단어가 있으면 옛 방향이 바뀌었다고 설명하는 줄로 보고 통과시킨다. 규칙을 더하거나 뺄 때는 DIRECTION_CHANGES.md와 함께 고친다.",
+ "rules": [
+  {
+   "id": "DC-01a",
+   "title": "Universe504를 시가총액 상위 504로 단정 (2026-10-24 UNI-DEF=a: S&P 500 구성에서 출발한 고정 목록)",
+   "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,30}(시가총액 상위|시총 상위|market[- ]cap top|largest 50[04])",
+   "flags": "i",
+   "exempt": [
+    "아니",
+    "아님",
+    "≠",
+    "not ",
+    "DC-01",
+    "UNI-DEF",
+    "C-18"
+   ]
+  },
+  {
+   "id": "DC-01b",
+   "title": "Universe504를 S&P 500 지수 자체(편입·편출 자동 추종)로 단정",
+   "pattern": "(Universe ?504|유니버스 ?504)[^\\n]{0,12}(=|는|은|is|:|\\()\\s*(the )?S&P ?500|S&P ?500[^\\n]{0,6}(=|\\()\\s*(Universe ?504|유니버스 ?504)|(Universe ?504|유니버스 ?504)[^\\n]{0,40}(지수 추종|index[- ]following)",
+   "flags": "i",
+   "exempt": [
+    "아니",
+    "아님",
+    "≠",
+    "not ",
+    "별개",
+    "출발",
+    "고정",
+    "fixed",
+    "snapshot",
+    "스냅샷",
+    "DC-01",
+    "UNI-DEF",
+    "결정 대기"
+   ]
+  },
+  {
+   "id": "DC-02",
+   "title": "V를 기기 전용·비공개로 단정 (2026-10-23 GSQ-024로 바뀜)",
+   "pattern": "(?<![A-Za-z])V(는|가)? ?기기 ?전용|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is|stays|remains) device[- ]only|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,40}\\bnever (be )?published",
+   "flags": "",
+   "exempt": [
+    "GSQ-024",
+    "바뀐다",
+    "바뀌었다",
+    "바뀜",
+    "superseded",
+    "replaced",
+    "이전 규칙",
+    "DC-02"
+   ]
+  },
+  {
+   "id": "DC-06",
+   "title": "균형형을 Q34/G33/V33(균등)으로 단정",
+   "pattern": "균형형\\s*(=|:|\\()\\s*Q ?34|balanced\\s*(=|:)\\s*Q ?34",
+   "flags": "i",
+   "exempt": [
+    "아니",
+    "아님",
+    "≠",
+    "not ",
+    "DC-06",
+    "코드의"
+   ]
+  },
+  {
+   "id": "DC-22",
+   "title": "공개 자료(QGV 점수·순위, Universe504 목록, TARGET 목록, 기업 검색, 갱신 시각·calc_version)가 로그인·시트 연결·기기 저장값이 있어야 보인다고 단정 (2026-10-27 공개/개인 경계)",
+   "pattern": "(QGV ?(v2 )?(점수|순위)|Universe ?504 목록|공개 (점수|순위|자료)|TARGET 목록|기업 검색|calc_version|갱신 시각)[^\\n]{0,40}(로그인|시트 연결|기기에 저장(된|한)? ?(값|자료)?)[^\\n]{0,20}(해야|뒤에만|있어야|있을 때만|필요)",
+   "flags": "i",
+   "exempt": [
+    "아니",
+    "없이",
+    "필요 없",
+    "않",
+    "DC-22",
+    "가격",
+    "시세",
+    "임시 V",
+    "개인",
+    "가중치",
+    "포트폴리오",
+    "보유",
+    "고친다",
+    "고침",
+    "어긋"
+   ]
+  },
+  {
+   "id": "DC-24",
+   "title": "공개 TARGET을 카탈로그 19(TARGET v0)로 단정하거나 TARGET v0을 QGV 결과로 단정 (2026-10-27: TARGET v0은 QGV와 전혀 무관, 공개 TARGET = 확정된 v1만)",
+   "pattern": "(공개|public) ?TARGET ?(=|은|는|:|\\bis\\b)\\s*[^\\n]{0,20}(v0|19|카탈로그|catalog)|TARGET ?(v0|19)[^\\n]{0,12}(=|은|는|\\bis\\b)\\s*(the )?QGV",
+   "flags": "i",
+   "exempt": [
+    "무관",
+    "아님",
+    "아니",
+    "없이",
+    "DC-04",
+    "DC-24",
+    "unrelated",
+    "not ",
+    "제외",
+    "빼"
+   ]
+  },
+  {
+   "id": "DC-31a",
+   "title": "중앙 V가 없거나 늦을 때 기기 V·임시 V로 채운다고 단정 (2026-10-31 기기 V 폐지; TARGET v1 예외 단어는 11/16 PR에서 지운다)",
+   "pattern": "(기기|임시) ?V[\"”’)\\]]?(로|으로) ?(대체|채우|채움|채운|채워|표시|폴백|대신)|(없으면|없을 때|실패하면|늦으면|미게시면|게시 전에는|아니면)[,\\s]{0,3}[\"“]?(기기|임시) ?V(?![A-Za-z0-9_])|(STALE이면|오래되면|늦을 때는?|늦으면|없을 때는?|없으면|실패하면|미게시면)[^\\n]{0,25}((기기|임시) ?V|기기에서 계산한 V)(를|을)? ?(보여|보인|표시|쓴|쓰|사용|대신)",
+   "flags": "i",
+   "exempt": [
+    "폐지",
+    "abolish",
+    "DC-31",
+    "되살리지",
+    "채우지 않",
+    "대체하지 않",
+    "쓰지 않는다",
+    "never fill",
+    "no device v",
+    "without device v",
+    "no fallback",
+    "옛 방향",
+    "superseded",
+    "TARGET v1",
+    "target-v1",
+    "tv1",
+    "TARGET 빌더",
+    "확정 창",
+    "11/16",
+    "11-16"
+   ]
+  },
+  {
+   "id": "DC-31b",
+   "title": "Falling back to a device / temporary V (English; 2026-10-31 device V abolished; the TARGET v1 exempt words expire with the 11/16 PR)",
+   "pattern": "\\b(fall(s|ing)?[ -]?back|fallback)\\b[^\\n]{0,30}\\b(device|temporary)[- ]V\\b|\\b(device|temporary)[- ]V\\b[^\\n]{0,20}\\b(fallback|instead)\\b|\\botherwise\\b[^\\n]{0,40}\\b(device|temporary)[- ]V\\b|\\b(missing|stale|late|unavailable|absent)\\b[^\\n]{0,40}\\b(show|use|display)s?\\b[^\\n]{0,20}\\b(device|temporary)[- ]V\\b",
+   "flags": "i",
+   "exempt": [
+    "폐지",
+    "abolish",
+    "DC-31",
+    "되살리지",
+    "채우지 않",
+    "대체하지 않",
+    "쓰지 않는다",
+    "never fill",
+    "no device v",
+    "without device v",
+    "no fallback",
+    "옛 방향",
+    "superseded",
+    "TARGET v1",
+    "target-v1",
+    "tv1",
+    "TARGET 빌더",
+    "확정 창",
+    "11/16",
+    "11-16"
+   ]
+  },
+  {
+   "id": "DC-31c",
+   "title": "화면의 V를 기기 가격으로 계산한 V(기기 V)로 단정 (2026-10-31: 화면은 중앙 V만)",
+   "pattern": "화면의 V[^\\n]{0,20}기기 V|(?<![A-Za-z])V(?![A-Za-z0-9_-])[^\\n]{0,30}\\b(is |are )?(computed|calculated) (on|in) (this|the) device\\b|(?<![A-Za-z])V[^\\n]{0,6}(는|가) (이 )?기기(에서|의) (시세|가격)(으)?로 계산|(?<![A-Za-z])V( 점수)?(는|가) (이 )?기기에서 (계산|산출)",
+   "flags": "i",
+   "exempt": [
+    "폐지",
+    "abolish",
+    "DC-31",
+    "되살리지",
+    "채우지 않",
+    "대체하지 않",
+    "쓰지 않는다",
+    "never fill",
+    "no device v",
+    "without device v",
+    "no fallback",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-31d",
+   "title": "기기에 V 이력을 쌓는다고 단정 (2026-10-31: 기기 V 이력 없음, 필요하면 중앙에서 날짜별 공개)",
+   "pattern": "(기기|device)[^\\n]{0,12}V ?(이력|기록|history)[^\\n]{0,30}(저장|기록(한다|함)|남긴|capture|store|record)",
+   "flags": "i",
+   "exempt": [
+    "폐지",
+    "abolish",
+    "DC-31",
+    "되살리지",
+    "채우지 않",
+    "대체하지 않",
+    "쓰지 않는다",
+    "never fill",
+    "no device v",
+    "without device v",
+    "no fallback",
+    "옛 방향",
+    "superseded",
+    "read only",
+    "읽기만",
+    "not recorded",
+    "기록하지 않"
+   ]
+  },
+  {
+   "id": "DC-49a",
+   "title": "공식 모집단이 이미 시총 Top500이라고 단정 (2026-11-14: 목표는 Top500 교체, 전환 전 현재 공식은 Universe504)",
+   "pattern": "(현재|지금|이미)[^\\n]{0,6}공식 모집단(은|이|=)[^\\n]{0,8}(시총 )?Top ?500|공식 모집단을 (이미 )?(시총 )?Top ?500(으)?로 (바꿨|전환했)|official population is (now |already )?(the )?(market-cap )?Top ?500",
+   "flags": "i",
+   "exempt": [
+    "목표",
+    "전환 전",
+    "아직",
+    "DC-49",
+    "교체 목표",
+    "대체",
+    "아니",
+    "target",
+    "not yet",
+    "before the switch",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-50a",
+   "title": "내 시트 V를 공식 V·순위·TARGET·전진검증·공식 Top500에 쓴다고 단정 (2026-11-14: 내 시트 V는 비공식)",
+   "pattern": "내 시트 V[^\\n]{0,30}(공식 (V|순위|총점)|TARGET|전진검증|공식 Top ?500)[^\\n]{0,12}(에|로|으로) (쓴다|사용한다|반영한다|확정한다)",
+   "flags": "i",
+   "exempt": [
+    "않",
+    "아님",
+    "아니",
+    "금지",
+    "DC-50",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-50b",
+   "title": "공식 V가 없거나 늦을 때 내 시트 V·KIS V로 채운다고 단정 (2026-11-14·15: 공개 중앙 V 자리를 대신 채우지 않음)",
+   "pattern": "(공식 V|중앙 V)[^\\n]{0,25}(없|늦|STALE|빈자리)[^\\n]{0,25}(내 시트 V|KIS V|KIS로 계산한 V)[^\\n]{0,10}(채운|대신한|대체한|보여 준)",
+   "flags": "i",
+   "exempt": [
+    "않",
+    "금지",
+    "아니",
+    "DC-50",
+    "DC-54",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-51a",
+   "title": "새 프론트엔드를 한 번에 전환한다고 단정 (2026-11-14: 단계 게시)",
+   "pattern": "메뉴 전부를 완성한 뒤 한 번에 전환|한 번에 (전면 )?전환(한다|하고|할 때까지)",
+   "flags": "i",
+   "exempt": [
+    "단계 게시",
+    "DC-51",
+    "않고",
+    "아니",
+    "대체",
+    "바뀌",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-52a",
+   "title": "KIS V 신규 연결이 보류라고 단정 (2026-11-14 저녁 DC-52로 보류 해제, 오너 비공개 구역 한정)",
+   "pattern": "KIS V (신규 )?연결(은|을|이)? ?보류|new KIS V (binding|connection)[^\\n]{0,20}(is )?on hold",
+   "flags": "i",
+   "exempt": [
+    "해제",
+    "대체",
+    "DC-52",
+    "바뀌",
+    "lifted",
+    "replaced",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-53a",
+   "title": "Worker 읽기 토큰 만료 설정의 빈 값·누락·삭제를 무기한으로 본다고 단정 (2026-11-15: 정확한 NEVER만 무기한)",
+   "pattern": "(EXPIRES_ON|만료일|만료 날짜)[^\\n]{0,25}(비워|빈 값|누락|삭제|없으면)[^\\n]{0,20}(무기한|만료 없음|NO_EXPIRY)",
+   "flags": "i",
+   "exempt": [
+    "아니",
+    "않",
+    "오류",
+    "거부",
+    "DC-53",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-53b",
+   "title": "Worker 읽기 토큰에 만료 날짜가 반드시 있어야 한다고 단정 (2026-11-15: 정확한 NEVER 허용)",
+   "pattern": "읽기 토큰[^\\n]{0,20}(만료 )?(날짜|만료일)(가|이)? (반드시|필수)",
+   "flags": "i",
+   "exempt": [
+    "DC-53",
+    "바뀌",
+    "보완",
+    "대체",
+    "아니",
+    "NEVER",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-54a",
+   "title": "공개 중앙 V를 새 공급처로 바꾼다고 단정 (2026-11-15: 새 공급처 → 공개 중앙 V는 보류)",
+   "pattern": "공개 중앙 V[^\\n]{0,20}(새|신규|다른) 공급처[^\\n]{0,10}(로 |으로 )?(바꾼다|전환한다|연결한다|교체한다)",
+   "flags": "i",
+   "exempt": [
+    "보류",
+    "않",
+    "DC-54",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-54b",
+   "title": "IEX 중앙 V 경로를 없앤다고 단정 (2026-11-15: 경로 유지, 복구되면 검증 뒤 재개)",
+   "pattern": "IEX (중앙 V )?경로[^\\n]{0,10}(없앤다|폐기한다|삭제한다|제거한다)",
+   "flags": "i",
+   "exempt": [
+    "않",
+    "유지",
+    "DC-54",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-55a",
+   "title": "기술적 분석·Lab을 공개 화면에서 계속 제공한다고 단정 (2026-11-15: 비공개 구역 전용으로 가는 방향)",
+   "pattern": "(기술적 분석|Lab)[^\\n]{0,15}공개 화면에서 (계속 )?(제공한다|보여 준다)",
+   "flags": "i",
+   "exempt": [
+    "비공개",
+    "방향",
+    "DC-55",
+    "않",
+    "옛 방향",
+    "superseded"
+   ]
+  },
+  {
+   "id": "DC-56a",
+   "title": "기능별 대체 표를 다 채운 뒤 정식 전환한다고 단정 (2026-11-15: 전환 조건 채우기 멈춤, 기능 단위 최소 구현 뒤 전면 재작성)",
+   "pattern": "기능별 대체 표가? 다 (차면|찼을 때|채우면)[^\\n]{0,20}(정식 )?전환",
+   "flags": "i",
+   "exempt": [
+    "DC-56",
+    "멈춘",
+    "멈춤",
+    "재작성",
+    "옛 방향",
+    "superseded"
+   ]
+  }
+ ]
 }
