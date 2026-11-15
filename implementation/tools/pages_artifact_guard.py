@@ -219,7 +219,7 @@ APPROVED_SHA256 = {
     "screen-tree-live.js": "b6654ee7b83824a21a6a499c3e593735b387a8440a354fc73da60b7f474bea2e",
     "screen-tree.js": "81b4f21c1236f7b7a4da5693b0b0e75315598b49836147be69e39489971b6e78",
     "search-part-live.js": "1aa817a706778f9e8475ac720224bd5fd4a257fcf5d5b6c78b09ca0b611f4afb",
-    "shell.js": "8c602d469bc62d0d8c0bed1249b1035ab3985e56301cda531d4a7e0594819f7a",
+    "shell.js": "29b0fc0cf86c0a829ec0d1030f56dfdf88248ab7297a78af6b19bac9bae2a4f2",
     "store.js": "a5784685621fb5248fb1c1ce880cfb0e1800e1654f717be694b9b2fb3fd4294c",
     "tech-screen.js": "663891a183e88355fd7d8a8ac0858aa4ee3fdab2ba4b8282f05c42c6972fce8c",
 }
