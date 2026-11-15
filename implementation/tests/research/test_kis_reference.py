@@ -58,7 +58,19 @@ def test_official_adapter_reuses_exact_engine_and_rejects_pins():
  result=api().official_reference(payload,{}, {},**args)
  ctx=common.prepare(payload,datetime.fromisoformat('2026-10-24T04:00:00+00:00'))
  expected={k:common.projection(v) for k,v in common.score(ctx,{}).items()}
- assert result['rows']==expected and result['coverage']['V']==0
+ assert result['rows']==api().mask_incomplete_totals(dict(rows=expected,population=sorted(payload['records']),coverage={}))['rows'] and result['coverage']['V']==0
  assert result['rank'] is None and result['official_publication_replaced'] is False
  args['expected_payload_hash']='0'*64
  with pytest.raises(ValueError,match='SOURCE_PIN_MISMATCH'):api().official_reference(payload,{}, {},**args)
+
+
+def test_partial_total_is_never_delivered_as_total():
+ packet={'rows':{'partial':{'axes':{'Q':{'score':50},'G':{'score':50},'V':{'score':None}},'total':50,'total_reason':None},'full':{'axes':{a:{'score':50} for a in ['Q','G','V']},'total':50,'total_reason':None}},'population':['partial','full'],'coverage':{'engine_total_computed':2}}
+ before=deepcopy(packet);r=api().mask_incomplete_totals(packet)
+ assert packet==before
+ assert r['rows']['partial']['total'] is None
+ assert r['rows']['partial']['total_reason']=='THREE_AXES_REQUIRED'
+ assert r['rows']['full']['total']==50
+ assert r['coverage']['total']==1 and r['diagnostics']['suppressed_partial_totals']==1
+
+ assert api().mask_incomplete_totals(r)==r

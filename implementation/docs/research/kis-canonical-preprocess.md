@@ -242,3 +242,51 @@ Paired V values exist for357 rows including TARGET, but price-only attribution i
 unverified (0 confirmed explanations). Request the exact original financial
 snapshot and retained IEX quote/month-end inputs for a causal supplier comparison;
 do not substitute current financial data or infer raw prices from public scores.
+
+## Follow-up output policy and matched-input comparison
+
+Owner instruction: **V missing means total missing**. The private delivery also
+requires Q/G, so every row lacking any of the three axes has `total=null` and
+`total_reason=THREE_AXES_REQUIRED`. `coverage.total` counts only delivered complete
+totals. The 139 previously delivered partial totals are suppressed by projection,
+not recalculation. Axis/factor scores remain unchanged; delivered total count is
+342/504 code rows. Original engine counts remain diagnostic counts only, never
+partial numeric total values in the rows. The suppression is idempotent. Canonical
+calc23.1 and public outputs are unchanged. Every private row remains explicitly
+`verification=UNVERIFIED_REFERENCE` pending proof review.
+
+The requested11/11 price-only comparison requires Main's exact published central
+financial bundle. As of this change, #437 has no delivery of that bundle. Do not
+repeat the previous mismatched-input calculation. Pin the provided manifest,
+financial input hash, population, model/config versions and retained IEX day/
+month-end inputs; reproduce the original public baseline first. Only then replace
+the current quote with KIS close. Separate quote-value differences, missing/held
+prices, changed valid reference samples, history inputs, identity/action filters
+and unexplained baseline mismatches. “Not evaluated” is not “unexplained zero.”
+
+The private priority proposal orders shared security-class linkage, WAD share/
+period anchors, then complete dated action-interval evidence. Each touches up to
+499 issuers in the prior blocked set; these sets overlap. No499-verification
+forecast or actual batch execution is implied. Required fields and source paths
+are in the private `verification-priority.json`; execution awaits owner decision.
+
+The six held-series SEC review found three stock-split cases, one non-split
+spinoff/distribution, and two previously reviewed exchange/acquisition cases.
+Private evidence distinguishes announcement, distribution, price-basis effective
+date, original period and acquisition/review clocks. No price adjustment, hold
+release or verification promotion was performed. A distribution of a different
+company's shares is never a stock-split factor for the original company.
+
+For Main's #437 schema proposal: keep `rows` as the existing object keyed by code,
+`population` as the existing code list, `axes.V.score`, `total`, `total_reason`,
+`price_status` and `coverage`/`stages`. An array would break existing `kis-qgv/1`
+readers and needs a separate version; do not relabel it as the same contract.
+Current metadata equivalents: financial_input_as_of/input_sha256, engine_version/
+calc_version, calculated_at, layer=OWNER_PRIVATE and display. Rank remains null
+(private scope, not official or personal-sheet rank). 100 sessions do allow V via
+other valid factors under the official50% rule; own-history value stays missing
+without sufficient eligible historical inputs. Slash symbols are already accepted
+by #551/#556 normalization, but explicit Worker/reader mappings remain Main-owned.
+A score or paired-engine match alone never grants VERIFIED identity/share/action
+status; that is a separate producer evidence decision over the exact dependency
+window and scope.

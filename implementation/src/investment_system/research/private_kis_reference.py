@@ -61,6 +61,22 @@ def reference_files(files,c,day):
  if any(len(b)>MAX_BYTES for b in out.values()):raise ValueError('PRIVATE_ARTIFACT_TOO_LARGE')
  return out
 
+def mask_incomplete_totals(packet):
+ """Owner output policy only: incomplete axes never produce a delivered total."""
+ out=deepcopy(packet);suppressed=0
+ for key,row in out['rows'].items():
+  row['verification']='UNVERIFIED_REFERENCE'
+  if any(row['axes'][a]['score'] is None for a in ('Q','G','V')):
+   if row['total'] is not None and key in out['population']:suppressed+=1
+   row['total']=None;row['total_reason']='THREE_AXES_REQUIRED'
+ out['total_policy']='THREE_AXES_REQUIRED_PRIVATE_OUTPUT'
+ original=out['coverage'].pop('engine_total_computed',out.get('diagnostics',{}).get('original_engine_total_count'))
+ prior=out.get('diagnostics',{}).get('suppressed_partial_totals',0)
+ out['diagnostics']={'original_engine_total_count':original,'suppressed_partial_totals':prior+suppressed}
+ out['coverage']['total']=sum(out['rows'][k]['total'] is not None for k in out['population'])
+ return out
+
+
 def official_reference(payload,contracts,links,*,day,calculated_at,expected_payload_hash,expected_links_hash,expected_contract_hashes,monthends=None):
  """Same official engine/gates; only quote supplier changes. Reference, never official."""
  from .kis_price_bridge import _ts,validate_contract
@@ -91,7 +107,7 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
  counts=dict(price=sum(k in engine for k in payload['records']),
   raw_any=sum(any(detail[k].get(f) is not None for f in ('ebit_yield','fcf_yield','expectation_gap')) for k in payload['records']),
   role_any=sum(any(v['score'] is not None for f,v in rows[k]['factors'].items() if f.startswith('v_')) for k in payload['records']))
- return dict(schema='kis-qgv/1',layer='OWNER_PRIVATE',calc_version=payload['calc_version'],engine_version=qgv_v2.VERSION,
+ return mask_incomplete_totals(dict(schema='kis-qgv/1',layer='OWNER_PRIVATE',calc_version=payload['calc_version'],engine_version=qgv_v2.VERSION,
   calculation_path='qgv_official.prepare/price_status/engine_quotes/score/projection',
   price_basis_date=day,calculated_at=calculated_at,financial_input_as_of=payload['as_of'],
   input_sha256=expected_payload_hash,lookup_sha256=expected_links_hash,
@@ -105,4 +121,4 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
    QGV=sum(all(r['axes'][a]['score'] is not None for a in ('Q','G','V')) for k,r in rows.items() if k in payload['records']),
    engine_total_computed=sum(r['total'] is not None for k,r in rows.items() if k in payload['records'])),
   rank=None,rank_reason='PRIVATE_REFERENCE_NOT_OFFICIAL_RANK',historical_pit_proven=False,
-  official_publication_replaced=False,TARGET_modified=False)
+  official_publication_replaced=False,TARGET_modified=False))
