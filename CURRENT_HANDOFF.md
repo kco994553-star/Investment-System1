@@ -1,5 +1,8 @@
 # 현재 인수인계 — 2026-11-01
 
+> **2026-11-15 Codex — 오너의 무기한 읽기 토큰 변경 작업:** [새 계약](implementation/docs/private_area/WORKER_READ_TOKEN_EXPIRY_20261115.md), DC-53. 산출기는 기본 가지 기반 `codex/worker-expiry-status-20261115`, Worker·화면은 기존 Draft #538 위 `codex/worker-no-expiry-20261115`에서 수정한다. `NEVER`만 무기한; 누락·오류는 거부. 변수 수정 API 403, Cloudflare MCP 인증 전이므로 실제 변수·Secret·배포는 아직 미반영이다. 승인 환경 연결은 #548(미병합). 사용자에게 토큰 값을 보내 달라고 하지 않는다.
+
+
 > **2026-11-14 새 세션 기준 문서 (병합 전 — 이 블록을 먼저 읽는다).** 오너 2026-11-14 통합 지시(Main·Codex 공통)가 오늘 앞선 지시를 대체한다. 기준 문서의 위치:
 > - 결정 기록 정본 반영: 이 문서 PR(가지 `claude/records-1114-canon`, 기본 가지 `ab6a83c3be2276abdcf855c71c5f273926e2dcc4` 위) — `docs/SPEC/DIRECTION_CHANGES.md` DC-49 개정·DC-50·DC-51, 2절 이름표, 2-1절 Top500 전환 상태; `START_HERE.md` 2절; `implementation/docs/frontend_v2/FRONTEND_V2_PLAN.md` §1·P3.
 > - DC-44~DC-48 원문과 화면 작업: Draft 묶음 #522 `f680c7192924ce4726afd7a3f59acf8517de087f` → #526 `7b4a805b081e4ceffc185b935e59ec167c0202b4` → #530 `a8ef3fb77516a06ede37cbcc915eefe47fa43a6d` → #533 `2dc1202c320b810a29197f4751286c50475ccbae` → #536 `307dddd59ddd2ecefbd84cddc58f6ad38a35d5f9` → #538 `9f1fdd584a02419db3eb34485819875c6c9268d3`(가지 `ccr-263267c9-f5ng5h`). 모두 미병합.
