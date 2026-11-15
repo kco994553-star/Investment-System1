@@ -14,6 +14,10 @@ const NOW = Date.UTC(2026, 10, 5, 3);
 const REPO = '/repos/kco994553-star/investment-system1-kis-private';
 // Schema names are assembled at run time so this file carries no private schema literal (tests/test_private_boundary_static.py).
 const K = (rest) => ['kis', rest].join('-');
+const statusRecord = (expires = '2027-01-31') => JSON.stringify({
+  schema: ['private', 'area-status/1'].join('-'), publication_scope: 'OWNER_PRIVATE_ONLY', run_at: '2026-11-05T03:00:00Z',
+  worker_read_token: { ...kisTokenDate({ PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: expires }, NOW), verification: 'NOT_CHECKED' },
+});
 const BARS = JSON.stringify({ schema: K('bars/1'), symbol: 'NVDA', source: 'SYNTHETIC', price_basis_date: '2026-11-04', bars: [] });
 
 class Storage {
@@ -149,16 +153,87 @@ test('chart: EXPIRING still serves and names the date in one exposed header', as
   assert.equal(r.headers.get('Access-Control-Expose-Headers'), 'X-Private-Token-Expires-On');
 });
 
-test('status: one repository check; state, code, rebuilt date and days only', async () => {
+test('status: one Contents permission check; state, code, rebuilt date and days only', async () => {
   const at = async (opts) => { const s = setup(opts), r = await s.run('/kis/status'); assert.equal(r.status, 200); noStore(r); return { v: JSON.parse(await body(r)), reads: githubCalls(s) }; };
-  let { v, reads } = await at({ github: () => new Response('{"full_name":"x"}', { status: 200 }) });
+  let { v, reads } = await at({ github: () => new Response(statusRecord(), { status: 200 }) });
   assert.deepEqual(v, { schema: K('status/1'), state: 'OK', code: null, expires_on: '2027-01-31', days_left: 87 });
-  assert.equal(reads.length, 1); assert.equal(reads[0].url, 'https://api.github.com' + REPO);
+  assert.equal(reads.length, 1); assert.equal(reads[0].url, 'https://api.github.com' + REPO + '/contents/status/private-area.json?ref=data');
   ({ v } = await at({ github: () => new Response('{}', { status: 404 }) })); assert.deepEqual([v.state, v.code], ['REJECTED', 'TOKEN_NO_ACCESS']);
   ({ v } = await at({ github: () => new Response('{}', { status: 401 }) })); assert.deepEqual([v.state, v.code], ['REJECTED', 'TOKEN_REJECTED']);
   ({ v, reads } = await at({ env: { PRIVATE_REPO_READ_TOKEN: undefined } })); assert.deepEqual([v.state, v.code, reads.length], ['UNSET', 'TOKEN_UNSET', 0]);
-  ({ v } = await at({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-10' }, github: () => new Response('{}', { status: 200 }) }));
+  ({ v } = await at({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-10' }, github: () => new Response(statusRecord('2026-11-10'), { status: 200 }) }));
   assert.deepEqual([v.state, v.days_left], ['EXPIRING', 5]);
+});
+
+test('NEVER is explicit; absent, invalid, lookalike and credential values stay closed', () => {
+  const at = raw => kisTokenDate({ PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: raw }, NOW);
+  assert.deepEqual(at('NEVER'), { state: 'NO_EXPIRY', code: null, expires_on: null, days_left: null });
+  for (const raw of [undefined, null, '', 'never', ' NEVER', 'NEVER ', 'null', '2027-02-30']) assert.equal(at(raw).code, 'TOKEN_DATE_INVALID');
+  assert.equal(at(FAKE_TOKEN).code, 'TOKEN_DATE_IS_TOKEN');
+  assert.equal(kisTokenDate({ PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, NOW).code, 'TOKEN_UNSET');
+});
+
+test('NEVER status requires owner proof and real GitHub Contents access, never expiry inference', async () => {
+  for (const [status, headers, state, code] of [
+    [200, {}, 'NO_EXPIRY', null], [401, {}, 'REJECTED', 'TOKEN_REJECTED'],
+    [403, {}, 'REJECTED', 'TOKEN_REJECTED'], [404, {}, 'REJECTED', 'TOKEN_NO_ACCESS'],
+    [429, { 'retry-after': '60' }, 'RATE_LIMITED', 'UPSTREAM_RATE_LIMITED'],
+    [503, {}, 'ERROR', 'UPSTREAM_UNAVAILABLE'], [301, {}, 'ERROR', 'REPO_MOVED'],
+  ]) {
+    const s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, github: () => new Response(status === 200 ? statusRecord('NEVER') : FAKE_TOKEN, { status, headers }) });
+    const r = await s.run('/kis/status'); noStore(r);
+    const v = JSON.parse(await body(r));
+    assert.deepEqual([v.state, v.code, v.expires_on, v.days_left], [state, code, null, null]);
+    assert.equal(githubCalls(s).length, 1);
+  }
+  for (const token of [{ email: ['other', 'example.test'].join('@') }, { expires_in: '0' }, { aud: 'wrong-app' }]) {
+    const s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, token });
+    assert.equal((await s.run('/kis/status')).status, 403); assert.equal(githubCalls(s).length, 0);
+  }
+});
+
+test('NEVER status refuses stale dated metadata, missing status and malformed metadata without echo', async () => {
+  for (const [payload, code] of [
+    [statusRecord(), 'TOKEN_EXPIRY_MISMATCH'], ['{}', 'TOKEN_STATUS_INVALID'],
+    [JSON.stringify({ ...JSON.parse(statusRecord('NEVER')), worker_read_token: { state: 'NO_EXPIRY', code: null, expires_on: '2027-02-13', days_left: null, verification: 'NOT_CHECKED' } }), 'TOKEN_STATUS_INVALID'],
+    [JSON.stringify({ ...JSON.parse(statusRecord('NEVER')), run_at: FAKE_TOKEN }), 'TOKEN_STATUS_INVALID'],
+  ]) {
+    const s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, github: () => new Response(payload) });
+    const r = await s.run('/kis/status'), v = JSON.parse(await body(r));
+    assert.deepEqual([v.state, v.code], ['ERROR', code]);
+  }
+});
+
+test('NEVER file reads retain upstream rejection and no-store; dated expiry still blocks before GitHub', async () => {
+  let s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' } }), r = await s.run('/kis/chart?symbol=NVDA');
+  assert.equal(r.status, 200); noStore(r); assert.equal(await body(r), BARS);
+  assert.equal(r.headers.get('X-Private-Token-Expires-On'), null);
+  for (const status of [401, 403]) {
+    s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, github: () => new Response(FAKE_TOKEN, { status }) });
+    r = await s.run('/kis/chart?symbol=NVDA'); assert.equal(r.status, 503); assert.equal(JSON.parse(await body(r)).error.code, 'TOKEN_REJECTED');
+  }
+  s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-05' } });
+  r = await s.run('/kis/chart?symbol=NVDA'); assert.equal(r.status, 503); assert.equal(githubCalls(s).length, 0);
+});
+
+test('dated status validates the stored countdown at capture time, not the current day', async () => {
+  const record = JSON.parse(statusRecord());
+  record.run_at = '2026-11-04T03:00:00Z'; record.worker_read_token.days_left = 88;
+  const s = setup({ github: () => new Response(JSON.stringify(record)) });
+  const r = await s.run('/kis/status'), v = JSON.parse(await body(r));
+  assert.deepEqual([v.state, v.expires_on, v.days_left], ['OK', '2027-01-31', 87]);
+});
+
+test('dated 401 near expiry retains the existing expiry diagnosis; NEVER outages never become expiry', async () => {
+  for (const [expires, github, state, code] of [
+    ['2026-11-07', () => new Response(FAKE_TOKEN, { status: 401 }), 'EXPIRED', 'TOKEN_EXPIRED'],
+    ['NEVER', () => { throw new TypeError('unavailable'); }, 'ERROR', 'UPSTREAM_UNAVAILABLE'],
+    ['NEVER', () => new Response(statusRecord('NEVER'), { headers: { 'Content-Length': '16385' } }), 'ERROR', 'TOKEN_STATUS_INVALID'],
+  ]) {
+    const s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: expires }, github });
+    const r = await s.run('/kis/status'), v = JSON.parse(await body(r));
+    assert.deepEqual([v.state, v.code], [state, code]);
+  }
 });
 
 test('a key-sorted body (the writer uses sort_keys) passes; each route only accepts its own schema and path', async () => {

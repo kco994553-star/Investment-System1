@@ -16,6 +16,29 @@ let n = 0;
 const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); };
 
 (async () => {
+  await ok('read token: explicit no-expiry, dated warning and blocked failures have separate words', () => {
+    const record = (state, code = null, expires_on = null, days_left = null) => ({ schema: X.K('status/1'), state, code, expires_on, days_left });
+    for (const [raw, words, blocked] of [
+      [record('NO_EXPIRY'), /만료일 없음/, false],
+      [record('OK', null, '2027-02-13', 30), /2027-02-13/, false],
+      [record('EXPIRING', null, '2027-02-13', 14), /14일 뒤.*2027-02-13.*만료/, false],
+      [record('EXPIRED', 'TOKEN_EXPIRED', '2027-02-13', 0), /토큰 만료/, true],
+      [record('EXPIRED', 'TOKEN_EXPIRED', '2027-02-13', 2), /토큰 만료/, true],
+      [record('UNSET', 'TOKEN_DATE_INVALID'), /만료 설정 오류/, true],
+      [record('REJECTED', 'TOKEN_REJECTED'), /토큰 거부/, true],
+      [record('ERROR', 'TOKEN_EXPIRY_MISMATCH'), /만료 설정.*일치하지 않/, true],
+    ]) {
+      const r = KP.validateTokenStatus(raw); assert.equal(r.ok, true);
+      const v = KP.tokenStatusView(r.value); assert.match(v.text, words); assert.equal(v.blocked, blocked);
+      if (raw.state !== 'NO_EXPIRY') assert.doesNotMatch(v.text, /만료일 없음/);
+    }
+    for (const raw of [
+      record('OK'), record('NO_EXPIRY', null, '2027-02-13'), record('NO_EXPIRY', null, null, 0),
+      record('EXPIRING', null, '2027-02-30', 14), record('EXPIRING', null, '2027-02-13', 15),
+      record('NO_EXPIRY', 'TOKEN_REJECTED'), record('UNKNOWN'), record('REJECTED', 'ARBITRARY_SECRET'),
+      record('EXPIRED', 'TOKEN_EXPIRED', '2027-02-13', 3),
+    ]) assert.equal(KP.validateTokenStatus(raw).ok, false, 'malformed status is refused');
+  });
   await ok('bars / analysis / qgv synthetic payloads pass and freeze', () => {
     for (const [f, v] of [[KP.validateBars, X.bars()], [KP.validateAnalysis, X.analysis()], [KP.validateQgv, X.qgv()]]) {
       const r = f(v); assert.equal(r.ok, true, JSON.stringify(r)); assert.ok(Object.isFrozen(r.value));

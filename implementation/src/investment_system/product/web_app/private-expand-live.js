@@ -38,6 +38,7 @@ const dl=(rows,d)=>h('dl',{class:'card-body',dataset:d||{}},rows.filter(Boolean)
 const WORDS=Object.freeze({AUTH_FORBIDDEN:'서버가 오너 확인을 거부했습니다 · 다시 로그인하세요',AUTH_REQUIRED:'로그인이 끝났습니다(만료) · 다시 로그인하세요',
  AUTH_UNAVAILABLE:'로그인 확인 서버 응답 없음',LOGIN_CANCELED:'로그인을 취소했습니다',LOGIN_REFUSED:'로그인 범위가 맞지 않아 쓰지 않았습니다',LOGIN_UNAVAILABLE:'비공개 연결 설정이 없습니다',
  KIS_SERIES_NOT_FOUND:'이 기업의 비공개 자료가 아직 없습니다',TOKEN_UNSET:'비공개 저장소 읽기 설정 없음',TOKEN_EXPIRED:'비공개 저장소 읽기 토큰 만료',TOKEN_REJECTED:'비공개 저장소 읽기 토큰 거부',
+ TOKEN_DATE_INVALID:'읽기 토큰 만료 설정 오류',TOKEN_DATE_IS_TOKEN:'읽기 토큰 만료 설정 오류',TOKEN_STATUS_INVALID:'비공개 토큰 상태 파일 확인 필요',
  RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다(Worker 배포 전)'});
 const word=c=>Object.prototype.hasOwnProperty.call(WORDS,c)?WORDS[c]:'오류 · '+c;
 const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
@@ -214,12 +215,15 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
  const P=()=>I.prices;
  const btn=h('button',{type:'button',class:'chip',dataset:{privateExpand:kind},'aria-expanded':'false'},'비공개 펼치기');
  const off=h('button',{type:'button',class:'chip',dataset:{privateDisconnect:kind},hidden:true},'비공개 연결 끊기');
+ const tokenCheck=h('button',{type:'button',class:'chip',dataset:{privateTokenCheck:kind},hidden:true},'읽기 토큰 상태 확인');
+ const tokenNote=h('p',{class:'reason',role:'status',dataset:{privateTokenStatus:kind}});
  const note=h('p',{class:'reason',role:'status',dataset:{privateNote:kind}});
- const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,note);
+ const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,tokenCheck,note,tokenNote);
  panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
- let open=false,seq=0;
+ let open=false,seq=0,tokenSeq=0;
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
  function closed(msg,{keep=false}={}){const s=st();if(kind==='classification'&&!keep&&I.classification)I.classification.disconnectPrivate();open=false;seq++;btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
+  tokenSeq++;tokenCheck.hidden=!s.connected;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;
   if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
   else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘 · 펼치면 서버에서 다시 확인하고 불러옵니다')])});
   note.textContent=msg||'';}
@@ -231,7 +235,7 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
   Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;
    try{panel.set('READY',{render:b=>RENDER[kind](b,res,{kind,draw,symbol:t.symbol,code:t.code,publicBasis:publicBasis()})});}
    catch(err){panel.set('ERROR',{code:codeOf(err)});note.textContent='비공개 자료가 형식과 달라 보이지 않습니다';return;}
-   open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;},
+   open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;tokenCheck.hidden=false;},
   err=>{if(my!==seq||signal.aborted)return;const c=codeOf(err);if(c==='CANCELED')return;
    if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
    if(c==='KIS_SERIES_NOT_FOUND'){panel.set('EMPTY');note.textContent=EMPTY_WORD[kind]||word(c);return;}
@@ -243,12 +247,30 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null,draw}){
   Promise.resolve(p).then(r=>{if(signal.aborted)return;closed(r&&r.prepared?'Google 로그인 준비됨 · 비공개 펼치기를 한 번 더 누르세요':'로그인됨 · 비공개 펼치기를 한 번 더 누르면 서버에서 확인하고 불러옵니다');},
    err=>{if(!signal.aborted)closed(word(codeOf(err)));});},{signal});
  off.addEventListener('click',e=>{let p;try{p=P().kisDisconnect(e);}catch(err){p=Promise.reject(err);}Promise.resolve(p).then(()=>closed('비공개 연결을 끊었습니다'),()=>closed('비공개 연결을 끊었습니다'));},{signal});
+ tokenCheck.addEventListener('click',e=>{
+  if(!st().connected){closed(word('AUTH_REQUIRED'));return;}
+  const mine=++tokenSeq;tokenCheck.disabled=true;tokenNote.dataset.privateTokenState='LOADING';tokenNote.textContent='비공개 읽기 토큰 상태 확인 중';
+  let p;try{p=P().kisRead(e,[['status']]);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(rows=>{
+   if(signal.aborted||mine!==tokenSeq)return;
+   const r=I.kisPrivate.validateTokenStatus(rows[0]);if(!r.ok)throw Error('TOKEN_STATUS_INVALID');
+   const v=I.kisPrivate.tokenStatusView(r.value);tokenNote.dataset.privateTokenState=v.state;tokenNote.textContent=v.text;
+  }).catch(err=>{
+   if(signal.aborted||mine!==tokenSeq)return;const c=codeOf(err);
+   if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
+   tokenNote.dataset.privateTokenState='ERROR';tokenNote.textContent=word(c);
+  }).finally(()=>{if(!signal.aborted&&mine===tokenSeq)tokenCheck.disabled=false;});
+ },{signal});
  // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
- const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected&&open)closed(word('AUTH_REQUIRED'));});}catch(_){return()=>{};}})();
- signal.addEventListener('abort',()=>{seq++;un();},{once:true});
+ const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected){
+  const checking=tokenCheck.disabled;
+  tokenSeq++;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;tokenCheck.hidden=true;tokenCheck.disabled=false;
+  if(open||checking)closed(word('AUTH_REQUIRED'));
+ }});}catch(_){return()=>{};}})();
+ signal.addEventListener('abort',()=>{seq++;tokenSeq++;un();},{once:true});
  // A bundle already delivered (another page's panel) is shown as open; otherwise the panel starts closed without dropping anything.
  const C=I.classification,cs=kind==='classification'&&C?C.state():null;
- if(cs&&cs.state==='OK'&&cs.delivery==='PRIVATE'&&st().connected){open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;
+ if(cs&&cs.state==='OK'&&cs.delivery==='PRIVATE'&&st().connected){open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;tokenCheck.hidden=false;
   panel.set('READY',{render:b=>ccPaint(b,cs.value)});}
  else closed(undefined,{keep:true});
  return Object.freeze({reset:()=>closed()});}
