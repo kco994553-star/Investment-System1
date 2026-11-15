@@ -61,6 +61,22 @@ def _stamp(day):
     return datetime.combine(date.fromisoformat(day), time(0), ZoneInfo('America/New_York'))
 
 
+def _query_window(request, captured):
+    """Admission bounds, never an invented source query or price timestamp."""
+    bymd=request.get('BYMD')
+    if bymd!='':
+        if not isinstance(bymd,str) or not re.fullmatch(r'[0-9]{8}',bymd):
+            raise ValueError('INVALID_QUERY_DATE')
+        try: return datetime.strptime(bymd,'%Y%m%d').date().isoformat(),None
+        except ValueError: raise ValueError('INVALID_QUERY_DATE') from None
+    moment=_ts(captured);local_day=moment.astimezone(ZoneInfo('America/New_York')).date()
+    close=session_close(local_day).close_at
+    completed=local_day if close is not None and close<=moment else schedule.previous_session(local_day)
+    return local_day.isoformat(),dict(mode='LATEST_AT_CAPTURE',
+        admission_day_upper_bound=local_day.isoformat(),last_completed_session_day=completed.isoformat(),
+        limit_basis='RECEIPT_CAPTURE_NEW_YORK_DATE',captured_at=captured)
+
+
 def _split_adjust(rows, splits):
     adjusted=deepcopy(rows)
     for split in splits:
@@ -97,9 +113,10 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
     captured=receipt.get('fetched_at');_ts(captured)
     if request.get('MODP')!='0' or request.get('GUBN')!='0': raise ValueError('RAW_DAILY_SOURCE_REQUIRED')
     symbol=request.get('SYMB');exchange=request.get('EXCD')
-    if not isinstance(symbol,str) or not re.fullmatch(r'[A-Z0-9][A-Z0-9.-]{0,15}',symbol) or exchange not in EXCHANGES:
+    if (not isinstance(symbol,str) or len(symbol)>16 or
+        not re.fullmatch(r'[A-Z0-9][A-Z0-9.-]*(?:/[A-Z])?',symbol) or exchange not in EXCHANGES):
         raise ValueError('INVALID_QUERY_IDENTITY')
-    query=datetime.strptime(request['BYMD'],'%Y%m%d').date().isoformat()
+    query,query_context=_query_window(request,captured)
     data=json.loads(body)
     if data.get('rt_cd')!='0' or not isinstance(data.get('output2'),list): raise ValueError('SOURCE_RESPONSE_FAILURE')
     if data.get('output2') and data.get('output1',{}).get('rsym')!='D'+exchange+symbol:
@@ -147,6 +164,7 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
             'held_ranges':deepcopy(evidence.get('held_ranges',[])),
             'raw_bars':raw,'bars':bars,'rejected_rows':rejected,'suspensions':[],
             'timestamp_basis':'SESSION_DATE_ONLY_NO_PROVIDER_INTRADAY_TIME','publication_scope':'OWNER_PRIVATE_ONLY'}
+    if query_context is not None: result['source_query_context']=query_context
     validate_contract(result)
     # Existing chart validator is the OHLCV reader; timestamp is a documented join key.
     chart_bars.normalize({'schema':chart_bars.SOURCE_SCHEMA,'symbol':symbol,'provider':result['source'],
@@ -302,8 +320,9 @@ def merge_update(previous, incoming, *, evaluation_day, failure=None):
     merged['price_basis_date']=merged['bars'][-1]['date'] if merged['bars'] else None
     merged['lineage']={'previous_source_sha256':previous['source_sha256'],'incoming_source_sha256':incoming['source_sha256'],'prior_collected_at':previous['collected_at']}
     from .exp_deciles.technical_measures import sessions
-    query=incoming.get('source_query',{}).get('BYMD',evaluation_day.replace('-',''))
-    requested_end=min(datetime.strptime(query,'%Y%m%d').date().isoformat(),evaluation_day)
+    request=incoming.get('source_query') or {'BYMD':evaluation_day.replace('-','')}
+    query,query_context=_query_window(request,incoming['collected_at'])
+    requested_end=min(query_context['last_completed_session_day'] if query_context else query,evaluation_day)
     present={r['date'] for r in incoming['bars']}
     expected=sessions(date.fromisoformat(incoming['bars'][0]['date'] if incoming['bars'] else requested_end),date.fromisoformat(requested_end))
     missing=sorted(set(expected)-present)
