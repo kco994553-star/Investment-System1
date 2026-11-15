@@ -11,6 +11,9 @@ exception is the official rank at the exact path rows.<code>.rank of `qgv-offici
 
 Private area (owner approval 2026-10-31, design docs/private_area/PRIVATE_AREA_KIS_DESIGN_20261031.md §7, §18.3, §20.1):
 KIS markers, private-area schema names and private Worker paths fail the build in every public file (added checks only).
+The one narrow exception (owner approval 2026-11-15, design §20.1 "파일 하나·주소 하나로 좁힌 예외"): the owner-private
+reader kis-private.js at the artifact root, at its pinned bytes, may name exactly its five Worker paths and five schema names
+(PAGES_PRIVATE_EXCEPTIONS below). Every other file, every other path or name, and any other bytes keep every rule unchanged.
 """
 from __future__ import annotations
 
@@ -193,10 +196,12 @@ APPROVED_SHA256 = {
     "data.js": "5a06bf6ceb49997b7f2aed31411e9c4a5eebafb0122f1d87eee9c926c6ac51ff",
     "engines.js": "9fc0b9f46d39f1e572505777fda80b8e0dff7f4c695b16731e336cd1689c1a59",
     "lab.js": "91e1b57ab4face44e07cb3db3ef9f3b243084202160f25082146d6ffe5f3168c",
-    "loader.js": "0039e9bab80a4387d5040764405a07eba01c335a8868c86bbf12957654cea80f",
+    "kis-private.js": "746bae21e83d35cc0befe72b6bc55587dc52fe6353d4b980d791c9f11189f963",
+    "loader.js": "504ade9ca04bf6b2e24c478e2dc76601c74a4485ecd08281f6aa3de9939bc00e",
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
     "prices.js": "a0199432f9b720ef7d94959cfd1d5af17013520906050facb05b5b8c5d8df79e",
+    "private-expand-live.js": "f5cbe4e0c84c099eda29682abd1a9352747e70bf738626b1f0e63d953d254c4c",
     "private.js": "e37ffe513a4e90db9e5688c8ddcaab2cf4794d2aa0bb81f804142cdf6bbd9c92",
     "qgv.js": "d8eadabdf31fee08393c1e79baecc91c9428de55b5e10b49df6f201bb3386476",
     "screen-lab-live.js": "eeb5d00c6b93108f656dc0ba7da55f0a0d236805d2a0ed06250edf9f070d7d21",
@@ -341,6 +346,57 @@ PAGES_ORIGIN_HOST = "kco994553-star.github.io"
 PRIVATE_URL_HOST = re.compile(r"(?:[a-z0-9-]+\.)*workers\.dev|" + re.escape(PAGES_ORIGIN_HOST))
 _PATH_HINTS = ("/kis", "/lab", "/private")
 
+# Owner-private panels on Pages (owner approval 2026-11-15; design PRIVATE_AREA_KIS_DESIGN_20261031.md §20.1 "파일 하나·주소 하나로
+# 좁힌 예외를 오너 승인과 함께 더한다"; docs/private_area/PRIVATE_AREA_INTEGRATION_20261115.md). The ONLY exception to
+# private_area_paths and private_area_schema, by exact artifact-relative name, pinned bytes and two fixed lists:
+# - name: the full relative name, so the same file in a directory or under another name is not excepted (an unexpected entry);
+# - sha256: the raw bytes as published (equal to its APPROVED_SHA256 pin). Other bytes get no exception at all: every rule runs
+#   on the whole file, so a byte change without a re-pin fails with private_area_paths / private_area_schema as well as
+#   unapproved_content;
+# - paths: each Worker path must be there exactly once as a single-quoted literal ('/kis/status'); then those literals, and only
+#   they, are blanked (their quotes stay) before the unchanged private_code_paths rule runs on the rest. A path missing,
+#   repeated or in other quotes excuses nothing; any other private path (another /kis/ route, /lab/, /private/) still counts;
+# - schemas: private_schema_names runs unchanged except that a hit is excused when it is exactly a listed name: a schema-name
+#   hit as a whole token (no letter, digit or any of _ . / - touching it on either side, so `kis-bars/1/analysis` is its own
+#   name and `kis-qgv/1.2` or `xkis-qgv/1` is not a listed one), a `schema: '…'` value as its whole value. Any other kis- /
+#   private- schema name, or a listed one in another spelling, still counts.
+# KIS markers, secret patterns, size and entry limits, the hash pin and every other rule are not touched by this exception.
+# private-expand-live.js (the panel component) needs no exception: it names no private path or schema.
+PAGES_PRIVATE_EXCEPTIONS = {
+    "kis-private.js": {
+        "sha256": "746bae21e83d35cc0befe72b6bc55587dc52fe6353d4b980d791c9f11189f963",
+        "paths": ("/kis/status", "/kis/chart", "/kis/analysis", "/kis/technical", "/kis/qgv"),
+        "schemas": ("kis-bars/1", "kis-bars/1/analysis", "kis-technical-measures/1", "kis-qgv/1", "kis-status/1"),
+    },
+}
+_SCHEMA_TOKEN_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_./-")
+
+
+def _pages_private_exception(name: str, payload: bytes) -> dict | None:
+    """The exception record for `name` when its bytes equal the pin, else None (the full rules apply)."""
+    record = PAGES_PRIVATE_EXCEPTIONS.get(name)
+    if record is None or hashlib.sha256(payload).hexdigest() != record["sha256"]:
+        return None
+    return record
+
+
+def _excepted_path_rest(text: str, record: dict) -> str:
+    """`text` with the exception's single-quoted path literals blanked (quotes kept), only when each is there exactly once."""
+    literals = ["'" + path + "'" for path in record["paths"]]
+    if all(text.count(literal) == 1 for literal in literals):
+        for literal in literals:
+            text = text.replace(literal, "''")
+    return text
+
+
+def _whole_token(text: str, start: int, end: int) -> str | None:
+    """The whole name token that starts at `start` and runs at least to `end`, or None when a name character precedes it."""
+    if start > 0 and text[start - 1] in _SCHEMA_TOKEN_CHARS:
+        return None
+    while end < len(text) and text[end] in _SCHEMA_TOKEN_CHARS:
+        end += 1
+    return text[start:end]
+
 
 def _kis_count_folded(folded: str, markers: tuple = KIS_MARKERS) -> int:
     if not any(hint in folded for hint in _KIS_HINTS):
@@ -353,14 +409,19 @@ def kis_marker_count(text: str, markers: tuple = KIS_MARKERS) -> int:
     return _kis_count_folded(text.casefold(), markers)
 
 
-def private_schema_names(text: str, legacy_ok: bool = False, folded: str | None = None) -> int:
-    """`kis-` / `private-` schema names in code text; `legacy_ok` admits the exact LEGACY_PRIVATE_SCHEMA spelling only."""
+def private_schema_names(text: str, legacy_ok: bool = False, folded: str | None = None,
+                         allowed: frozenset | tuple = ()) -> int:
+    """`kis-` / `private-` schema names in code text; `legacy_ok` admits the exact LEGACY_PRIVATE_SCHEMA spelling only;
+    `allowed` = the listed names of a PAGES_PRIVATE_EXCEPTIONS record (exact whole tokens / whole values only; empty for
+    every other file)."""
     folded = text.casefold() if folded is None else folded
     if "kis-" not in folded and "private-" not in folded:
         return 0
-    found = [m.group(0) for m in PRIVATE_SCHEMA_NAME.finditer(text)] + [m.group(1) for m in PRIVATE_SCHEMA_FIELD.finditer(text)]
-    # The exception compares the exact spelling: `Private-History/1` is not the legacy name.
-    return sum(1 for name in found if not (legacy_ok and name == LEGACY_PRIVATE_SCHEMA))
+    found = [(m.group(0), _whole_token(text, m.start(), m.end()) if allowed else None) for m in PRIVATE_SCHEMA_NAME.finditer(text)]
+    found += [(m.group(1), m.group(1)) for m in PRIVATE_SCHEMA_FIELD.finditer(text)]
+    # The exceptions compare the exact spelling: `Private-History/1` is not the legacy name.
+    return sum(1 for name, token in found
+               if not (legacy_ok and name == LEGACY_PRIVATE_SCHEMA) and not (allowed and token in allowed))
 
 
 def private_code_paths(text: str, folded: str | None = None) -> int:
@@ -386,9 +447,10 @@ def private_value_path(value: str) -> bool:
     return any(match.group(1) is None or _private_url_host(match.group(2)) for match in PRIVATE_PATH_VALUE.finditer(folded))
 
 
-def _private_area_text(name: str, text: str, violations: Counter) -> bool:
+def _private_area_text(name: str, text: str, violations: Counter, exception: dict | None = None) -> bool:
     """Raw-text private-area checks. JSON files get only the KIS markers here; their schema and path checks are structural
     (_inspect_json), so third-party links and titles inside public data are judged as values, not as code.
+    `exception` = the PAGES_PRIVATE_EXCEPTIONS record of a pinned code file (see there), or None.
     Returns whether a JSON file needs the per-string checks: only when it has an escape (backslash) or a hint in its raw
     text, since without an escape every decoded key and string is a verbatim piece of the raw text."""
     folded = text.casefold()
@@ -397,9 +459,13 @@ def _private_area_text(name: str, text: str, violations: Counter) -> bool:
         violations["kis_markers"] += markers
     if name.endswith(".json"):
         return "\\" in text or any(hint in folded for hint in _KIS_HINTS + _PATH_HINTS)
-    schemas = private_schema_names(text, legacy_ok=name in LEGACY_PRIVATE_SCHEMA_FILES, folded=folded)
+    allowed = frozenset(exception["schemas"]) if exception is not None else frozenset()
+    schemas = private_schema_names(text, legacy_ok=name in LEGACY_PRIVATE_SCHEMA_FILES, folded=folded, allowed=allowed)
     if schemas:
         violations["private_area_schema"] += schemas
+    if exception is not None:
+        text = _excepted_path_rest(text, exception)
+        folded = text.casefold()
     paths = private_code_paths(text, folded=folded)
     if paths:
         violations["private_area_paths"] += paths
@@ -514,7 +580,7 @@ def _check_payload(name: str, payload: bytes, violations: Counter) -> None:
         violations["secret_patterns"] += sum(len(pattern.findall(text)) for pattern in SECRET_PATTERNS)
         if not violations["secret_patterns"]:
             del violations["secret_patterns"]
-        per_string = _private_area_text(name, text, violations)
+        per_string = _private_area_text(name, text, violations, _pages_private_exception(name, payload))
         if name.endswith(".json"):
             value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_reject_constant)
             _inspect_json(value, violations, name=name, strings=per_string)

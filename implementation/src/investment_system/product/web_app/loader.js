@@ -32,8 +32,8 @@
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
 // (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. kis-private.js
 // is the owner-private reader and client (IS2.kisPrivate, DC-44 / DC-52; network through prices.js) and private-expand-live.js its
-// common panel component on the technical and QGV private panels (IS2.privateExpand). Both stay last, on their own line: the
-// public Pages preview leaves that line out (tools/web_app_preview.py OWNER_PRIVATE) and does not publish the two files.
+// common panel component on the technical and QGV private panels (IS2.privateExpand). Both stay last, on their own line (OWNER_PRIVATE
+// below): one that is missing or throws never fails the public layer. The Pages preview publishes both (owner 2026-11-15).
 const LOAD_ORDER=Object.freeze([
  'locale.js','entity-search.js','price-time.js','device-market.js','device-actual.js','profile-defaults.js','type-config-defaults.js',
  'device-profiles.js','engine-preview.js','dcf-parameters-defaults.js','device-valuation.js','playbook-config-defaults.js','playbook-engine.js',

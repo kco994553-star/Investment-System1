@@ -18,14 +18,27 @@
 
 빠진 것: `/kis/classification`·`/kis/macro`·`/kis/news`와 QGV 333/555·Top500·두 모형·섹터·관계·매크로 관측·뉴스 갱신 전부. 화면은 점수·순위를 다시 계산하지 않는다.
 
-## Pages 미리보기에는 아직 게시하지 않음
+## Pages 미리보기 게시 — 좁은 가드 예외 (오너 승인 2026-11-15)
 
-Pages 가드(`pages_artifact_guard.py`)는 게시 파일 코드 안의 비공개 Worker 경로(`private_area_paths`)와 비공개 스키마 이름(`private_area_schema`)을 막는다. `kis-private.js`는 둘 다 담는다(경로 5, 스키마 이름 9). 설계 §20.1은 이때 "파일 하나·주소 하나로 좁힌 예외를 오너 승인과 함께 더한다"고 정했지만 Pages 가드 예외는 아직 승인되지 않았고, 이 가지는 가드를 풀지 않는다. 그래서 미리보기(`web_app_preview.py` `OWNER_PRIVATE`)는 두 파일을 게시하지 않고 `loader.js`의 그 한 줄만 뺀 판을 게시한다. 공개 화면은 지금과 같고 비공개 칸은 「비공개 기능 준비 중」이다. 개발 빌드(`build_web_app.py`)와 시험에는 두 파일이 있다.
+Pages 가드(`pages_artifact_guard.py`)는 게시 파일 코드 안의 비공개 Worker 경로(`private_area_paths`)와 비공개 스키마 이름(`private_area_schema`)을 막는다. `kis-private.js`는 둘 다 담는다(경로 5개, 스키마 이름 5개가 가드 패턴에 10번 걸림). 설계 §20.1의 "파일 하나·주소 하나로 좁힌 예외"를 오너가 2026-11-15에 승인했고, 가드의 `PAGES_PRIVATE_EXCEPTIONS`가 그 예외 하나만 담는다.
 
-실사용 전 남은 일: ① Pages 가드의 좁은 예외(파일 `kis-private.js` 하나, 경로·스키마 이름 고정) 오너 승인과 그 PR ② 미리보기의 `OWNER_PRIVATE` 제외 해제 ③ Worker Secret/Text 반영과 `private-worker` 승인 배포 ④ 비공개 저장소 `data` 가지의 `chart/`·`technical/`·`measures/`·`qgv/latest.json`·`status/private-area.json` 게시(수집기·상태 산출기, 별도 승인).
+| 조건 | 내용 |
+| --- | --- |
+| 파일 | 산출물 맨 위의 `kis-private.js` 하나(전체 상대 이름). 하위 폴더·다른 이름이면 예외 없음(허용 목록 밖 파일로 실패). `private-expand-live.js`는 가드 규칙에 걸리는 문자열이 없어(경로·스키마·KIS 표지 0) 예외가 필요 없다 |
+| 바이트 고정 | 게시 바이트의 sha256을 예외 기록에 따로 고정(`APPROVED_SHA256`과 같은 값). 바이트가 다르면 예외가 전혀 적용되지 않아 경로 5·스키마 10과 `unapproved_content`로 실패. 바꿀 때는 두 고정값을 같은 PR에서 다시 맞춤 |
+| 허용 경로(정확히 5) | `/kis/status`, `/kis/chart`, `/kis/analysis`, `/kis/technical`, `/kis/qgv` — 각각 작은따옴표 문자열로 정확히 한 번. 빠지거나 두 번이거나 다른 따옴표면 하나도 면제하지 않음. 그 밖의 `/kis/`·`/lab/`·`/private/`는 그대로 실패 |
+| 허용 스키마 이름(파일에 있는 그대로 5) | `kis-bars/1`, `kis-bars/1/analysis`, `kis-technical-measures/1`, `kis-qgv/1`, `kis-status/1` — 정확한 철자의 온전한 낱말(앞뒤에 글자·숫자·`_ . / -`가 붙지 않음)만. 다른 `kis-`·`private-` 이름, 다른 대소문자는 그대로 실패 |
+| 그대로인 것 | 한도(파일당 2 MiB, 192개), CSP, KIS 표지·비밀 패턴·민감 키·JSON 검사, 다른 모든 파일의 규칙. JSON에는 예외 없음 |
+
+미리보기(`web_app_preview.py`)는 `OWNER_PRIVATE` 제외를 없애고 두 파일과 `loader.js` 전체를 web_app과 같은 바이트로 게시한다. 바뀐 게시 파일의 고정값: `kis-private.js`·`private-expand-live.js`(새로 더함), `loader.js`(다시 맞춤). Pages 파일 수: 로컬 빌드 176 → **178**, 라이브 전용 공개 자료 7개를 더한 배포 183 → **185**(한도 192).
+
+공개 방문자는 로그인 전 KIS 칸에 「로그인 필요」만 보고 Worker에 아무 요청도 보내지 않는다(읽기는 로그인 클릭 뒤, Worker가 매번 오너 확인). 두 파일이 없거나 실행 중 오류가 나도 공개 화면은 같다(로더 `IS2.loadSkipped()`).
+
+실사용 전 남은 일: ① Worker Secret/Text 반영과 `private-worker` 승인 배포 ② 비공개 저장소 `data` 가지의 `chart/`·`technical/`·`measures/`·`qgv/latest.json`·`status/private-area.json` 게시(수집기·상태 산출기, 별도 승인). (Pages 가드 예외와 `OWNER_PRIVATE` 해제는 `claude/pages-guard-kis-private-exception`에서 끝남.)
 
 ## 시험
 
 - Worker: `implementation/worker/tests/kis.test.mjs`(익명·다른 계정·만료 거부, `NEVER`/`NO_EXPIRY`, 거부와 불일치 구분, `no-store`, 스키마 검사, 빠진 경로 404).
-- 노드: `web_app_kis_private_node_test.js`. 브라우저: `web_app_kis_private_browser_test.js`(개발 빌드), `web_app_private_isolation_browser_test.js`(Pages 빌드와 임시 복사본: 공개 방문자 Worker 요청 0, 비공개 스크립트·자료 실패에도 공개 화면 같음).
-- 경계: `tests/test_private_boundary_static.py`의 좁은 예외는 다섯 경로로 줄였다. `tests/test_web_app_preview.py`는 두 파일이 게시되지 않음을 확인한다.
+- 노드: `web_app_kis_private_node_test.js`. 브라우저: `web_app_kis_private_browser_test.js`(개발 빌드와 게시된 Pages 산출물 `app.html` 둘 다), `web_app_private_isolation_browser_test.js`(게시된 Pages 산출물 — 가드 PASS, 두 파일 포함 — 과 그 임시 복사본: 공개 방문자 Worker 요청 0, Worker 403·500·잘못된 JSON·스키마 불일치, 비공개 스크립트 오류·누락에도 공개 화면 같음).
+- 가드: `tests/test_pages_artifact_guard.py`가 예외의 실패 경우를 확인한다 — 다시 고정해도 실패하는 추가 `/kis/` 경로와 추가 스키마 이름, 고정값을 안 바꾼 바이트 변경, 같은 문자열을 담은 다른 파일(JSON 포함), 다른 위치(하위 폴더·다른 이름·tar 하위 항목)의 예외 파일.
+- 경계: `tests/test_private_boundary_static.py`의 좁은 예외는 다섯 경로로 줄였다. `tests/test_web_app_preview.py`는 두 파일과 `loader.js` 전체가 같은 바이트로 게시되고 파일 수가 178(+라이브 전용 7 = 185 ≤ 192)임을 확인한다.

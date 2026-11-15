@@ -2,8 +2,8 @@
    DC-53; Codex #480 contract docs/research/KIS_PRIVATE_PRICE_BRIDGE_20261105.md). The one web source that names the private
    Worker routes (owner 2026-11-05 narrow exception: this file only, the five routes below — status, chart, analysis, technical,
    qgv —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
-   preview does not publish this file (tools/web_app_preview.py OWNER_PRIVATE): the Pages guard refuses private Worker paths and
-   private schema names in published code, and no exception for it is approved.
+   preview publishes this file under the narrow Pages guard exception (owner 2026-11-15: this root file only, at its pinned
+   bytes, exactly these five routes and the five SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
    - A click asks for the owner's Google token (scope exactly openid email, include_granted_scopes false; NO_ZT §4.2), keeps it
      in this module's memory only, and reads the routes of the private Worker, which checks the owner on the server before it
      reads anything. 연결 끊기 drops the token; an expired token is dropped before use.
