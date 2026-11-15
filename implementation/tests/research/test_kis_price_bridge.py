@@ -250,3 +250,71 @@ def test_partial_action_evidence_adopts_only_metrics_inside_the_proven_window():
     expected=measure_display(rows,signal_day=days[-1],series_id='SYN',symbol='SYN',
                              evidence=shared_evidence,source_kind='NORMALIZED_PROVIDER_DAILY_BARS')
     assert actual['metrics']==expected['metrics']
+
+
+def test_latest_request_preserves_empty_bymd_and_capture_bound_without_rewriting_source():
+    body,receipt,request,evidence=fixture();request['BYMD']=''
+    before=deepcopy((receipt,request,evidence))
+    result=normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+    assert (receipt,request,evidence)==before
+    assert result['source_query']['BYMD']==''
+    assert result['raw_bars']==make()['raw_bars']
+    assert result['source_query_context']==dict(mode='LATEST_AT_CAPTURE',
+        admission_day_upper_bound='2026-10-24',last_completed_session_day='2026-10-23',
+        limit_basis='RECEIPT_CAPTURE_NEW_YORK_DATE',captured_at=receipt['fetched_at'])
+    assert 'source_query_context' not in make()
+
+
+def test_latest_request_uses_capture_new_york_date_and_keeps_complete_session_gate():
+    body,receipt,request,evidence=fixture();request['BYMD']=''
+    receipt['fetched_at']='2026-10-23T00:30:00Z'  # Still October 22 in New York.
+    with pytest.raises(ValueError,match='DUPLICATE_OR_FUTURE_SESSION'):
+        normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+    receipt['fetched_at']='2026-10-23T15:00:00Z'
+    with pytest.raises(ValueError,match='INCOMPLETE_SESSION_AT_CAPTURE'):
+        normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+
+
+@pytest.mark.parametrize('bymd',[None,' ','2026102','20261035'])
+def test_latest_request_is_exact_empty_not_missing_or_malformed_date(bymd):
+    body,receipt,request,evidence=fixture();request['BYMD']=bymd
+    with pytest.raises(ValueError,match='INVALID_QUERY_DATE'):
+        normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+
+
+def test_latest_request_merge_does_not_require_the_incomplete_current_session():
+    previous=make();body,receipt,request,evidence=fixture();request['BYMD']=''
+    receipt['fetched_at']='2026-10-26T15:00:00Z'  # Monday before the NY session close.
+    incoming=normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+    result=merge_update(previous,incoming,evaluation_day='2026-10-26')
+    assert result['update_state']=='UPDATED' and result['failure'] is None
+    assert result['data']['missing_requested_sessions']==[]
+    assert result['status']=='STALE' and result['data']['price_basis_date']=='2026-10-23'
+    assert result['data']['source_query']['BYMD']==''
+    assert result['data']['source_query_context']['last_completed_session_day']=='2026-10-23'
+
+
+@pytest.mark.parametrize('symbol',['SYN/A','SYN/B'])
+def test_slash_share_class_keeps_exact_requested_and_returned_symbol(symbol):
+    body,receipt,request,evidence=fixture();request.update(SYMB=symbol,EXCD='NYS',BYMD='')
+    source=json.loads(body);source['output1']['rsym']='DNYS'+symbol
+    body=json.dumps(source).encode();receipt.update(sha256=hashlib.sha256(body).hexdigest(),bytes=len(body))
+    result=normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+    assert result['symbol']==symbol and result['source_query']['SYMB']==symbol
+    assert result['exchange']=='NYSE' and result['source_query']['BYMD']==''
+
+
+@pytest.mark.parametrize('returned',['DNYSSYN/B','DNYSSYN.A','DNYSSYN_A'])
+def test_slash_share_class_does_not_accept_a_class_or_punctuation_alias(returned):
+    body,receipt,request,evidence=fixture();request.update(SYMB='SYN/A',EXCD='NYS',BYMD='')
+    source=json.loads(body);source['output1']['rsym']=returned
+    body=json.dumps(source).encode();receipt.update(sha256=hashlib.sha256(body).hexdigest(),bytes=len(body))
+    with pytest.raises(ValueError,match='RETURNED_SYMBOL_MISMATCH'):
+        normalize_page(body,receipt=receipt,request=request,evidence=evidence)
+
+
+@pytest.mark.parametrize('symbol',['SYN/A/B','SYN//A','SYN/','SYN/AB','SYN/_A'])
+def test_slash_symbol_only_accepts_one_explicit_single_letter_class(symbol):
+    body,receipt,request,evidence=fixture();request['SYMB']=symbol
+    with pytest.raises(ValueError,match='INVALID_QUERY_IDENTITY'):
+        normalize_page(body,receipt=receipt,request=request,evidence=evidence)
