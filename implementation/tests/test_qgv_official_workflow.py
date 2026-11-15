@@ -473,15 +473,26 @@ def test_history_uploads_a_new_publication_once_under_its_basis_day(published, c
     store = RawStore()
     line = history_tool.run(out, environ={'RAW_REPO_TOKEN': 'synthetic-setting'}, call=store)
     digest = hashlib.sha256(body).hexdigest()
-    assert line == f'QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-2026-10-13 bytes={len(body)} sha256={digest}'
+    assert line == (f'QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-2026-10-13 bytes={len(body)} sha256={digest} '
+                    'inputs=UPLOADED')
+    assert history_tool.warning(line) is None
     assets = store.releases['qgv-official-2026-10-13']['assets']
     name = official['publication_id'] + '.json'
-    assert set(assets) == {name, name + '.sha256'}
+    # The inputs the publication was built from (owner decision 2026-11-15): the artifact's sec-qgv2.json, byte for byte, named
+    # by the publication's own recorded inputs sha256, beside the publication pair in the same release.
+    inputs = (out / sec_qgv2.FILENAME).read_bytes()
+    inputs_sha = official['inputs'][0]['sha256']
+    assert official['inputs'][0]['file'] == sec_qgv2.FILENAME and hashlib.sha256(inputs).hexdigest() == inputs_sha
+    inputs_name = f'inputs-{inputs_sha}.json'
+    assert set(assets) == {name, name + '.sha256', inputs_name, inputs_name + '.sha256'}
     assert assets[name][1] == body and assets[name + '.sha256'][1] == f'{digest}  {name}\n'.encode()
     assert qo.parse(assets[name][1]) == official                     # the public bytes: scores only, the strict reader passes
+    assert assets[inputs_name][1] == inputs and assets[inputs_name + '.sha256'][1] == f'{inputs_sha}  {inputs_name}\n'.encode()
+    sec_qgv2.require_qgv2(sec_qgv2.parse_json(assets[inputs_name][1]))   # the public input file, the strict reader passes
     posts = sum(1 for m, _, _ in store.calls if m == 'POST')
     again = history_tool.run(out, environ={'RAW_REPO_TOKEN': 'synthetic-setting'}, call=store)
-    assert again.endswith(' already_present') and sum(1 for m, _, _ in store.calls if m == 'POST') == posts
+    assert again.endswith(' already_present inputs=ALREADY_PRESENT') and sum(1 for m, _, _ in store.calls if m == 'POST') == posts
+    assert history_tool.warning(again) is None
     assert all(url.startswith(('https://api.github.com/repos/kco994553-star/investment-system1-raw/',
                                'https://uploads.github.com/repos/kco994553-star/investment-system1-raw/')) for _, url, _ in store.calls)
 
@@ -497,9 +508,14 @@ def test_history_keeps_a_second_publication_of_the_same_basis_day_beside_the_fir
     assert s['published'] == 'NEW'
     second = qo.parse((out / qo.FILENAME).read_bytes())
     assert second['publication_id'] != first['publication_id'] and second['times']['price_basis_date'] == first['times']['price_basis_date']
-    assert 'RAW_UPLOADED tag=qgv-official-2026-10-13' in history_tool.run(out, environ={'RAW_REPO_TOKEN': 's'}, call=store)
+    line = history_tool.run(out, environ={'RAW_REPO_TOKEN': 's'}, call=store)
+    assert 'RAW_UPLOADED tag=qgv-official-2026-10-13' in line and ' already_present' not in line
+    # Same sec-qgv2.json under both publications: its inputs pair is already there and is never uploaded again.
+    assert second['inputs'][0]['sha256'] == first['inputs'][0]['sha256'] and line.endswith(' inputs=ALREADY_PRESENT')
     names = set(store.releases['qgv-official-2026-10-13']['assets'])
-    assert {first['publication_id'] + '.json', second['publication_id'] + '.json'} <= names and len(names) == 4
+    inputs_name = f"inputs-{first['inputs'][0]['sha256']}.json"
+    assert {first['publication_id'] + '.json', second['publication_id'] + '.json', inputs_name, inputs_name + '.sha256'} <= names
+    assert len(names) == 6
 
 
 def test_history_skips_without_a_new_publication_or_a_token(published, tmp_path, capsys):
@@ -516,11 +532,145 @@ def test_history_skips_without_a_new_publication_or_a_token(published, tmp_path,
     assert history_tool.main(['--artifact-dir', str(tmp_path / 'missing')]) == 2
 
 
-@pytest.mark.parametrize('store,code', [(RawStore(status=403), 'RAW_UPLOAD_FAILED code=RELEASE_LOOKUP_FAILED'),
-                                        (RawStore(broken=True), 'RAW_UPLOAD_FAILED code=UNEXPECTED')])
+@pytest.mark.parametrize('store,code', [(RawStore(status=403), 'RAW_UPLOAD_FAILED code=RELEASE_LOOKUP_FAILED inputs=NOT_ATTEMPTED'),
+                                        (RawStore(broken=True), 'RAW_UPLOAD_FAILED code=UNEXPECTED inputs=NOT_ATTEMPTED')])
 def test_history_upload_failures_are_one_fixed_line(published, store, code):
     out, _, _ = published
-    assert history_tool.run(out, environ={'RAW_REPO_TOKEN': 's'}, call=store) == 'QGV_OFFICIAL_HISTORY ' + code
+    line = history_tool.run(out, environ={'RAW_REPO_TOKEN': 's'}, call=store)
+    assert line == 'QGV_OFFICIAL_HISTORY ' + code
+    # The inputs were not kept either: visible as a warning (the step still exits 0).
+    assert history_tool.warning(line) == '::warning::QGV_OFFICIAL_HISTORY inputs NOT_ATTEMPTED'
+
+
+# ---- the inputs bundle beside the publication (owner decision 2026-11-15) ---------------------------------------------
+SECRET_SETTING = 'synthetic-token-canary-7f3a9c'
+
+
+class InputsFailStore(RawStore):
+    """The release and the publication pair work; uploads of the inputs pair answer `fail` (an HTTP status) or raise."""
+
+    def __init__(self, fail):
+        super().__init__()
+        self.fail = fail
+
+    def __call__(self, method, url, *, data=None, headers=None, auth=True):
+        if method == 'POST' and 'name=inputs-' in url:
+            self.calls.append((method, url, auth))
+            if self.fail == 'raise':
+                raise OSError(f'synthetic failure https://x-access-token:{SECRET_SETTING}@uploads.github.com/{url}')
+            return self.fail, {}, b''
+        return super().__call__(method, url, data=data, headers=headers, auth=auth)
+
+
+def _main(out, store, monkeypatch, capsys):
+    """tools/qgv_official_history.py main as the workflow runs it (token in the env, the release store behind `http`)."""
+    monkeypatch.setenv('RAW_REPO_TOKEN', SECRET_SETTING)
+    monkeypatch.setattr(history_tool.raw_store_release, 'http', store)
+    code = history_tool.main(['--artifact-dir', str(out)])
+    return code, capsys.readouterr()
+
+
+def _publication_kept(out, store):
+    official = qo.parse((out / qo.FILENAME).read_bytes())
+    assets = store.releases['qgv-official-2026-10-13']['assets']
+    name = official['publication_id'] + '.json'
+    assert assets[name][1] == (out / qo.FILENAME).read_bytes() and name + '.sha256' in assets
+    return official, assets
+
+
+def _never_leaks(printed, out):
+    assert SECRET_SETTING not in printed and 'https://' not in printed and '@' not in printed
+    assert '{' not in printed and '"' not in printed                   # no file contents
+    assert str(CANARY)[:6] not in printed
+
+
+def test_history_inputs_uploaded_by_main_print_no_warning_and_no_token(published, monkeypatch, capsys):
+    out, _, _ = published
+    store = RawStore()
+    code, printed = _main(out, store, monkeypatch, capsys)
+    official, assets = _publication_kept(out, store)
+    lines = printed.out.splitlines()
+    assert code == 0 and len(lines) == 1 and lines[0].startswith('QGV_OFFICIAL_HISTORY RAW_UPLOADED ')
+    assert lines[0].endswith(' inputs=UPLOADED') and '::warning::' not in printed.out and printed.err == ''
+    assert f"inputs-{official['inputs'][0]['sha256']}.json" in assets
+    _never_leaks(printed.out, out)
+
+
+def test_history_inputs_never_replace_an_existing_asset(published):
+    out, _, _ = published
+    store = RawStore()
+    official = qo.parse((out / qo.FILENAME).read_bytes())
+    inputs_name = f"inputs-{official['inputs'][0]['sha256']}.json"
+    store.releases['qgv-official-2026-10-13'] = {'id': 7, 'assets': {inputs_name: (8, b'kept-as-it-was')}}
+    line = history_tool.run(out, environ={'RAW_REPO_TOKEN': 's'}, call=store)
+    assets = store.releases['qgv-official-2026-10-13']['assets']
+    # Only the missing sha256 file is added; the present asset keeps its bytes (no replace, no delete).
+    assert line.endswith(' inputs=UPLOADED') and assets[inputs_name] == (8, b'kept-as-it-was')
+    assert assets[inputs_name + '.sha256'][1] == f"{official['inputs'][0]['sha256']}  {inputs_name}\n".encode()
+    assert not [u for m, u, _ in store.calls if m == 'POST' and u.endswith('name=' + inputs_name)]
+    assert not [m for m, _, _ in store.calls if m in ('DELETE', 'PATCH', 'PUT')]
+
+
+def test_history_inputs_hash_mismatch_warns_and_still_uploads_the_publication(published, monkeypatch, capsys):
+    out, _, _ = published
+    path = out / sec_qgv2.FILENAME
+    path.write_bytes(path.read_bytes() + b' ')                          # not the bytes the publication was built from
+    store = RawStore()
+    code, printed = _main(out, store, monkeypatch, capsys)
+    _, assets = _publication_kept(out, store)
+    assert code == 0 and printed.out.splitlines()[0] == '::warning::QGV_OFFICIAL_HISTORY inputs HASH_MISMATCH'
+    assert printed.out.splitlines()[1].startswith('QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-2026-10-13 ')
+    assert printed.out.splitlines()[1].endswith(' inputs=HASH_MISMATCH') and len(printed.out.splitlines()) == 2
+    assert not [n for n in assets if n.startswith('inputs-')]
+    assert not [u for m, u, _ in store.calls if 'name=inputs-' in u]
+    _never_leaks(printed.out, out)
+
+
+@pytest.mark.parametrize('damage,expected', [('unlink', 'MISSING'), ('symlink', 'UNREADABLE'), ('directory', 'UNREADABLE')])
+def test_history_inputs_missing_or_unreadable_warns(published, monkeypatch, capsys, tmp_path, damage, expected):
+    out, _, _ = published
+    path = out / sec_qgv2.FILENAME
+    body = path.read_bytes()
+    path.unlink()
+    if damage == 'symlink':                                             # the same bytes behind a link are never followed
+        (tmp_path / 'elsewhere-qgv2.json').write_bytes(body)
+        path.symlink_to(tmp_path / 'elsewhere-qgv2.json')
+    elif damage == 'directory':
+        path.mkdir()
+    store = RawStore()
+    code, printed = _main(out, store, monkeypatch, capsys)
+    _, assets = _publication_kept(out, store)
+    lines = printed.out.splitlines()
+    assert code == 0 and lines == ['::warning::QGV_OFFICIAL_HISTORY inputs ' + expected, lines[1]] and len(lines) == 2
+    assert lines[1].startswith('QGV_OFFICIAL_HISTORY RAW_UPLOADED ') and lines[1].endswith(' inputs=' + expected)
+    assert not [n for n in assets if n.startswith('inputs-')]
+    _never_leaks(printed.out, out)
+
+
+@pytest.mark.parametrize('fail,expected', [(500, 'UPLOAD_FAILED_HTTP_500'), (422, 'UPLOAD_FAILED_HTTP_422'),
+                                           ('raise', 'UPLOAD_FAILED')])
+def test_history_inputs_upload_failure_warns_and_exits_0(published, monkeypatch, capsys, fail, expected):
+    out, _, _ = published
+    store = InputsFailStore(fail)
+    code, printed = _main(out, store, monkeypatch, capsys)
+    _, assets = _publication_kept(out, store)                           # the publication copy still happened
+    lines = printed.out.splitlines()
+    assert code == 0 and len(lines) == 2 and lines[0] == '::warning::QGV_OFFICIAL_HISTORY inputs ' + expected
+    assert lines[1].startswith('QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=qgv-official-2026-10-13 ')
+    assert lines[1].endswith(' inputs=' + expected) and ' code=' not in lines[1]
+    assert not [n for n in assets if n.startswith('inputs-')] and [u for m, u, _ in store.calls if 'name=inputs-' in u]
+    _never_leaks(printed.out + printed.err, out)
+
+
+def test_history_warning_lines_are_fixed_codes_only():
+    pattern = re.compile(r'::warning::QGV_OFFICIAL_HISTORY inputs [A-Z0-9_]+')
+    for code in ('MISSING', 'UNREADABLE', 'HASH_MISMATCH', 'UPLOAD_FAILED_HTTP_500', 'UPLOAD_FAILED', 'NOT_ATTEMPTED'):
+        note = history_tool.warning(f'QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=t bytes=1 sha256=x inputs={code}')
+        assert note == '::warning::QGV_OFFICIAL_HISTORY inputs ' + code and pattern.fullmatch(note)
+    for line in ('QGV_OFFICIAL_HISTORY skipped=NOT_NEW', 'QGV_OFFICIAL_HISTORY RAW_UPLOAD_NOT_CONFIGURED',
+                 'QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=t bytes=1 sha256=x inputs=UPLOADED',
+                 'QGV_OFFICIAL_HISTORY RAW_UPLOADED tag=t bytes=1 sha256=x already_present inputs=ALREADY_PRESENT'):
+        assert history_tool.warning(line) is None
 
 
 def test_history_and_check_never_touch_a_price_route_or_the_publication_secrets():
