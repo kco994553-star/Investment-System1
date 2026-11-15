@@ -1,0 +1,63 @@
+{
+  "schema": "research-source-correspondence/1",
+  "source_commit": "49968f41042732203a59a9957c10e877546a979f",
+  "base_commit": "719e23a042d2c737fe408844bf89ccbe081fac39",
+  "status": "TECHNICAL_ONLY_PORT",
+  "files": [
+    {
+      "path": "src/investment_system/research/_private_artifacts.py",
+      "source_sha256": null,
+      "ported_sha256": "87ddf983e06fc84f1ee41a7fe92fd490675d3f17281af22542e59533e4ec2853"
+    },
+    {
+      "path": "src/investment_system/research/exp_deciles/adapters/alpaca_bars.py",
+      "source_sha256": "f1663cdaa75c7862e7cfa55c1fd9849ac390989922fa8c8bdd7a9a41bf91e288",
+      "ported_sha256": "b4e67e1a3c118ae5275584622dc71693b559664e60975276d580ba79a93a6960"
+    },
+    {
+      "path": "src/investment_system/research/exp_deciles/liquidity.py",
+      "source_sha256": "8688ef64e12cd6db886ab449cfd868026ccb21b375b46369f04bcaec916f53dd",
+      "ported_sha256": "8688ef64e12cd6db886ab449cfd868026ccb21b375b46369f04bcaec916f53dd"
+    },
+    {
+      "path": "src/investment_system/research/exp_deciles/schedule.py",
+      "source_sha256": "60d7b630806ce6c3cdc9b98187438c5d98b25915562bb41a393673fc30a394ae",
+      "ported_sha256": "35c3d14d806f7a5f40bd0dd7d49c040c31a1d726aa8ade9bf254fa9182aba519"
+    },
+    {
+      "path": "src/investment_system/research/exp_deciles/technical_leaderboard_v1.json",
+      "source_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc",
+      "ported_sha256": "837689c35f98825bc0be36b4e3ced9a197e153cdcbaf297c1b6eb75e372273cc"
+    },
+    {
+      "path": "src/investment_system/research/exp_deciles/technical_measures.py",
+      "source_sha256": "af1b8dedfdbe83cdfc5f463347a52a9ee3ce98931addf04856673c3240950cef",
+      "ported_sha256": "af1b8dedfdbe83cdfc5f463347a52a9ee3ce98931addf04856673c3240950cef"
+    },
+    {
+      "path": "src/investment_system/research/kis_price_bridge.py",
+      "source_sha256": "97e93f1718b4e58eb82aa52f31d7eb5ab636fc142a36f844c8ff57c2bb3b5205",
+      "ported_sha256": "c645547e23f4c8db2a21059382d14ffa287148d84f30e2a507b37147976755d9"
+    },
+    {
+      "path": "src/investment_system/research/kis_split_evidence.py",
+      "source_sha256": "93a269cb0cc5d979dc55976239053cdf411cbe9479f7fb34958686f1ebce2a56",
+      "ported_sha256": "1b85aa7c5e4a06587a8782385f68c4a47afd6988699fef29d8406cc310be75b4"
+    },
+    {
+      "path": "src/investment_system/research/private_technical_board.py",
+      "source_sha256": "0a817f0e386de1bc48ec657ab95701019832a5f159e7bd369029ac178abbf422",
+      "ported_sha256": "d04f2948fcb462e9e2101c22b953445ddead5dc6a64350487093f248305f9b60"
+    },
+    {
+      "path": "src/investment_system/research/technical_display.py",
+      "source_sha256": "4ebbf06a228f9f843da499e4b28ac078fd1e062d6b782a1c831d553770300a1a",
+      "ported_sha256": "4ebbf06a228f9f843da499e4b28ac078fd1e062d6b782a1c831d553770300a1a"
+    },
+    {
+      "path": "src/investment_system/research/technical_handoff.py",
+      "source_sha256": "ceb99d510b83ab55fa6b3c763cc53c915953fc7d799081bb219e98b5f6d118f0",
+      "ported_sha256": "588e3813d757795ce56542842e24cd762795c179fa7330578b68f31e07904170"
+    }
+  ]
+}
