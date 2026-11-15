@@ -5008,3 +5008,10 @@ manifest의 URL/hash/크기/상태, SEC share facts·par value·split/exchange r
 - Pages 업로드 1개·배포 1개, `persist-credentials: false`, 캐시·push·`GITHUB_STEP_SUMMARY` 없음, verify·deploy의 Secret 없음(시험 `tests/test_public_price_boundary.py`).
 - 원장·샤드 단계의 Secret과 순서(W-F1/W-F2), collect 잡 한도(정기 40분·`all_shards` 120분).
 - `RAW_REPO_TOKEN`을 가진 단계는 샤드·원장·이력 세 개다. 셋 다 도구 안에서만 비공개 저장소에 쓴다. V 단계는 그 토큰을 갖지 않는다.
+
+## 12. D9 이력 단계가 재무 입력 묶음도 보관 (2026-11-15, append-only)
+
+- 오너 승인(2026-11-15): 중앙 V 게시 때 쓴 재무 자료 묶음을 다시 찾을 수 있게 보관한다. §11-1 표의 D9 행은 바꾸지 않았다.
+- `tools/qgv_official_history.py`가 새 게시본 한 쌍을 올린 뒤, 같은 릴리스 `qgv-official-<IEX 기준일>`에 아티팩트의 `sec-qgv2.json`을 `inputs-<sha256>.json` + `.sha256`으로 함께 올린다. 바이트의 sha256이 게시본 `inputs[0].sha256`와 같을 때만 올린다.
+- 이 파일은 이미 Pages에 공개되는 가격 없는 자료다. 원자료 저장소(비공개)에 같은 바이트를 두는 것이라 공개 경계는 바뀌지 않는다. 가격·게시용 Secret은 읽지 않는다.
+- 이미 있는 자산은 바꾸지 않는다. 없거나·해시가 다르거나·올리기가 실패하면 게시본 복사는 그대로 진행한다. 이때 `::warning::QGV_OFFICIAL_HISTORY inputs <CODE>` 경고(고정 코드)를 실행 요약에 남기고 종료 코드는 0이다.
