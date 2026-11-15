@@ -38,9 +38,11 @@
 // Kind -> private destinations it may reach. PUBLIC_REFRESH reads public files only (it never opens the private gate, critique #3);
 // WRITE is device storage only. SYNC reads the Worker history and appends/updates the user's own Sheet.
 const KINDS=Object.freeze({PUBLIC_REFRESH:Object.freeze([]),LOGIN:Object.freeze(['OAUTH']),UNIVERSE_READ:Object.freeze(['SHEETS_READ']),HISTORY:Object.freeze(['WORKER_HISTORY']),
- SYNC:Object.freeze(['WORKER','WORKER_HISTORY','SHEETS_READ','SHEETS_WRITE']),WRITE:Object.freeze([])});
+ SYNC:Object.freeze(['WORKER','WORKER_HISTORY','SHEETS_READ','SHEETS_WRITE']),WRITE:Object.freeze([]),
+ // The owner-private KIS reads (owner 2026-11-05, DC-44): the Worker's owner-checked routes only, never device storage.
+ PRIVATE_READ:Object.freeze(['WORKER'])});
 // Kinds that may write device storage (each writes only its own documented keys): every user action except the public refresh.
-const WRITERS=Object.freeze(Object.keys(KINDS).filter(k=>k!=='PUBLIC_REFRESH'));
+const WRITERS=Object.freeze(Object.keys(KINDS).filter(k=>k!=='PUBLIC_REFRESH'&&k!=='PRIVATE_READ'));
 const SHEETS='https://sheets.googleapis.com',OAUTH=Object.freeze(['https://oauth2.googleapis.com','https://accounts.google.com']);
 // Device quote records the new frontend neither writes nor reads (owner 2026-10-24, DC-18; plan §2.1): database -> object store ->
 // record keys. DeviceActual keeps its stored market quotes under 'market' and every import's quotes and FX under

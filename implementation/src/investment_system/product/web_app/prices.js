@@ -256,8 +256,38 @@ function create({win,action,data}){
    rows[c.id]=r.state==='OK'&&typeof r.return==='number'&&Number.isFinite(r.return)?{state:'OK',value:r.return,end:w.sessions[w.sessions.length-1]}:{state:'NA',reason:WINDOW_CODES[r.reason]||'RETURN_LAST_CLOSE_MISSING'};}
   return deepFreeze({state:'READY',as_of:asOf,period,rows});}
 
+ // ---- owner-private KIS layer (owner 2026-11-05, DC-44): IS2.kisPrivate's client with this layer's gated network. The token
+ // (scope openid email only) lives in the client's memory; every read is a PRIVATE_READ click to the approved Worker origin,
+ // checked by action.guard; the Worker checks the owner before it reads anything. Nothing here stores or logs a value.
+ let kisClient=null;
+ function kisC(){const K=win.IS2&&win.IS2.kisPrivate,c=config();if(!K)throw Error('LOADER_FAILED');
+  if(!kisClient)kisClient=K.createClient({win,clientId:str(c.googleSheetsClientId),origin:c.privateHistoryEnabled===true?str(c.privateHistoryWorkerOrigin):null,
+   send:(url,init)=>{action.guard(url,init);return win.fetch(url,init);}});
+  return kisClient;}
+ const kisState=()=>{try{return kisC().state();}catch(_){return Object.freeze({ready:false,connected:false,gis:false});}};
+ const kisSubscribe=fn=>{try{return kisC().subscribe(fn);}catch(_){return()=>{};}};
+ // The Google script comes through the old session (it loads GIS); the token request itself must start inside the click.
+ function kisConnect(event){return action.run(event,'LOGIN',()=>{const c=kisC();if(c.state().gis)return c.connect();
+  const s=session();if(s.state().enabled!==true)s.setEnabled(true);return s.prepare().then(()=>Object.freeze({prepared:true}));});}
+ function kisDisconnect(event){return action.run(event,'LOGIN',()=>{kisC().disconnect();});}
+ // One click = one action: the reads of one panel ([[route, symbol, part], …], 1 to 3) together. A part marked 'OPTIONAL' whose
+ // file is missing (KIS_SERIES_NOT_FOUND) answers null, so that part alone is 자료 없음; every other failure fails the click.
+ function kisRead(event,list){return action.run(event,'PRIVATE_READ',signal=>{if(!Array.isArray(list)||!list.length||list.length>3)throw Error('REQUEST_INVALID');
+  return(async()=>{const out=[];
+   for(let i=0;i<list.length;i++){const[route,symbol,part]=list[i];if(i)await kisPause(signal);
+    let r;try{r=await kisOne(route,symbol,signal);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}
+   return out;})();});}
+ // The private Worker admits one owner request at a time, at least 5 s apart (MIN_SPACING_MS; found on the retained-archive replay
+ // 2026-11-05: parallel reads of one click were refused 429). The reads of a click therefore run one after another with that gap,
+ // and a read refused as RATE_LIMITED is tried once more after the gap. The Worker limit itself is unchanged.
+ const KIS_SPACING_MS=5200;
+ function kisPause(signal){return new Promise((resolve,reject)=>{if(signal&&signal.aborted){reject(Error('CANCELED'));return;}
+  const t=win.setTimeout(()=>{if(signal)signal.removeEventListener('abort',stop);resolve();},KIS_SPACING_MS);
+  const stop=()=>{win.clearTimeout(t);reject(Error('CANCELED'));};if(signal)signal.addEventListener('abort',stop,{once:true});});}
+ async function kisOne(route,symbol,signal){try{return await kisC().get(route,symbol,signal);}
+  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;await kisPause(signal);return kisC().get(route,symbol,signal);}}
  return Object.freeze({UNIVERSE_SOURCE_KEY,WORKER_ORIGIN_KEY,status,subscribe,deviceSettings,prepare,login,logout,readUniverse,universeView,universeRanks:()=>ranks,rankFor,
-  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade});
+  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade,kisState,kisSubscribe,kisConnect,kisDisconnect,kisRead});
 }
 return Object.freeze({create});
 });

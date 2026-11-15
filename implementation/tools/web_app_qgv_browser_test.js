@@ -17,8 +17,9 @@
 //    cap options off before a Universe read; population boxes from the layer / model.
 //  - 2.1.3: a filter hides rows without re-ranking; 분류 자료 없음 = null SIC rows; nvda under its TARGET classification; type
 //    options = type_config names; 필터 모두 풀기; the phone panel (aria-expanded).
-//  - 2.1.4: before load every return cell says PRICE_TABS_NOT_LOADED's text; wait chips off; the load button off with the
-//    PRICE_TABS_OFF / AUTH_REQUIRED / SHEET_NOT_CONNECTED reason; synthetic clicks request and write nothing and print no code.
+//  - 2.1.4 (owner-private since 2026-11-15): before a sign-in only the 로그인 필요 gate and every return cell says — 비공개 (no
+//    period chip, no load button); signed in, before load every return cell says PRICE_TABS_NOT_LOADED's text, wait chips off,
+//    the load button off with the PRICE_TABS_OFF / SHEET_NOT_CONNECTED reason; synthetic clicks request and write nothing and print no code.
 //  - Central V (DC-31): without qgv-official.json every V is NA with OFFICIAL_NOT_PUBLISHED and 종합 순위 is empty (no price button
 //    mirrored); in the click context the synthetic publication (+ a failed-attempt status file) gives the ranks and V, the basis
 //    chip (IEX wording, basis day, publication time with date and UTC), the attempt chip and the IEX attribution link; fresh on the
@@ -392,9 +393,10 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         // ---- 2.1.4 before load, 2.1.6 official badges, 2.1.7 empty state, synthetic clicks
         tag('returns before load');
         const r0 = await page.evaluate(() => ({ cells: window.__qt.drawn().map((d) => d.c.ret), wait: [...document.querySelectorAll('button[data-period]')].filter((b) => b.disabled).map((b) => b.dataset.period),
-          load: document.querySelector('[data-k=load-tabs]').disabled, why: (document.querySelector('[data-k=load-tabs]').parentElement.querySelector('[data-reason]') || {}).dataset }));
-        assert.ok(r0.cells.length > 1 && r0.cells.every((t) => t === '— 가격 불러오기 전'), 'every return cell: the PRICE_TABS_NOT_LOADED text');
-        assert.deepEqual(r0.wait, ['60D', '120D', 'YTD', '1Y']); assert.equal(r0.load, true); assert.equal(r0.why.reason, 'PRICE_TABS_OFF');
+          load: document.querySelector('[data-k=load-tabs]') ? document.querySelector('[data-k=load-tabs]').disabled : null, why: document.querySelector('[data-k=load-tabs]') ? (document.querySelector('[data-k=load-tabs]').parentElement.querySelector('[data-reason]') || {}).dataset : null }));
+        assert.ok(r0.cells.length > 1 && r0.cells.every((t) => t === '— 비공개'), 'every return cell before a sign-in: the private state only');
+        assert.deepEqual([r0.wait, r0.load, r0.why], [[], null, null], 'before a sign-in: no period chip and no load button');
+        assert.deepEqual(await page.locator('[data-lb="2.1.4"] [data-private-gate=qgv-returns]').evaluate((e) => [e.dataset.privateState, e.dataset.reason, e.textContent]), ['LOGIN_REQUIRED', 'AUTH_REQUIRED', '비공개 로그인 필요'], '2.1.4 before a sign-in: only 로그인 필요');
         const badges = await page.evaluate(async () => { const I = window.IS2, S = window.QgvScores, pg = await I.qgv.page(), el = document.querySelector('[data-badges]');
           const want = S.provenanceAttrs(S.provenance({ kind: 'QGV', profile: { preset: pg.preset, gate: pg.gate, id: pg.profile_id }, central: true }));
           return { got: Object.fromEntries(Object.keys(want).map((k) => [k, el.getAttribute(k)])), want, text: [...el.querySelectorAll('[data-badge] .hl')].map((x) => x.textContent), vko: pg.v_source.ko, label: pg.price_basis.label,
@@ -485,6 +487,12 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         await b(1).click(); await page.waitForFunction(() => { const x = document.querySelectorAll('[data-qgv-band] .conn button')[2]; return x && !x.disabled; });
         assert.equal(await page.locator('[data-qgv-conn]').textContent(), '로그인됨');
         assert.equal(await page.locator('[data-lb="2.1.4"] .load-row [data-reason]').getAttribute('data-reason'), 'PRICE_TABS_OFF', 'signed in, store flag off: PRICE_TABS_OFF');
+        // Signed in, before load (the checks that ran before a sign-in until 2026-11-15): the not-loaded words, wait chips off, the button off.
+        const r1 = await page.evaluate(() => ({ cells: window.__qt.drawn().map((d) => d.c.ret), wait: [...document.querySelectorAll('button[data-period]')].filter((b) => b.disabled).map((b) => b.dataset.period),
+          load: document.querySelector('[data-k=load-tabs]').disabled }));
+        assert.ok(r1.cells.length > 1 && r1.cells.every((t) => t === '— 가격 불러오기 전'), 'signed in, every return cell: the PRICE_TABS_NOT_LOADED text');
+        assert.deepEqual([r1.wait, r1.load], [['60D', '120D', 'YTD', '1Y'], true]);
+        assert.equal(await page.locator('[data-private-gate=qgv-returns]').count(), 0, 'signed in: no gate');
         assert.equal(await page.locator('[data-lb="2.1.4"] .load-row a.lk').getAttribute('href'), '#/detail/settings');
         // ③ by Enter on the focused button: exactly one read.
         // The central basis chips (DC-31): IEX wording, basis day, publication time, the failed attempt, the attribution link.
@@ -600,7 +608,8 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         const ctx = await open({ tabs: true, flag: true }), { page, rec } = ctx;
         await page.goto(s.base + '#/qgv'); await ready(page); await tableReady(page);
         const reason = () => page.locator('[data-lb="2.1.4"] .load-row [data-reason]').getAttribute('data-reason');
-        assert.equal(await reason(), 'AUTH_REQUIRED', 'flag on, not signed in: AUTH_REQUIRED');
+        assert.equal(await page.locator('[data-lb="2.1.4"] [data-private-gate=qgv-returns]').getAttribute('data-reason'), 'AUTH_REQUIRED', 'flag on, not signed in: AUTH_REQUIRED (the 로그인 필요 gate)');
+        assert.equal(await page.locator('[data-k=load-tabs]').count(), 0, 'not signed in: no load button');
         await testButtons(page);
         const b = (i) => page.locator('[data-qgv-band] .conn button').nth(i);
         await b(0).click(); await page.waitForFunction(() => { const x = document.querySelectorAll('[data-qgv-band] .conn button')[1]; return x && !x.disabled; });
@@ -642,7 +651,7 @@ const testClick = async (page, name) => { await page.locator('[data-test-action=
         assert.equal(await page.evaluate(() => window.IS2.action.blocked()), 0);
         await page.reload(); await ready(page); await tableReady(page);
         const reloaded = await page.evaluate(() => window.__qt.drawn().map((d) => d.c.ret));
-        assert.ok(reloaded.every((t) => t === '— 가격 불러오기 전'), 'after a reload the returns are NA again');
+        assert.ok(reloaded.every((t) => t === '— 비공개'), 'after a reload (signed out) the returns are gone again: the private state only');
         await ctx.context.close();
       }
     }

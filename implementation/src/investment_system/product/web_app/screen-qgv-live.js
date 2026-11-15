@@ -113,7 +113,13 @@ const group=(label,...kids)=>h('div',{class:'scroll',role:'group','aria-label':l
 /* ---------------------------------------------------------------- the leaderboard */
 function leaderboard(route,refs){
  const signal=route.signal,Q=I.qgv,D=I.data,P=I.prices,B=refs.bodies;
+ // KIS V (owner 2026-11-14 DC-52, owner-private only): the private QGV of the common engine for the chosen company, in its own
+ // panel under the results, only where the private panel component is loaded. Its values never enter this screen's ranks.
+ const kisPanel=I.privateExpand?I.parts.privatePanel({id:'qgv-kis',title:'KIS V'}):null;
+ const selectedCode=()=>{const sel=I.selection&&typeof I.selection.get==='function'?I.selection.get():null,id=sel&&typeof sel.id==='string'?sel.id:null;if(!id||!ctx.pg)return null;
+  const r=Q.rows(ctx.pg).find(x=>x.id===id);return r&&typeof r.code==='string'?r.code:null;};
  const ctx={pg:null,names:null,model:null,ret:null,retGen:0,band:{err:null},tabs:{err:null,after:false},pub:{busy:false,result:null,err:null},preview:null,gen:0};
+ if(kisPanel)I.privateExpand.attach(kisPanel,{signal,kind:'qgv',target:()=>({code:selectedCode()}),publicBasis:()=>ctx.pg&&ctx.pg.price_basis?ctx.pg.price_basis.price_basis_date||null:null});
  let queued=false;
  const later=()=>{if(queued)return;queued=true;Promise.resolve().then(()=>{queued=false;if(!signal.aborted)draw();});};
  // 1.1.8 기술 조건 필터 (feature 3.5, screen-tech-filter-live.js): hides rows only; ranks, scores and the sort stay this screen's.
@@ -211,7 +217,7 @@ function leaderboard(route,refs){
   const tech=TF?TF.keep(filtered):null,kept=tech?tech.rows:filtered;
   const ur=ranks(),m3=new Map(),cap=r=>{if(!ur)return null;if(!m3.has(r.id))m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=m3.get(r.id);return e&&Number.isInteger(e.rank)?e.rank:null;};
   if(sortSpec(V.sort)[1]==='cap'&&!ur||V.sort==='favorites'&&!fav.ids.length||!SORTS.some(s=>s[0]===V.sort))V.sort='qgv';
-  const ret=ctx.ret&&ctx.ret.state==='READY'?ctx.ret:null,byRet=V.ret&&!!ret;
+  const ret=ctx.ret&&ctx.ret.state==='READY'&&signedIn()?ctx.ret:null,byRet=V.ret&&!!ret;
   const rv=r=>{const x=ret&&Object.hasOwn(ret.rows,r.id)?ret.rows[r.id]:null;return x&&x.state==='OK'?x.value:null;};
   const ordered=byRet?returnOrder(kept,rv):sortRows(kept,V.sort,{cap,title,interests:fav.ids,rank:pv?r=>r.rank.personal:r=>r.rank.official});
   const official=Q.rows(pg,{scope:'UNIVERSE'});
@@ -288,7 +294,11 @@ function leaderboard(route,refs){
   if(!v.m3.has(r.id))v.m3.set(r.id,P.rankFor({company_id:r.id,ticker:r.ticker}));const e=v.m3.get(r.id);
   if(e&&Number.isInteger(e.rank))return[h('span',{dataset:{ramPrice:''}},'#',String(e.rank),e.quality==='MISMATCH'?' (불일치)':'',e.group_id?' · 종류 합산':''),h('small',{class:'reason'},' 내 기기 기준 · v0 · 공식 순위 아님')];
   const c=e&&Array.isArray(e.reason_codes)?e.reason_codes[0]:null;return h('span',{class:'dash',dataset:{reason:c||''}},'M3 — · ',say(c,'M3 순위 없음'));}
+ // Owner-private (owner 2026-11-15): period returns read price history (the signed-in user's price tabs), so before a sign-in
+ // 2.1.4 and the return cells show only the short login-required state; after it they work as before.
+ function signedIn(){const st=P.status();return!!(loaded(st)&&st.google&&st.google.connected===true);}
  function ret(r,v){
+  if(!signedIn())return h('span',{class:'reason',dataset:{reason:'LOGIN_REQUIRED'}},'— 비공개');
   const x=ctx.ret&&Object.hasOwn(ctx.ret.rows,r.id)?ctx.ret.rows[r.id]:null;
   if(!x||x.state==='NA'&&x.reason==='PRICE_TABS_NOT_LOADED')return h('span',{class:'reason',dataset:{reason:'PRICE_TABS_NOT_LOADED'}},'— ',text('PRICE_TABS_NOT_LOADED'));
   if(x.state!=='OK'){const stop=x.reason==='PRICE_IDENTITY_CONFLICT'||x.reason==='IDENTITY_CONFLICT_WITHDRAWN';
@@ -374,6 +384,8 @@ function leaderboard(route,refs){
 
  /* ---- 2.1.4 기간별 수익률 (prices only after a click, RAM only) */
  function block4(v){
+  if(!signedIn())return[h('p',{class:'pending',role:'status',dataset:{privateGate:'qgv-returns',privateState:'LOGIN_REQUIRED',reason:'AUTH_REQUIRED'}},
+   h('span',{class:'chip',dataset:{privateLabel:''}},'비공개'),' 로그인 필요'),toTable('returns')];
   const st=P.status(),s=loaded(st)?st.store:null,g=loaded(st)?st.google:null,states=['READY','LOADING','ERROR'];
   const usable=loaded(st)&&g&&g.connected&&st.sheet.set&&s&&states.includes(s.state);
   let why=null;
@@ -422,7 +434,7 @@ function leaderboard(route,refs){
    V.preview&&pv&&pv.out.state==='INVALID'?h('p',{class:'na',dataset:{na:pv.out.reason||''}},say(pv.out.reason,'내 설정으로 계산하지 못했습니다')):null,
    h('div',{class:'cards'},h('div',{class:'sk card-now'},h('b',null,'지금'),h('span',null,pg.v_source.ko,' · ',where),h('span',{class:'boxed'},Q.rankLabel(pg)),h('span',null,...time)),
     h('div',{class:'sk'},h('b',null,'내 설정 결과(미리보기)를 켜면'),h('span',{class:'boxed'},S.PERSONAL_LABEL[0]),h('span',null,'V 비중 0이면 → ',S.PERSONAL_V0_LABEL[0]))),
-   hand('개인 결과는 공식 점수·순위를 덮어쓰지 않음 · 계산값은 저장 안 함(RAM)'),toTable('results')];}
+   hand('개인 결과는 공식 점수·순위를 덮어쓰지 않음 · 계산값은 저장 안 함(RAM)'),toTable('results'),kisPanel?kisPanel.node:null];}
 
  /* ---- 2.1.7 후보 선정 연결 (the official default profile; filters and personal settings change nothing) */
  function block7(v){

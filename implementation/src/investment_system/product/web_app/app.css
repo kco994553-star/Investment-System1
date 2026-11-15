@@ -41,6 +41,7 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;margin:0;line-height
 .hand{font-family:var(--font-body);color:var(--muted)}
 .chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:6px 14px;min-height:32px;font-size:15px;background:var(--paper);text-decoration:none}
 button.chip{cursor:pointer}
+.chip[hidden]{display:none}
 button.chip:disabled{cursor:not-allowed}
 .chip.on,.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 .bar{height:12px;border:2px solid var(--line);border-radius:8px;position:relative;overflow:hidden;background:var(--paper)}
@@ -282,3 +283,7 @@ svg[data-ring]{width:100%;max-width:280px;height:auto}
 fieldset.card-body{min-inline-size:0}
 .lb select{min-height:44px;max-width:100%}
 .lb .check{max-width:100%;min-width:0}.lb .check select{min-width:0}
+/* Owner-private KIS panels (DC-52): long file facts and reason words wrap inside the panel at 390 px. */
+.private-panel .tbl td,.private-panel dd{min-width:0;overflow-wrap:anywhere}
+/* Owner-private places of public screens (owner 2026-11-15): their controls stay out until a sign-in. */
+.load-row[hidden],[data-private-gate][hidden]{display:none}
