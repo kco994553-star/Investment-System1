@@ -63,7 +63,7 @@ function render(){
  const make=(route.id==='detail'&&detail(route.params[0]))||screen(route.id);let body;
  try{body=make?make(route):h('p',{class:'pending'},'화면 준비 중');}catch(e){body=h('p',{class:'pending',role:'alert'},'화면을 그리지 못했습니다 · '+String(e&&e.message||e));}
  app.replaceChildren(h('div',{class:'page'},header(current),h('main',{id:'main',tabindex:'-1',dataset:{route:route.id}},body),
-  h('footer',{class:'foot'},'검색 순서는 추천 순위가 아님 · 가격 기반 값은 내 기기에서만 계산 · 투자 권유나 자문이 아님')),tabbar(current),drawer());
+  h('footer',{class:'foot'},'검색 순서는 추천 순위가 아님 · 투자 권유나 자문이 아님')),tabbar(current),drawer());
  // Once the layer is loaded (at once if it is) the chip follows sign-in changes until the next render (the subscription ends
  // with this render's signal). If loading failed, every render gets the 연결 실패 chip and the notice above main (IS2.ready
  // stays rejected, so this runs before the frame is painted).
