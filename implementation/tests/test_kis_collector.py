@@ -3,6 +3,7 @@ made up in this file (prices 1.00 to 9.99, symbols of the real Universe list), n
 from __future__ import annotations
 
 import ast
+import datetime as dt
 import hashlib
 import json
 import subprocess
@@ -17,6 +18,12 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / 'src/investment_system/private_area/kis_collector.py'
 UNIVERSE = ROOT / 'src/investment_system/universe/universe_codes_v1.json'
 CODES = json.loads(UNIVERSE.read_text(encoding='utf-8'))
+PRIVATE_STATUS_VERSION = 'private-area-status/1'
+
+
+def assert_redacted(canary, text):
+    if canary in text:
+        pytest.fail('synthetic credential-shaped metadata leaked', pytrace=False)
 
 
 def page(symb, excd, days, *, modp='0', bymd='', rt='0', rsym=None, fetched='2026-11-15T03:40:00Z', row=None):
@@ -195,3 +202,163 @@ def test_module_is_standard_library_only_with_no_network_secret_or_host():
     for word in ('order', 'balance', 'account'):
         assert not [line for line in text.splitlines() if word in line.casefold() and not line.lstrip().startswith(('#', '-'))
                     and 'route' not in line], word
+
+
+def test_worker_read_token_explicit_never_is_metadata_only():
+    assert C.worker_read_token_status('NEVER', run_at='2026-11-15T03:45:00Z') == {
+        'state': 'NO_EXPIRY', 'code': None, 'expires_on': None, 'days_left': None, 'verification': 'NOT_CHECKED'}
+
+
+@pytest.mark.parametrize('value', [None, '', False, 20261115, [], {}, 'never', 'Never', ' NEVER', 'NEVER ', 'NEVER\n',
+                                   'NΕVER', '2026-11-15 ', '2026-1-15', '2026-11-15\n', '2026-11-15T00:00:00Z',
+                                   '2026-02-29', '2027-02-29', '2100-02-29', '0000-01-01', '0099-12-31',
+                                   '2026-00-15', '2026-13-01', '2026-11-31', '２０２６-１１-１５', '9999-12-31'])
+def test_worker_read_token_invalid_metadata_is_unset_never_no_expiry(value):
+    assert C.worker_read_token_status(value, run_at='2026-11-15T03:45:00Z') == {
+        'state': 'UNSET', 'code': 'TOKEN_DATE_INVALID', 'expires_on': None, 'days_left': None,
+        'verification': 'NOT_CHECKED'}
+
+
+@pytest.mark.parametrize('family', ['pat', 'p', 'o', 'u', 's', 'r'])
+def test_worker_read_token_token_lookalike_metadata_is_redacted(family):
+    # Build synthetic canaries at runtime; no credential-shaped value is kept in source or test IDs.
+    prefix = ('github_' + family + '_') if family == 'pat' else ('gh' + family + '_')
+    canary = prefix + ''.join(chr(65 + i % 26) for i in range(48))
+    for value in (canary, ' \t' + canary + '\n'):
+        actual = C.worker_read_token_status(value, run_at='2026-11-15T03:45:00Z')
+        assert_redacted(canary, json.dumps(actual))
+        assert actual == {'state': 'UNSET', 'code': 'TOKEN_DATE_IS_TOKEN', 'expires_on': None, 'days_left': None,
+                          'verification': 'NOT_CHECKED'}
+
+
+@pytest.mark.parametrize('expires_on,state,code,days_left', [
+    ('2026-11-14', 'EXPIRED', 'TOKEN_EXPIRED', -1),
+    ('2026-11-15', 'EXPIRED', 'TOKEN_EXPIRED', 0),
+    ('2026-11-16', 'EXPIRING', None, 1),
+    ('2026-11-29', 'EXPIRING', None, 14),
+    ('2026-11-30', 'OK', None, 15),
+    ('2027-11-17', 'OK', None, 367),
+    ('2027-11-18', 'UNSET', 'TOKEN_DATE_INVALID', None),
+])
+def test_worker_read_token_dated_warning_expiry_and_horizon_boundaries(expires_on, state, code, days_left):
+    assert C.worker_read_token_status(expires_on, run_at='2026-11-15T03:45:00Z') == {
+        'state': state, 'code': code, 'expires_on': expires_on if days_left is not None else None,
+        'days_left': days_left, 'verification': 'NOT_CHECKED'}
+
+
+@pytest.mark.parametrize('run_at,expires_on,state,days_left', [
+    ('2026-11-14T14:59:59Z', '2026-11-15', 'EXPIRING', 1),
+    ('2026-11-14T15:00:00Z', '2026-11-15', 'EXPIRED', 0),
+    ('2028-02-28T14:59:59Z', '2028-02-29', 'EXPIRING', 1),
+    ('2028-02-28T15:00:00Z', '2028-03-01', 'EXPIRING', 1),
+    ('2000-02-28T15:00:00Z', '2000-02-29', 'EXPIRED', 0),
+])
+def test_worker_read_token_uses_seoul_calendar_and_real_leap_days(run_at, expires_on, state, days_left):
+    actual = C.worker_read_token_status(expires_on, run_at=run_at)
+    assert (actual['state'], actual['expires_on'], actual['days_left']) == (state, expires_on, days_left)
+
+
+def test_store_emits_private_status_with_only_safe_collection_summary(tmp_path):
+    pages, data = tmp_path / 'pages', tmp_path / 'data'
+    pages.mkdir()
+    body, meta = page('AAPL', 'NAS', ['20261113'])
+    drop(pages, 1, body, meta, 'NASDAQ:AAPL')
+    legacy = C.store(pages, data, CODES, run_at='2026-11-15T03:45:00Z', worker_read_token_expires_on='NEVER')
+    assert json.loads((data / 'kis/status.json').read_text()) == legacy
+    private = json.loads((data / 'status/private-area.json').read_text())
+    assert private == {
+        'schema': PRIVATE_STATUS_VERSION, 'publication_scope': 'OWNER_PRIVATE_ONLY', 'run_at': '2026-11-15T03:45:00Z',
+        'worker_read_token': {'state': 'NO_EXPIRY', 'code': None, 'expires_on': None, 'days_left': None,
+                              'verification': 'NOT_CHECKED'},
+        'collection': {'counts': {'pages': 1, 'filed': 1, 'same_as_held': 0, 'revisions': 0, 'refused': {},
+                                  'empty_candidates': 0, 'history_end': 0},
+                       'symbols_total': 519, 'symbols_held': 1, 'symbols_at_newest_session': 1}}
+    assert 'AAPL' not in json.dumps(private) and '1.20' not in json.dumps(private)
+
+
+def test_store_missing_expiry_stays_unset_in_private_status(tmp_path):
+    C.store(tmp_path / 'pages', tmp_path, CODES, run_at='2026-11-15T03:45:00Z')
+    assert json.loads((tmp_path / 'status/private-area.json').read_text())['worker_read_token'] == {
+        'state': 'UNSET', 'code': 'TOKEN_DATE_INVALID', 'expires_on': None, 'days_left': None,
+        'verification': 'NOT_CHECKED'}
+
+
+def test_store_cli_redacts_token_lookalike_expiry_environment(tmp_path):
+    canary = 'gh' + 'p_' + ''.join(chr(97 + i % 26) for i in range(48))
+    env = {'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': C.PRIVATE_REPOSITORY, 'PATH': '/usr/bin:/bin',
+           'WORKER_READ_TOKEN_EXPIRES_ON': canary}
+    run = subprocess.run([sys.executable, '-I', str(MODULE), 'store', '--universe', str(UNIVERSE),
+                          '--data', str(tmp_path), '--pages', str(tmp_path / 'pages')],
+                         capture_output=True, text=True, env=env)
+    assert_redacted(canary, run.stdout + run.stderr)
+    for f in tmp_path.rglob('*.json'):
+        assert_redacted(canary, f.read_text())
+    assert run.returncode == 0 and run.stderr == ''
+    assert run.stdout == ('KIS_COLLECT store pages=0 filed=0 same=0 revisions=0 empty_candidates=0 history_end=0 '
+                          'refused=- held=0/519 newest=- at_newest=0\n')
+    private = json.loads((tmp_path / 'status/private-area.json').read_text())
+    assert private['worker_read_token']['code'] == 'TOKEN_DATE_IS_TOKEN'
+
+
+@pytest.mark.parametrize('metadata', ['NEVER', None, '2026-02-30', 'lookalike'])
+def test_token_status_cli_refreshes_metadata_without_collection_or_kis_changes(tmp_path, metadata):
+    # No pages, Universe file or credential is needed for a metadata-only refresh.
+    canary = 'github_' + 'pat_' + ''.join(chr(65 + i % 26) for i in range(48))
+    env = {'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': C.PRIVATE_REPOSITORY, 'PATH': '/usr/bin:/bin'}
+    if metadata is not None:
+        env['WORKER_READ_TOKEN_EXPIRES_ON'] = canary if metadata == 'lookalike' else metadata
+    run = subprocess.run([sys.executable, '-I', str(MODULE), 'token-status', '--data', str(tmp_path)],
+                         capture_output=True, text=True, env=env)
+    assert_redacted(canary, run.stdout + run.stderr)
+    assert run.returncode == 0 and run.stderr == ''
+    raw = (tmp_path / 'status/private-area.json').read_text()
+    assert_redacted(canary, raw)
+    private = json.loads(raw)
+    assert private['schema'] == PRIVATE_STATUS_VERSION and private['publication_scope'] == 'OWNER_PRIVATE_ONLY'
+    assert private['collection'] is None and not (tmp_path / 'kis').exists()
+    assert dt.datetime.strptime(private['run_at'], '%Y-%m-%dT%H:%M:%SZ').tzinfo is None
+    code = None if metadata == 'NEVER' else ('TOKEN_DATE_IS_TOKEN' if metadata == 'lookalike' else 'TOKEN_DATE_INVALID')
+    assert private['worker_read_token'] == {
+        'state': 'NO_EXPIRY' if metadata == 'NEVER' else 'UNSET', 'code': code,
+        'expires_on': None, 'days_left': None, 'verification': 'NOT_CHECKED'}
+    assert run.stdout == 'KIS_COLLECT token_status state=%s code=%s\n' % (private['worker_read_token']['state'], code or '-')
+
+
+def test_token_status_cli_reuses_safe_counts_and_preserves_existing_kis_files(tmp_path):
+    C.store(tmp_path / 'pages', tmp_path, CODES, run_at='2026-11-15T03:45:00Z')
+    snapshot = {str(f.relative_to(tmp_path)): f.read_bytes() for f in (tmp_path / 'kis').rglob('*') if f.is_file()}
+    run = subprocess.run([sys.executable, '-I', str(MODULE), 'token-status', '--data', str(tmp_path)],
+                         capture_output=True, text=True, env={'WORKER_READ_TOKEN_EXPIRES_ON': 'NEVER'})
+    assert run.returncode == 0 and run.stderr == ''
+    private = json.loads((tmp_path / 'status/private-area.json').read_text())
+    assert private['collection'] == {
+        'counts': {'pages': 0, 'filed': 0, 'same_as_held': 0, 'revisions': 0, 'refused': {},
+                   'empty_candidates': 0, 'history_end': 0},
+        'symbols_total': 519, 'symbols_held': 0, 'symbols_at_newest_session': 0}
+    assert snapshot == {str(f.relative_to(tmp_path)): f.read_bytes() for f in (tmp_path / 'kis').rglob('*') if f.is_file()}
+
+
+@pytest.mark.parametrize('corruption', ['notjson', 'extra', 'count', 'reason'])
+def test_token_status_cli_does_not_echo_untrusted_existing_collection_fields(tmp_path, corruption):
+    C.store(tmp_path / 'pages', tmp_path, CODES, run_at='2026-11-15T03:45:00Z')
+    canary = 'gh' + 'p_' + ''.join(chr(65 + i % 26) for i in range(48))
+    status_file = tmp_path / 'kis/status.json'
+    status = json.loads(status_file.read_text())
+    if corruption == 'extra':
+        status['extra'] = canary
+        status['symbols_missing'] = [canary]
+    elif corruption == 'count':
+        status['counts']['filed'] = canary
+    elif corruption == 'reason':
+        status['counts']['refused'] = {canary: 1}
+    status_file.write_text(canary if corruption == 'notjson' else json.dumps(status), encoding='utf-8')
+    before = hashlib.sha256(status_file.read_bytes()).hexdigest()
+    run = subprocess.run([sys.executable, '-I', str(MODULE), 'token-status', '--data', str(tmp_path)],
+                         capture_output=True, text=True, env={'WORKER_READ_TOKEN_EXPIRES_ON': 'NEVER'})
+    assert_redacted(canary, run.stdout + run.stderr)
+    assert run.returncode == 0 and run.stderr == ''
+    raw = (tmp_path / 'status/private-area.json').read_text()
+    assert_redacted(canary, raw)
+    private = json.loads(raw)
+    assert (private['collection'] is None) == (corruption != 'extra')
+    assert hashlib.sha256(status_file.read_bytes()).hexdigest() == before

@@ -103,6 +103,9 @@
 
 ### 4.4 Worker 읽기 토큰 — 저장소 하나·읽기 전용·최소 권한, 만료 경고 (10/31 오너)
 
+> **2026-11-15 DC-53 개정:** 날짜 필수 방침과 만료일 표는 [읽기 토큰 만료 계약](WORKER_READ_TOKEN_EXPIRY_20261115.md)으로 보완한다. 정확한 `NEVER`는 `NO_EXPIRY`, 날짜·남은 일수는 `null`이다. 누락·오류는 계속 설정 오류이며 인증·오너·GitHub Contents 접근 검사는 유지한다. 기존 `2027-02-13`은 현 토큰의 만료일이 아니므로 실변수를 교체해야 한다. 아래 10/31 원문은 유기한 동작과 설계 기록으로 보존한다.
+
+
 - 토큰: GitHub **fine-grained** 토큰. Repository access는 `investment-system1-kis-private` 하나, Repository permissions는 **Contents: Read-only**만(Metadata 읽기는 자동). Account 권한 없음. 만료 90일 권장(최대 1년). 폰 절차는 [폰 설정 4~6단계](OWNER_PHONE_SETUP_PRIVATE_AREA_20261031.md).
 - 보관: Cloudflare Worker 비밀값 `PRIVATE_REPO_READ_TOKEN`(이름에 `KIS_`를 쓰지 않음). 만료 날짜는 비밀이 아니므로 Worker 텍스트 변수 `PRIVATE_REPO_READ_TOKEN_EXPIRES_ON`과 비공개 저장소 Actions 변수 `WORKER_READ_TOKEN_EXPIRES_ON`에 적는다.
 - **만료일을 어디서 아나:** GitHub 응답 헤더 `GitHub-Authentication-Token-Expiration`은 fine-grained 토큰에서 실제 만료가 아니라 현재 시각을 돌려준다는 보고가 있어(google/go-github#3708) 쓰지 않는다. 오너가 적은 날짜를 기준으로 미리 경고하고, 실제 거부(GitHub 401)로 만료를 확정한다.

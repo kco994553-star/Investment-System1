@@ -1,6 +1,6 @@
 """KIS daily-bar collector, the two key-free halves (owner 2026-11-14 evening, DC-52; design PRIVATE_AREA_KIS_DESIGN_20261031.md
 §3.2, §4, §17.2). Runs only in the private repository's Actions, from a pinned commit of this public repository, as
-``python -I kis_collector.py plan|store``: standard library only, no package import, no network, no Secret.
+``python -I kis_collector.py plan|store|token-status``: standard library only, no package import, no network, no Secret.
 
 The private workflow has three steps around this file:
   1. ``plan`` (no Secret): which symbols and which pages to request, from the public Universe504 code list plus the 15
@@ -50,6 +50,7 @@ MAX_CALLS = 8000                  # per run, all symbols, all candidates (519 sy
 MAX_PAGE_BYTES = 262144           # one daily page is about 20 KB
 ROOT = 'kis'                      # folder in the data branch
 SCHEMA_PLAN, SCHEMA_STATUS = 'kis-collect-plan/1', 'kis-collect-status/1'
+SCHEMA_PRIVATE_STATUS = 'private-area-status/1'
 REASONS = ('BODY_MISMATCH', 'HTTP_STATUS', 'NOT_JSON', 'RESULT_CODE', 'NO_ROWS', 'SYMBOL_MISMATCH', 'BAD_ROW', 'FUTURE_ROW',
            'DUPLICATE_ROW', 'TOO_LARGE', 'META')
 
@@ -182,7 +183,80 @@ def _write_new(path: Path, payload: bytes) -> None:
         handle.write(payload)
 
 
-def store(pages: Path, data: Path, universe_codes: list, *, run_at: str) -> dict:
+def _run_time(run_at: str) -> dt.datetime:
+    if not isinstance(run_at, str) or not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z', run_at):
+        raise CollectError('RUN_AT')
+    try:
+        return dt.datetime.strptime(run_at, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=dt.timezone.utc)
+    except ValueError:
+        raise CollectError('RUN_AT') from None
+
+
+def worker_read_token_status(value, *, run_at: str) -> dict:
+    """Expiry configuration only: this key-free producer cannot check the read token or live repository access.
+
+    Exact ``NEVER`` is unbounded. Dated metadata follows the Worker's KST calendar and 367-day limit; raw metadata is
+    never copied into an output, including when a credential was accidentally entered in the metadata variable.
+    """
+    now = _run_time(run_at)
+    result = {'state': 'UNSET', 'code': 'TOKEN_DATE_INVALID', 'expires_on': None, 'days_left': None,
+              'verification': 'NOT_CHECKED'}
+    if not isinstance(value, str):
+        return result
+    if re.match(r'(?:github_pat_|ghp_|gho_|ghu_|ghs_|ghr_)', value.strip()):
+        return dict(result, code='TOKEN_DATE_IS_TOKEN')
+    if value == 'NEVER':
+        return dict(result, state='NO_EXPIRY', code=None)
+    if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', value):
+        return result
+    try:
+        expiry = dt.date.fromisoformat(value)
+    except ValueError:
+        return result
+    # Date.UTC remaps years 0..99 to 1900..1999, so the Worker's canonical-date check rejects those years.
+    if expiry.year < 100:
+        return result
+    today = now.astimezone(dt.timezone(dt.timedelta(hours=9))).date()
+    days_left = (expiry - today).days
+    if days_left > 367:
+        return result
+    return dict(result, state='EXPIRED' if days_left <= 0 else ('EXPIRING' if days_left <= 14 else 'OK'),
+                code='TOKEN_EXPIRED' if days_left <= 0 else None, expires_on=expiry.isoformat(), days_left=days_left)
+
+
+def _collection_summary(status) -> dict | None:
+    """Project known integer counts only; a previous file cannot inject symbols, strings or unknown failure codes."""
+    if not isinstance(status, dict) or status.get('schema') != SCHEMA_STATUS or status.get('publication_scope') != 'OWNER_PRIVATE_ONLY':
+        return None
+    counts = status.get('counts')
+    count_keys = ('pages', 'filed', 'same_as_held', 'revisions', 'empty_candidates', 'history_end')
+    symbol_keys = ('symbols_total', 'symbols_held', 'symbols_at_newest_session')
+    if not isinstance(counts, dict) or not isinstance(counts.get('refused'), dict):
+        return None
+    refused = counts['refused']
+    values = [counts.get(k) for k in count_keys] + [status.get(k) for k in symbol_keys] + list(refused.values())
+    if any(type(v) is not int or not 0 <= v <= 9007199254740991 for v in values) or any(k not in REASONS for k in refused):
+        return None
+    return {'counts': {**{k: counts[k] for k in count_keys}, 'refused': dict(refused)},
+            **{k: status[k] for k in symbol_keys}}
+
+
+def token_status(data: Path, *, run_at: str, worker_read_token_expires_on=None) -> dict:
+    """Refresh metadata without a KIS request or any write to held KIS files. Missing collection evidence stays null."""
+    expiry = worker_read_token_status(worker_read_token_expires_on, run_at=run_at)
+    try:
+        collection = _collection_summary(_read_json(data / ROOT / 'status.json', None))
+    except (OSError, ValueError):
+        collection = None
+    status = {'schema': SCHEMA_PRIVATE_STATUS, 'publication_scope': 'OWNER_PRIVATE_ONLY', 'run_at': run_at,
+              'worker_read_token': expiry, 'collection': collection}
+    folder = data / 'status'
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / 'private-area.json').write_text(json.dumps(status, sort_keys=True, indent=1) + '\n', encoding='utf-8')
+    return status
+
+
+def store(pages: Path, data: Path, universe_codes: list, *, run_at: str, worker_read_token_expires_on=None) -> dict:
     """Files every accepted page under data/kis/dailyprice/<symbol>/MODP<m>/<first>_<last>.json with its receipt and updates
     symbols.json (exchange code that returned rows), coverage.json (oldest and newest held raw session) and status.json."""
     by_symb = {t['symb']: t for t in targets(universe_codes)}
@@ -244,6 +318,7 @@ def store(pages: Path, data: Path, universe_codes: list, *, run_at: str) -> dict
               'newest_session': latest[-1] if latest else None,
               'symbols_at_newest_session': sum(1 for c in coverage.values() if latest and c['latest'] == latest[-1])}
     (root / 'status.json').write_text(json.dumps(status, sort_keys=True, indent=1) + '\n', encoding='utf-8')
+    token_status(data, run_at=run_at, worker_read_token_expires_on=worker_read_token_expires_on)
     return status
 
 
@@ -261,11 +336,20 @@ def main(argv=None) -> int:
     s.add_argument('--universe', type=Path, required=True)
     s.add_argument('--data', type=Path, required=True)
     s.add_argument('--pages', type=Path, required=True)
+    t = sub.add_parser('token-status')
+    t.add_argument('--data', type=Path, required=True)
     args = parser.parse_args(argv)
     if os.environ.get('GITHUB_ACTIONS') == 'true' and os.environ.get('GITHUB_REPOSITORY') != PRIVATE_REPOSITORY:
         print('KIS_COLLECT stop=wrong_repository')
         return 2
     try:
+        run_at = dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        expiry = os.environ.get('WORKER_READ_TOKEN_EXPIRES_ON')
+        if args.cmd == 'token-status':
+            result = token_status(args.data, run_at=run_at, worker_read_token_expires_on=expiry)
+            print('KIS_COLLECT token_status state=%s code=%s' %
+                  (result['worker_read_token']['state'], result['worker_read_token']['code'] or '-'))
+            return 0
         codes = json.loads(args.universe.read_text(encoding='utf-8'))
         if args.cmd == 'plan':
             result = plan(codes, args.data, latest=args.latest == 'yes', older_pages=args.older_pages, modp1=args.modp1 == 'yes')
@@ -273,8 +357,7 @@ def main(argv=None) -> int:
                 json.dump(result, handle, sort_keys=True)
             print('KIS_COLLECT plan items=%d max_calls=%d' % (len(result['items']), result['max_calls']))
             return 0
-        run_at = dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-        status = store(args.pages, args.data, codes, run_at=run_at)
+        status = store(args.pages, args.data, codes, run_at=run_at, worker_read_token_expires_on=expiry)
     except CollectError as error:
         print('KIS_COLLECT stop=%s' % error)
         return 1
