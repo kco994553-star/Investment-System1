@@ -76,6 +76,33 @@ const strArr=(v,at)=>{if(!Array.isArray(v)||v.some(x=>typeof x!=='string'))refus
 function freeze(o){if(o&&typeof o==='object'){Object.freeze(o);for(const v of Object.values(o))freeze(v);}return o;}
 const wrap=fn=>json=>{try{return{ok:true,value:freeze(fn(JSON.parse(JSON.stringify(json))))};}catch(e){return e instanceof Refusal?{ok:false,code:e.code,path:e.path}:{ok:false,code:'INVALID',path:'$'};}};
 
+// Expiry is explicit: null dates are an error unless the Worker reports NO_EXPIRY after checking GitHub Contents access.
+const TOKEN_CODES=Object.freeze({UNSET:['TOKEN_UNSET','TOKEN_DATE_INVALID','TOKEN_DATE_IS_TOKEN'],EXPIRED:['TOKEN_EXPIRED'],
+ REJECTED:['TOKEN_REJECTED','TOKEN_NO_ACCESS'],RATE_LIMITED:['UPSTREAM_RATE_LIMITED'],ERROR:['UPSTREAM_UNAVAILABLE','REPO_MOVED','TOKEN_STATUS_INVALID','TOKEN_EXPIRY_MISMATCH']});
+const validateTokenStatus=wrap(c=>{
+ need(c,['schema','state','code','expires_on','days_left'],'$');
+ if(c.schema!==SCHEMA.STATUS)refuse('SCHEMA_VERSION','$.schema');
+ const good=['NO_EXPIRY','OK','EXPIRING'].includes(c.state);
+ if(good?c.code!==null:!own(TOKEN_CODES,c.state)||!TOKEN_CODES[c.state].includes(c.code))refuse('TOKEN_STATUS_INVALID','$.state');
+ const undated=c.expires_on===null&&c.days_left===null;
+ const dated=typeof c.expires_on==='string'&&DAY.test(c.expires_on)&&Number.isFinite(Date.parse(c.expires_on+'T00:00:00Z'))
+  &&new Date(c.expires_on+'T00:00:00Z').toISOString().slice(0,10)===c.expires_on&&Number.isSafeInteger(c.days_left);
+ if(c.state==='NO_EXPIRY'||c.state==='UNSET'){if(!undated)refuse('TOKEN_STATUS_INVALID','$.expires_on');}
+ else if(!dated&&(!undated||good||c.state==='EXPIRED'))refuse('TOKEN_STATUS_INVALID','$.expires_on');
+ // A dated GitHub 401 within two days retains the Worker's existing EXPIRED diagnosis.
+ if(c.state==='OK'&&c.days_left<=14||c.state==='EXPIRING'&&(c.days_left<1||c.days_left>14)||c.state==='EXPIRED'&&c.days_left>2)refuse('TOKEN_STATUS_INVALID','$.days_left');
+ return{schema:c.schema,state:c.state,code:c.code,expires_on:c.expires_on,days_left:c.days_left};
+});
+const TOKEN_WORDS=Object.freeze({TOKEN_UNSET:'비공개 저장소 읽기 설정 없음',TOKEN_DATE_INVALID:'읽기 토큰 만료 설정 오류',TOKEN_DATE_IS_TOKEN:'읽기 토큰 만료 설정 오류',
+ TOKEN_EXPIRED:'비공개 저장소 읽기 토큰 만료',TOKEN_REJECTED:'비공개 저장소 읽기 토큰 거부',TOKEN_NO_ACCESS:'비공개 저장소 접근 권한 또는 상태 파일 확인 필요',
+ UPSTREAM_RATE_LIMITED:'GitHub 요청 제한 · 잠시 뒤 다시 확인하세요',UPSTREAM_UNAVAILABLE:'GitHub 응답 없음 · 다시 확인하세요',REPO_MOVED:'저장소 이동 확인 필요',
+ TOKEN_STATUS_INVALID:'비공개 토큰 상태 파일 확인 필요',TOKEN_EXPIRY_MISMATCH:'Worker와 저장소의 만료 설정이 일치하지 않습니다'});
+function tokenStatusView(c){const r=validateTokenStatus(c);if(!r.ok)throw Error('TOKEN_STATUS_INVALID');const s=r.value;
+ const text=s.state==='NO_EXPIRY'?'비공개 읽기 토큰 · 만료일 없음 · GitHub 저장소 읽기 확인됨'
+  :s.state==='OK'?'비공개 읽기 토큰 · 만료일 '+s.expires_on+' · GitHub 저장소 읽기 확인됨'
+  :s.state==='EXPIRING'?'비공개 읽기 토큰이 '+s.days_left+'일 뒤('+s.expires_on+') 만료됩니다 · 토큰을 바꿔 주세요':TOKEN_WORDS[s.code];
+ return Object.freeze({state:s.state,text,blocked:!['NO_EXPIRY','OK','EXPIRING'].includes(s.state)});}
+
 /* kis-bars/1 (#480 field table): header facts the screen shows, and the bars as decimal strings or null. */
 const validateBars=wrap(c=>{const at='$';
  need(c,['schema','symbol','source','price_basis_date','collected_at','corrected_at','calendar','timezone','basis','dividend_adjustment','currency','bars','raw_bars','splits','confirmed_ranges','held_ranges','publication_scope'],at);
@@ -295,5 +322,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return raw?Object.freeze({bytes,body}):body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,CLASSIFICATION_PARTS,EXPANDED_PARTS,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,CLASSIFICATION_PARTS,EXPANDED_PARTS,LAYER_NOTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,SOURCE_WORDS:'비공개 보관본 · 인증 경로',validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

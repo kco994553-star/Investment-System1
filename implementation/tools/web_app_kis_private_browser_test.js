@@ -119,6 +119,52 @@ let phase = 'START', pass = 0;
   }
 
   try {
+    // Explicit token status control: an authenticated click only, with separate no-expiry and dated/error words.
+    {
+      phase = 'read-token status 390';
+      const { ctx, page, seen, w } = await context(390);
+      await page.goto(s.base + '#/technical/NASDAQ%3ANVDA');
+      await page.locator('[data-private-expand=technical]').waitFor();
+      const button = page.locator('[data-private-token-check=technical]');
+      assert.equal(await button.count(), 1);
+      assert.equal(await button.isVisible(), false, 'no token status action before owner login');
+      await signIn(page, 'technical', 'tech-kis-chart');
+      assert.equal(w.log.length, 0, 'login alone does not read status');
+      await button.dispatchEvent('click'); await page.waitForTimeout(100);
+      assert.equal(w.log.length, 0, 'synthetic status click cannot make a private request');
+      const record = (state, code = null, expires_on = null, days_left = null) => ({ schema: X.K('status/1'), state, code, expires_on, days_left });
+      for (const [raw, expectedState, words] of [
+        [record('NO_EXPIRY'), 'NO_EXPIRY', /만료일 없음/],
+        [record('EXPIRING', null, '2027-02-13', 14), 'EXPIRING', /14일 뒤.*2027-02-13.*만료/],
+        [record('EXPIRED', 'TOKEN_EXPIRED', '2027-02-13', 0), 'EXPIRED', /토큰 만료/],
+        [record('REJECTED', 'TOKEN_REJECTED'), 'REJECTED', /토큰 거부/],
+        [record('ERROR', 'TOKEN_EXPIRY_MISMATCH'), 'ERROR', /만료 설정.*일치하지 않/],
+        [record('OK'), 'ERROR', /상태 파일 확인 필요/],
+      ]) {
+        w.answers.status = () => ({ status: 200, body: raw }); delete w.lastAt;
+        await button.click();
+        const line = page.locator('[data-private-token-status=technical]');
+        await page.waitForFunction(({ kind, state }) => document.querySelector('[data-private-token-status="' + kind + '"]').dataset.privateTokenState === state,
+          { kind: 'technical', state: expectedState });
+        assert.match(await line.textContent(), words);
+        if (expectedState !== 'NO_EXPIRY') assert.doesNotMatch(await line.textContent(), /만료일 없음/);
+      }
+      assert.ok(w.log.every(x => x.path === '/kis/status'), 'Contents status through the existing authenticated route only');
+      await page.locator('[data-private-disconnect=technical]').click();
+      assert.equal(await button.isVisible(), false);
+      assert.equal(await page.locator('[data-private-token-status=technical]').textContent(), '');
+      await page.locator('[data-private-expand=technical]').click();
+      await page.waitForFunction(() => /^로그인됨/.test(document.querySelector('[data-private-note=technical]').textContent));
+      w.answers.status = () => ({ status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } }); delete w.lastAt;
+      await button.click(); await waitState(page, 'tech-kis-chart', 'LOGIN_REQUIRED');
+      assert.equal(await button.isVisible(), false, 'server owner refusal clears the status control and session');
+      assert.equal(await page.locator('[data-private-disconnect=technical]').isVisible(), false);
+      await boundaries(page, seen, w, phase); await ctx.close(); pass++;
+    }
+    if (process.env.PRIVATE_TOKEN_STATUS_ONLY === '1') {
+      console.log('web_app_kis_private_browser_test: PASS (token status: explicit no-expiry, dated warning, rejection, mismatch, trusted click and logout at 390)');
+      return;
+    }
     // ================================================================ technical 2-1, 1440
     {
       phase = 'technical 1440';

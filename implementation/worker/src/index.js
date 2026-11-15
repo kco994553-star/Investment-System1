@@ -435,12 +435,13 @@ const DAY_MS = 86_400_000;
 export function seoulToday(nowMs) { return new Date(nowMs + 9 * 3_600_000).toISOString().slice(0, 10); }
 
 // The read token's recorded expiry (§4.4 rows 1–2 and the OK / EXPIRING tail). The date is rebuilt by the Worker; the raw
-// variable is never echoed. Order: unset → invalid → looks like a token → expired → days left.
+// variable is never echoed. Exact NEVER is the owner's explicit no-expiry setting; absence is still invalid.
 export function kisTokenDate(env, nowMs) {
   const token = env.PRIVATE_REPO_READ_TOKEN;
   if (typeof token !== 'string' || !/^[\x21-\x7e]{1,4096}$/.test(token)) return { state: 'UNSET', code: 'TOKEN_UNSET', expires_on: null, days_left: null };
   const raw = env.PRIVATE_REPO_READ_TOKEN_EXPIRES_ON;
   if (typeof raw === 'string' && /^(?:github_pat_|ghp_|gho_|ghu_|ghs_|ghr_)/.test(raw.trim())) return { state: 'UNSET', code: 'TOKEN_DATE_IS_TOKEN', expires_on: null, days_left: null };
+  if (raw === 'NEVER') return { state: 'NO_EXPIRY', code: null, expires_on: null, days_left: null };
   const m = typeof raw === 'string' ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw) : null;
   const date = m ? new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))) : null;
   const today = seoulToday(nowMs), todayMs = Date.parse(today + 'T00:00:00Z');
@@ -626,12 +627,34 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   async function kisStatus(env, origin) {
     const date = kisTokenDate(env, now());
     if (date.state === 'UNSET' || date.state === 'EXPIRED') return json200({ schema: 'kis-status/1', ...date }, origin);
-    const response = await github('/repos/' + KIS_REPO, env, 'application/vnd.github+json');
+    // Contents access is required: Metadata permission alone must not report a usable read token.
+    const response = await github('/repos/' + KIS_REPO + '/contents/status/private-area.json?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
     if (!response) return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'UPSTREAM_UNAVAILABLE' }, origin);
-    try { await response.body?.cancel(); } catch { /* The body is never read. */ }
-    if (response.status === 404) return json200({ schema: 'kis-status/1', ...date, state: 'REJECTED', code: 'TOKEN_NO_ACCESS' }, origin);
-    const bad = kisUpstreamState(response, date);
-    return json200({ schema: 'kis-status/1', ...date, ...(bad ? { state: bad.state, code: bad.code } : {}) }, origin);
+    const bad = response.status === 404 ? { state: 'REJECTED', code: 'TOKEN_NO_ACCESS' } : kisUpstreamState(response, date);
+    if (bad) {
+      try { await response.body?.cancel(); } catch { /* Never echo an upstream body. */ }
+      return json200({ schema: 'kis-status/1', ...date, state: bad.state, code: bad.code }, origin);
+    }
+    let record;
+    try { record = await readJson(response, 16384, 'TOKEN_STATUS_INVALID', 'TOKEN_STATUS_INVALID', 502); }
+    catch { return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'TOKEN_STATUS_INVALID' }, origin); }
+    const recorded = record?.worker_read_token;
+    const captured = typeof record?.run_at === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(record.run_at) ? Date.parse(record.run_at) : NaN;
+    if (record?.schema !== 'private-area-status/1' || record.publication_scope !== 'OWNER_PRIVATE_ONLY'
+      || !Number.isFinite(captured) || new Date(captured).toISOString().replace('.000Z', 'Z') !== record.run_at
+      || !recorded || recorded.verification !== 'NOT_CHECKED' || !['NO_EXPIRY', 'OK', 'EXPIRING', 'EXPIRED'].includes(recorded.state)) {
+      return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'TOKEN_STATUS_INVALID' }, origin);
+    }
+    // Recompute at capture time, so a valid historical day's countdown does not become a false mismatch today.
+    const expected = kisTokenDate({ PRIVATE_REPO_READ_TOKEN: env.PRIVATE_REPO_READ_TOKEN,
+      PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: recorded.state === 'NO_EXPIRY' ? 'NEVER' : recorded.expires_on }, captured);
+    if (['state', 'code', 'expires_on', 'days_left'].some(k => recorded[k] !== expected[k])) {
+      return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'TOKEN_STATUS_INVALID' }, origin);
+    }
+    if (expected.expires_on !== date.expires_on || (expected.state === 'NO_EXPIRY') !== (date.state === 'NO_EXPIRY')) {
+      return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'TOKEN_EXPIRY_MISMATCH' }, origin);
+    }
+    return json200({ schema: 'kis-status/1', ...date }, origin);
   }
 
   async function kisFile(route, symbol, env, origin) {
