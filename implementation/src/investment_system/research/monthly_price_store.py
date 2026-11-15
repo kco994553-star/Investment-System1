@@ -140,15 +140,45 @@ def query_contract(root, manifest):
                               revision_count=manifest['revision_count'],
                               latest_response_rows=manifest['latest_response_rows'],
                               latest_response_state=manifest['latest_response_state'])
-    c['display'] = dict(validation_tier='UNVERIFIED_REFERENCE', label='검증 전(참고)',
-                        official=False)
+    c['display'] = dict(state='WITHHELD', hold_reasons=['SAVED_DISPLAY_REVIEW_REQUIRED'],
+                        validation_tier='UNVERIFIED_REFERENCE', label='검증 전(참고)', official=False)
     validate_contract(c)
     return c
 
 
-def query_bytes(root, manifest):
+def project_query(contract, *, saved_chart_bytes=None, expected_saved_chart_sha256=None):
+    """Reuse a pinned saved display decision only for exactly the same input.
+
+    A storage operation must not drop a previous hold or rerun its split screen.
+    Without the matching saved decision the raw query remains explicitly held.
+    """
+    c = deepcopy(contract)
+    _need((saved_chart_bytes is None) == (expected_saved_chart_sha256 is None),
+          'SAVED_CHART_AND_PIN_REQUIRED')
+    if saved_chart_bytes is not None:
+        _need(_sha(saved_chart_bytes) == expected_saved_chart_sha256, 'SAVED_CHART_PIN')
+        saved = json.loads(saved_chart_bytes)
+        keys = ('schema', 'symbol', 'security_id', 'issuer_id', 'exchange', 'currency',
+                'basis', 'dividend_adjustment', 'price_basis_date', 'source_sha256',
+                'collected_at', 'source_query', 'identity', 'raw_bars', 'bars',
+                'splits', 'held_ranges', 'confirmed_ranges', 'timestamp_basis', 'publication_scope',
+                'currency_reference', 'session_scope', 'price_scope_status', 'volume_basis',
+                'amount_basis', 'calendar', 'timezone', 'historical_available_at', 'corrected_at',
+                'rejected_rows', 'suspensions', 'source_query_context', 'source')
+        _need(all(c.get(k) == saved.get(k) for k in keys), 'SAVED_CHART_CONTEXT_MISMATCH')
+        display = saved.get('display') or {}
+        _need(display.get('validation_tier') == 'UNVERIFIED_REFERENCE' and
+              display.get('official') is False and display.get('state') in ('AVAILABLE', 'WITHHELD'),
+              'SAVED_REFERENCE_DISPLAY_REQUIRED')
+        c['display'] = deepcopy(display)
+        c['history_store']['saved_display_sha256'] = expected_saved_chart_sha256
+    return _bounded(c, 'QUERY_FILE_LIMIT')
+
+
+def query_bytes(root, manifest, *, saved_chart_bytes=None, expected_saved_chart_sha256=None):
     """One JSON for the existing chart reader; never inflate archives in Worker."""
-    return _bounded(query_contract(root, manifest), 'QUERY_FILE_LIMIT')
+    return project_query(query_contract(root, manifest), saved_chart_bytes=saved_chart_bytes,
+                         expected_saved_chart_sha256=expected_saved_chart_sha256)
 
 
 def _commit(root, manifest):
@@ -297,6 +327,8 @@ def main(argv=None):
     parser.add_argument('--expected-receipt-sha256', required=True)
     parser.add_argument('--query-output', type=Path, required=True)
     parser.add_argument('--revision-reference')
+    parser.add_argument('--saved-chart', type=Path)
+    parser.add_argument('--expected-saved-chart-sha256')
     args = parser.parse_args(argv)
     for p in (args.store, args.query_output):
         resolved = p.resolve()
@@ -308,7 +340,9 @@ def main(argv=None):
                     expected_receipt_sha256=args.expected_receipt_sha256,
                     revision_reference=args.revision_reference)
     m = load_manifest(args.store, result['series_id'])
-    _atomic(args.query_output, query_bytes(args.store, m))
+    _atomic(args.query_output, query_bytes(args.store, m,
+            saved_chart_bytes=args.saved_chart.read_bytes() if args.saved_chart else None,
+            expected_saved_chart_sha256=args.expected_saved_chart_sha256))
     # Only aggregate operation counts; no prices, symbols or raw source text.
     print(json.dumps({k: result[k] for k in ('new_rows', 'revised_rows', 'unchanged_rows', 'appended_bytes')}))
 

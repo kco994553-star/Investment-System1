@@ -200,3 +200,19 @@ def test_cli_preserves_existing_git_output_boundary(tmp_path):
                     '--receipt','unused','--expected-contract-sha256','0'*64,
                     '--expected-receipt-sha256','0'*64,'--query-output',str(root/'view.json')])
     assert not (root/'store').exists()
+
+
+def test_saved_display_hold_is_pinned_and_never_silently_dropped(tmp_path):
+    c,body,r=sample();out=put(tmp_path,(c,body,r))
+    m=api().load_manifest(tmp_path,out['series_id'])
+    assert json.loads(api().query_bytes(tmp_path,m))['display']['state']=='WITHHELD'
+    c['display']=dict(state='WITHHELD',hold_reasons=['SYNTHETIC_EVENT'],
+                      validation_tier='UNVERIFIED_REFERENCE',official=False)
+    b=canonical_bytes(c)
+    q=api().query_bytes(tmp_path,m,saved_chart_bytes=b,expected_saved_chart_sha256=sha(b))
+    assert json.loads(q)['display']==c['display']
+    with pytest.raises(ValueError,match='SAVED_CHART_PIN'):
+        api().query_bytes(tmp_path,m,saved_chart_bytes=b,expected_saved_chart_sha256='0'*64)
+    c['raw_bars'][0]['close']='10.5';c['bars']=deepcopy(c['raw_bars']);b=canonical_bytes(c)
+    with pytest.raises(ValueError,match='SAVED_CHART_CONTEXT_MISMATCH'):
+        api().query_bytes(tmp_path,m,saved_chart_bytes=b,expected_saved_chart_sha256=sha(b))

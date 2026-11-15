@@ -49,6 +49,11 @@ review and version that context separately. This store cannot promote verificati
 
 `query_bytes(store, manifest)` materializes **one existing `kis-bars/1` JSON per
 selected series**, carrying the combined journal pin and `UNVERIFIED_REFERENCE`.
+Storage alone returns `WITHHELD/SAVED_DISPLAY_REVIEW_REQUIRED`. To preserve the
+previous reference display/hold, supply the independently pinned saved chart;
+all source, identity, row, basis and time context must match exactly. Its display
+decision is copied, not recomputed. A changed input requires the existing
+preprocessor's review path, not a copied stale `AVAILABLE` label.
 Per-row source hashes/times remain intact; the header source hash identifies only
 the most recent response. It is not asserted to hash all historical rows.
 
@@ -70,7 +75,9 @@ out = ingest(approved_private_store, contract_bytes=retained_contract_bytes,
              expected_contract_sha256=manifest_contract_pin,
              expected_receipt_sha256=source_receipt_pin)
 manifest = load_manifest(approved_private_store, out['series_id'])
-chart_bytes = query_bytes(approved_private_store, manifest)
+chart_bytes = query_bytes(approved_private_store, manifest,
+    saved_chart_bytes=matching_saved_reference_chart,
+    expected_saved_chart_sha256=independent_saved_chart_pin)
 # Main's private writer controls delivery, authentication and atomic batch swap.
 ```
 
@@ -82,6 +89,9 @@ PYTHONPATH=implementation/src python -m investment_system.research.monthly_price
   --receipt ORIGINAL.receipt.json --expected-contract-sha256 CONTRACT_PIN \
   --expected-receipt-sha256 RECEIPT_PIN --query-output PRIVATE_CHART.json
 ```
+
+Use `--saved-chart SAVED_CHART.json --expected-saved-chart-sha256 SAVED_CHART_PIN`
+to reuse the matching saved display decision. Without it the query stays held.
 
 The actual migration used the pure API with the existing approved private writer;
 this is not a claim that the CLI succeeded in a workspace whose writable roots
@@ -104,7 +114,9 @@ eligible adoption. Actual company files and script remain in the private handoff
 
 Measured new store: 3,097 monthly chunks /4,940,883 compressed bytes, receipt
 metadata 570,117 bytes, store total 7,044,025 bytes before filesystem allocation.
-The bounded query files total 28,872,215 bytes; maximum one file 57,420 bytes.
+The bounded query files total 29,049,027 bytes; maximum one file 57,760 bytes.
+The matching saved display retains six held series and 511 available reference
+series (496 operating code rows +15 ETFs); no hold is released by this migration.
 These full-provider-field/provenance measurements differ from the earlier
 seven-column size estimate. Future daily append/receipt/Git growth is not measured
 by this one retained batch; do not call it an exact five-year storage forecast.
