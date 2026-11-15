@@ -170,3 +170,75 @@ The seven requested anomaly cases have private SEC review/Top500 action records.
 Planned versus confirmed dates, partial documents and unconfirmed vendor failure
 causality stay distinct. No official population replacement or source price
 substitution was performed. Detailed company/event rows are private only.
+
+## Owner follow-up: two private display tiers and calc23.1 stage 1
+
+`private_kis_reference.reference_files(files, contract, signal_day)` enriches the
+existing output without changing adopted `value`, original reasons or counts.
+`display.validation_tier=UNVERIFIED_REFERENCE`, `label=검증 전(참고)` and
+`official=false` apply to diagnostic output. Each metric has a separate
+`reference_value`; verified adopted values retain tier `VERIFIED`. Main must read
+this field explicitly with its label, not promote it into official/adopted value.
+`display.state=WITHHELD` suppresses reference values when a retained hold or raw
+split-like jump is present. Chart RAW remains evidence with an explicit hold.
+The CLI exposes this opt-in as `--reference`; previous callers remain compatible.
+
+The versioned conservative review screen uses consecutive observed raw closes
+within the final 100 sessions, minimum absolute move 30%, near ratios
+1.5/2/3/4/5/10/20 and reciprocals, relative tolerance 8%. It generates a review
+candidate, never a confirmed split or price correction. A supplied confirmed
+split is handled by the existing split path. Future bars are excluded. MODP1
+remains rejected; no comparison to MODP1 establishes an event. A zero-volume
+retained hold stays separate. No trade-scope proof is inferred from a reference
+volume value. These thresholds are a review policy, not a scoring/formula change.
+
+`official_reference(payload, contracts, provider_links, day=..., calculated_at=...,
+expected_payload_hash=..., expected_links_hash=..., expected_contract_hashes=...)`
+uses canonical `qgv_official.prepare/price_status/engine_quotes/score/projection`.
+Only the quote supplier changes to KIS raw daily close. There are **no 555
+imports**. The minimum added file is `research/private_kis_reference.py`, using
+the bridge/split/artifact helpers already ported here and canonical QGV kernels.
+The provider lookup is pinned and matched to the original requested/returned
+contract. It is not a verified fixed-security-ID claim. Adoption inherits the
+explicit official identity/ADR/share-basis/action rules as a private reference
+policy, not the prior strict 555 sidecar requirements. The share denominator is
+the official weighted-average diluted proxy, not actual outstanding shares.
+Explicit conflicts, held inputs and official corporate-action exclusions remain
+blocked. Rank stays null; no official publication or TARGET change occurs.
+
+This creates `qgv/latest.json` with existing `kis-qgv/1`, owner-private reference
+label and separate source clocks, input pins, raw diagnostics, stages and counts.
+Partial official-engine totals are reported separately from three-axis completion;
+they are not 555 totals, investment performance or official 95% coverage.
+The original technical-only manifest remains historical. Its former “555
+ dependency” limitation does not apply to this separate stage-1 adapter.
+
+Actual diagnostics are stored only in the private handoff. The reference screen
+allows 496 operating code rows and 15 ETF series for display, withholding 6
+operating rows (4 jump candidates plus 2 prior holds); original adopted counts
+remain unchanged. A same-price-date comparison against public central V also
+requires identical financial snapshot/hash and historical price inputs. Different
+financial hashes cannot substantiate a price-only explanation. No current data
+is relabelled as available on the historical evaluation date.
+
+The former `exp_deciles/adapters/alpaca_bars.py` contained only a pure NY-midnight
+session-date check, with no HTTP, SDK or external call. That necessary function
+is now `exp_deciles/session_dates.py` with the same body, calendar and errors;
+the misleading supplier adapter path is removed. No supplier is introduced.
+
+Stage-1 actual result (price day 2026-11-13; financial input acquired/as-of
+2026-11-15, retrospective current-input context, not historical PIT): operating
+504 code rows, official-rule supplied closes 495; raw V diagnostic/any V role403;
+V343; three axes342; engine totals481, of which139 are partial without all three
+axes. The three-axis totals correspond to340/501 issuers. A total481 is **not**
+481 complete QGV results or an official95% achievement. Nonprice V-axis preflight
+(50% factor-weight reachability) is362; this is stricter than “any raw metric” and
+must not be presented as a monotone raw-any count.
+
+The public11/11 central file needs financial snapshot SHA256
+`001e0f39b0b7a26fe782870d1a93cd82f08e5df88593915b8db8e579ce87d084`,
+as-of2026-11-13T02:48:41.511898Z. The currently provided financial file differs.
+Paired V values exist for357 rows including TARGET, but price-only attribution is
+unverified (0 confirmed explanations). Request the exact original financial
+snapshot and retained IEX quote/month-end inputs for a causal supplier comparison;
+do not substitute current financial data or infer raw prices from public scores.

@@ -12,7 +12,7 @@ from pathlib import Path
 import re
 
 from . import liquidity, schedule
-from .adapters.alpaca_bars import session_date
+from .session_dates import session_date
 
 SETTINGS_BYTES = Path(__file__).with_name('technical_leaderboard_v1.json').read_bytes()
 SETTINGS = json.loads(SETTINGS_BYTES)

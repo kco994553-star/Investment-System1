@@ -1,7 +1,7 @@
 """Existing NY-midnight session check; no provider collection or price conversion."""
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
-from ... import pit_filings
+from .. import pit_filings
 
 NY = ZoneInfo("America/New_York")
 BAR_TIME_INVALID = "BAR_TIME_INVALID"

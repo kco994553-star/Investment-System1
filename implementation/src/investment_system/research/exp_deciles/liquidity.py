@@ -3,7 +3,7 @@ from calendar import monthrange
 from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
 
-from .adapters.alpaca_bars import session_date
+from .session_dates import session_date
 from . import schedule
 
 

@@ -39,6 +39,7 @@ def write_new_directory(path,files):
 
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--reference',action='store_true',help='Owner-private unverified reference display; no adoption upgrade')
     parser.add_argument('--contract',type=Path,required=True)
     parser.add_argument('--handoff',type=Path,required=True)
     parser.add_argument('--expected-contract-hash',required=True)
@@ -50,6 +51,9 @@ def main(argv=None):
         c=json.loads(args.contract.read_bytes());h=json.loads(args.handoff.read_bytes())
         files=project_technical(c,h,expected_contract_hash=args.expected_contract_hash,
             expected_handoff_hash=args.expected_handoff_hash)
+        if args.reference:
+            from investment_system.research.private_kis_reference import reference_files
+            files=reference_files(files,c,h['context']['signal_day'])
         write_new_directory(out,files)
     except Exception as error:
         # Only fixed upper-case contract codes may cross this diagnostic boundary.
