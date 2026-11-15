@@ -1,6 +1,7 @@
 'use strict';
-// Owner-private KIS panels (owner 2026-11-05 DC-44, 2026-11-14 DC-52, 2026-11-15 DC-53; Codex #480 contract) on the development
-// build, in a real browser: 2-1 of #/technical (tech-kis-chart) and the KIS V panel of #/qgv (qgv-kis). Google and the private
+// Owner-private KIS panels (owner 2026-11-05 DC-44, 2026-11-14 DC-52, 2026-11-15 DC-53; Codex #480 contract) in a real browser,
+// on the development build (index.html) and on the published Pages artifact (tools/build_pages_cockpit.py, app.html; owner
+// 2026-11-15 narrow Pages guard exception: both owner-private files are published): 2-1 of #/technical (tech-kis-chart) and the KIS V panel of #/qgv (qgv-kis). Google and the private
 // Worker are stand-ins; every payload is the synthetic fixture tools/web_app_kis_private_fixture.js (no company, no KIS value).
 // Behaviour and boundary only (owner 2026-11-15: no appearance checks beyond these):
 //  - Public by default: before any click each panel is LOGIN_REQUIRED (로그인 필요) with an empty body and nothing goes to the
@@ -19,7 +20,9 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
@@ -36,10 +39,22 @@ const GIS_STUB = 'window.__gisCfg=[];window.google={accounts:{oauth2:{initTokenC
   + 'scope:"openid https://www.googleapis.com/auth/userinfo.email"});}};},revoke:function(t,done){if(done)done({});}}}};';
 const RAW = ['101.25', '55.5'];                                  // raw diagnostic values in the analysis fixture: never on the page
 const status = (state, code = null, expires_on = null, days_left = null) => ({ schema: X.K('status/1'), state, code, expires_on, days_left });
-let phase = 'START', pass = 0;
+const FIXTURES = { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS }, 'qgv-official.json': { body: PUB_TEXT, type: 'application/json' } };
+function buildPages() {
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'web-app-kis-pages-'));
+  fs.rmSync(out, { recursive: true });
+  execFileSync('python3', [path.join(R.ROOT, 'implementation/tools/build_pages_cockpit.py'), '--out', out], { stdio: ['ignore', 'ignore', 'inherit'] });
+  for (const name of ['kis-private.js', 'private-expand-live.js', 'loader.js']) {
+    assert.ok(fs.readFileSync(path.join(out, name)).equals(fs.readFileSync(path.join(R.ROOT, 'implementation/src/investment_system/product/web_app', name))), name + ' is published byte-identical');
+  }
+  return out;
+}
+// [label, build (null = the development build site.start makes), entry page]
+const SITES = [['dev', null, ''], ['pages', buildPages, 'app.html']];
+let phase = 'START', pass = 0, where = '';
 
 (async () => {
-  const s = await site.start({ fixtures: { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS }, 'qgv-official.json': { body: PUB_TEXT, type: 'application/json' } } });
+  let s = null, pagesOut = null;
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   // The Worker stand-in: answers[route] = (symbol) => {status, body}; one owner request at a time, at least 5 s apart, like the real one.
   async function context(width) {
@@ -103,11 +118,15 @@ let phase = 'START', pass = 0;
   }
 
   try {
+   for (const [label, build, entry] of SITES) {
+    pagesOut = build ? build() : null;
+    s = await site.start({ out: pagesOut, fixtures: FIXTURES });
+    where = label + ' ';
     // ================================================================ technical 2-1, 1440
     {
-      phase = 'technical 1440';
+      phase = where + 'technical 1440';
       const { ctx, page, seen, w } = await context(1440);
-      await page.goto(s.base + '#/technical/NASDAQ%3ANVDA'); await page.locator('main[data-route=technical]').waitFor();
+      await page.goto(s.base + entry + '#/technical/NASDAQ%3ANVDA'); await page.locator('main[data-route=technical]').waitFor();
       await page.locator('[data-tech-chosen-state=CHOSEN]').waitFor({ timeout: 20000 }); await page.locator('[data-private-expand=technical]').waitFor();
       const holds = await count(page, '[data-indicator] [data-verdict]');
       await publicByDefault(page, w, 'technical', 'tech-kis-chart');
@@ -115,7 +134,7 @@ let phase = 'START', pass = 0;
       assert.equal(w.log.length, 0, phase + ': signing in reads nothing');
 
       // Read token status, on its own click inside the 상태 box (DC-53).
-      phase = 'technical read token status';
+      phase = where + 'technical read token status';
       await page.locator('[data-private-status-area=technical] summary').click();
       const tokenLine = '[data-private-token-status=technical]';
       for (const [answer, st, words] of [
@@ -134,7 +153,7 @@ let phase = 'START', pass = 0;
       w.log.length = 0;
 
       // Codex #556's own synthetic output (tools/web_app_kis_private_fixture.js codex556): the tiers as the producer writes them.
-      phase = 'technical READY (available)';
+      phase = where + 'technical READY (available)';
       const answer = (kase) => { const f = X.codex556(kase, { symbol: 'NVDA' });
         w.answers.analysis = () => ({ status: 200, body: f.technical }); w.answers.chart = () => ({ status: 200, body: f.chart }); w.answers.technical = () => ({ status: 200, body: f.measures }); };
       const tiers = () => page.locator('[data-private-metric]').evaluateAll((n) => n.map((x) => [x.dataset.privateMetric, x.dataset.privateTier]));
@@ -152,14 +171,14 @@ let phase = 'START', pass = 0;
       assert.ok((await text(page, '[data-private-facts=technical]')).includes('공급처'), phase + ': the file facts are in the 상태 box');
       assert.equal(await count(page, '[data-indicator] [data-verdict]'), holds, phase + ': the public verdicts are unchanged');
 
-      phase = 'technical reference';
+      phase = where + 'technical reference';
       await expand(page, 'technical'); answer('reference'); delete w.lastAt;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual((await tiers()).filter(([, t]) => t !== 'HELD'), [['SMA_5', 'REFERENCE']], phase + ': the reference value, not an adopted one');
       assert.match(await text(page, '[data-private-metric=SMA_5]'), /^SMA_5\s*11 검증 전\(참고\)$/);
       assert.equal(await count(page, '[data-private-verification=VERIFIED]'), 0, phase + ': no 검증됨');
 
-      phase = 'technical WITHHELD';
+      phase = where + 'technical WITHHELD';
       await expand(page, 'technical'); answer('withheld'); delete w.lastAt;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual(await page.locator('[data-private-display=WITHHELD]').allTextContents(), Array(3).fill('보류 · 분할 같은 원주가 급변 · 검토 필요'), phase + ': one hold line per file (chart, indicators, measures)');
@@ -167,7 +186,7 @@ let phase = 'START', pass = 0;
       assert.equal(await count(page, 'svg[data-private-chart]'), 0, phase + ': no chart of withheld closes');
       assert.deepEqual((await tiers()).map(([, t]) => t), ['VERIFIED'], phase + ': only the producer\'s verified adopted value stays');
 
-      phase = 'technical fail closed (no display fields)';
+      phase = where + 'technical fail closed (no display fields)';
       await expand(page, 'technical'); delete w.lastAt;
       w.answers.analysis = () => ({ status: 200, body: X.analysis({ adopted: true }) });
       w.answers.chart = (sym) => ({ status: 200, body: X.bars({ symbol: sym }) });
@@ -177,7 +196,7 @@ let phase = 'START', pass = 0;
       assert.deepEqual([await count(page, '[data-private-verification]'), await count(page, '[data-private-panel=tech-kis-chart] [data-ram-price]'), await count(page, 'svg[data-private-chart]')], [0, 0, 0], phase + ': no tag, no value, no chart');
       assert.deepEqual(site.leaks([await page.content()], [...RAW, ...X.MEASURE_RAW, '12.4242', '105.5']), [], phase + ': none of the file\'s values anywhere on the page');
 
-      phase = 'technical BASIS_MISMATCH';
+      phase = where + 'technical BASIS_MISMATCH';
       await expand(page, 'technical'); w.log.length = 0; delete w.lastAt;
       w.answers.analysis = () => ({ status: 200, body: X.analysis({ adopted: true, basis: 'SPLIT_ADJUSTED' }) });
       w.answers.technical = (sym) => ({ status: 200, body: X.measures({ symbol: sym, basis: 'SPLIT_ADJUSTED' }) });
@@ -186,14 +205,14 @@ let phase = 'START', pass = 0;
         [['analysis', 'BASIS_MISMATCH'], ['measures', 'BASIS_MISMATCH']], phase + ': both results refused on a 원주가 chart');
       assert.equal(await count(page, '[data-private-metric]'), 0, phase + ': no value attached');
 
-      phase = 'technical measures 404 alone';
+      phase = where + 'technical measures 404 alone';
       await expand(page, 'technical'); delete w.lastAt;
       w.answers.analysis = () => ({ status: 200, body: X.analysis() });
       w.answers.technical = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
       await expand(page, 'technical'); await page.locator('[data-private-measures=EMPTY]').waitFor({ timeout: 30000 });
       assert.equal(await state(page, 'tech-kis-chart'), 'READY', phase + ': the analysis and chart stay');
 
-      phase = 'technical EMPTY vs ERROR';
+      phase = where + 'technical EMPTY vs ERROR';
       await expand(page, 'technical'); delete w.lastAt;
       w.answers.analysis = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } });
       await expand(page, 'technical'); await waitState(page, 'tech-kis-chart', 'EMPTY');
@@ -209,7 +228,7 @@ let phase = 'START', pass = 0;
       await expand(page, 'technical'); await page.waitForFunction(() => document.querySelector('[data-private-note=technical]').textContent === '비공개 자료 서버 응답 없음', null, { timeout: 30000 });
       assert.equal(await state(page, 'tech-kis-chart'), 'ERROR');
 
-      phase = 'technical 403 and disconnect';
+      phase = where + 'technical 403 and disconnect';
       await page.waitForTimeout(5100);
       w.answers.analysis = () => ({ status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } });
       await expand(page, 'technical'); await waitState(page, 'tech-kis-chart', 'LOGIN_REQUIRED');
@@ -219,9 +238,9 @@ let phase = 'START', pass = 0;
     }
     // ================================================================ QGV KIS V, 390
     {
-      phase = 'qgv 390';
+      phase = where + 'qgv 390';
       const { ctx, page, seen, w } = await context(390);
-      await page.goto(s.base + '#/qgv'); await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor({ timeout: 20000 });
+      await page.goto(s.base + entry + '#/qgv'); await page.locator('[data-lb-table] tbody tr[data-row]').first().waitFor({ timeout: 20000 });
       await page.locator('[data-private-expand=qgv]').waitFor();
       const ranks = () => page.locator('[data-lb-table] tbody tr[data-row]').evaluateAll((n) => n.map((tr) => [tr.dataset.row, (tr.querySelector('td[data-cell=rank]') || {}).textContent || null]));
       const r0 = await ranks(), id = r0[0][0];
@@ -260,12 +279,16 @@ let phase = 'START', pass = 0;
       assert.deepEqual(await ranks(), r0, phase + ': public ranks unchanged after a refusal');
       await boundaries(page, seen, w, phase); await ctx.close(); pass++;
     }
-    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, three reads, BASIS_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), technical tiers from Codex #556 output (검증됨, 검증 전(참고), WITHHELD, fail closed), qgv 390 (Codex #556 kis-qgv/1, KIS V label, V 미산출, fail closed, ERROR / EMPTY / 403, public ranks unchanged))');
+    await s.close(); s = null;
+    if (pagesOut) { fs.rmSync(pagesOut, { recursive: true, force: true }); pagesOut = null; }
+   }
+    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups, development build and Pages artifact app.html: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, three reads, BASIS_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), technical tiers from Codex #556 output (검증됨, 검증 전(참고), WITHHELD, fail closed), qgv 390 (Codex #556 kis-qgv/1, KIS V label, V 미산출, fail closed, ERROR / EMPTY / 403, public ranks unchanged))');
   } catch (e) {
     console.error('web_app_kis_private_browser_test failed at ' + phase + ':', e && e.stack || e);
     process.exitCode = 1;
   } finally {
     await browser.close();
-    await s.close();
+    if (s) await s.close();
+    if (pagesOut) fs.rmSync(pagesOut, { recursive: true, force: true });
   }
 })();

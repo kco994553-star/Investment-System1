@@ -15,8 +15,9 @@ is checked before it is committed; a plain walk if git is unavailable), `.gz` me
 - the public web app and web_assets sources request no private Worker path (/kis/, /lab/, /private/). One narrow exception
   (owner 2026-11-05, answer "좁은 예외 승인"; the owner-private area integration of 2026-11-15 keeps five of those routes):
   web_app/kis-private.js may name exactly the five owner-checked routes below, each once as a single-quoted literal; any other
-  private path there, or any private path in any other web file, still fails. The Pages guard has no such exception: the
-  public preview does not publish that file (tools/web_app_preview.py OWNER_PRIVATE).
+  private path there, or any private path in any other web file, still fails. The Pages guard has its own matching narrow
+  exception (owner 2026-11-15, tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS: the same file at the artifact root,
+  pinned bytes, the same five routes and its schema names), so the public preview publishes it.
 - the two KIS Secret names (any spelling, GUARD.KIS_SECRET_NAME) appear in no public code, config, workflow or data file:
   the KIS keys live only in the private repository investment-system1-kis-private (owner 2026-10-31); only Markdown
   documentation may name them.

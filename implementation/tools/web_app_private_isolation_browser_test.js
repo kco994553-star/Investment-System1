@@ -1,15 +1,16 @@
 'use strict';
 // The public screens do not depend on the owner-private KIS panels (owner 2026-11-15, DC-52). Builds the real Pages artifact
-// (tools/build_pages_cockpit.py), and serves it as published plus synthetic variants made in temporary copies only:
-//  - published: app.html as deployed. The owner-private files are not published (tools/web_app_preview.py OWNER_PRIVATE), so
-//    IS2.kisPrivate / IS2.privateExpand do not exist, nothing goes to the Worker or a /kis path, private panels are 준비 중.
-//  - owner files added: the two owner-private files and the source loader.js copied in (what an approved publication would
-//    serve). A public visitor (not signed in) sees only 로그인 필요 in the private cells and sends nothing to the Worker on any
-//    screen; after a sign-in, a Worker answer of 403 / 500 / invalid JSON / a schema mismatch leaves the private cell in its short
-//    login or error state and the public screen as it was.
-//  - script failures: kis-private.js throws on load, private-expand-live.js throws on load, private-expand-live.js is missing.
-//    The loader still finishes (IS2.loadState() READY; the file is named in IS2.loadSkipped()), the private cells stay 준비 중,
-//    and the public screens are the same as published.
+// (tools/build_pages_cockpit.py; the guard passes on it), and serves it as published plus synthetic variants made in temporary
+// copies of that artifact only:
+//  - published: app.html as deployed. Since the owner's narrow Pages guard exception (2026-11-15) the artifact carries both
+//    owner-private files (kis-private.js, private-expand-live.js) byte-identical to web_app and the full loader.js. A public
+//    visitor (not signed in) gets IS2.kisPrivate / IS2.privateExpand, sees only 로그인 필요 in the KIS cells and 준비 중 / 로그인 필요
+//    elsewhere, and sends nothing to the Worker, a /kis path or Google on any screen (0 requests leave the origin).
+//  - data failures on the published artifact: after a sign-in, a Worker answer of 403 / 500 / invalid JSON / a schema mismatch
+//    leaves the private cell in its short login or error state and the public screen as it was.
+//  - script failures (copies of the published artifact): kis-private.js throws on load, private-expand-live.js throws on load,
+//    private-expand-live.js is missing, both are missing. The loader still finishes (IS2.loadState() READY; the file is named in
+//    IS2.loadSkipped()), the private cells stay 준비 중, and the public screens are the same as published.
 // "The same" is per screen: the shell and menus, the public sections ([data-section]) of #/, #/qgv, #/technical, #/macro and
 // #/news in order, the leaderboard rows, and the technical screen's public verdicts. No page error but an injected one; synthetic
 // values only.
@@ -44,15 +45,15 @@ function buildPages() {
   execFileSync('python3', [path.join(ROOT, 'implementation/tools/build_pages_cockpit.py'), '--out', out], { stdio: ['ignore', 'ignore', 'inherit'] });
   return out;
 }
-// A temporary copy of the Pages build with the owner-private files: 'real' (the source file), 'throw' (a synthetic script that
-// throws on load) or 'missing' (not there). Any of them present also brings the source loader.js, which lists both files.
+// A temporary copy of the published Pages build with each owner-private file 'real' (kept as published), 'throw' (replaced by a
+// synthetic script that throws on load) or 'missing' (removed). loader.js stays the published one.
 function variant(out, files) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-app-isolation-variant-'));
   fs.cpSync(out, dir, { recursive: true });
-  fs.copyFileSync(path.join(WEB_APP, 'loader.js'), path.join(dir, 'loader.js'));
   for (const name of OWNER_PRIVATE) {
-    if (files[name] === 'real') fs.copyFileSync(path.join(WEB_APP, name), path.join(dir, name));
-    else if (files[name] === 'throw') fs.writeFileSync(path.join(dir, name), THROW(name));
+    if (files[name] === 'throw') fs.writeFileSync(path.join(dir, name), THROW(name));
+    else if (files[name] === 'missing') fs.rmSync(path.join(dir, name));
+    else assert.equal(files[name], 'real');
   }
   return dir;
 }
@@ -60,7 +61,10 @@ function variant(out, files) {
 let phase = 'START';
 (async () => {
   const out = buildPages();
-  for (const name of OWNER_PRIVATE) assert.ok(!fs.existsSync(path.join(out, name)), name + ' is not published');
+  // The published artifact passes the Pages guard and carries both owner-private files and the full loader, as in web_app.
+  const guard = JSON.parse(execFileSync('python3', [path.join(ROOT, 'implementation/tools/pages_artifact_guard.py'), '--artifact-dir', out], { encoding: 'utf8' }));
+  assert.equal(guard.pages_artifact_guard, 'PASS', 'the published artifact passes the Pages guard ' + JSON.stringify(guard));
+  for (const name of [...OWNER_PRIVATE, 'loader.js']) assert.ok(fs.readFileSync(path.join(out, name)).equals(fs.readFileSync(path.join(WEB_APP, name))), name + ' is published byte-identical');
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
   const dirs = [];
   let checks = 0;
@@ -128,27 +132,19 @@ let phase = 'START';
   }
   const privates = (v) => ROUTES.flatMap((r) => v.screens[r].privates);
   try {
-    phase = 'published';
-    const base = await visit(out);
-    assert.deepEqual([base.head.state, base.head.reader, base.head.expand], ['READY', false, false], phase + ': no owner-private code on the published preview');
-    assert.deepEqual(base.head.skipped, [], phase + ': nothing skipped');
+    phase = 'published, public visitor';
+    // A Worker stand-in that records any request: a public visitor must make none.
+    const base = await visit(out, { data: () => ({ status: 500, body: { error: { code: 'UPSTREAM_UNAVAILABLE' } } }) });
+    assert.deepEqual([base.head.state, base.head.reader, base.head.expand, base.head.skipped], ['READY', true, true, []], phase + ': the owner-private code is published and loads');
     assert.ok(base.head.menus > 0, phase + ': the shell and menus draw');
-    assert.deepEqual(base.seen.outside, [], phase + ': no request leaves the origin (no Worker, no /kis, no sign-in script)');
+    assert.deepEqual(base.seen.outside, [], phase + ': a public visitor sends nothing to the Worker, a /kis path or Google on any screen');
+    assert.deepEqual(base.seen.worker, [], phase + ': 0 Worker requests');
+    const kis = privates(base).filter(([id]) => id === 'tech-kis-chart' || id === 'qgv-kis');
+    assert.deepEqual(kis.map(([id, st, words, b]) => [id, st, words, b]), [['qgv-kis', 'LOGIN_REQUIRED', '로그인 필요', ''], ['tech-kis-chart', 'LOGIN_REQUIRED', '로그인 필요', '']], phase + ': only 로그인 필요 in the KIS cells');
     for (const [id, st, words, bodyText] of privates(base)) assert.ok(['NOT_READY', 'LOGIN_REQUIRED'].includes(st) && /준비 중|로그인 필요/.test(words) && bodyText === '', phase + ': ' + id);
     assert.ok(ROUTES.every((r) => base.screens[r].kids > 0 && (r === '#/' || base.screens[r].sections.length > 0)) && base.screens['#/qgv'].rows.length > 0 && base.screens['#/technical/NASDAQ%3ANVDA'].verdicts.length > 0, phase + ': public content renders ' + JSON.stringify(ROUTES.map((r) => [r, base.screens[r].sections.length, base.screens[r].rows.length, base.screens[r].verdicts.length])));
-    checks += 5;
+    checks += 7;
     await close(base);
-
-    phase = 'owner files added, public visitor';
-    dirs.push(variant(out, { 'kis-private.js': 'real', 'private-expand-live.js': 'real' }));
-    const owner = await visit(dirs[dirs.length - 1]);
-    samePublic(owner, base);
-    assert.deepEqual([owner.head.reader, owner.head.expand, owner.head.skipped], [true, true, []]);
-    const kis = privates(owner).filter(([id]) => id === 'tech-kis-chart' || id === 'qgv-kis');
-    assert.deepEqual(kis.map(([id, st, words, b]) => [id, st, words, b]), [['qgv-kis', 'LOGIN_REQUIRED', '로그인 필요', ''], ['tech-kis-chart', 'LOGIN_REQUIRED', '로그인 필요', '']], phase + ': only 로그인 필요 in the KIS cells');
-    assert.deepEqual(owner.seen.outside, [], phase + ': a public visitor sends nothing to the Worker or Google on any screen');
-    checks += 3;
-    await close(owner);
 
     // Data failures after a sign-in: the private cell takes its short state, the public screen stays.
     // A transport or auth failure stops the click at its first read; a file of the wrong schema is refused after the click's reads.
@@ -160,7 +156,7 @@ let phase = 'START';
       ['schema mismatch', { status: 200, body: { ...X.analysis(), schema: X.K('bars/9/analysis') } }, 'ERROR', ALL],
     ]) {
       phase = 'data ' + label;
-      const v = await visit(dirs[0], { data: () => answer });
+      const v = await visit(out, { data: () => answer });
       const page = v.page, expand = () => page.locator('[data-private-expand=technical]').click();
       await page.evaluate(() => { location.hash = '#/technical/NASDAQ%3ANVDA'; });
       await page.locator('[data-tech-chosen-state=CHOSEN]').waitFor({ timeout: 20000 });
@@ -203,7 +199,7 @@ let phase = 'START';
       checks += 3;
       await close(v);
     }
-    console.log('web_app_private_isolation_browser_test: ' + checks + ' checks passed (published, owner files with a public visitor, data 403 / 500 / invalid JSON / schema mismatch, reader throws, panel script throws, panel script missing, both missing)');
+    console.log('web_app_private_isolation_browser_test: ' + checks + ' checks passed (published with both owner-private files: public visitor, data 403 / 500 / invalid JSON / schema mismatch, reader throws, panel script throws, panel script missing, both missing)');
   } catch (e) {
     console.error('web_app_private_isolation_browser_test failed at ' + phase + ':', e && e.stack || e);
     process.exitCode = 1;

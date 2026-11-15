@@ -11,10 +11,11 @@ index.html, at the artifact root like every other published file, so both workfl
   - The old modules the new app reuses (loader.js LOAD_ORDER names with no web_app file, plan A) are not copied again: the
     page loads the current site's files of those names, which must be byte-identical to web_assets (build_web_app.py rule).
   - The data files are the current site's: data.js fetches them by plain name, page-relative, and nothing new is written.
-  - OWNER_PRIVATE (owner-private KIS panels, DC-52) are not published: kis-private.js names the private Worker routes and the
-    private schemas, which the guard refuses in every published file (private_area_paths / private_area_schema), and no
-    exception for Pages is approved. loader.js is published with exactly their one LOAD_ORDER line removed (loader_js), so
-    the preview loads neither file and its private panels stay as they are today. The development build keeps both.
+  - The owner-private KIS panels (DC-52) are published like every other web_app file: kis-private.js, private-expand-live.js
+    and the full loader.js (owner approval 2026-11-15 of the narrow Pages guard exception; it replaced the former
+    OWNER_PRIVATE exclusion). kis-private.js names the five private Worker routes and its private schema names, which the
+    guard admits in that one root file only, at its pinned bytes (pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS). A public
+    visitor still sends nothing to the Worker: every read waits for a sign-in click, and the Worker checks the owner.
 The guard pins every added file by exact name and SHA-256 (pages_artifact_guard.py APPROVED_SHA256); no limit changes.
 """
 from __future__ import annotations
@@ -32,9 +33,6 @@ PREVIEW = TOOLS.parents[0] / 'src/investment_system/product/web_preview'
 PAGE = 'app.html'
 STYLE = 'preview-banner.css'
 RENAMED = {'screen-detail.js': 'app-screen-detail.js'}
-# The owner-private files and their one LOAD_ORDER line in web_app/loader.js (see the notes above).
-OWNER_PRIVATE = ('kis-private.js', 'private-expand-live.js')
-OWNER_PRIVATE_LINE = '\n ' + ''.join(f"'{name}'," for name in OWNER_PRIVATE)
 # The current screens the banner links to (web_assets/index.html hash sections).
 CURRENT_SCREENS = (('홈', 'home'), ('리더보드', 'leaderboard'), ('기술적 분석', 'technical'), ('포트폴리오', 'portfolio'))
 BANNER = ('<div class="is2-preview" role="note"><strong>새 화면 미리보기 · 일부 기능 준비 중</strong>'
@@ -59,13 +57,6 @@ def page_html(index_html: str) -> str:
     return text
 
 
-def loader_js(loader_text: str) -> str:
-    """The published loader.js: web_app/loader.js without the OWNER_PRIVATE LOAD_ORDER line; exactly once or ValueError."""
-    if loader_text.count(OWNER_PRIVATE_LINE) != 1:
-        raise ValueError('web_app/loader.js must hold the owner-private LOAD_ORDER line exactly once')
-    return loader_text.replace(OWNER_PRIVATE_LINE, '')
-
-
 def emit(out: Path) -> list[str]:
     """Adds the preview to a finished Pages build; returns the names it wrote."""
     out = Path(out)
@@ -75,9 +66,9 @@ def emit(out: Path) -> list[str]:
             raise ValueError(f'the preview reuses a current file that the build did not publish byte-identical: {name}')
     plan: dict[str, bytes] = {}
     for p in sorted(NEW.iterdir()):
-        if not p.is_file() or p.name == 'index.html' or p.name in OWNER_PRIVATE:
+        if not p.is_file() or p.name == 'index.html':
             continue
-        payload = loader_js(p.read_text(encoding='utf-8')).encode('utf-8') if p.name == 'loader.js' else p.read_bytes()
+        payload = p.read_bytes()
         name = RENAMED.get(p.name, p.name)
         if (out / name).exists():
             if name == p.name and (out / name).read_bytes() == payload:
