@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import os
 
 import pytest
 
@@ -117,3 +118,38 @@ sys.exit(main(sys.argv[1:]))
     counts=json.loads(result.stdout)
     assert counts['files']==5 and all(type(v) is int for v in counts.values())
     assert result.stderr==''
+
+
+def test_compact_command_uses_same_rebuild_and_requires_explicit_bootstrap(tmp_path,capsys):
+    request,_=inputs(tmp_path/'in');pin=sha(request.read_bytes());m=api()
+    args=['--request',str(request),'--expected-request-sha256',pin,'--check-only','--layout','compact']
+    assert m.main(args)==2
+    assert m.main(args+['--bootstrap'])==0
+    assert all(type(v) is int for v in json.loads(capsys.readouterr().out.splitlines()[-1]).values())
+
+
+def test_changed_source_index_cannot_claim_original_file_pin(tmp_path):
+    request,_=inputs(tmp_path/'in');config=json.loads(request.read_bytes())
+    index=json.loads((request.parent/'series.json').read_bytes())
+    index['files'][0]['source_contract_sha256']='0'*64
+    (request.parent/'series.json').write_bytes(json_bytes(index))
+    config['series_index']['sha256']=sha((request.parent/'series.json').read_bytes())
+    request.write_bytes(json_bytes(config))
+    with pytest.raises(ValueError,match='RETAINED_CONTRACT_FILE_PIN'):
+        list(api().rebuild(request,expected_request_sha256=sha(request.read_bytes())))
+
+
+def test_determinism_across_fresh_process_hash_seeds(tmp_path):
+    request,_=inputs(tmp_path/'in');pin=sha(request.read_bytes())
+    code="""import hashlib,json,sys
+from investment_system.research.kis_rebuild import rebuild
+rows=[(p,hashlib.sha256(b).hexdigest()) for p,b in rebuild(sys.argv[1],expected_request_sha256=sys.argv[2])]
+print(hashlib.sha256(json.dumps(rows,sort_keys=True).encode()).hexdigest())
+"""
+    results=[]
+    for seed in ('1','2'):
+        env=dict(os.environ,PYTHONHASHSEED=seed)
+        p=subprocess.run([sys.executable,'-S','-c',code,str(request),pin],env=env,capture_output=True,text=True)
+        assert p.returncode==0,p.stderr
+        results.append(p.stdout)
+    assert results[0]==results[1]

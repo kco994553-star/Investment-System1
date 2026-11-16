@@ -14,6 +14,7 @@ import shutil
 import tempfile
 import time
 import tarfile
+import re
 
 from ._private_artifacts import digest, json_bytes, MAX_BYTES
 from .kis_price_bridge import _day, _ts, price_rows, validate_contract
@@ -201,20 +202,38 @@ def main(argv=None):
     parser.add_argument('--reference-index',type=Path)
     parser.add_argument('--expected-reference-sha256')
     parser.add_argument('--run-receipt',type=Path)
+    parser.add_argument('--layout',choices=('legacy','compact'),default='legacy')
+    parser.add_argument('--recent',choices=('daily','monthly'),default='daily')
+    parser.add_argument('--previous-manifest',type=Path)
+    parser.add_argument('--expected-previous-sha256')
+    parser.add_argument('--revision-reference')
+    parser.add_argument('--bootstrap',action='store_true')
     args=parser.parse_args(argv)
     started=time.perf_counter();result={};receipt={};status=0
     try:
         need(args.check_only != bool(args.output_dir),'CHOOSE_OUTPUT_OR_CHECK_ONLY')
         need(bool(args.reference_index)==bool(args.expected_reference_sha256),'REFERENCE_PIN_REQUIRED')
+        need(bool(args.previous_manifest)==bool(args.expected_previous_sha256),'PREVIOUS_PIN_REQUIRED')
+        need(not(args.reference_index and args.output_dir),'REFERENCE_COMPARISON_CHECK_ONLY')
+        need(not(args.reference_index and args.layout!='legacy'),'REFERENCE_REQUIRES_LEGACY')
         files=rebuild(args.request,expected_request_sha256=args.expected_request_sha256)
+        if args.layout=='compact':
+            from .kis_compact import compact,growth
+            need(bool(args.previous_manifest) != args.bootstrap,'COMPACT_PREVIOUS_OR_EXPLICIT_BOOTSTRAP')
+            previous=None
+            if args.previous_manifest:
+                b=args.previous_manifest.read_bytes();need(sha(b)==args.expected_previous_sha256,'PREVIOUS_MANIFEST_PIN')
+                previous=json.loads(b)
+            _,config,_=load_request(args.request,args.expected_request_sha256)
+            projected=compact(files,evaluation_day=config['evaluation_day'],previous=previous,
+                              revision_reference=args.revision_reference,recent=args.recent)
+            receipt['growth']=growth(projected,previous=previous)
+            receipt['growth_ledger']=json.loads(projected['manifest.json'])['growth_ledger']
+            files=iter(sorted(projected.items()))
         if args.reference_index:
             b=args.reference_index.read_bytes();need(sha(b)==args.expected_reference_sha256,'REFERENCE_INDEX_PIN')
             reference=json.loads(b);result=compare_files(files,reference['files'])
             if result['missing'] or result['extra'] or result['different']:status=5
-            # Comparison consumes the generator; a subsequent output is explicit
-            # full replay, not a saved result copied into the output directory.
-            if args.output_dir and status==0:
-                files=rebuild(args.request,expected_request_sha256=args.expected_request_sha256)
         if args.output_dir and status==0:
             p=args.output_dir.resolve()
             need(not any((d/'.git').exists() for d in (p,*p.parents)), 'PRIVATE_OUTPUT_OUTSIDE_GIT_REQUIRED')
@@ -223,7 +242,8 @@ def main(argv=None):
             result=dict(files=0,bytes=0)
             for _,b in files:result['files']+=1;result['bytes']+=len(b)
     except ValueError as e:
-        status=2;receipt['reason']=str(e) if str(e).isupper() else 'INPUT_OR_CALCULATION_INVALID'
+        status=6 if str(e) in ('ANNUAL_DATA_BUDGET','DAILY_DATA_BUDGET','COMPACT_FILE_LIMIT','PACK_FILE_LIMIT','CHART_PIECE_LIMIT') else 2
+        receipt['reason']=str(e) if re.fullmatch('[A-Z][A-Z0-9_]{1,63}',str(e)) else 'INPUT_OR_CALCULATION_INVALID'
     except OSError:
         status=4;receipt['reason']='IO_FAILURE'
     except Exception:
