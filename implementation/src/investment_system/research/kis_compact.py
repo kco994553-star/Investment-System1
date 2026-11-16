@@ -173,7 +173,9 @@ def compact(legacy_files,*,evaluation_day,previous=None,revision_reference=None,
     # A repeat of identical service bytes is not a new annual charge.
     if previous and all(previous.get(k)==v for k,v in manifest.items()):
         files['manifest.json']=json_bytes(previous);return files
-    year_key=evaluation_day[:4]
+    # A Jan1 run can legitimately use the last December trading session. Charge
+    # its supplied calculation clock's year, not the older price/evaluation year.
+    year_key=(qgv.get('calculated_at') or evaluation_day)[:4]
     used=(previous or {}).get('growth_ledger',{})
     carried=used.get('charged_bytes',0) if used.get('year')==year_key else 0
     manifest['growth_ledger']=dict(year=year_key,charged_bytes=carried,

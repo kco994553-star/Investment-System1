@@ -79,6 +79,9 @@ charges at most260MB/year for view blobs, reserving
 manifest allowance, never credits deleted paths, and assumes no delta benefit.
 It requires the previous pinned manifest for updates; explicit bootstrap is the
 only initialization path. A repeat of identical bytes consumes no new charge.
+Its year comes from the supplied QGV calculation clock, so a January1run using
+December's last trading day does not charge the old year. Historical replay
+clocks must not be used to publish a supposedly current batch.
 Exceeding the budget fails with exit6 and keeps the previous batch. This is not
 a substitute for Main measuring actual Git objects/other features after commits;
 nondefault Git compression or more than252updates must be included in planning.

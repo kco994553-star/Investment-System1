@@ -128,6 +128,16 @@ def test_growth_uses_default_loose_git_level_one_not_assumed_fourfold_compressio
     assert m.growth({'latest/value.json':b})['new_git_loose_blob_bytes']==expected
 
 
+def test_storage_year_uses_calculation_clock_not_last_december_price_day():
+    def source():
+        for name,b in legacy():
+            if name=='qgv/latest.json':
+                q=json.loads(b);q['calculated_at']='2027-01-01T04:00:00Z';b=json_bytes(q)
+            yield name,b
+    result=api().compact(source(),evaluation_day='2026-12-31')
+    assert json.loads(result['manifest.json'])['growth_ledger']['year']=='2027'
+
+
 def test_node_decoder_matches_python_for_same_wire_and_rejects_cycles():
     if not shutil.which('node'):pytest.skip('Node contract consumer unavailable')
     m=api();p=m.pack(cases(),kind='INDICATORS')
