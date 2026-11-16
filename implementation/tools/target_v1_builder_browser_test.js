@@ -27,6 +27,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {chromium}=require('playwright');
 const {routeEmptyPublicScreens}=require('./empty_public_screens');
 const BASE=process.env.PAGES_COCKPIT_URL||'http://127.0.0.1:8990/';
+const TV1_BEFORE='2026-11-15T12:00:00Z',TV1_AFTER='2026-11-16T12:00:00Z';
 const WORKER='https://private-investment-history.kco994553.workers.dev';
 const OFFICIAL=JSON.parse(fs.readFileSync(path.join(__dirname,'../tests/fixtures/qgv_official_vectors_v1.json'),'utf8')).base_text,PUB=JSON.parse(OFFICIAL);
 // The page's sec-qgv2.json value (Qgv2Inputs shape) for the publication's codes: cik / sic / metrics (financial safety passes).
@@ -78,6 +79,9 @@ async function seed({date,n=45,vMiss={}}){
  const browser=await chromium.launch({headless:true});let phase='start';
  try{for(const width of [390,1280]){
   phase=width+' setup';const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'}),unexpected=[];
+  // The page clock is pinned so the result never depends on the day the test runs (2026-11-16 daily verify failed on the real clock).
+  // AFTER is the day after the configured deadline; the schedule phase also checks BEFORE (the deadline day) on the same state.
+  await context.clock.install({time:new Date(TV1_AFTER)});await context.clock.resume();
   await routeEmptyPublicScreens(context);
   await context.route('**/*',route=>{const url=new URL(route.request().url());if(url.origin===new URL(BASE).origin)return route.fallback();if(url.origin===WORKER)return route.fulfill({status:503,contentType:'application/json',body:'{"error":"UNAVAILABLE"}'});unexpected.push(url.origin);return route.abort();});
   await context.addInitScript({content:PAYLOAD});await context.addInitScript({content:SYN_INIT});const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -122,7 +126,15 @@ async function seed({date,n=45,vMiss={}}){
   phase=width+' risk only';assert.match(await page.locator('[data-tv1-risk-only]').textContent(),/^TARGET v1 미확정 · 회차별 종목 목록·예상 금액 없음 · 이번 회차는 위험 코드 점검만$/);
   assert.equal(await page.locator('[data-tv1-rebalance] table').count(),0);assert.equal(await page.locator('[data-tv1-risk-codes] li').count(),8);assert.match(await page.locator('[data-tv1-risk-codes]').textContent(),/R1 · 확신 보유 종목의 무효화 조건 발생/);
   assert.deepEqual(await page.locator('[data-tv1-round-row] td:last-child').allTextContents(),['위험 코드 점검만','위험 코드 점검만','위험 코드 점검만']);
-  assert.match(await page.locator('[data-tv1-transition] [data-tv1-schedule]').textContent(),/확정 목표 2026년 11월 둘째 주\(11-09 ~ 11-15\) · 미확정 · 조건을 못 맞추면 확정을 미루고 11월 회차는 위험 코드 점검만/);
+  // Both sides of the deadline on the same unfinalized state, at pinned times (not the real clock).
+  assert.equal(await page.evaluate(()=>TargetV1ConfigDefaults.schedule.deadline),'2026-11-15');
+  const tv1Schedule=async(time)=>{await page.clock.setSystemTime(new Date(time));await page.goto(BASE+'#home');await page.goto(BASE+'#playbook');await page.locator('[data-tv1-transition] [data-tv1-schedule]').waitFor();
+   assert.equal(await page.evaluate(()=>new Date().toISOString().slice(0,10)),time.slice(0,10));
+   assert.match(await page.locator('[data-tv1-risk-only]').textContent(),/^TARGET v1 미확정 · 회차별 종목 목록·예상 금액 없음 · 이번 회차는 위험 코드 점검만$/);
+   assert.deepEqual(await page.locator('[data-tv1-round-row] td:last-child').allTextContents(),['위험 코드 점검만','위험 코드 점검만','위험 코드 점검만']);
+   return page.locator('[data-tv1-transition] [data-tv1-schedule]').textContent();};
+  phase=width+' schedule before deadline';assert.equal(await tv1Schedule(TV1_BEFORE),'TARGET v1 확정 목표 2026년 11월 둘째 주(11-09 ~ 11-15) · 미확정 · 조건을 못 맞추면 확정을 미루고 11월 회차는 위험 코드 점검만');
+  phase=width+' schedule after deadline';assert.equal(await tv1Schedule(TV1_AFTER),'TARGET v1 확정 목표 2026년 11월 둘째 주(11-09 ~ 11-15) · 목표 주까지 조건 미충족 · 확정 연기 · 11월 회차는 위험 코드 점검만');
   phase=width+' number check';assert.equal(await page.locator('[data-tv1-finalize]').isDisabled(),false);
   assert.equal(await page.locator('[data-tv1-precheck-line]').textContent(),'확정 차단 점검: 아직 읽지 않음 · 점검 버튼(또는 초안 만들기·확정 버튼)을 누르면 최신 공개 sec-qgv2.json을 한 번 읽어 점검','nothing is read at mount');assert.equal(await page.locator('[data-tv1-precheck-table]').count(),0);assert.match(await page.locator('[data-tv1-number-check]').textContent(),/^숫자 검증 통과 · 10개 기업 · calc_version qgv2-calc\/2026-10-23\.1 · 2026-10-29 · 앱 계산식 대조 통과\(시험 가격\) \/ 실기기 시세 경로 미검증 · /);
   // The published file is re-read at the click: absent on this build (404) → blocked with every reason listed.
