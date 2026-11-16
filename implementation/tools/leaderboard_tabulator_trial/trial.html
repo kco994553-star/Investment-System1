@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <!-- run_trial.js replaces the token below with the CSP read from web_app/index.html, unchanged (the app's own policy). -->
+    <meta http-equiv="Content-Security-Policy" content="__APP_CSP__" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>리더보드 표 시험 · 개발용 · 합성 자료</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="trial.css" />
+  </head>
+  <body>
+    <!-- Development trial page (tools/leaderboard_tabulator_trial): never part of web_app, the loader or the Pages build. -->
+    <main id="main" class="screen">
+      <h1 class="stamp">리더보드 표 시험</h1>
+      <p class="hand" data-trial-note>합성 자료 · 개발용 시험 · 배포 안 됨</p>
+      <div class="trial-controls">
+        <label for="trial-industry">업종 필터</label>
+        <select id="trial-industry"></select>
+      </div>
+      <div id="trial-host"></div>
+    </main>
+    <script defer src="core.js"></script>
+    <script defer src="screen-qgv-live.js"></script>
+    <script defer src="trial.js"></script>
+  </body>
+</html>
