@@ -1,8 +1,11 @@
 # Compact private delivery, version2
 
-Recommendation: **shared latest indicator file + B2 immutable daily RAW chart
-pieces**, with sealed month/year pieces and a separate cold-source decision if
-the300MB cap includes source history. Calculations and original evidence stay
+Selected by owner on2026-11-17: **shared latest indicator file + B2 immutable daily
+RAW chart pieces**, with sealed month/year pieces. The combined source+view
+estimate and monthly private-release design now live in
+[kis-b2-source-retention.md](kis-b2-source-retention.md):277.587MB first year,
+including initial five-year input, conditional on immutable new-row raw parts.
+The historical view-only comparison below remains identifiable. Calculations and original evidence stay
 in the existing engines/retained source store. This is a private query projection,
 not a new model, verified security master, source archive or official publication.
 Main owns all Worker/UI/workflow changes below; none are implemented here.
@@ -73,7 +76,8 @@ source-format reduction or approved outside-Git cold storage. R2 is an owner/Mai
 decision, not enabled here. The local directory/archive input interface is
 unchanged if Main hydrates approved cold objects before this offline command.
 
-**No claim of overall300MB achievement is made.** The default compact ledger
+The previous estimate did not include source growth. The new combined estimate
+is planning, not measured annual300MB achievement. The default compact ledger
 charges at most260MB/year for view blobs, reserving
 40MB toward the300MB target. It charges zlib1 changed blobs plus an uncompressed
 manifest allowance, never credits deleted paths, and assumes no delta benefit.
