@@ -125,7 +125,10 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  let open=false,seq=0,tokenSeq=0;
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
  function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;}
- function closed(msg){const s=st();open=false;seq++;btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
+ // While a read runs the button stays pressed-off (owner check 2026-11-17: a second tap during the ~15 s of three spaced reads
+ // started a second, overlapping read that the Worker refused RATE_LIMITED); the layer also queues reads, this only shows it.
+ function busy(on){btn.disabled=on;if(on){btn.setAttribute('aria-busy','true');btn.textContent='불러오는 중…';}else{btn.removeAttribute('aria-busy');btn.textContent='비공개 펼치기';}}
+ function closed(msg){const s=st();open=false;seq++;busy(false);btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
   box.hidden=!s.connected;resetToken();factBox.replaceChildren();
   if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
   else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘')])});
@@ -133,14 +136,14 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  function read(e){const t=target()||{},my=++seq;
   const req=READS[kind](t);
   if(!req){note.textContent='기업을 먼저 고르세요';return;}
-  panel.set('LOADING');factBox.replaceChildren();note.textContent='';
+  panel.set('LOADING');factBox.replaceChildren();note.textContent='';busy(true);
   let p;try{p=P().kisRead(e,req);}catch(err){p=Promise.reject(err);}
-  Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;const status=[];
+  Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;busy(false);const status=[];
    try{panel.set('READY',{render:b=>RENDER[kind](b,res,{symbol:t.symbol,code:t.code,publicBasis:publicBasis()},status)});}
    catch(err){const c=codeOf(err);panel.set('ERROR',{code:c});note.textContent='형식 오류 · '+c;return;}
    factBox.replaceChildren(facts(status,kind));
    open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;box.hidden=false;},
-  err=>{if(my!==seq||signal.aborted)return;const c=codeOf(err);if(c==='CANCELED')return;
+  err=>{if(my!==seq||signal.aborted)return;busy(false);const c=codeOf(err);if(c==='CANCELED')return;
    if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
    if(c==='KIS_SERIES_NOT_FOUND'){panel.set('EMPTY');note.textContent=word(c);return;}
    panel.set('ERROR',{code:c});note.textContent=word(c);});}
