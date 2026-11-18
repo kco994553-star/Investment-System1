@@ -50,16 +50,33 @@ function chart(bars,symbol){const TC=window.TechnicalChart;const nums=bars.map(b
 // The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
 // is not the chart's: the mismatch line only, no value) or READY.
 // A metric's value cell: the value as RAM text with its tier tag (검증됨 / 검증 전(참고)), or its one-line reason.
-const valueCell=x=>x.value!==null?[ram(x.value),' ',h('span',{class:'chip',dataset:{privateVerification:x.kind}},x.tag)]:x.text;
+// Display only (owner 2026-11-18, DC-56 screen text): readable indicator names, values shown to two decimals (the file's value is
+// kept as given; nothing is recomputed), and the verification tag once at the top of the cell; a row carries its own tag only when
+// its state differs from the top one.
+const NAME_RULES=Object.freeze([[/^SMA_(\d+)$/,m=>'이동평균('+m[1]+')'],[/^EMA_(\d+)$/,m=>'지수이동평균('+m[1]+')'],[/^RSI_(\d+)$/,m=>'RSI('+m[1]+')'],
+ [/^ATR_(\d+)$/,m=>'ATR('+m[1]+')'],[/^BOLL_UPPER_(\d+)_(\d+(?:\.\d+)?)$/,m=>'볼린저 상단('+m[1]+', '+m[2]+'σ)'],[/^BOLL_LOWER_(\d+)_(\d+(?:\.\d+)?)$/,m=>'볼린저 하단('+m[1]+', '+m[2]+'σ)'],
+ [/^BOLL_MIDDLE_(\d+)$/,m=>'볼린저 중심('+m[1]+')'],[/^MACD_SIGNAL_(\d+)$/,m=>'MACD 시그널('+m[1]+')'],
+ [/^MACD_HISTOGRAM_(\d+)_(\d+)_(\d+)$/,m=>'MACD 히스토그램('+m[1]+', '+m[2]+', '+m[3]+')'],[/^MACD_(\d+)_(\d+)$/,m=>'MACD('+m[1]+', '+m[2]+')']]);
+const nameOf=label=>{for(const[re,f]of NAME_RULES){const m=re.exec(label);if(m)return f(m);}return label;};
+const LONG=/^(-?\d+)\.(\d{3,})(\s.*)?$/;
+const shown=v=>{const m=typeof v==='string'?LONG.exec(v):null;if(!m)return v;const n=Number(m[1]+'.'+m[2]);if(!Number.isFinite(n))return v;
+ const s=n.toFixed(2);return(s==='-0.00'?'0.00':s)+(m[3]||'');};
+const tagOf=(kind,tag)=>h('span',{class:'chip',dataset:{privateVerification:kind}},tag);
+const valueCell=(x,top)=>x.value!==null?[ram(shown(x.value)),x.kind===top?null:[' ',tagOf(x.kind,x.tag)]]:x.text;
 // The metric rows of one file under its display (IS2.kisPrivate tiers): the WITHHELD line once, VERIFIED / REFERENCE / HELD rows.
-function tierPart(t,data,empty){
+// top = the tag already at the top of the panel (the chart's), or null: then this part shows the most common tag of its valued rows
+// once above its rows.
+function tierPart(t,data,empty,top=null){
  if(t.display.state==='UNKNOWN')return[warn(t.display.line,{privateDisplay:'UNKNOWN',...data})];
- return[t.display.state==='WITHHELD'?warn(t.display.line,{privateDisplay:'WITHHELD',...data}):null,
-  t.rows.length?table(t.rows.map(x=>[x.label,valueCell(x),{privateMetric:x.id,privateTier:x.kind}]),data):t.display.state==='WITHHELD'?null:warn(empty,data)];}
+ const valued=t.rows.filter(x=>x.value!==null);let head=null,k=top;
+ if(!k&&valued.length){const cnt=kd=>valued.filter(x=>x.kind===kd).length;k=[...new Set(valued.map(x=>x.kind))].sort((a,b)=>cnt(b)-cnt(a))[0];
+  head=h('p',{class:'sub',dataset:{privateTierHead:k}},tagOf(k,valued.find(x=>x.kind===k).tag));}
+ return[t.display.state==='WITHHELD'?warn(t.display.line,{privateDisplay:'WITHHELD',...data}):null,head,
+  t.rows.length?table(t.rows.map(x=>[nameOf(x.label),valueCell(x,k),{privateMetric:x.id,privateTier:x.kind}]),data):t.display.state==='WITHHELD'?null:warn(empty,data)];}
 
 // The five measures part: EMPTY (no file), REFUSED (the file breaks its contract: nothing of it shown), BASIS_MISMATCH (its basis
 // is not the chart's: the mismatch line only, no value) or READY.
-function measuresPart(K,raw,symbol,chartBasis,status){
+function measuresPart(K,raw,symbol,chartBasis,status,top=null){
  const part=(st,...c)=>h('div',{class:'sk card',dataset:{privateMeasures:st}},h('h4',null,'다섯 측정값'),...c);
  if(raw===null)return part('EMPTY',warn('자료 없음'));
  const r=K.validateMeasures(raw);
@@ -68,7 +85,7 @@ function measuresPart(K,raw,symbol,chartBasis,status){
  status.push(['측정 평가일',v.evaluation_day,{privateEvaluationDay:'measures'}],['측정 가격 기준',v.basisText,{privateMeasuresBasis:v.basis}],
   ['측정 설정 판',v.settings_version,{privateSettingsVersion:''}],['측정 수집 시각',v.collected_at],['측정 분할 증거',v.evidence],['측정 개수',v.summary,{privateMeasuresCounts:''}]);
  if(!g.same)return part('BASIS_MISMATCH',warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'measures'}));
- return part('READY',v.status!=='NORMAL'?warn(v.statusText,{privateMeasuresStatus:v.status}):null,...tierPart(K.measuresTiers(r.value),{privateMeasuresRows:''},'측정값 없음'));}
+ return part('READY',v.status!=='NORMAL'?warn(v.statusText,{privateMeasuresStatus:v.status}):null,...tierPart(K.measuresTiers(r.value),{privateMeasuresRows:''},'측정값 없음',top));}
 
 function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
  if(!a.ok||!b.ok){const r=a.ok?b:a;throw Error(r.code);}
@@ -80,7 +97,8 @@ function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){cons
   ['상태',v.statusText,{privateStatusWord:v.status}],['지표 가격 기준',v.basisText,{privateIndicatorBasis:v.basis}],['분할 증거',v.evidence],v.adjustment?['분할 상태',v.adjustment,{privateAdjustmentStates:''}]:null,
   m.note||v.note?['분할 반영',m.note||v.note,{privateAdjustedNote:'technical'}]:null,['기준일 비교',cmp.text,{privateBasisCompare:cmp.same?'SAME':'DIFFERENT'}],['지표 개수',v.summary,{privateCounts:''}]);
  // Indicators only on a chart of the same basis; otherwise the mismatch line and nothing of the indicators (no value, no count).
- const indicators=g.same?tierPart(K.analysisTiers(a.value),{privateIndicators:''},'지표 없음'):[warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'analysis'})];
+ const top=dc.state==='AVAILABLE'?'REFERENCE':null;
+ const indicators=g.same?tierPart(K.analysisTiers(a.value),{privateIndicators:''},'지표 없음',top):[warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'analysis'})];
  // The chart's closes are reference values: drawn only when its display is AVAILABLE; WITHHELD / unknown leave one line.
  const closes=dc.state==='AVAILABLE'?[last?table([['마지막 종가',[ram(last.date,' · ',last.close===null?'NA':last.close)]]],{privateLast:''}):null,chart(b.value.bars,symbol)]
   :[warn(dc.line,{privateDisplay:dc.state,privateDisplayPart:'chart'})];
@@ -89,7 +107,7 @@ function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){cons
   v.status!=='NORMAL'?warn(v.statusText,{privateStatusLine:v.status}):null,
   ...closes,
   ...indicators,
-  measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,status)]);}
+  measuresPart(K,mRaw===undefined?null:mRaw,symbol,m.basisCode,status,top)]);}
 
 function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q=K.validateQgv(qRaw);if(!q.ok)throw Error(q.code);
  const v=K.qgvView(q.value,code),cmp=K.basisCompare(publicBasis,v.price_basis_date),d=v.display;

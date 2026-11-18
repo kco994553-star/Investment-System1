@@ -165,7 +165,7 @@ let phase = 'START', pass = 0, where = '';
       assert.match(await text(page, '[data-private-layer=technical]'), /^KIS · 비공개 · 가격 기준일 2026-10-23 · 원주가 검증 전\(참고\)$/, phase + ': label, basis day, basis and the chart\'s tag');
       assert.equal(await count(page, 'svg[data-private-chart=NVDA] [data-private-close-line]'), 1, phase + ': the close line');
       assert.deepEqual((await tiers()).filter(([, t]) => t !== 'HELD'), [['SMA_5', 'VERIFIED']], phase + ': the one adopted indicator');
-      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^SMA_5\s*11 검증됨$/, phase + ': its adopted value with 검증됨');
+      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^이동평균\(5\)\s*11 검증됨$/, phase + ': its readable name; its adopted value keeps 검증됨, which differs from the cell\'s top tag');
       assert.ok((await tiers()).some(([, t]) => t === 'HELD'), phase + ': held indicators by their one-line reason');
       assert.equal(await count(page, '[data-private-measures=READY]'), 1);
       assert.deepEqual(await page.locator('[data-private-panel=tech-kis-chart] [data-ram-price]').allTextContents(), ['2026-10-23 · 11', '11'], phase + ': values as RAM text only');
@@ -176,8 +176,30 @@ let phase = 'START', pass = 0, where = '';
       await expand(page, 'technical'); answer('reference'); delete w.lastAt;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual((await tiers()).filter(([, t]) => t !== 'HELD'), [['SMA_5', 'REFERENCE']], phase + ': the reference value, not an adopted one');
-      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^SMA_5\s*11 검증 전\(참고\)$/);
+      assert.match(await text(page, '[data-private-metric=SMA_5]'), /^이동평균\(5\)\s*11$/, phase + ': no tag on the row, the cell names 검증 전(참고) once at the top');
       assert.equal(await count(page, '[data-private-verification=VERIFIED]'), 0, phase + ': no 검증됨');
+      assert.equal(await count(page, '[data-private-tier-head]'), 0, phase + ': the chart\'s tag is the one top tag, no second head');
+
+      // Owner 2026-11-18 (DC-56 screen text): long values shown to two decimals, the file's value unchanged; readable names.
+      phase = where + 'technical reference display';
+      await expand(page, 'technical'); delete w.lastAt;
+      { const f = X.codex556('reference', { symbol: 'NVDA' }), m = f.technical.metrics;
+        Object.assign(m.ATR_14, { reference_value: 8.217935450167728, reference_reasons: ['IDENTITY_UNCONFIRMED'] });
+        Object.assign(m.BOLL_LOWER_20_2, { reference_value: -0.004, reference_reasons: ['IDENTITY_UNCONFIRMED'] });
+        Object.assign(m.MACD_HISTOGRAM_12_26_9, { reference_value: 1.005, reference_reasons: ['IDENTITY_UNCONFIRMED'] });
+        w.answers.analysis = () => ({ status: 200, body: f.technical }); w.answers.chart = () => ({ status: 200, body: f.chart }); w.answers.technical = () => ({ status: 200, body: f.measures }); }
+      await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
+      assert.match(await text(page, '[data-private-metric=ATR_14]'), /^ATR\(14\)\s*8\.22$/, phase + ': two decimals, no row tag');
+      assert.match(await text(page, '[data-private-metric=BOLL_LOWER_20_2]'), /^볼린저 하단\(20, 2σ\)\s*0\.00$/, phase + ': no -0.00');
+      assert.match(await text(page, '[data-private-metric=MACD_HISTOGRAM_12_26_9]'), /^MACD 히스토그램\(12, 26, 9\)\s*1\.0[01]$/, phase + ': the histogram name');
+      assert.match(await text(page, '[data-private-metric=BOLL_UPPER_20_2]'), /^볼린저 상단\(20, 2σ\)\s*미산출/, phase + ': held rows get the readable name too');
+      assert.match(await text(page, '[data-private-metric=RSI_14]'), /^RSI\(14\)/);
+      assert.match(await text(page, '[data-private-metric=MACD_SIGNAL_9]'), /^MACD 시그널\(9\)/);
+      assert.match(await text(page, '[data-private-metric=BOLL_MIDDLE_20]'), /^볼린저 중심\(20\)/);
+      assert.match(await text(page, '[data-private-metric=EMA_20]'), /^지수이동평균\(20\)/);
+      assert.match(await text(page, '[data-private-metric=MACD_12_26]'), /^MACD\(12, 26\)/);
+      assert.deepEqual(site.leaks([await page.content()], ['8.217935450167728', '8.2179']), [], phase + ': the long value is not on the page, only its two-decimal form');
+      assert.equal(await count(page, '[data-private-tier=REFERENCE] [data-private-verification]'), 0, phase + ': no tag repeated per row');
 
       phase = where + 'technical WITHHELD';
       await expand(page, 'technical'); answer('withheld'); delete w.lastAt;
