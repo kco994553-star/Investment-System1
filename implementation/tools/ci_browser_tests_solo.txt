@@ -1,0 +1,5 @@
+# Browser tests that assert a time limit: run_js_tests_parallel.js runs them after the parallel groups, alone, so other tests
+# never share the machine with them. They stay in ci_browser_tests.txt and run in every check.
+web_app_first_paint_browser_test.js  # first screen median under a fixed limit, with CPU throttling proved first
+universe_leaderboard_browser_test.js  # S06 paint < 2 s and compute < 3 s
+price_store_browser_test.js  # device price store reads < 20 s

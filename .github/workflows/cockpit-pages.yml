@@ -195,7 +195,9 @@ jobs:
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
-          bash implementation/tools/run_js_tests.sh implementation/tools/ci_browser_tests.txt
+          # The browser list in 3 groups at once (owner 2026-11-17): every entry still runs once and must pass; the tests that assert
+          # a time limit run afterwards, alone (ci_browser_tests_solo.txt).
+          node implementation/tools/run_js_tests_parallel.js implementation/tools/ci_browser_tests.txt --groups 3 --solo implementation/tools/ci_browser_tests_solo.txt --weights implementation/tools/ci_browser_test_seconds.txt
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
           M2_SERVER_PID=$!
