@@ -1,9 +1,14 @@
 # Browser tests left out of the date-shifted run only (.github/workflows/browser-date-shift.yml).
 # They still run, unshifted, in every normal check (ci_browser_tests.txt is unchanged).
-# Owner decision 2026-11-16. Reason, the same for all four: they fail even with a 0-day shift, because the shifted
+# Owner decision 2026-11-16 for the first four. Reason, the same for those four: they fail even with a 0-day shift, because the shifted
 # page clock itself (clock_shift_preload.js) breaks what they measure, not because of any date. Without the harness
 # they pass, and none of them expects a fixed calendar date; each uses "now" at run time.
 settings_import_browser_test.js # fails at its RELOAD phase (page reload under the installed clock)
 device_actual_browser_test.js # quota-failure IndexedDB checks fail under the installed clock; a Node-only shift instead splits Node and page "now" (overwrite check)
 sic_theme_v0_browser_test.js # page.waitForFunction times out (15 s) under the installed clock
 web_app_first_paint_browser_test.js # "marks, paint entry and CDP clock present" fails: first-paint timing is not produced under the installed clock
+# Owner decision 2026-11-18 for the fifth (global_language_search). Its reason is its own: it takes no date input and
+# depends on the order of the page's own timers (a 60 ms scroll timer, then a 100 ms touch hold opening the theme menu).
+# It failed 3 of 3 times only in the +50-day CI run, at line 249 (waiting for #theme-menu to open); it passes at +0 and
+# +7 days in CI and at every shift locally. Cause not established; by the owner's decision it is not investigated further.
+global_language_search_browser_test.js # +50-day CI only: theme menu wait (line 249) under the installed clock; no date input; cause not established

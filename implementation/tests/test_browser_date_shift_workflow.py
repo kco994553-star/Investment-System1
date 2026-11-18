@@ -6,14 +6,16 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = (ROOT.parent / '.github/workflows/browser-date-shift.yml').read_text()
 TOOLS = ROOT / 'tools'
 EXCLUDED = {'settings_import_browser_test.js', 'device_actual_browser_test.js', 'sic_theme_v0_browser_test.js',
-            'web_app_first_paint_browser_test.js'}
+            'web_app_first_paint_browser_test.js',
+            # owner 2026-11-18: the fifth, +50-day CI failure with no date input, cause not established
+            'global_language_search_browser_test.js'}
 
 
 def _names(path):
     return [n for n in (line.split('#', 1)[0].strip() for line in path.read_text().splitlines()) if n]
 
 
-def test_exclusions_are_exactly_the_four_recorded_tests_each_with_a_reason():
+def test_exclusions_are_exactly_the_five_recorded_tests_each_with_a_reason():
     lines = [l for l in (TOOLS / 'ci_browser_tests_date_shift_exclude.txt').read_text().splitlines()
              if l.strip() and not l.lstrip().startswith('#')]
     assert {l.split('#', 1)[0].strip() for l in lines} == EXCLUDED
