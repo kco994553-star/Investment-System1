@@ -69,7 +69,7 @@ const valueCell=(x,top)=>x.value!==null?[ram(shown(x.value)),x.kind===top?null:[
 function tierPart(t,data,empty,top=null){
  if(t.display.state==='UNKNOWN')return[warn(t.display.line,{privateDisplay:'UNKNOWN',...data})];
  const valued=t.rows.filter(x=>x.value!==null);let head=null,k=top;
- if(!k&&valued.length){const n=new Map();for(const x of valued)n.set(x.kind,(n.get(x.kind)||0)+1);k=[...n].sort((a,b)=>b[1]-a[1])[0][0];
+ if(!k&&valued.length){const cnt=kd=>valued.filter(x=>x.kind===kd).length;k=[...new Set(valued.map(x=>x.kind))].sort((a,b)=>cnt(b)-cnt(a))[0];
   head=h('p',{class:'sub',dataset:{privateTierHead:k}},tagOf(k,valued.find(x=>x.kind===k).tag));}
  return[t.display.state==='WITHHELD'?warn(t.display.line,{privateDisplay:'WITHHELD',...data}):null,head,
   t.rows.length?table(t.rows.map(x=>[nameOf(x.label),valueCell(x,k),{privateMetric:x.id,privateTier:x.kind}]),data):t.display.state==='WITHHELD'?null:warn(empty,data)];}
