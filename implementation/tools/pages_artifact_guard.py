@@ -201,7 +201,7 @@ APPROVED_SHA256 = {
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
     "prices.js": "7016abc44f8dfdb7570548e70a7884ea39c74e915dabb47885898d8fe468efe6",
-    "private-expand-live.js": "1540af8435217b11081f02b574586fcbf0aad797db796bcdb07c82078c55c394",
+    "private-expand-live.js": "ae30c9131c68009c75b7bad03841b3f2ddd964df14528e8ec87f45b0d2813acd",
     "private.js": "e37ffe513a4e90db9e5688c8ddcaab2cf4794d2aa0bb81f804142cdf6bbd9c92",
     "qgv.js": "527fee2b8395b721f9d2d8d348fea98a6976ee6f0d66274d6d1a5900c7dec091",
     "screen-lab-live.js": "eeb5d00c6b93108f656dc0ba7da55f0a0d236805d2a0ed06250edf9f070d7d21",
