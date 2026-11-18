@@ -51,8 +51,15 @@ def recipes(group):
 
 def _metrics(row):
     # Retain actual negative/zero observations; never convert absence to zero.
-    return {k.removeprefix('financial::'): v for k, v in row['metrics'].items()
-            if k.startswith('financial::') and type(v) in (int, float) and math.isfinite(v)}
+    out={}
+    for key,value in row['metrics'].items():
+        if not key.startswith('financial::') or type(value) not in (int,float) or not math.isfinite(value):
+            continue
+        basis=row.get('metric_evidence',{}).get(key,{}).get('adoption_basis')
+        if basis in ('EXPLICIT_CONFLICT_EXCLUDED','ADDITIONAL_VERIFICATION_REQUIRED','UNREVIEWED'):
+            raise ValueError('REJECTED_RAW_METRIC_SUPPLIED')
+        out[key.removeprefix('financial::')]=value
+    return out
 
 
 def score_financial(evaluation, reference, *, peer_policy='MATCH_ACCOUNTING_SUBTYPE'):

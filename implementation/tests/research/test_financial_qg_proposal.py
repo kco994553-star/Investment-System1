@@ -61,3 +61,11 @@ def test_brokers_are_not_silently_pooled_with_managers_to_reach_eight():
     broad=m.score_financial(data,data,peer_policy='BROAD_THREE_TYPES_DIAGNOSTIC')
     assert broad['BROKER:0']['axes']['Q']['score'] is not None
     assert broad['BROKER:0']['peer_policy']!='MATCH_ACCOUNTING_SUBTYPE'
+
+
+def test_rejected_share_evidence_is_not_reaccepted_as_a_numeric_value():
+    m=api();data=rows('BANK',8)
+    data[0]['metrics']['financial::eps_cagr_3y']=.1
+    data[0]['metric_evidence']={'financial::eps_cagr_3y':{'adoption_basis':'EXPLICIT_CONFLICT_EXCLUDED'}}
+    with pytest.raises(ValueError,match='REJECTED_RAW_METRIC_SUPPLIED'):
+        m.score_financial(data,data)
