@@ -1,0 +1,1068 @@
+{
+  "schema_version": "research-selection-handoff/1",
+  "data_kind": "SYNTHETIC",
+  "producer_pr": 473,
+  "consumer_pr": 485,
+  "consumer_sha": "edcff4a5505d2b7bbe16c296573b31a14657b509",
+  "valuation_date": "2026-11-04",
+  "engine_rule": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+  "cases": [
+    {
+      "id": "normal",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:A",
+        "SYN:B"
+      ],
+      "quality": {
+        "SYN:A": {
+          "Q": 80,
+          "G": 70
+        },
+        "SYN:B": {
+          "Q": 60,
+          "G": 50
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 1
+        },
+        {
+          "company_id": "SYN:B",
+          "eligible": true,
+          "Q": 60,
+          "G": 50,
+          "V": null,
+          "rank": 2
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "all",
+          "value": null
+        },
+        "n_eligible": 2,
+        "n_selected": 2,
+        "selected": [
+          "SYN:A",
+          "SYN:B"
+        ],
+        "weights": {
+          "SYN:A": 0.5,
+          "SYN:B": 0.5
+        },
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "denominator": 2,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:normal",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "all",
+            "value": null
+          },
+          "rows": [
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 1,
+              "exclusion_reasons": []
+            },
+            {
+              "company_id": "SYN:B",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 2,
+              "exclusion_reasons": []
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "FORMED",
+            "weights": {
+              "SYN:A": 0.5,
+              "SYN:B": 0.5
+            },
+            "cash_weight": 0.0,
+            "weight_sum": 1.0,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
+            "input_hash": "aa7329450527576b4d306bed207202a92d48ee3c0e5ead75cfde565c6281d213",
+            "result_hash": "d886857e9be27f9f71801a78f7f52f10a8e9ee652a6fe1c1891948a2f8e99fb9",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": 0.0,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:normal",
+        "original_denominator": 2,
+        "input_sha256": "4b2a36f6879d1233470c8ea5c44ed020a0dff3f1a9ea6311c324fd435513ded4",
+        "selection_setting_sha256": "6897f584a1973fbd910e005da22e0c056f3d0f7fb31cd7daf51ec8e667729d49",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_SELECTED",
+        "SYN:B": "ELIGIBLE_SELECTED"
+      }
+    },
+    {
+      "id": "empty",
+      "data_kind": "SYNTHETIC",
+      "original_members": [],
+      "quality": {},
+      "ranked": [],
+      "expected": {
+        "selection_policy": {
+          "mode": "all",
+          "value": null
+        },
+        "n_eligible": 0,
+        "n_selected": 0,
+        "selected": [],
+        "weights": null,
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [],
+            "denominator": 0,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:empty",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "all",
+            "value": null
+          },
+          "rows": [],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "NOT_FORMED",
+            "weights": null,
+            "cash_weight": null,
+            "weight_sum": null,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
+            "input_hash": "8df84da408608056cf1ebb9a9a73189a17f7c5b9591d36a1cbe2054f5b039586",
+            "result_hash": "51eefd1a2ca8bdb61a6cc846e89a76b69d22f6dba72b012f8e7ea8173d693124",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": null,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:empty",
+        "original_denominator": 0,
+        "input_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "selection_setting_sha256": "6897f584a1973fbd910e005da22e0c056f3d0f7fb31cd7daf51ec8e667729d49",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {}
+    },
+    {
+      "id": "ties",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:B",
+        "SYN:A"
+      ],
+      "quality": {
+        "SYN:B": {
+          "Q": 80,
+          "G": 70
+        },
+        "SYN:A": {
+          "Q": 80,
+          "G": 70
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 1
+        },
+        {
+          "company_id": "SYN:B",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 2
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "top_n",
+          "value": 1
+        },
+        "n_eligible": 2,
+        "n_selected": 1,
+        "selected": [
+          "SYN:A"
+        ],
+        "weights": {
+          "SYN:A": 1.0
+        },
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:B",
+              "SYN:A"
+            ],
+            "denominator": 2,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:ties",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:B",
+              "SYN:A"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "top_n",
+            "value": 1
+          },
+          "rows": [
+            {
+              "company_id": "SYN:B",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 2,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            },
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 1,
+              "exclusion_reasons": []
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "FORMED",
+            "weights": {
+              "SYN:A": 1.0
+            },
+            "cash_weight": 0.0,
+            "weight_sum": 1.0,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:B",
+              "SYN:A"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "46a32221cb3ba23205ea6905dfc793978633714590596e43f0dc5ccc53a148db",
+            "input_hash": "86b7e4b6ecc07b6c2a3d9dc787fe4daeb36c187fe14fafd7d58e44f271cebf64",
+            "result_hash": "ce832c76097f5e7f1e28377ec849485e611d2d20827e56d4e6cb8a5dc41e0bce",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": 0.0,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:ties",
+        "original_denominator": 2,
+        "input_sha256": "d13b7f516d189c1f90eeff1320ecb266356d29fdfda3fa9fcac76fbab17604b0",
+        "selection_setting_sha256": "46442b652d4c63083ed58a1e52081e0bb19c29ea422ef378707ed234bcb5a0dc",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_SELECTED",
+        "SYN:B": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT"
+      }
+    },
+    {
+      "id": "percent_boundary",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:A",
+        "SYN:B",
+        "SYN:C"
+      ],
+      "quality": {
+        "SYN:A": {
+          "Q": 80,
+          "G": 70
+        },
+        "SYN:B": {
+          "Q": 60,
+          "G": 50
+        },
+        "SYN:C": {
+          "Q": 40,
+          "G": 20
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 1
+        },
+        {
+          "company_id": "SYN:B",
+          "eligible": true,
+          "Q": 60,
+          "G": 50,
+          "V": null,
+          "rank": 2
+        },
+        {
+          "company_id": "SYN:C",
+          "eligible": true,
+          "Q": 40,
+          "G": 20,
+          "V": null,
+          "rank": 3
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "top_percent",
+          "value": 33.3333334
+        },
+        "n_eligible": 3,
+        "n_selected": 1,
+        "selected": [
+          "SYN:A"
+        ],
+        "weights": {
+          "SYN:A": 1.0
+        },
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "denominator": 3,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:percent_boundary",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "top_percent",
+            "value": 33.3333334
+          },
+          "rows": [
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 1,
+              "exclusion_reasons": []
+            },
+            {
+              "company_id": "SYN:B",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 2,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            },
+            {
+              "company_id": "SYN:C",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 3,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "FORMED",
+            "weights": {
+              "SYN:A": 1.0
+            },
+            "cash_weight": 0.0,
+            "weight_sum": 1.0,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "42436db3cb1e88727b22086c5b3bfa80a2745bc1e4c09de62675b01ade32fa5e",
+            "input_hash": "4de3c4a6a013d079ec35176c1a3079d2db4da449df975689a0be3da26a13e53a",
+            "result_hash": "d60cd3947e57e80c4ea2aa624c648707d74ae8f3be22bd4ad647f7eb06b8d793",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": 0.0,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:percent_boundary",
+        "original_denominator": 3,
+        "input_sha256": "c35756c8079718c85b32b464f9dea2fbaefc2d80282f9d553643756f9d2fc984",
+        "selection_setting_sha256": "a88ccc30f8371d677947619783f43fc2167dd936cf45fe1fd39cff24b5b80ce1",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_SELECTED",
+        "SYN:B": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT",
+        "SYN:C": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT"
+      }
+    },
+    {
+      "id": "below_boundary",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:A",
+        "SYN:B",
+        "SYN:C"
+      ],
+      "quality": {
+        "SYN:A": {
+          "Q": 80,
+          "G": 70
+        },
+        "SYN:B": {
+          "Q": 60,
+          "G": 50
+        },
+        "SYN:C": {
+          "Q": 40,
+          "G": 20
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 1
+        },
+        {
+          "company_id": "SYN:B",
+          "eligible": true,
+          "Q": 60,
+          "G": 50,
+          "V": null,
+          "rank": 2
+        },
+        {
+          "company_id": "SYN:C",
+          "eligible": true,
+          "Q": 40,
+          "G": 20,
+          "V": null,
+          "rank": 3
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "top_percent",
+          "value": 33.3333333
+        },
+        "n_eligible": 3,
+        "n_selected": 0,
+        "selected": [],
+        "weights": null,
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "denominator": 3,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:below_boundary",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "top_percent",
+            "value": 33.3333333
+          },
+          "rows": [
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 1,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            },
+            {
+              "company_id": "SYN:B",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 2,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            },
+            {
+              "company_id": "SYN:C",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": false,
+              "original_rank": 3,
+              "exclusion_reasons": [
+                "OUTSIDE_SELECTION_LIMIT"
+              ]
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "NOT_FORMED",
+            "weights": null,
+            "cash_weight": null,
+            "weight_sum": null,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:A",
+              "SYN:B",
+              "SYN:C"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "c07ca31b4910fe8d2779f52b85971b956cd7b36b778f6b340a37ba2221d80d2b",
+            "input_hash": "52a4bcba74a38cecb8cac1eba0fe7a50d63f4ed1b912cde00f69518b08d9c1fe",
+            "result_hash": "f1454be3775d9f02198090499ace74291ea5b5a232b56bb86b770d1accdf53a1",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": null,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:below_boundary",
+        "original_denominator": 3,
+        "input_sha256": "c35756c8079718c85b32b464f9dea2fbaefc2d80282f9d553643756f9d2fc984",
+        "selection_setting_sha256": "c2a8cba9a47f3fd1fc8c95b99cdc74b781b4f0c85bc789b6567591786700a09e",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT",
+        "SYN:B": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT",
+        "SYN:C": "ELIGIBLE_OUTSIDE_REQUESTED_LIMIT"
+      }
+    },
+    {
+      "id": "too_few",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:A"
+      ],
+      "quality": {
+        "SYN:A": {
+          "Q": 80,
+          "G": 70
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 80,
+          "G": 70,
+          "V": null,
+          "rank": 1
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "top_n",
+          "value": 20
+        },
+        "n_eligible": 1,
+        "n_selected": 1,
+        "selected": [
+          "SYN:A"
+        ],
+        "weights": {
+          "SYN:A": 1.0
+        },
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:A"
+            ],
+            "denominator": 1,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:too_few",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:A"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "top_n",
+            "value": 20
+          },
+          "rows": [
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 1,
+              "exclusion_reasons": []
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "FORMED",
+            "weights": {
+              "SYN:A": 1.0
+            },
+            "cash_weight": 0.0,
+            "weight_sum": 1.0,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:A"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "35686e08a95aa66e7d43c35cecba1ee7b7c695b1551be28206bd42ecddda455b",
+            "input_hash": "4e3b14cf953efb2e888b281328996ed2f4584d386bf093e56ea91fcd2995d156",
+            "result_hash": "002b2cc73926a7ac160e85f42ea2fa44ada968b41b55b4a90fccad15fa10f1d9",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": 0.0,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:too_few",
+        "original_denominator": 1,
+        "input_sha256": "d716fbb76185f225facf85988f5e1fe7eaa6b6b5d00b8bf689e2f8c735e530f0",
+        "selection_setting_sha256": "c3be13cf47cfa7418f0eacc40d16323d3542705d7a9f88e9f82bb290e9d566f5",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_SELECTED"
+      }
+    },
+    {
+      "id": "missing",
+      "data_kind": "SYNTHETIC",
+      "original_members": [
+        "SYN:A",
+        "SYN:B"
+      ],
+      "quality": {
+        "SYN:A": {
+          "Q": 0,
+          "G": 0
+        },
+        "SYN:B": {
+          "Q": null,
+          "G": 50
+        }
+      },
+      "ranked": [
+        {
+          "company_id": "SYN:A",
+          "eligible": true,
+          "Q": 0,
+          "G": 0,
+          "V": null,
+          "rank": 1
+        },
+        {
+          "company_id": "SYN:B",
+          "eligible": false,
+          "Q": null,
+          "G": 50,
+          "V": null,
+          "rank": 2
+        }
+      ],
+      "expected": {
+        "selection_policy": {
+          "mode": "all",
+          "value": null
+        },
+        "n_eligible": 1,
+        "n_selected": 1,
+        "selected": [
+          "SYN:A"
+        ],
+        "weights": {
+          "SYN:A": 1.0
+        },
+        "selection_details": {
+          "schema_version": "research-selection-details/1",
+          "as_of": "2026-11-04T00:00:00+00:00",
+          "original_population": {
+            "members": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "denominator": 2,
+            "unit": "DECLARED_COMPANY_ID",
+            "universe_id": "SYN:missing",
+            "universe_kind": "EXPLICIT",
+            "membership_basis": "UNSPECIFIED",
+            "source": "SYNTHETIC",
+            "source_vintage": "2026-11-04",
+            "as_of": "2026-11-04T00:00:00+00:00",
+            "available_at": "2026-11-04T00:00:00+00:00",
+            "parent_universe_members": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "is_subset_of_parent": false
+          },
+          "rule_id": "PROVISIONAL_QG_PRESENT_EQUAL_WEIGHT",
+          "selection_policy": {
+            "mode": "all",
+            "value": null
+          },
+          "rows": [
+            {
+              "company_id": "SYN:A",
+              "issuer_id": null,
+              "eligible": true,
+              "selected": true,
+              "original_rank": 1,
+              "exclusion_reasons": []
+            },
+            {
+              "company_id": "SYN:B",
+              "issuer_id": null,
+              "eligible": false,
+              "selected": false,
+              "original_rank": 2,
+              "exclusion_reasons": [
+                "Q_MISSING"
+              ]
+            }
+          ],
+          "tie_rule": "Q_DESC_G_DESC_V_DESC_MISSING_LAST_COMPANY_ID_ASC",
+          "percent_rule": "FLOOR_ELIGIBLE_N_TIMES_DECIMAL_STR_PERCENT_DIV_100",
+          "portfolio": {
+            "state": "FORMED",
+            "weights": {
+              "SYN:A": 1.0
+            },
+            "cash_weight": 0.0,
+            "weight_sum": 1.0,
+            "extra_cap": null,
+            "extra_cap_state": "NOT_DEFINED_FOR_GENERAL_SELECTION"
+          },
+          "issuers": {
+            "mapping_basis": "DECLARED_UNIVERSE_MEMBER_CIK_NOT_SECURITY_EVIDENCE",
+            "unknown_company_ids": [
+              "SYN:A",
+              "SYN:B"
+            ],
+            "duplicate_groups": {},
+            "handling": "NO_CONSOLIDATION_OR_ISSUER_CAP_IN_EXISTING_RULE",
+            "security_identity_verified": false
+          },
+          "reproduction": {
+            "scope": "SELECTION_AND_WEIGHTS_FROM_RETAINED_AXES_NOT_QGV_OR_PERFORMANCE_REPLAY",
+            "setting_hash": "55ce1f33f8ae671e129a0af25103add8abd23bdedbae1642e14d21e17dfb41d8",
+            "input_hash": "7aa3a36a4b2396fec66f8811dade7c5c1ad901028c7925b3a727ad1b252cb7f9",
+            "result_hash": "eda017bb4b1b40534656421816919931d6cd07635d468ad743b666defdb2bb4d",
+            "engine_source_sha256": {
+              "validation/vertical_slice.py": "7611be871a98a7192078773b5f72b7baed8b348e3ad8b31c0e8e7226a511476e",
+              "contracts/portfolio_input.py": "22c955afd86ecabe161b27a61a66db5c288862247263b94250edb93a5e10708f",
+              "validation/selection_details.py": "01761921c2ba8a34b92dadb5612b67eef8633fba9fa52cb41f602d69fe5e8d34"
+            },
+            "status": "REPLAY_IDENTIFIED",
+            "requires_original_input": true,
+            "latest_input_is_new_calculation": true,
+            "qgv_version": null,
+            "qgv_version_reason": "NOT_SUPPLIED_BY_SOURCE_RESULT"
+          },
+          "performance_verified": false
+        }
+      },
+      "expect_consumer_ok": true,
+      "cash_weight": 0.0,
+      "cap_policy": "NO_ADDITIONAL_GENERIC_CAP",
+      "issuer_deduplication": "INPUT_IS_UNIQUE_COMPANIES_NO_SECURITY_TO_ISSUER_RESOLUTION",
+      "provenance": {
+        "valuation_date": "2026-11-04",
+        "population_id": "SYNTHETIC:missing",
+        "original_denominator": 2,
+        "input_sha256": "772f72a20ff2a7bcf0b0d27db2f60b02723b1714e695c3a4344f0f938eaf6df2",
+        "selection_setting_sha256": "6897f584a1973fbd910e005da22e0c056f3d0f7fb31cd7daf51ec8e667729d49",
+        "hash_meaning": "FIXTURE_INPUT_AND_SAVED_POLICY_NOT_ENGINE_CACHE_KEY",
+        "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+      },
+      "selection_reasons": {
+        "SYN:A": "ELIGIBLE_SELECTED",
+        "SYN:B": "Q_OR_G_MISSING"
+      }
+    }
+  ],
+  "unexecuted_cases": [
+    {
+      "id": "same_issuer_multiple_codes",
+      "state": "ENGINE_BEHAVIOR_DESCRIBED_IN_SELECTION_DETAILS_TEST",
+      "original_code_rows": [
+        "SYN:X.A",
+        "SYN:X.B"
+      ],
+      "issuer_id": "SYN:ISSUER:X",
+      "reason": "CURRENT_ENGINE_KEEPS_DISTINCT_COMPANY_IDS_AND_REPORTS_DUPLICATE_ISSUERS; NO_NEW_CONSOLIDATION_OR_ISSUER_CAP_POLICY"
+    }
+  ],
+  "performance_verified": false,
+  "selection_core_baseline_sha": "f14262a6a9f1583e81c53f642c4384141f2bb1af"
+}
