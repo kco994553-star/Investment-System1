@@ -122,16 +122,29 @@ def _latest(records):
     return result
 
 
-def query_contract(root, manifest):
-    records = _latest(read_records(root, manifest))
+def retained_metadata(root, manifest):
+    """Receipt/header metadata, checked against the independently pinned manifest."""
+    _check_manifest(manifest)
     item = manifest['receipt']
     b = _path(root, item['path']).read_bytes()
     _need(_sha(b) == item['sha256'] and len(b) == item['bytes'], 'RECEIPT_ARCHIVE_HASH')
-    meta = json.loads(gzip.decompress(b))
+    return json.loads(gzip.decompress(b))
+
+
+def retained_contract(root, manifest):
+    """Reconstitute input values; never claim original JSON whitespace/key order."""
+    records = _latest(read_records(root, manifest))
+    meta = retained_metadata(root, manifest)
     c = deepcopy(meta['contract_header'])
     raw = [r['bar'] for _, r in sorted(records.items()) if r['bar'] is not None]
     c.update(raw_bars=deepcopy(raw), bars=deepcopy(raw),
              price_basis_date=raw[-1]['date'] if raw else None)
+    validate_contract(c)
+    return c
+
+
+def query_contract(root, manifest):
+    c = retained_contract(root, manifest)
     # The latest source hash identifies that response only. Each older row retains
     # its own original source hash/time; history_store pins the combined journal.
     c['history_store'] = dict(schema=SCHEMA, manifest_sha256=manifest['manifest_sha256'],

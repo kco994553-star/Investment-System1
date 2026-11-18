@@ -128,7 +128,9 @@ jobs:
     # 60 (was 30): the full Python suite plus the browser list now takes about 28 minutes on an empty PR build and
     # longer on a manual deploy, whose artifact carries the published data (504 Universe rows); the 2026-10-19 run
     # 39251288211 was cancelled at 30:00 while its tests were still passing.
-    timeout-minutes: 60
+    # 75 (was 60): the 2026-11-16 manual deploy 43861463781 took 58 min (browser list 38 min); the private-panel reads now keep the
+    # real Worker spacing in their tests (about +4 min), so 60 would cancel a passing deploy.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -193,7 +195,9 @@ jobs:
           python -m http.server 8990 --bind 127.0.0.1 --directory "$RUNNER_TEMP/public-cockpit" > "$RUNNER_TEMP/pages-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
-          bash implementation/tools/run_js_tests.sh implementation/tools/ci_browser_tests.txt
+          # The browser list in 3 groups at once (owner 2026-11-17): every entry still runs once and must pass; the tests that assert
+          # a time limit run afterwards, alone (ci_browser_tests_solo.txt).
+          node implementation/tools/run_js_tests_parallel.js implementation/tools/ci_browser_tests.txt --groups 3 --solo implementation/tools/ci_browser_tests_solo.txt --weights implementation/tools/ci_browser_test_seconds.txt
           (cd implementation && PYTHONPATH=src python -m tests.build_sec_m2_candidate_fixture --out "$RUNNER_TEMP/m2-test-sites")
           python -m http.server 8992 --bind 127.0.0.1 --directory "$RUNNER_TEMP/m2-test-sites" > "$RUNNER_TEMP/m2-test-server.log" 2>&1 &
           M2_SERVER_PID=$!
