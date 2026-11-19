@@ -1,0 +1,156 @@
+'use strict';
+// The 2-1 KIS panel of #/technical against the real private Worker code (implementation/worker/src/index.js: createHandler and
+// its HistoryRateLimiter with the deployed limit, REQUESTS_PER_MINUTE 12, one owner request at a time, 5 s apart, real clock),
+// on the published Pages artifact (app.html) at phone width. Owner check 2026-11-17: the panel showed RATE_LIMITED because a
+// second tap during the ~15 s of three spaced reads started overlapping reads. Checked here:
+//  A. read-token check, then 비공개 펼치기 at once: the three reads (analysis, chart, technical) all shown, the Worker refuses none.
+//  B. a second tap during the reads does nothing (the button is disabled and says 불러오는 중…): still three reads, none refused.
+//  C. the read-token check pressed while the panel reads waits its turn: the panel and the check both finish, none refused.
+// Google, GitHub and the token check upstream are stand-ins inside the Worker's own fetch; every payload is the synthetic fixture
+// tools/web_app_kis_private_fixture.js (no company, no KIS value).
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { pathToFileURL } = require('node:url');
+const { execFileSync } = require('node:child_process');
+const R = require('./web_app_reuse');
+const site = require('./web_app_test_site');
+const F = require('./qgv_v2_fixture.js');
+const X = require('./web_app_kis_private_fixture.js');
+
+const CLASS = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/company_classification_v0_payloads.json'), 'utf8')).live;
+const PUB_TEXT = JSON.parse(fs.readFileSync(path.join(R.ROOT, 'implementation/tests/fixtures/qgv_official_vectors_v1.json'), 'utf8')).base_text;
+const FIXTURES = { 'sec-qgv2.json': { json: F.strictPayload() }, 'company-classification.json': { json: CLASS }, 'qgv-official.json': { body: PUB_TEXT, type: 'application/json' } };
+const TOKEN = ['memory', 'only', 'synthetic', 'kis', 'limiter', 'session'].join('-');
+const WORKER = 'https://private-investment-history.kco994553.workers.dev', ORIGIN = 'https://kco994553-star.github.io';
+const GIS_STYLE = 'https://accounts.google.com/gsi/style', GIS_CLIENT = 'https://accounts.google.com/gsi/client';
+const GIS_STUB = 'window.google={accounts:{oauth2:{initTokenClient:function(cfg){return{requestAccessToken:function(){cfg.callback({access_token:'
+  + JSON.stringify(TOKEN) + ',expires_in:3600,token_type:"Bearer",scope:"openid https://www.googleapis.com/auth/userinfo.email"});}};},revoke:function(t,d){if(d)d({});}}}};';
+const OWNER = ['owner', 'example.test'].join('@'), CLIENT_ID = 'synthetic-client-id';
+const READS = ['/kis/analysis?symbol=NVDA', '/kis/chart?symbol=NVDA', '/kis/technical?symbol=NVDA'];
+let phase = 'START';
+
+(async () => {
+  let s = null, browser = null;
+  const W = await import(pathToFileURL(path.join(R.ROOT, 'implementation/worker/src/index.js')).href);
+  // A Durable Object storage stand-in with the one-at-a-time transaction the platform gives.
+  class Storage { value; queue = Promise.resolve();
+    async get() { return structuredClone(this.value); } async put(k, v) { this.value = structuredClone(v); }
+    async transaction(cb) { const r = this.queue.then(() => cb(this)); this.queue = r.catch(() => {}); return r; } }
+  const toml = fs.readFileSync(path.join(R.ROOT, 'implementation/worker/wrangler.toml'), 'utf8');
+  const perMinute = /REQUESTS_PER_MINUTE\s*=\s*"(\d+)"/.exec(toml)[1];
+  const env = { ALLOWED_EMAIL: OWNER, GOOGLE_CLIENT_ID: CLIENT_ID, PRIVATE_REPO_READ_TOKEN: ['github', 'pat', '11SYNTHETICONLY'].join('_'),
+    PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER', REQUESTS_PER_MINUTE: perMinute };
+  const limiter = new W.HistoryRateLimiter({ storage: new Storage() }, env);
+  env.HISTORY_RATE_LIMITER = { idFromName: (n) => n, get: () => ({ fetch: (i, init) => limiter.fetch(i instanceof Request ? i : new Request(i, init)) }) };
+  const f = X.codex556('available', { symbol: 'NVDA' });
+  const files = { chart: f.chart, technical: f.technical, measures: f.measures };
+  const statusFile = { schema: ['private', 'area-status/1'].join('-'), publication_scope: 'OWNER_PRIVATE_ONLY', run_at: '2026-11-05T03:00:00Z',
+    worker_read_token: { state: 'NO_EXPIRY', code: null, expires_on: null, days_left: null, verification: 'NOT_CHECKED' } };
+  const upstream = async (input) => {
+    const url = new URL(String(input));
+    if (url.origin === 'https://oauth2.googleapis.com') return new Response(JSON.stringify({ aud: CLIENT_ID, email: OWNER, email_verified: true, expires_in: '3600' }), { status: 200 });
+    await new Promise((r) => setTimeout(r, 300));                // a GitHub read is not instant
+    const m = /^\/repos\/[^/]+\/[^/]+\/contents\/([a-z]+)\//.exec(url.pathname);
+    if (m && m[1] === 'status') return new Response(JSON.stringify(statusFile), { status: 200 });
+    if (m && files[m[1]]) return new Response(JSON.stringify(files[m[1]]), { status: 200 });
+    return new Response('{}', { status: 404 });
+  };
+  const handler = W.createHandler({ fetch: upstream });
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'web-app-kis-limiter-'));
+  fs.rmSync(out, { recursive: true });
+  execFileSync('python3', [path.join(R.ROOT, 'implementation/tools/build_pages_cockpit.py'), '--out', out], { stdio: ['ignore', 'ignore', 'inherit'] });
+  try {
+    s = await site.start({ out, fixtures: FIXTURES });
+    browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: [] });
+    const log = [], unexpected = [];
+    await ctx.route('**/*', async (route) => {
+      const req = route.request(), url = new URL(req.url());
+      if (url.origin === s.origin) { await route.continue(); return; }
+      if (req.url() === GIS_STYLE) { await route.fulfill({ status: 200, contentType: 'text/css', body: '' }); return; }
+      if (req.url() === GIS_CLIENT) { await route.fulfill({ status: 200, contentType: 'application/javascript', body: GIS_STUB }); return; }
+      if (url.origin === WORKER) {
+        const res = await handler(new Request(url.href, { method: req.method(), headers: { ...req.headers(), origin: ORIGIN } }), env);
+        const body = Buffer.from(await res.arrayBuffer()), headers = {};
+        res.headers.forEach((v, k) => { headers[k] = v; });
+        headers['access-control-allow-origin'] = s.origin;           // the test site stands in for the Pages origin
+        log.push({ at: Date.now(), path: url.pathname + url.search, status: res.status });
+        await route.fulfill({ status: res.status, headers, body }); return;
+      }
+      unexpected.push(req.method() + ' ' + url.origin + url.pathname); await route.abort();
+    });
+    const panel = '[data-private-panel=tech-kis-chart]', btn = page.locator('[data-private-expand=technical]');
+    const note = () => page.locator('[data-private-note=technical]').textContent();
+    const shown = () => page.locator(panel + '[data-private-state=READY] [data-private-layer=technical]').waitFor({ timeout: 60000 });
+    const refused = () => log.filter((l) => l.status === 429).length;
+    function spaced(entries) { for (let i = 1; i < entries.length; i++) assert.ok(entries[i].at - entries[i - 1].at >= 5000, phase + ': requests at least 5 s apart'); }
+    function threeShown(slice) {
+      assert.deepEqual(slice.map((l) => [l.path, l.status]), READS.map((p) => [p, 200]), phase + ': the three reads, each answered');
+    }
+    async function everythingShown() {
+      assert.equal(await page.locator('svg[data-private-chart=NVDA] [data-private-close-line]').count(), 1, phase + ': the chart (close line)');
+      assert.match(await page.locator('[data-private-layer=technical]').textContent(), /^KIS · 비공개 · 가격 기준일 2026-10-23/, phase + ': the analysis label and basis day');
+      assert.equal(await page.locator('[data-private-measures=READY]').count(), 1, phase + ': the indicators (technical measures)');
+      assert.equal(await btn.textContent(), '비공개 접기');
+      assert.equal(await btn.isDisabled(), false);
+    }
+
+    phase = 'sign in';
+    await page.goto(s.base + 'app.html#/technical/NASDAQ%3ANVDA'); await page.locator('main[data-route=technical]').waitFor();
+    await page.locator('[data-tech-chosen-state=CHOSEN]').waitFor({ timeout: 20000 }); await btn.waitFor();
+    await btn.click(); await page.waitForFunction(() => /Google 로그인 준비됨/.test(document.querySelector('[data-private-note=technical]').textContent), null, { timeout: 20000 });
+    await btn.click(); await page.waitForFunction(() => /^로그인됨/.test(document.querySelector('[data-private-note=technical]').textContent));
+    assert.equal(log.length, 0, phase + ': signing in reads nothing');
+
+    phase = 'A token check, then expand at once';
+    await page.locator('[data-private-status-area=technical] summary').click();
+    await page.locator('[data-private-token-check=technical]').click();
+    await page.waitForFunction(() => document.querySelector('[data-private-token-status=technical]').dataset.privateTokenState === 'NO_EXPIRY');
+    await btn.click(); await shown();
+    assert.deepEqual(log.map((l) => [l.path, l.status]), [['/kis/status', 200], ...READS.map((p) => [p, 200])], phase + ': status, then the three reads');
+    assert.equal(refused(), 0, phase + ': the Worker refused nothing'); spaced(log);
+    await everythingShown();
+    assert.equal(await note(), '', phase + ': no error line');
+
+    phase = 'B a second tap while reading';
+    await btn.click(); await page.locator(panel + ' [data-private-closed]').waitFor();
+    let mark = log.length;
+    await btn.click();
+    await page.waitForFunction(() => { const b = document.querySelector('[data-private-expand=technical]'); return b.disabled && b.getAttribute('aria-busy') === 'true'; });
+    assert.equal(await btn.textContent(), '불러오는 중…', phase + ': the button says it is reading');
+    await page.waitForTimeout(1500);
+    await btn.click({ force: true }); await btn.click({ force: true });         // taps on the disabled button
+    await shown();
+    threeShown(log.slice(mark)); assert.equal(refused(), 0, phase + ': the Worker refused nothing'); spaced(log);
+    await everythingShown();
+
+    phase = 'C token check while the panel reads';
+    await btn.click(); await page.locator(panel + ' [data-private-closed]').waitFor();
+    mark = log.length;
+    await btn.click(); await page.waitForTimeout(800);
+    await page.locator('[data-private-status-area=technical]').evaluate((d) => { d.open = true; });
+    await page.locator('[data-private-token-check=technical]').click();
+    await shown();
+    await page.waitForFunction(() => document.querySelector('[data-private-token-status=technical]').dataset.privateTokenState === 'NO_EXPIRY', null, { timeout: 30000 });
+    assert.deepEqual(log.slice(mark).map((l) => [l.path, l.status]), [...READS.map((p) => [p, 200]), ['/kis/status', 200]], phase + ': the check waits behind the three reads');
+    assert.equal(refused(), 0, phase + ': the Worker refused nothing'); spaced(log);
+    await everythingShown();
+
+    phase = 'boundaries';
+    assert.deepEqual(unexpected, [], phase + ': no other outside request');
+    const st = await site.storage(page);
+    assert.ok(!Object.keys(st.localItems).some((k) => /kis|token|private-layer/i.test(k)), phase + ': no private key on the device');
+    assert.deepEqual(site.leaks([...Object.values(st.localItems), page.url(), ...seen.errors], [TOKEN, ...X.MEASURE_RAW]), [], phase + ': no token or private value in storage, the address or the console');
+    console.log('web_app_kis_private_limiter_browser_test: PASS (real Worker limiter, app.html 390: token check then expand, second tap while reading, check while reading; ' + log.length + ' admitted reads, 0 refused)');
+  } catch (e) {
+    console.error('FAIL ' + phase + ': ' + (e && e.message ? e.message.split('\n')[0] : e)); process.exitCode = 1;
+  } finally {
+    if (browser) await browser.close();
+    if (s && typeof s.close === 'function') await s.close();
+    fs.rmSync(out, { recursive: true, force: true });
+  }
+})();

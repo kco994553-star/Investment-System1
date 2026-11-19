@@ -273,19 +273,28 @@ function create({win,action,data}){
  // One click = one action: the reads of one panel ([[route, symbol, part], …], 1 to 3) together. A part marked 'OPTIONAL' whose
  // file is missing (KIS_SERIES_NOT_FOUND) answers null, so that part alone is 자료 없음; every other failure fails the click.
  function kisRead(event,list){return action.run(event,'PRIVATE_READ',signal=>{if(!Array.isArray(list)||!list.length||list.length>3)throw Error('REQUEST_INVALID');
-  return(async()=>{const out=[];
-   for(let i=0;i<list.length;i++){const[route,symbol,part]=list[i];if(i)await kisPause(signal);
+  // Every private read of this window waits its turn (kisQueue): a second click, the read-token check or another panel never
+  // overlaps reads already running (owner check 2026-11-17: overlapping clicks were refused RATE_LIMITED by the Worker).
+  const run=kisQueue.then(async()=>{const out=[];
+   for(let i=0;i<list.length;i++){const[route,symbol,part]=list[i];
     let r;try{r=await kisOne(route,symbol,signal);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}
-   return out;})();});}
+   return out;});
+  kisQueue=run.catch(()=>{});return run;});}
  // The private Worker admits one owner request at a time, at least 5 s apart (MIN_SPACING_MS; found on the retained-archive replay
  // 2026-11-05: parallel reads of one click were refused 429). The reads of a click therefore run one after another with that gap,
- // and a read refused as RATE_LIMITED is tried once more after the gap. The Worker limit itself is unchanged.
- const KIS_SPACING_MS=5200;
- function kisPause(signal){return new Promise((resolve,reject)=>{if(signal&&signal.aborted){reject(Error('CANCELED'));return;}
-  const t=win.setTimeout(()=>{if(signal)signal.removeEventListener('abort',stop);resolve();},KIS_SPACING_MS);
+ // and a read refused as RATE_LIMITED is tried once more after the gap. The gap counts from the last request this window sent, of
+ // any click (kisLastAt), so reads queued behind another click are spaced too. The Worker limit itself is unchanged.
+ const KIS_SPACING_MS=5200;let kisQueue=Promise.resolve(),kisLastAt=null;
+ // A monotonic clock for the gap (a wall-clock change, or a page whose Date is pinned, never shortens or stretches it).
+ const kisNow=()=>win.performance&&typeof win.performance.now==='function'?win.performance.now():Date.now();
+ function kisPause(signal){const wait=kisLastAt===null?0:kisLastAt+KIS_SPACING_MS-kisNow();
+  return new Promise((resolve,reject)=>{if(signal&&signal.aborted){reject(Error('CANCELED'));return;}
+  if(wait<=0){resolve();return;}
+  const t=win.setTimeout(()=>{if(signal)signal.removeEventListener('abort',stop);resolve();},wait);
   const stop=()=>{win.clearTimeout(t);reject(Error('CANCELED'));};if(signal)signal.addEventListener('abort',stop,{once:true});});}
- async function kisOne(route,symbol,signal){try{return await kisC().get(route,symbol,signal);}
-  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;await kisPause(signal);return kisC().get(route,symbol,signal);}}
+ async function kisSend(route,symbol,signal){await kisPause(signal);kisLastAt=kisNow();try{return await kisC().get(route,symbol,signal);}finally{kisLastAt=kisNow();}}
+ async function kisOne(route,symbol,signal){try{return await kisSend(route,symbol,signal);}
+  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;return kisSend(route,symbol,signal);}}
  return Object.freeze({UNIVERSE_SOURCE_KEY,WORKER_ORIGIN_KEY,status,subscribe,deviceSettings,prepare,login,logout,readUniverse,universeView,universeRanks:()=>ranks,rankFor,
   useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade,kisState,kisSubscribe,kisConnect,kisDisconnect,kisRead});
 }
