@@ -1,5 +1,7 @@
 # 현재 인수인계 — 2026-11-01
 
+> **2026-11-19 Worker 배포 값:** `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`는 **GitHub 환경 `private-worker`에만 있다**(배포 가지 = 기본 가지, 필수 검토자 = 오너). 저장소 단위 사본은 오너가 지웠다(⑨). 이를 읽는 워크플로는 `private-history-deploy.yml`의 배포 잡 하나다. 새 워크플로나 잡이 저장소 단위 Cloudflare 값을 기대하면 안 된다. 비공개 저장소 Claude 앱 접근은 매일 갱신과 5년 수집 연결이 끝난 뒤에 끈다(오너 11/19).
+
 > **2026-11-15 Codex — 오너의 무기한 읽기 토큰 변경 작업:** [새 계약](implementation/docs/private_area/WORKER_READ_TOKEN_EXPIRY_20261115.md), DC-53(번호 확정). 산출기는 기본 가지 기반 `codex/worker-expiry-status-20261115`, Worker·화면의 NEVER 처리는 Draft #550(`codex/worker-no-expiry-20261115`, #538 위)에 있고, **Main이 비공개 구역에 필요한 부분만 기본 가지 위 통합 PR 하나로 옮긴다**(오너 2026-11-15: #536→#538→#550 묶음은 통째로 병합하지 않음). DC-53 번호는 Main이 확정했다. `NEVER`만 무기한; 누락·오류는 거부. 변수 수정 API 403, Cloudflare MCP 인증 전이므로 실제 변수·Secret·배포는 아직 미반영이다. 승인 환경 연결은 #548(미병합). 사용자에게 토큰 값을 보내 달라고 하지 않는다.
 
 

@@ -2,6 +2,20 @@
 
 기준일: 2026-11-03 UTC(2026-11-03 지시까지 반영). 직전 기준일: 2026-10-29 UTC. 바뀐 방향과 금지 표현은 [DIRECTION_CHANGES](../../docs/SPEC/DIRECTION_CHANGES.md), 기능 번호별 현황은 [FUNCTION_STATUS](../../docs/SPEC/FUNCTION_STATUS.md)가 함께 기준이다. 이전 기준일: 2026-10-22 UTC. 최신 사용자 메시지(10/11·10/13·10/14·10/15·10/16·10/17·10/18·10/20·10/21·10/22)를 반영했다. 현재 실행 순서는 [QUEUE_20261017](QUEUE_20261017.md)(지시 원문)과 CURRENT_HANDOFF(상태)를 따른다. 실제 진행은 [CURRENT_HANDOFF](../../CURRENT_HANDOFF.md)가 우선한다. 키·토큰·이메일·계정·가격 값은 기록하지 않는다. 승인된 내용을 다시 승인 대기로 올리지 않는다.
 
+## 결정됨 — 2026-11-19 (#568 병합 · ⑨ 진행 · #575 보관)
+
+요지(원문은 오너 메시지):
+1. **#568 병합:** `503be6d3` → 병합 커밋 `dbcf2439`. 날짜 옮긴 브라우저 실행(매일 +7일, 매주 +50일, 알림만)이 기본 가지에서 돈다.
+2. **⑨ 옛 비밀값 정리(오너 직접 진행, Main은 지우지 않는다):**
+   - 저장소 단위 `CLOUDFLARE_ACCOUNT_ID`·`CLOUDFLARE_API_TOKEN` 삭제. 환경 `private-worker`의 같은 이름 두 개는 그대로 둔다.
+   - 옛 Cloudflare API 토큰은 오너가 이어서 지운다.
+   - 공개 자료 수집 값은 건드리지 않는다: `SEC_USER_AGENT`, `DART_API_KEY`, `BEA_USERID`, `CENSUS_API_KEY`, `QGV_OFFICIAL_HMAC_KEY`, `RAW_REPO_TOKEN`, `RAW_REPO_READ_TOKEN`.
+   - Main 확인(11/19): 저장소 단위 Cloudflare 값을 읽는 워크플로는 없다. `CLOUDFLARE_` 값을 쓰는 워크플로는 `private-history-deploy.yml` 하나이고 그 배포 잡은 `environment: private-worker`다.
+   - 비공개 저장소 앱 접근은 매일 갱신과 5년 수집 연결이 끝난 뒤에 끈다. 그때 Main이 알린다.
+3. **#571:** Codex가 C1~C3(#437, 11/18 Main 소비자 검토)에 먼저 답한다. 답이 오면 Main이 Worker 판독 변경·매일 갱신 워크플로·5년 수집 요청 예산을 한 묶음으로 승인 요청한다(종목 하나를 여는 시간의 변경 전후 실측 포함).
+4. **#575 `62d346b2`(금융 Q·G 연구):** 채택하지 않고 보관한다. 소비자 인수·화면 연결 없음. 공식 미산출 사유표(Q 19·G 11)만 참고 자료로 둔다.
+5. **옮기기·단축 PR:** 계획대로 진행한다(화면 모양 위주 시험 3개를 정기 실행으로, 캡처·폭 축소).
+
 ## 결정됨 — 2026-11-18 (비공개 구역 가동 확인 · 우선순위 DC-57 · 차트 구성 DC-58)
 
 요지(원문은 오너 메시지):
