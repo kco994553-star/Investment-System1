@@ -26,7 +26,7 @@ SCHEMA='kis-private-delivery/3'
 def bucket(symbol):return f'{hashlib.sha256(symbol.encode()).digest()[0]%BUCKETS:02d}'
 
 
-def indicator_series(chart, *, evaluation_day):
+def indicator_series(chart, *, evaluation_day, start_index=0):
     """Full retained seed, snapshot price basis; reference values, never adoption.
 
     Warmup, missing sessions and explicit display holds stay null. A later gap
@@ -44,12 +44,13 @@ def indicator_series(chart, *, evaluation_day):
     expected=[d.isoformat() if isinstance(d,date) else d for d in expected]
     prices=[_number(r.get('close')) for r in rows]
     stop=next((i for i,p in enumerate(prices) if p is None or i>=len(expected) or days[i]!=expected[i]),len(rows))
-    paths=close_indicator_paths(prices[:stop]) if stop else {}
+    need(0<=start_index<=len(rows),'INDICATOR_SERIES_START')
+    paths=close_indicator_paths(prices[:stop]) if stop and start_index<len(rows) else {}
     held=chart.get('display',{}).get('state')=='WITHHELD'
     values=[];runs=[]
     for j,key in enumerate(INDICATORS):
         series,reasons=paths.get(key,([],[]));column=[];last=None
-        for i in range(len(rows)):
+        for i in range(start_index,len(rows)):
             reason='DISPLAY_WITHHELD' if held else 'PRICE_WINDOW_INCOMPLETE' if i>=stop else reasons[i]
             column.append(None if reason else series[i])
             if reason:
@@ -59,7 +60,7 @@ def indicator_series(chart, *, evaluation_day):
         values.append(column)
     return dict(schema='kis-indicator-series/1',publication_scope=SCOPE,symbol=chart['symbol'],
                 evaluation_day=evaluation_day,basis=chart['basis'],currency=chart['currency'],
-                fields=INDICATORS,dates=days,rows=[list(v) for v in zip(*values)],reason_runs=runs,
+                fields=INDICATORS,dates=days[start_index:],rows=[list(v) for v in zip(*values)],reason_runs=runs,
                 validation_tier='UNVERIFIED_REFERENCE',adopted_values_included=False,
                 seed='GSQ015_FULL_RETAINED_HISTORY',historical_pit_proven=False,
                 clock_scope='LATEST_SNAPSHOT_RESTATED_BASIS_NOT_HISTORICAL_SIGNAL',

@@ -1,5 +1,9 @@
 # B2 cutover and monthly private source receipts
 
+**2026-11-19 serving change:** the owner selected [the source journal and
+replaceable private stock responses](kis-stock-journal.md). The previous
+period-piece serving layout remains a comparison.
+
 **2026-11-19 C1–C3 revision:** the latest-only `/2` query layout and277.587MB
 forecast below are preserved history, not the current chart-ready proposal.
 [Stock series `/3`](kis-stock-series.md) adds per-day indicators, bounded reads,

@@ -1,5 +1,9 @@
 # B2 stock response: C1–C3 producer revision
 
+**2026-11-19 owner decision:** the period-piece writer and 703.872 MB forecast
+are retained for comparison. Use the [append-only journal and replaceable
+private responses](kis-stock-journal.md) for #571 deployment and recovery.
+
 Owner chart prerequisites, 2026-11-18/19. This supersedes the **query view** of
 #571 `fd5de9f5`; its RAW retention/monthly receipt design stays separate.
 One symbol request returns retained OHLCV and all ten indicator series together.
