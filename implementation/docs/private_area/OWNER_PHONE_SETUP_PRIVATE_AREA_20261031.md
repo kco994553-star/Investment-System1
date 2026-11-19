@@ -79,6 +79,8 @@ Worker가 비공개 저장소의 자료를 **읽기만** 하는 토큰이다. �
 
 ## 7. 공개 저장소 Worker 배포 환경 만들기 (GitHub + Cloudflare, 약 8분, Worker PR 병합 전에 한다)
 
+> **현재 상태(2026-11-19):** Worker 배포 값 `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`는 **GitHub 환경 `private-worker`에만 있다.** 저장소 단위(Repository secrets) 사본 두 개는 오너가 지웠다(⑨, 2026-11-19). 이 값을 읽는 워크플로는 `private-history-deploy.yml` 하나이고, 그 배포 잡은 `environment: private-worker`로만 읽는다(11/19 Main 확인). 옛 Cloudflare API 토큰 삭제(아래 7단계)는 오너가 이어서 한다. 공개 자료 수집 값(`SEC_USER_AGENT`·`DART_API_KEY`·`BEA_USERID`·`CENSUS_API_KEY`·`QGV_OFFICIAL_HMAC_KEY`·`RAW_REPO_TOKEN`·`RAW_REPO_READ_TOKEN`)은 저장소 단위 그대로 두며 이 정리 대상이 아니다.
+
 공개 저장소에 워크플로를 올릴 수 있는 쪽이 Worker를 마음대로 다시 배포하지 못하게, Cloudflare 배포 Secrets를 **기본 가지에서 오너가 승인한 배포에만** 넘긴다(보안 검토 A1, 10/31). 공개 저장소는 무료다.
 1. `Investment-System1` → **Settings** → **Environments** → **New environment** → 이름 `private-worker` → **Configure environment**.
 2. **Required reviewers** 체크 → 오너 계정(`kco994553-star`) 추가 → **Save protection rules**.
