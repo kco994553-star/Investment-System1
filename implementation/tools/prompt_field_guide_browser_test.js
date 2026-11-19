@@ -295,7 +295,8 @@ async function personalOrder(page, locale) {
   fs.mkdirSync(evidence, { recursive: true });
   try {
     browser = await chromium.launch({ headless: true, ...(process.env.WEB_TEST_CHROMIUM_PATH ? { executablePath: process.env.WEB_TEST_CHROMIUM_PATH } : {}) });
-    for (const width of [390, 1280]) for (const locale of ["ko-KR", "en-US"]) {
+    // Two runs instead of four (owner 2026-11-18, PR-check time): each width and each language still runs once.
+    for (const [width, locale] of [[390, "ko-KR"], [1280, "en-US"]]) {
       current = width + "px " + locale;
       const context = await browser.newContext({ viewport: { width, height: 844 }, timezoneId: "UTC" });
       await context.exposeBinding("__promptGuideCsp", () => { traffic.csp_violations++; });

@@ -1,0 +1,9 @@
+# Browser tests run by the scheduled browser-look workflow only (.github/workflows/browser-look.yml), not in PR checks, the
+# manual deploy or the daily verify (owner decision 2026-11-18, PR-check time). It gates nothing; a failure alerts only.
+# Only checks of how screens look belong here; boundary, value and data-safety checks stay in ci_browser_tests.txt.
+# web_state_presentation: only its look part (U3 strings, the 360/390/1280 overflow pass, screenshots). Its safety part
+#   (data.json boundary, PPA-F08, U1, U2, U4) stays in every PR check as web_state_presentation_safety_browser_test.js.
+# pc_layout and global_language_search were named for this list but stay in ci_browser_tests.txt: each also holds value or
+#   data-safety checks (pc_layout: NOT_AVAILABLE sorts last, row order equals the ranking; global_language_search: settings kept
+#   on a storage failure, search resolves one canonical route, originals and the frozen payload unchanged, no external call).
+web_state_presentation_look_browser_test.js

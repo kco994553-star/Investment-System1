@@ -2,6 +2,11 @@
 //   node web_state_presentation_browser_test.js [--evidence <dir>]
 // U1 freshness badges, U2 persisted withheld/unavailable metadata, U3 ko/en strings, U4 render-error
 // fallback; every check runs in ko-KR and en-US at a 390px viewport (plus a 360/1280 overflow pass).
+// WEB_STATE_PRESENTATION_PART (owner 2026-11-18, PR-check time): "safety" = the public data.json boundary, PPA-F08 (ACTUAL never
+// falls back to TARGET), U1 (freshness, fail closed), U2 (persisted, code-shaped metadata only) and U4 (render-error fallback),
+// run in every PR check through web_state_presentation_safety_browser_test.js; "look" = PPA-F08 again with its screenshots, U3
+// strings, the 360/390/1280 overflow pass and the route screenshots, run by the scheduled browser-look workflow (alert only)
+// through web_state_presentation_look_browser_test.js; "all" (default, no variable) = everything, as before.
 //
 // Current contract (GSQ-010 public price boundary): the public build serves an all-NOT_AVAILABLE data.json and app.js never
 // renders producer sections from it, so the fixture folder of tools/build_web_state_presentation_fixture.py (and the demo
@@ -61,6 +66,10 @@ function loadFixture() {
   return JSON.parse(run.stdout);
 }
 
+const PART = process.env.WEB_STATE_PRESENTATION_PART || "all";
+if (!["all", "safety", "look"].includes(PART)) throw new Error("WEB_STATE_PRESENTATION_PART must be all, safety or look");
+const runs = (kind) => PART === "all" || PART === kind;
+
 async function main() {
   const args = process.argv.slice(2);
   const option = (name) => { const i = args.indexOf(name); return i >= 0 && args[i + 1] ? args[i + 1] : null; };
@@ -87,6 +96,10 @@ async function main() {
   const checks = [], errors = [], observed = {}, traffic = { external: 0, unsafe: 0, failed_responses: 0 };
   let browser;
   async function check(name, fn) { await fn(); checks.push(name); console.log("PASS " + name); }
+  const skipped = [];
+  // A check of the other part is named as skipped, never silently dropped.
+  const partCheck = (kind) => async (name, fn) => { if (runs(kind)) await check(name, fn); else { skipped.push(name); console.log("SKIP (" + kind + " part) " + name); } };
+  const safetyCheck = partCheck("safety"), lookCheck = partCheck("look");
 
   // One context per page; the persisted display-locale setting is written before any page script runs.
   async function openPage(locale, { clock = manifest.browser_clock, width = 390, timezoneId = null } = {}) {
@@ -135,7 +148,7 @@ async function main() {
 
   try {
     browser = await chromium.launch(launch);
-    await check("public data.json is all NOT_AVAILABLE and stays unchanged by in-memory presentation", async () => {
+    await safetyCheck("public data.json is all NOT_AVAILABLE and stays unchanged by in-memory presentation", async () => {
       const probe = await openPage("ko-KR");
       await probe.go("brief");
       const before = await probe.evaluate(() => fetch("data.json", { cache: "no-store" }).then((r) => r.text()));
@@ -178,7 +191,7 @@ async function main() {
             assert.deepEqual(await p.evaluate(() => D), supplied, "company rendering preserves the supplied bundle");
             const holdingEvidence = JSON.parse(await status.locator("pre").textContent());
             assert.deepEqual(holdingEvidence, holding, "ACTUAL and TARGET stay separate and unchanged in Evidence");
-            if (test.name === "omitted") await p.screenshot({ path: path.join(evidence, `ppa-f08-company-${locale}-390.png`), fullPage: true });
+            if (test.name === "omitted" && runs("look")) await p.screenshot({ path: path.join(evidence, `ppa-f08-company-${locale}-390.png`), fullPage: true });
             await p.view("portfolio", supplied);
             const weight = p.locator(`main a[href="#company/${encodeURIComponent(holding.company_id)}"] .muted`);
             assert.equal((await weight.innerText()).trim(), `${L.actualWeight} ${test.expected} · ${L.returnLabel} ${L.missingValue}`,
@@ -189,14 +202,14 @@ async function main() {
               "persisted TARGET is explicitly labelled independently of the ACTUAL holding weight");
             assert.deepEqual(await p.evaluate(() => D), supplied, "portfolio rendering preserves the supplied bundle");
             assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${locale} ${test.name}: 390px has no overflow`);
-            if (test.name === "omitted") await p.screenshot({ path: path.join(evidence, `ppa-f08-portfolio-${locale}-390.png`), fullPage: true });
+            if (test.name === "omitted" && runs("look")) await p.screenshot({ path: path.join(evidence, `ppa-f08-portfolio-${locale}-390.png`), fullPage: true });
           } finally {
             await p.context().close();
           }
         }
       });
 
-      await check(`${locale}: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule`, async () => {
+      await safetyCheck(`${locale}: U1 LIVE, FRESH and STALE are separate labelled badges; STALE has its own style rule`, async () => {
         await page.view("brief", bundle);
         // The state line of each section: LIVE is followed by its own freshness badge (other LIVE chips are navigation summaries).
         const stateBadges = page.locator(".state > .badge.LIVE");
@@ -226,7 +239,7 @@ async function main() {
         assert.deepEqual(await texts(page.locator(".badge.freshness.FRESH")), [L.FRESH], "company detail macro");
       });
 
-      await check(`${locale}: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived`, async () => {
+      await safetyCheck(`${locale}: U1 the existing view-time rule decides FRESH vs STALE before/after expires_at; nothing else is derived`, async () => {
         const before = await openPage(locale, { clock: "2026-01-02T12:00:00Z" });
         await before.view("brief", bundle);
         const changes = unitOf(before.locator(".badge.freshness").first());
@@ -237,7 +250,7 @@ async function main() {
         await before.context().close();
       });
 
-      await check(`${locale}: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)`, async () => {
+      await safetyCheck(`${locale}: U1 an expires_at this browser cannot parse is never FRESH (fail closed as STALE)`, async () => {
         const card = (p, text) => p.locator("section.card", { hasText: text });
         const BEFORE = "2026-01-02T12:00:00Z";  // before changes.expires_at (2026-01-03T00:00:00Z)
         // (b) a valid future expires_at stays FRESH and (c) a valid past one is STALE (both clocks).
@@ -283,7 +296,7 @@ async function main() {
       }
       const changesCard = (p) => p.locator("section.card", { hasText: "TEST_CHANGES_VIEW_STALE" });
 
-      await check(`${locale}: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone`, async () => {
+      await safetyCheck(`${locale}: U1 an expires_at outside the strict ISO form ('(' / U+0000 separators) is never FRESH after its Python-parsed expiry, in every time zone`, async () => {
         const later = {};
         for (const timezoneId of manifest.timezones) {
           const p = await zonePage(timezoneId);
@@ -316,7 +329,7 @@ async function main() {
         observed.misparsed_expiry_date_parse_minus_python_ms = later;
       });
 
-      await check(`${locale}: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone`, async () => {
+      await safetyCheck(`${locale}: U1 strict-form expires_at (Z, +-hh:mm, with and without fractional seconds) is FRESH before expiry and STALE after it, in every time zone`, async () => {
         for (const timezoneId of manifest.timezones) {
           const p = await zonePage(timezoneId);
           for (const [file, info] of Object.entries(manifest.strict_expiry)) {
@@ -333,7 +346,7 @@ async function main() {
         }
       });
 
-      await check(`${locale}: U1 NOT_USABLE carried by the bundle is shown as withheld`, async () => {
+      await safetyCheck(`${locale}: U1 NOT_USABLE carried by the bundle is shown as withheld`, async () => {
         await page.view("leaderboard", bundle);
         assert.deepEqual(await texts(page.locator(".badge.NOT_AVAILABLE")), ["NOT_AVAILABLE"]);
         assert.deepEqual(await texts(page.locator(".badge.freshness.NOT_USABLE")), [L.NOT_USABLE]);
@@ -363,7 +376,7 @@ async function main() {
         await variantPage.context().close();
       });
 
-      await check(`${locale}: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts`, async () => {
+      await safetyCheck(`${locale}: U2 withheld/unavailable sections show persisted reason_code, as_of, methodology, freshness, counts`, async () => {
         await page.view("company/" + company, bundle);
         assert.deepEqual(await metaOf(page, "qgv"), metaLine(L, { reason_code: "RESEARCH_DISPLAY_GRANT_NONE", as_of: manifest.as_of,
           methodology: "TEST_QGV / TEST_VECTOR_V1", freshness: "NOT_APPLICABLE", counts: "COMPLETE=3, NONE=1, PARTIAL=1" }));
@@ -384,7 +397,7 @@ async function main() {
         for (const [name, section] of Object.entries(view)) assert.deepEqual(section, bundle[name], name);
       });
 
-      await check(`${locale}: U2 sparse bundle shows only what is persisted (no fabricated metadata)`, async () => {
+      await safetyCheck(`${locale}: U2 sparse bundle shows only what is persisted (no fabricated metadata)`, async () => {
         const sparse = await openPage(locale);
         for (const hash of ["brief", "leaderboard", "company/" + company]) {
           await sparse.view(hash, variant("variant-sparse-metadata.json"));
@@ -397,7 +410,7 @@ async function main() {
         await sparse.context().close();
       });
 
-      await check(`${locale}: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed`, async () => {
+      await safetyCheck(`${locale}: U2 only code-shaped reason_code and token-shaped methodology id/version are displayed`, async () => {
         const served = variant("variant-free-text-metadata.json");
         const p = await openPage(locale);
         for (const hash of routes) {
@@ -419,7 +432,7 @@ async function main() {
         await p.context().close();
       });
 
-      await check(`${locale}: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted`, async () => {
+      await safetyCheck(`${locale}: U2 a count is displayed only under a code/token-shaped key; free-text keys are omitted`, async () => {
         const served = variant("variant-free-text-count-keys.json");
         const p = await openPage(locale);
         for (const hash of routes) {
@@ -441,7 +454,7 @@ async function main() {
         await p.context().close();
       });
 
-      await check(`${locale}: U3 loading text and remaining UI strings follow the display locale`, async () => {
+      await lookCheck(`${locale}: U3 loading text and remaining UI strings follow the display locale`, async () => {
         const loading = await openPage(locale);
         let release;
         const blocked = new Promise((resolve) => { release = resolve; });
@@ -465,7 +478,7 @@ async function main() {
         await page.waitForFunction((expected) => document.querySelector("#notice").textContent.trim() === expected, locale === "en-US" ? "Import failed · BACKUP_IMPORT_FAILED" : "가져오기 실패 · BACKUP_IMPORT_FAILED");
       });
 
-      await check(`${locale}: U3 demo holdings count, news/network labels and interest toggle label are localized`, async () => {
+      await lookCheck(`${locale}: U3 demo holdings count, news/network labels and interest toggle label are localized`, async () => {
         const demo = await openPage(locale);
         const supplied = withPortfolio({ company_id: company, ticker: "NVDA", target_weight: 0.3456, actual_weight: 0.1234, return: null });
         await demo.view("brief", supplied);
@@ -485,7 +498,7 @@ async function main() {
         await demo.context().close();
       });
 
-      await check(`${locale}: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers`, async () => {
+      await safetyCheck(`${locale}: U4 a render error after hashchange shows the DATA UNAVAILABLE fallback, then recovers`, async () => {
         const broken = await openPage(locale);
         await broken.view("brief", variant("variant-render-error.json"));
         assert.equal((await broken.locator("main h1").innerText()).trim(), L.home);
@@ -500,7 +513,7 @@ async function main() {
         await broken.context().close();
       });
 
-      await check(`${locale}: 390px routes have no horizontal overflow with the state bundle applied`, async () => {
+      await lookCheck(`${locale}: 390px routes have no horizontal overflow with the state bundle applied`, async () => {
         for (const width of [360, 390, 1280]) {
           const sized = await openPage(locale, { width });
           for (const hash of routes) {
@@ -510,7 +523,7 @@ async function main() {
           await sized.context().close();
         }
       });
-      for (const hash of ["brief", "leaderboard", "company/" + company]) {
+      if (runs("look")) for (const hash of ["brief", "leaderboard", "company/" + company]) {
         await page.view(hash, bundle);
         await page.screenshot({ path: path.join(evidence, `state-${hash.replace(/\W+/g, "-")}-${locale}-390.png`), fullPage: true });
       }
@@ -520,12 +533,12 @@ async function main() {
       assert.deepEqual(errors, []);
       assert.deepEqual(traffic, { external: 0, unsafe: 0, failed_responses: 0 });
     });
-    const result = { kind: "WEB_STATE_PRESENTATION_BROWSER_VALIDATION_V2", mode: "public-build-in-memory-fixture", passed: true, checks, errors, traffic, observed,
+    const result = { kind: "WEB_STATE_PRESENTATION_BROWSER_VALIDATION_V2", mode: "public-build-in-memory-fixture", part: PART, passed: true, checks, skipped, errors, traffic, observed,
       viewport: "390x844 (+360/1280 overflow)", browser_clock: manifest.browser_clock,
       runtime: { node: process.version, chromium: browser.version() },
       research_display: "NONE", frozen_grant: "NONE", live_grant: "NONE", real_data_validation: "NOT_RUN" };
     fs.writeFileSync(path.join(evidence, "browser-validation.json"), JSON.stringify(result, null, 2) + "\n");
-    process.stdout.write(JSON.stringify({ passed: true, checks: checks.length }) + "\n");
+    process.stdout.write(JSON.stringify({ passed: true, part: PART, checks: checks.length, skipped: skipped.length }) + "\n");
   } finally {
     if (browser) await browser.close();
   }
