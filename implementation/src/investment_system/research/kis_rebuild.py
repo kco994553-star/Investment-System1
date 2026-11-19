@@ -132,7 +132,7 @@ def load_request(path, expected):
     return path.parent,cfg,contracts
 
 
-def rebuild(request, *, expected_request_sha256):
+def rebuild(request, *, expected_request_sha256, include_indicator_series=False):
     """Yield the unchanged legacy chart/technical/measures/manifests/QGV files."""
     root,cfg,contracts=load_request(request,expected_request_sha256)
     for code in contracts:
@@ -141,6 +141,10 @@ def rebuild(request, *, expected_request_sha256):
               series_id=cfg['series_id_prefix']+code,expected_contract_hash=digest(c))
         for path,b in sorted(reference_files(files,c,cfg['evaluation_day']).items()):
             yield path,b
+            if include_indicator_series and path.startswith('chart/'):
+                from .kis_stock_bundle import indicator_series
+                yield path.replace('chart/','indicator-series/',1),json_bytes(
+                    indicator_series(json.loads(b),evaluation_day=cfg['evaluation_day']))
     financial=pinned(root,cfg['financial']);symbols=pinned(root,cfg['symbols'])
     months=pinned(root,cfg['monthends']) if cfg.get('monthends') else {}
     q=official_reference(financial,contracts,symbols,day=cfg['evaluation_day'],
@@ -202,7 +206,7 @@ def main(argv=None):
     parser.add_argument('--reference-index',type=Path)
     parser.add_argument('--expected-reference-sha256')
     parser.add_argument('--run-receipt',type=Path)
-    parser.add_argument('--layout',choices=('legacy','compact'),default='legacy')
+    parser.add_argument('--layout',choices=('legacy','compact','stock'),default='legacy')
     parser.add_argument('--recent',choices=('daily','monthly'),default='daily')
     parser.add_argument('--previous-manifest',type=Path)
     parser.add_argument('--expected-previous-sha256')
@@ -216,8 +220,9 @@ def main(argv=None):
         need(bool(args.previous_manifest)==bool(args.expected_previous_sha256),'PREVIOUS_PIN_REQUIRED')
         need(not(args.reference_index and args.output_dir),'REFERENCE_COMPARISON_CHECK_ONLY')
         need(not(args.reference_index and args.layout!='legacy'),'REFERENCE_REQUIRES_LEGACY')
-        files=rebuild(args.request,expected_request_sha256=args.expected_request_sha256)
-        if args.layout=='compact':
+        files=rebuild(args.request,expected_request_sha256=args.expected_request_sha256,
+                      include_indicator_series=args.layout=='stock')
+        if args.layout in ('compact','stock'):
             from .kis_compact import compact,growth
             need(bool(args.previous_manifest) != args.bootstrap,'COMPACT_PREVIOUS_OR_EXPLICIT_BOOTSTRAP')
             previous=None
@@ -225,8 +230,13 @@ def main(argv=None):
                 b=args.previous_manifest.read_bytes();need(sha(b)==args.expected_previous_sha256,'PREVIOUS_MANIFEST_PIN')
                 previous=json.loads(b)
             _,config,_=load_request(args.request,args.expected_request_sha256)
-            projected=compact(files,evaluation_day=config['evaluation_day'],previous=previous,
-                              revision_reference=args.revision_reference,recent=args.recent)
+            if args.layout=='stock':
+                from .kis_stock_bundle import stock_bundle
+                projected=stock_bundle(files,evaluation_day=config['evaluation_day'],previous=previous,
+                                       revision_reference=args.revision_reference)
+            else:
+                projected=compact(files,evaluation_day=config['evaluation_day'],previous=previous,
+                                  revision_reference=args.revision_reference,recent=args.recent)
             receipt['growth']=growth(projected,previous=previous)
             receipt['growth_ledger']=json.loads(projected['manifest.json'])['growth_ledger']
             files=iter(sorted(projected.items()))
@@ -242,7 +252,8 @@ def main(argv=None):
             result=dict(files=0,bytes=0)
             for _,b in files:result['files']+=1;result['bytes']+=len(b)
     except ValueError as e:
-        status=6 if str(e) in ('ANNUAL_DATA_BUDGET','DAILY_DATA_BUDGET','COMPACT_FILE_LIMIT','PACK_FILE_LIMIT','CHART_PIECE_LIMIT') else 2
+        status=6 if str(e) in ('ANNUAL_DATA_BUDGET','DAILY_DATA_BUDGET','COMPACT_FILE_LIMIT','PACK_FILE_LIMIT',
+                              'CHART_PIECE_LIMIT','STOCK_PIECE_LIMIT','STOCK_FILE_LIMIT','STOCK_RESPONSE_LIMIT') else 2
         receipt['reason']=str(e) if re.fullmatch('[A-Z][A-Z0-9_]{1,63}',str(e)) else 'INPUT_OR_CALCULATION_INVALID'
     except OSError:
         status=4;receipt['reason']='IO_FAILURE'

@@ -1,5 +1,11 @@
 # Compact private delivery, version2
 
+**2026-11-19:** this latest-only `/2` format is preserved for compatibility and
+historical measurements. It is not DC-58 chart ready. Use the explicit
+[stock series `/3` producer/reader](kis-stock-series.md) for C1–C3. Its daily
+indicator/storage costs are included separately; do not reuse277.587MB as its
+forecast. No consumer/data cutover has occurred.
+
 Selected by owner on2026-11-17: **shared latest indicator file + B2 immutable daily
 RAW chart pieces**, with sealed month/year pieces. The combined source+view
 estimate and monthly private-release design now live in

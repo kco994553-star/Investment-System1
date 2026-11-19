@@ -1,5 +1,12 @@
 # B2 cutover and monthly private source receipts
 
+**2026-11-19 C1–C3 revision:** the latest-only `/2` query layout and277.587MB
+forecast below are preserved history, not the current chart-ready proposal.
+[Stock series `/3`](kis-stock-series.md) adds per-day indicators, bounded reads,
+bucketed latest values and an inclusive703.872MB first-year estimate. It does
+not meet300MB; Main/owner must settle placement/budget before activation. The
+RAW monthly-part/receipt retention design below is unchanged and unactivated.
+
 Owner decision 2026-11-17: B2 is selected. This updates #567's **view-only**
 planning; it does not activate a collector, release upload, Worker or data writer.
 Main owns those integrations. Existing per-file limits and private/NEVER scope

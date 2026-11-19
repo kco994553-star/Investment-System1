@@ -1,5 +1,12 @@
 # Offline KIS rebuilding
 
+**2026-11-19:** `--layout stock` adds producer-calculated daily indicator series
+and the bounded-read `/3` private stock response. See
+[C1–C3 fields, commands, measurements and remaining budget condition](kis-stock-series.md).
+Legacy and compact `/2` modes remain explicit, with unchanged old result semantics.
+The new layout has not been activated in Worker/data; its inclusive estimate
+exceeds300MB and needs a placement/budget decision before publication.
+
 Owner scope: research/data command only. No Worker, frontend, workflow, guard,
 collection, deployment or official-result change. Runtime: Python3.12 standard
 library and existing repository modules; no pip package, key, HTTP or Google/KIS

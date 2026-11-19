@@ -128,6 +128,26 @@ def test_compact_command_uses_same_rebuild_and_requires_explicit_bootstrap(tmp_p
     assert all(type(v) is int for v in json.loads(capsys.readouterr().out.splitlines()[-1]).values())
 
 
+def test_stock_command_uses_common_pipeline_without_network_and_keeps_null_totals(tmp_path,monkeypatch):
+    import socket
+    monkeypatch.setattr(socket.socket,'connect',lambda *a,**kw:pytest.fail('NETWORK_FORBIDDEN'))
+    request,_=inputs(tmp_path/'in');pin=sha(request.read_bytes());m=api()
+    from investment_system.research.kis_stock_bundle import stock_bundle,assemble_stock
+    raw=m.rebuild(request,expected_request_sha256=pin,include_indicator_series=True)
+    files=stock_bundle(raw,evaluation_day='2026-10-23')
+    result=assemble_stock(files.__getitem__,'SYN')
+    assert len(result['rows'])==5 and all(v is None for v in result['rows'][-1][7:])
+    from investment_system.research.kis_compact import unpack_row
+    for path,b in files.items():
+        if path.startswith('qgv/buckets/'):
+            packet=json.loads(b)
+            for key in packet['rows']:
+                row=unpack_row(packet,key)
+                if row['axes']['V']['score'] is None:assert row['total'] is None
+    args=['--request',str(request),'--expected-request-sha256',pin,'--check-only','--layout','stock','--bootstrap']
+    assert m.main(args)==0
+
+
 def test_changed_source_index_cannot_claim_original_file_pin(tmp_path):
     request,_=inputs(tmp_path/'in');config=json.loads(request.read_bytes())
     index=json.loads((request.parent/'series.json').read_bytes())
