@@ -30,10 +30,10 @@ app_nav_ia_browser_test.js 25
 device_actual_browser_test.js 60
 google_sheet_storage_browser_test.js 2
 manual_quotes_browser_test.js 168
-prompt_field_guide_browser_test.js 68
+prompt_field_guide_browser_test.js 37
 web_mvp_browser_test.js 11
 web_research_guard_browser_test.js 124
-web_state_presentation_browser_test.js 180
+web_state_presentation_safety_browser_test.js 110
 global_language_search_browser_test.js 34
 daily_report_browser_test.js 6
 sic_theme_v0_browser_test.js 12
@@ -58,7 +58,7 @@ thirteenf_enrichment_browser_test.js 4
 playbook_screen_browser_test.js 18
 price_store_browser_test.js 19
 macro_lights_browser_test.js 10
-qgv_v2_screens_browser_test.js 34
+qgv_v2_screens_browser_test.js 21
 universe_company_browser_test.js 14
 stat_radar_browser_test.js 25
 company_names_browser_test.js 23

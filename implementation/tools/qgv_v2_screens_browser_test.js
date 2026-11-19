@@ -326,7 +326,9 @@ async function missingFlow(page) {
 (async () => {
   const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_EXECUTABLE_PATH });let pass = 0, fail = 0;
   try {
-    for (const mode of ['v1', 'v2']) for (const width of [390, 1280]) {
+    // Two runs instead of four (owner 2026-11-18, PR-check time): each scoring mode and each width still runs once; the
+    // production default v2 runs at the phone width.
+    for (const [mode, width] of [['v2', 390], ['v1', 1280]]) {
       const context = await browser.newContext({ viewport: { width, height: 900 }, serviceWorkers: 'block' });
       await routeEmptyPublicScreens(context);
       await context.route('**/sec-qg-factors.json*', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(v1()) }));
