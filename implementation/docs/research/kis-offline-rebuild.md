@@ -1,5 +1,12 @@
 # Offline KIS rebuilding
 
+**2026-11-19:** `--layout stock` adds producer-calculated daily indicator series
+and the bounded-read `/3` private stock response. See
+[C1–C3 fields, commands, measurements and remaining budget condition](kis-stock-series.md).
+Legacy and compact `/2` modes remain explicit, with unchanged old result semantics.
+The new layout has not been activated in Worker/data; its inclusive estimate
+exceeds300MB and needs a placement/budget decision before publication.
+
 Owner scope: research/data command only. No Worker, frontend, workflow, guard,
 collection, deployment or official-result change. Runtime: Python3.12 standard
 library and existing repository modules; no pip package, key, HTTP or Google/KIS
@@ -164,6 +171,62 @@ the already computed day1 values4.0s (separately measured, not a timed end-to-en
 combined run). A synthetic517×1260-session
 technical calculation/serialization benchmark took230.3s; compact projections
 took19.3s each. Its QGV packet is an explicit capacity placeholder: **no five-year
-QGV runtime or real five-year execution is claimed**. Actual filesystem, CPU and
+QGV runtime or real five-year execution is claimed by that older run**. Actual filesystem, CPU and
 financial/eligible month-end inputs can change duration. No completed real-data
 calculation was rerun merely to check status.
+
+## New synthetic V timing and ready-to-run five-year measurement
+
+The independent timing harness now calls the actual `official_reference` /
+calc23.1 pipeline with synthetic strict-valid financial rows, fake RAW prices,
+and71synthetic monthly packets. It does **not** replace the older capacity
+placeholder and does not run private real data. No555 engine or network calls.
+
+```sh
+PYTHONPATH=implementation/src python3 -S implementation/tools/kis_v_benchmark.py \
+  --sessions 100 1260 --receipt "$RUNNER_TEMP/synthetic-v-timing.json"
+```
+
+504code rows; at100sessions the timed price-validation+joint-QGV path took3.027s,
+at1260sessions31.098s. Output serialization added0.023s/0.019s. Both actually
+computed503V/raw/role/QGV/total rows; one row stayed excluded by the unchanged
+official path. These are synthetic workload counts, **not new real adoptions**.
+Input-fixture construction/normalization took3.589s/33.320s separately; it is not
+included in the pipeline time. Source hashes and all price-contract validation
+are inside the timed path. Q/G/V scoring is joint:31.1s is not isolated V math.
+The strict production reader is used and the test forbids socket connections.
+Future performance differs by financial missingness/periods, CPU and IO.
+
+Combined planning only: reused synthetic technical230.3s + projection19.3s +
+new V-containing31.1s is about281s (4.7minutes), **not an end-to-end measurement**;
+it excludes source restore/ingest and repeated serialization/loading overhead.
+Do not call it a real five-year runtime or schedule SLA.
+
+After approved collection has completed, Main can measure the real run once:
+
+```sh
+PYTHONPATH=implementation/src python3 -S -m investment_system.research.kis_rebuild \
+  --request "$INPUT/rebuild-5y.json" --expected-request-sha256 "$REQUEST_SHA256" \
+  --layout compact --recent daily --bootstrap --check-only \
+  --run-receipt "$RUNNER_TEMP/kis-five-year-timing.json"
+```
+
+This is read-only for source/data and writes only a new private run receipt.
+`elapsed_seconds` covers request verification, local source loading, full
+technical recalculation, official-reference QGV and compact serialization. It
+excludes Main's authenticated cold restore and Git/Worker update. Record those
+as separate intervals if measured; never claim their time is included.
+The supplied calculation clock is the frozen input's knowledge clock; the
+measurement receipt is generated later and must not replace it in service data.
+Do not use --reference-index here: no independent five-year output exists yet.
+
+Input readiness: local #564-compatible directory (preferred over an in-RAM
+archive for five years), pinned source index/manifests/receipts, RAW price span
+and series/row counts, exact financial and lookup bytes, evaluation/knowledge
+clock, and eligible month-end inputs if held. Missing financial/month-end inputs
+remain missing. A monthly cold restore needs the separately described hydration
+adapter/new byte pins; no saved old pin is silently re-used for a re-encoded file.
+Pin Python runtime/code/config and report actual retained session counts; calendar
+days and1260assumed sessions are not interchangeable. Keep the receipt private.
+The existing exit codes and count-only stdout apply. This command is **prepared,
+not executed on real five-year data**. It does not collect or update data.

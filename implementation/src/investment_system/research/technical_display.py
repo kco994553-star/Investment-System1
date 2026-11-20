@@ -81,6 +81,24 @@ def _number(value, *, zero=False):
         return None
 
 
+def close_indicator_paths(prices, *, include_sma240=False):
+    """Shared full-history arrays for latest values and producer chart series."""
+    out={}
+    for n in (5,20,60,120)+((240,) if include_sma240 else ()):
+        out['SMA_'+str(n)]=display._sma(prices,n)
+    out['EMA_20']=display._ema(prices,20);out['RSI_14']=display._rsi(prices)
+    fast,_=display._ema(prices,12);slow,_=display._ema(prices,26)
+    line=[display._finite(lambda:a-b) if a is not None and b is not None else None for a,b in zip(fast,slow)]
+    lr=[None if v is not None else 'CALCULATION_ERROR' if a is not None and b is not None else 'WARMUP' for v,a,b in zip(line,fast,slow)]
+    signal,sr=display._ema(line,9)
+    hist=[display._finite(lambda:a-b) if a is not None and b is not None else None for a,b in zip(line,signal)]
+    hr=[None if v is not None else 'CALCULATION_ERROR' if a is not None and b is not None else 'WARMUP' for v,a,b in zip(hist,line,signal)]
+    out.update(MACD_12_26=(line,lr),MACD_SIGNAL_9=(signal,sr),MACD_HISTOGRAM_12_26_9=(hist,hr))
+    middle,mr,upper,lower,br=display._bollinger(prices)
+    out.update(BOLL_MIDDLE_20=(middle,mr),BOLL_UPPER_20_2=(upper,br),BOLL_LOWER_20_2=(lower,br))
+    return out
+
+
 def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kind=None, include_sma240=False):
     """Use all retained sessions through S, with no gap skipping or basis repair."""
     if source_kind != 'NORMALIZED_PROVIDER_DAILY_BARS':
@@ -144,18 +162,8 @@ def measure_display(rows, *, signal_day, series_id, symbol, evidence, source_kin
         for name in ids:
             add(name, [], [])
     else:
-        for n in (5,20,60,120)+((240,) if include_sma240 else ()):
-            add('SMA_'+str(n), *display._sma(prices,n))
-        add('EMA_20',*display._ema(prices,20));add('RSI_14',*display._rsi(prices))
-        fast,fr=display._ema(prices,12);slow,sr=display._ema(prices,26)
-        line=[display._finite(lambda:a-b) if a is not None and b is not None else None for a,b in zip(fast,slow)]
-        lr=[None if v is not None else 'CALCULATION_ERROR' if a is not None and b is not None else 'WARMUP' for v,a,b in zip(line,fast,slow)]
-        signal,signal_reasons=display._ema(line,9)
-        hist=[display._finite(lambda:a-b) if a is not None and b is not None else None for a,b in zip(line,signal)]
-        hr=[None if v is not None else 'CALCULATION_ERROR' if a is not None and b is not None else 'WARMUP' for v,a,b in zip(hist,line,signal)]
-        add('MACD_12_26',line,lr);add('MACD_SIGNAL_9',signal,signal_reasons);add('MACD_HISTOGRAM_12_26_9',hist,hr)
-        middle,mr,upper,lower,br=display._bollinger(prices)
-        add('BOLL_MIDDLE_20',middle,mr);add('BOLL_UPPER_20_2',upper,br);add('BOLL_LOWER_20_2',lower,br)
+        for name,(values,reasons) in close_indicator_paths(prices,include_sma240=include_sma240).items():
+            add(name,values,reasons)
         bars=[]
         for r,p in zip(eligible,prices):
             o,h,l=(_number(r.get(k)) for k in ('open','high','low'))
