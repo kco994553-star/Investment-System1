@@ -124,6 +124,13 @@ function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q
   row,
   h('p',{class:'sub',dataset:{privateCoverage:''}},v.coverage.join(' · '))]);}
 
+// The timing line (counts only, never a value): 기존 3경로 wall time with the 5 s gaps, each request's own time, the new route's
+// time, and each answer's JSON length in characters; a failed part shows its error code instead.
+const sec=ms=>ms===null?'—':(Math.round(ms/100)/10).toFixed(1)+'초';
+const part=p=>p.code?p.route+' '+p.code:p.route+' '+p.ms+'ms · '+p.chars+'자';
+function timingText(r){const old=r.parts.slice(0,3),neu=r.parts[3];
+ return '기존 3경로 '+sec(r.old_wall_ms)+'(5초 간격 포함) · '+old.map(part).join(' / ')+' ‖ 새 경로 '+(neu.code?neu.code:sec(r.new_ms)+' · '+neu.chars+'자');}
+
 const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]]});
 const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv});
 
@@ -137,12 +144,17 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  const tokenCheck=h('button',{type:'button',class:'chip',dataset:{privateTokenCheck:kind}},'읽기 토큰 상태 확인');
  const tokenNote=h('p',{class:'reason',role:'status',dataset:{privateTokenStatus:kind}});
  const factBox=h('div',{dataset:{privateFactBox:kind}});
- const box=h('details',{class:'why',dataset:{privateStatusArea:kind},hidden:true},h('summary',null,'상태'),tokenCheck,tokenNote,factBox);
+ // 새 경로 시간 재기 (owner 2026-11-20 묶음 ⑥; technical panel only; taken out once the screen switch is done): one click reads the
+ // three routes the panel uses today and then the new stock route (IS2.prices.kisTimed) and shows times and response lengths only.
+ const timing=kind==='technical'?h('button',{type:'button',class:'chip',dataset:{privateTiming:kind}},'새 경로 시간 재기'):null;
+ const timingNote=kind==='technical'?h('p',{class:'reason',role:'status',dataset:{privateTimingResult:kind}}):null;
+ const box=h('details',{class:'why',dataset:{privateStatusArea:kind},hidden:true},h('summary',null,'상태'),tokenCheck,tokenNote,...(timing?[timing,timingNote]:[]),factBox);
  const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,note,box);
  panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
- let open=false,seq=0,tokenSeq=0;
+ let open=false,seq=0,tokenSeq=0,timingSeq=0;
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
- function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;}
+ function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;
+  if(timing){timingSeq++;timing.disabled=false;timingNote.textContent='';delete timingNote.dataset.privateTimingState;}}
  // While a read runs the button stays pressed-off (owner check 2026-11-17: a second tap during the ~15 s of three spaced reads
  // started a second, overlapping read that the Worker refused RATE_LIMITED); the layer also queues reads, this only shows it.
  function busy(on){btn.disabled=on;if(on){btn.setAttribute('aria-busy','true');btn.textContent='불러오는 중…';}else{btn.removeAttribute('aria-busy');btn.textContent='비공개 펼치기';}}
@@ -186,6 +198,20 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
    if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
    tokenNote.dataset.privateTokenState='ERROR';tokenNote.textContent=word(c);note.textContent=word(c);
   }).finally(()=>{if(!signal.aborted&&mine===tokenSeq)tokenCheck.disabled=false;});
+ },{signal});
+ if(timing)timing.addEventListener('click',e=>{
+  if(!st().connected){closed(word('AUTH_REQUIRED'));return;}
+  const t=target()||{};if(!t.symbol){timingNote.textContent='기업을 먼저 고르세요';return;}
+  const mine=++timingSeq;timing.disabled=true;timingNote.dataset.privateTimingState='LOADING';timingNote.textContent='재는 중 · 약 20초(요청 4번, 5초 간격)';
+  let p;try{p=P().kisTimed(e,t.symbol);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(r=>{
+   if(signal.aborted||mine!==timingSeq)return;
+   timingNote.dataset.privateTimingState='DONE';timingNote.textContent=timingText(r);
+  }).catch(err=>{
+   if(signal.aborted||mine!==timingSeq)return;const c=codeOf(err);
+   if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
+   timingNote.dataset.privateTimingState='ERROR';timingNote.textContent='시간 재기 실패 · '+word(c);
+  }).finally(()=>{if(!signal.aborted&&mine===timingSeq)timing.disabled=false;});
  },{signal});
  // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
  const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected){const checking=tokenCheck.disabled;resetToken();

@@ -1,9 +1,9 @@
 /* Owner-private KIS layer: reader and authenticated client (IS2.kisPrivate; owner 2026-11-05 DC-44, 2026-11-14 DC-52, 2026-11-15
    DC-53; Codex #480 contract docs/research/KIS_PRIVATE_PRICE_BRIDGE_20261105.md). The one web source that names the private
-   Worker routes (owner 2026-11-05 narrow exception: this file only, the five routes below — status, chart, analysis, technical,
-   qgv —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
+   Worker routes (owner 2026-11-05 narrow exception: this file only, the routes below — status, chart, analysis, technical,
+   qgv, and since 2026-11-20 stock for the timing button only —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
    preview publishes this file under the narrow Pages guard exception (owner 2026-11-15: this root file only, at its pinned
-   bytes, exactly these five routes and the five SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
+   bytes, exactly these six routes and the five SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
    - A click asks for the owner's Google token (scope exactly openid email, include_granted_scopes false; NO_ZT §4.2), keeps it
      in this module's memory only, and reads the routes of the private Worker, which checks the owner on the server before it
      reads anything. 연결 끊기 drops the token; an expired token is dropped before use.
@@ -26,9 +26,12 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.kisPrivate=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1'});
-const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv'});
+const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',
+ // The sixth route (owner 2026-11-20 묶음 ⑤·⑥): the one-file stock view of the Worker's new stock route, read ONLY by the 상태 box's
+ // 새 경로 시간 재기 button (IS2.prices.kisTimed) until the owner approves the screen switch; nothing on the screen shows it.
+ stock:'/kis/stock'});
 // Routes that take ?symbol=<SYM>; the others take no query.
-const BY_SYMBOL=Object.freeze(['chart','analysis','technical']);
+const BY_SYMBOL=Object.freeze(['chart','analysis','technical','stock']);
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 // The two class shares (owner 2026-11-15): KIS names them BRK/B and BF/B (stored under the folder keys BRK_B / BF_B); the app

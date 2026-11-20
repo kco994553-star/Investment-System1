@@ -172,6 +172,26 @@ let phase = 'START', pass = 0, where = '';
       assert.ok((await text(page, '[data-private-facts=technical]')).includes('공급처'), phase + ': the file facts are in the 상태 box');
       assert.equal(await count(page, '[data-indicator] [data-verdict]'), holds, phase + ': the public verdicts are unchanged');
 
+      // 새 경로 시간 재기 (owner 2026-11-20 묶음 ⑥): one click in the 상태 box = the panel's three reads, then /kis/stock, 5 s apart;
+      // the line shows times and lengths only, the panel itself does not change, and a failed new route shows its code.
+      phase = where + 'technical timing';
+      const panelBefore = await body(page, 'tech-kis-chart');
+      w.answers.stock = () => ({ status: 200, body: { synthetic: 'SYNTHETIC-SECURITY-1', rows: [['2026-10-23', '12.4242']] } });
+      w.log.length = 0; delete w.lastAt;
+      const timingLine = '[data-private-timing-result=technical]';
+      await page.locator('[data-private-timing=technical]').click();
+      await page.waitForFunction((sel) => document.querySelector(sel).dataset.privateTimingState === 'DONE', timingLine, { timeout: 40000 });
+      assert.deepEqual(w.log.map((l) => l.path), ['/kis/analysis?symbol=NVDA', '/kis/chart?symbol=NVDA', '/kis/technical?symbol=NVDA', '/kis/stock?symbol=NVDA'], phase + ': the three reads, then the new route');
+      assert.equal(w.refused || 0, 0, phase + ': spaced like the panel, none refused');
+      assert.match(await text(page, timingLine), /^기존 3경로 \d+\.\d초\(5초 간격 포함\) · analysis \d+ms · \d+자 \/ chart \d+ms · \d+자 \/ technical \d+ms · \d+자 ‖ 새 경로 \d+\.\d초 · \d+자$/, phase + ': times and lengths only');
+      assert.doesNotMatch(await text(page, timingLine), /12\.4242|SYNTHETIC/, phase + ': no value of the answer is shown');
+      assert.equal(await body(page, 'tech-kis-chart'), panelBefore, phase + ': the panel is unchanged');
+      w.answers.stock = () => ({ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } }); w.log.length = 0; delete w.lastAt;
+      await page.locator('[data-private-timing=technical]').click();
+      await page.waitForFunction((sel) => document.querySelector(sel).dataset.privateTimingState === 'DONE' && /새 경로 KIS_SERIES_NOT_FOUND$/.test(document.querySelector(sel).textContent), timingLine, { timeout: 40000 });
+      assert.equal(w.log.length, 4, phase + ': a missing index file is the new route\'s own code, the old three still ran');
+      w.log.length = 0; delete w.lastAt;
+
       phase = where + 'technical reference';
       await expand(page, 'technical'); answer('reference'); delete w.lastAt;
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
@@ -276,6 +296,7 @@ let phase = 'START', pass = 0, where = '';
       w.answers.qgv = () => ({ status: 200, body: Q556 });
       await expand(page, 'qgv'); await page.locator('[data-private-row="' + code + '"]').waitFor({ timeout: 20000 });
       assert.deepEqual(w.log.map((l) => l.path), ['/kis/qgv'], phase + ': one read for the click');
+      assert.equal(await count(page, '[data-private-timing]'), 0, phase + ': the timing button is on the technical panel only');
       assert.equal(await text(page, '[data-private-layer=qgv]'), 'KIS · 비공개 · 공식 아님 · 가격 기준일 2026-10-23 · 출처 KIS · 계산 판 ' + Q556.calc_version + ' 검증 전(참고)', phase + ': label, price basis day, source, calc version and the producer\'s tag');
       assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td').allTextContents(),
         [r1(row.axes.Q.score), r1(row.axes.G.score), '미산출 · 사유 코드 ' + row.axes.V.reason], phase + ': the file\'s scores as given, V 미산출 with its reason, never 0');
