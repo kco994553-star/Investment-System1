@@ -140,3 +140,140 @@ stock/QGV objects, generation manifest and query reference. Full materialization
 and Git-only recovery use the same projection; writing files or uploading and
 verifying them adds time. Normal prefix reuse was measured separately for
 byte equivalence, not as a 517-symbol runtime claim.
+
+## First publication and daily input preparation
+
+For the first publication, reuse the previously audited 517-series, 51,606-row
+day-1 handoff. The existing request is for 2026-11-13. Keep its original
+calculation clock and independent request SHA256. Stage its exact
+request.json, series.json, monthly.tar.gz, financial.json and symbols.json in
+one local input directory. The first three inputs describe the price source.
+Stage the pinned financial and symbol bytes at the same relative paths in
+SOURCE_CHECKOUT for append and restore. Month-end input was absent for this
+run. The original data checkout supplied the MODP0 .json body and corresponding
+.receipt.json under kis/dailyprice/<storage-symbol>/MODP0/. Legacy chart outputs
+and MODP1 are excluded. The archived handoff already verifies the original
+Git blobs, receipt hash/size and monthly rows. Reuse it for first publication
+with the bootstrap append and restore commands above.
+
+For later input preparation, use the keyless
+`investment_system.research.kis_request_builder`. It reads local files using
+the standard library and reuses the existing normalization and monthly
+deduplication. The private collector's fetch step leaves each response as
+<name>.body and its metadata as <name>.json in RUNNER_TEMP. The same intake
+command accepts a retained data-branch body paired with its .receipt.json.
+Use the capture manifest or committed blob to pin the receipt itself.
+The pinned receipt supplies the body hash and byte count.
+Use the existing validated route/scope and matching per-series evidence
+(currency, currency reference, identity, held ranges and confirmed ranges
+where present). Create a pinned scope evidence file once from the approved
+baseline request with:
+
+```sh
+PYTHONPATH="$CODE/implementation/src" python3 -S -m investment_system.research.kis_request_builder evidence \
+  --baseline-request "$INPUT/request.json" --baseline-request-sha256 "$REQUEST_SHA256" \
+  --output "$RUNNER_TEMP/kis-series-evidence.json"
+```
+
+The output contains a provider symbol and venue binding for each code. The
+printed evidence_sha256 is the pin for page admission. Vendor matching alone
+does not establish identity or split evidence. Only successful MODP0 pages with admissible rows enter the store.
+A documented empty end-of-history result contributes no page.
+
+Use a scratch copy of the selected #564 monthly inputs, with the complete
+approved symbol scope. Process each accepted page in order of fetched_at.
+Validate the collector plan, scope and accepted/refused totals for the batch
+before publication. Use the following command for a single body/receipt pair,
+called in a loop by the Main workflow.
+
+```sh
+export PYTHONPATH="$CODE/implementation/src"
+python3 -S -m investment_system.research.kis_request_builder ingest-page \
+  --store "$STAGE/store" --body "$PAGE_BODY" --receipt "$PAGE_RECEIPT" \
+  --receipt-sha256 "$RECEIPT_SHA256" \
+  --evidence "$SERIES_EVIDENCE" --evidence-sha256 "$SERIES_EVIDENCE_SHA256" \
+  --code "$EXACT_INPUT_CODE"
+```
+
+New or reviewed revised rows become YYYY-MM.jsonl.gz members. The command
+checks receipt/body integrity, preserves the original row clock and reports
+new_rows, revised_rows, unchanged_rows and appended_bytes. Use
+--revision-reference only for an approved changed overlap. Each input
+page is a separate validation/write operation. On failure discard the staged
+batch and retain the prior published generation. Confirmed later splits and
+other evidence changes require the existing reviewed basis transition.
+In particular, do not attach a later split to an older page; publish
+consistently with the reviewed evidence for its retained series.
+
+After staging the whole monthly input, freeze the request once. The following
+snapshot paths are relative to STAGE and must contain the exact pre-pinned
+bytes. Content-addressed names prevent an old journal frame from resolving a
+new quarterly input at a reused path. An unchanged snapshot can reuse its
+existing path and blob. If month-end data is absent, omit both month-end flags.
+
+```sh
+python3 -S -m investment_system.research.kis_request_builder freeze \
+  --root "$STAGE" --store store --expected-series "$EXPECTED_SERIES" \
+  --evaluation-day "$PRICE_DAY" --calculated-at "$CALCULATION_CLOCK" \
+  --financial "inputs/financial/$FIN_SHA.json" --financial-sha256 "$FIN_SHA" \
+  --symbols "inputs/symbols/$SYMBOL_SHA.json" --symbols-sha256 "$SYMBOL_SHA"
+# Optional: --monthends "inputs/monthends/$MONTHEND_SHA.json" --monthends-sha256 "$MONTHEND_SHA"
+```
+
+Output is STAGE/request.json and STAGE/indexes/<sha256>.json. The command
+reports request_sha256, scope count and number of retained normalized rows.
+It reopens every series manifest/month/receipt, checks exact coverage against
+the symbol mapping, rejects a source after the calculation clock or price
+day, and rejects conflicting bytes at the same request path. Use a fresh
+scratch directory for a new capture. Builder exit 0 is valid output, exit 2
+is input, pin or local IO failure. Abort the batch on any nonzero status.
+Both commands enforce private staging outside a Git checkout.
+
+The live sequence is plan, fetch, keyless intake and freeze, journal append,
+and restore. The KIS credentials are scoped only to fetch. Replace the old
+`kis_collector store --data "$DATA_CHECKOUT"` persistence call. Do not git-add
+scratch bodies, page receipts, the staged monthly store, or request/index.
+Append to the previous frozen journal and commit only its new content-addressed
+row parts and small hash summary. Main verifies the release objects before
+publishing their number list and query reference. The checked-out source can
+include newly approved immutable financial or mapping inputs at their pinned
+paths. Preserve older committed inputs for replay. In append, a symbol whose staged capture
+clock predates its previously committed clock causes a batch failure.
+
+The builder deliberately fails on an incomplete scope. A run containing no
+usable new page for some already held symbol may retain that symbol only from
+its independently pinned monthly baseline. The journal can restore the
+normalized calculation history, but cannot recreate lost provider JSON or
+receipt bytes. Main must supply the selected retained monthly baseline on
+the runner or stop the batch. Do not relabel a partial latest or older-only
+capture as a complete replacement. When planning a later older-only run,
+advance the historical cursor from the committed oldest RAW sessions, not
+from the old page-directory coverage file or from a failed page.
+
+```sh
+python3 -S -m investment_system.research.kis_request_builder coverage \
+  --source-root "$SOURCE_CHECKOUT" --head "$LAST_CAPTURE_PATH" \
+  --head-sha256 "$LAST_CAPTURE_SHA256" --output "$PLAN_ROOT/kis/coverage.json"
+# Also stage the pinned symbols lookup at "$PLAN_ROOT/kis/symbols.json".
+# Main's existing collector plan reads --data "$PLAN_ROOT".
+```
+
+This scratch-only coverage is for the next request planner. It is never a
+daily Git output. A planning failure does not move the committed cursor.
+
+
+For the three planned older-only batches, run the same MODP0 intake for the
+received older pages and retain the newest approved observations. Freeze
+PRICE_DAY at the newest approved trading evaluation day. Use the actual
+later knowledge clock so new page receipts are never backdated. Pass the
+approved backfill reference to `append --revision-reference`, and carry the
+previous committed capture path and SHA256 through each run. Verify new
+first/last dates, row counts, overlap counts and any refusal before promoting.
+Three backfill runs do not by themselves prove five-year coverage.
+
+Once the committed capture contains verified five-year inputs, the real
+timing command is the restore command above with `--check-only` replacing
+`--output-dir`. Keep stdout JSON's elapsed_seconds, stock count and max file
+measurements. It times local source replay, kernels and gzip, excluding
+collection, checkout, writing and upload. The 307.912 s measurement above
+used synthetic 1,260-session data. Actual five-year timing remains open.

@@ -74,6 +74,8 @@ def changes(contracts, prior, config, revision):
         before = prior.get(code, {'rows': {}, 'header': {}})
         after_header = header(contract)
         old_header = before['header']
+        need(not old_header or _ts(after_header['collected_at']) >= _ts(old_header['collected_at']),
+             'JOURNAL_SERIES_CLOCK_REGRESSION')
         need(not old_header or all(old_header.get(key) == after_header.get(key)
              for key in ('symbol', 'security_id', 'source', 'exchange', 'currency')), 'JOURNAL_SERIES_IDENTITY')
         changes = {key: value for key, value in after_header.items()
