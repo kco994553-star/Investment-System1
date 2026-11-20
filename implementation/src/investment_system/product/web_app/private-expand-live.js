@@ -9,7 +9,8 @@
      something is wrong (basis mismatch, 갱신 지연, an error code). File facts (source, capture times, evaluation day, evidence,
      settings version, basis comparison) and the read-token status go to the 상태 box. 읽기 토큰 상태 확인 reads the Worker's
      status route on its own click; NO_EXPIRY reads 만료일 없음.
-   - kind 'technical': the analysis, chart and technical routes for target().symbol (one click, three reads, 5 s apart). Label
+   - kind 'technical': the stock route for target().symbol (one click, one read; owner 2026-11-20 switch from the analysis,
+     chart and technical routes). Label
      KIS · 비공개 and the chart's basis (원주가 / 확인된 분할 반영). Indicators and measures by their producer tier (below); a held one is
      미산출 with its reasons; a raw value appears only as the producer's reference_value, tagged. A result whose basis differs from the chart file's is not
      attached (IS2.kisPrivate.basisAgreement): that part shows the mismatch line and no value ([data-private-basis-agreement]).
@@ -124,15 +125,13 @@ function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q
   row,
   h('p',{class:'sub',dataset:{privateCoverage:''}},v.coverage.join(' · '))]);}
 
-// The timing line (counts only, never a value): 기존 3경로 wall time with the 5 s gaps, each request's own time, the new route's
-// time, and each answer's JSON length in characters; a failed part shows its error code instead.
-const sec=ms=>ms===null?'—':(Math.round(ms/100)/10).toFixed(1)+'초';
-const part=p=>p.code?p.route+' '+p.code:p.route+' '+p.ms+'ms · '+p.chars+'자';
-function timingText(r){const old=r.parts.slice(0,3),neu=r.parts[3];
- return '기존 3경로 '+sec(r.old_wall_ms)+'(5초 간격 포함) · '+old.map(part).join(' / ')+' ‖ 새 경로 '+(neu.code?neu.code:sec(r.new_ms)+' · '+neu.chars+'자');}
-
-const READS=Object.freeze({technical:t=>(t.symbol?[['analysis',t.symbol],['chart',t.symbol],['technical',t.symbol,'OPTIONAL']]:null),qgv:()=>[['qgv',null]]});
-const RENDER=Object.freeze({technical:renderTechnical,qgv:renderQgv});
+// The technical panel reads the one-file stock view (owner 2026-11-20 screen switch): one request instead of three spaced ones.
+// IS2.kisPrivate.stockParts assembles the chart / analysis / measures parts the panel already shows; nothing is calculated.
+function renderStock(body,[sRaw],ctx,status){const p=I.kisPrivate.stockParts(sRaw);if(!p.ok)throw Error(p.code);
+ if(p.value.analysis===null)throw Error('KIS_STOCK_INVALID');
+ renderTechnical(body,[p.value.analysis,p.value.chart,p.value.measures],ctx,status);}
+const READS=Object.freeze({technical:t=>(t.symbol?[['stock',t.symbol]]:null),qgv:()=>[['qgv',null]]});
+const RENDER=Object.freeze({technical:renderStock,qgv:renderQgv});
 
 function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  if(!Object.prototype.hasOwnProperty.call(READS,kind))throw Error('PRIVATE_EXPAND_KIND');
@@ -144,17 +143,12 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  const tokenCheck=h('button',{type:'button',class:'chip',dataset:{privateTokenCheck:kind}},'읽기 토큰 상태 확인');
  const tokenNote=h('p',{class:'reason',role:'status',dataset:{privateTokenStatus:kind}});
  const factBox=h('div',{dataset:{privateFactBox:kind}});
- // 새 경로 시간 재기 (owner 2026-11-20 묶음 ⑥; technical panel only; taken out once the screen switch is done): one click reads the
- // three routes the panel uses today and then the new stock route (IS2.prices.kisTimed) and shows times and response lengths only.
- const timing=kind==='technical'?h('button',{type:'button',class:'chip',dataset:{privateTiming:kind}},'새 경로 시간 재기'):null;
- const timingNote=kind==='technical'?h('p',{class:'reason',role:'status',dataset:{privateTimingResult:kind}}):null;
- const box=h('details',{class:'why',dataset:{privateStatusArea:kind},hidden:true},h('summary',null,'상태'),tokenCheck,tokenNote,...(timing?[timing,timingNote]:[]),factBox);
+ const box=h('details',{class:'why',dataset:{privateStatusArea:kind},hidden:true},h('summary',null,'상태'),tokenCheck,tokenNote,factBox);
  const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,note,box);
  panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
- let open=false,seq=0,tokenSeq=0,timingSeq=0;
+ let open=false,seq=0,tokenSeq=0;
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
- function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;
-  if(timing){timingSeq++;timing.disabled=false;timingNote.textContent='';delete timingNote.dataset.privateTimingState;}}
+ function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;}
  // While a read runs the button stays pressed-off (owner check 2026-11-17: a second tap during the ~15 s of three spaced reads
  // started a second, overlapping read that the Worker refused RATE_LIMITED); the layer also queues reads, this only shows it.
  function busy(on){btn.disabled=on;if(on){btn.setAttribute('aria-busy','true');btn.textContent='불러오는 중…';}else{btn.removeAttribute('aria-busy');btn.textContent='비공개 펼치기';}}
@@ -198,20 +192,6 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
    if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
    tokenNote.dataset.privateTokenState='ERROR';tokenNote.textContent=word(c);note.textContent=word(c);
   }).finally(()=>{if(!signal.aborted&&mine===tokenSeq)tokenCheck.disabled=false;});
- },{signal});
- if(timing)timing.addEventListener('click',e=>{
-  if(!st().connected){closed(word('AUTH_REQUIRED'));return;}
-  const t=target()||{};if(!t.symbol){timingNote.textContent='기업을 먼저 고르세요';return;}
-  const mine=++timingSeq;timing.disabled=true;timingNote.dataset.privateTimingState='LOADING';timingNote.textContent='재는 중 · 약 20초(요청 4번, 5초 간격)';
-  let p;try{p=P().kisTimed(e,t.symbol);}catch(err){p=Promise.reject(err);}
-  Promise.resolve(p).then(r=>{
-   if(signal.aborted||mine!==timingSeq)return;
-   timingNote.dataset.privateTimingState='DONE';timingNote.textContent=timingText(r);
-  }).catch(err=>{
-   if(signal.aborted||mine!==timingSeq)return;const c=codeOf(err);
-   if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
-   timingNote.dataset.privateTimingState='ERROR';timingNote.textContent='시간 재기 실패 · '+word(c);
-  }).finally(()=>{if(!signal.aborted&&mine===timingSeq)timing.disabled=false;});
  },{signal});
  // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
  const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected){const checking=tokenCheck.disabled;resetToken();

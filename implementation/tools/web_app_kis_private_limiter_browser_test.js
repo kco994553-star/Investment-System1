@@ -3,8 +3,8 @@
 // its HistoryRateLimiter with the deployed limit, REQUESTS_PER_MINUTE 12, one owner request at a time, 5 s apart, real clock),
 // on the published Pages artifact (app.html) at phone width. Owner check 2026-11-17: the panel showed RATE_LIMITED because a
 // second tap during the ~15 s of three spaced reads started overlapping reads. Checked here:
-//  A. read-token check, then 비공개 펼치기 at once: the three reads (analysis, chart, technical) all shown, the Worker refuses none.
-//  B. a second tap during the reads does nothing (the button is disabled and says 불러오는 중…): still three reads, none refused.
+//  A. read-token check, then 비공개 펼치기 at once: the one stock-route read (owner 2026-11-20 switch) shown, the Worker refuses none.
+//  B. a second tap during the read does nothing (the button is disabled and says 불러오는 중…): still one read, none refused.
 //  C. the read-token check pressed while the panel reads waits its turn: the panel and the check both finish, none refused.
 // Google, GitHub and the token check upstream are stand-ins inside the Worker's own fetch; every payload is the synthetic fixture
 // tools/web_app_kis_private_fixture.js (no company, no KIS value).
@@ -15,6 +15,8 @@ const os = require('node:os');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { execFileSync } = require('node:child_process');
+const zlib = require('node:zlib');
+const crypto = require('node:crypto');
 const R = require('./web_app_reuse');
 const site = require('./web_app_test_site');
 const F = require('./qgv_v2_fixture.js');
@@ -29,7 +31,7 @@ const GIS_STYLE = 'https://accounts.google.com/gsi/style', GIS_CLIENT = 'https:/
 const GIS_STUB = 'window.google={accounts:{oauth2:{initTokenClient:function(cfg){return{requestAccessToken:function(){cfg.callback({access_token:'
   + JSON.stringify(TOKEN) + ',expires_in:3600,token_type:"Bearer",scope:"openid https://www.googleapis.com/auth/userinfo.email"});}};},revoke:function(t,d){if(d)d({});}}}};';
 const OWNER = ['owner', 'example.test'].join('@'), CLIENT_ID = 'synthetic-client-id';
-const READS = ['/kis/analysis?symbol=NVDA', '/kis/chart?symbol=NVDA', '/kis/technical?symbol=NVDA'];
+const READS = ['/kis/stock?symbol=NVDA'];   // owner 2026-11-20 switch: one read of the stock route per click
 let phase = 'START';
 
 (async () => {
@@ -47,12 +49,27 @@ let phase = 'START';
   env.HISTORY_RATE_LIMITER = { idFromName: (n) => n, get: () => ({ fetch: (i, init) => limiter.fetch(i instanceof Request ? i : new Request(i, init)) }) };
   const f = X.codex556('available', { symbol: 'NVDA' });
   const files = { chart: f.chart, technical: f.technical, measures: f.measures };
+  // The stock route's upstream: the index on the data branch, the asset API's one 302 to the release asset host, the gzip view.
+  const { bars, raw_bars: rawBars, schema: chartSchema, ...chartHeader } = f.chart;
+  const view = { schema: X.K('stock-view/1'), publication_scope: 'OWNER_PRIVATE_ONLY', symbol: 'NVDA', evaluation_day: f.technical.evaluation_day,
+    fields: ['date', 'open', 'high', 'low', 'close', 'volume', 'amount', ...Array.from({ length: 10 }, (_, i) => 'I' + i)],
+    rows: bars.map((b) => [b.date, b.open, b.high, b.low, b.close, b.volume, ...Array(11).fill(null)]),
+    chart: { ...chartHeader, schema: X.K('chart-metadata/1') }, indicators: {}, coverage: {}, latest: { technical: f.technical, measures: f.measures },
+    additional_requests_for_toggle: 0, additional_requests_for_retained_period: 0 };
+  const viewJson = Buffer.from(JSON.stringify(view), 'utf8'), viewGz = zlib.gzipSync(viewJson), hex = (b) => crypto.createHash('sha256').update(b).digest('hex');
+  const stockIndex = { schema: X.K('stock-asset-index/1'), publication_scope: 'OWNER_PRIVATE_ONLY', evaluation_day: f.technical.evaluation_day,
+    release_tag: 'kis-view-' + f.technical.evaluation_day + '-' + 'b'.repeat(12), generation_sha256: 'c'.repeat(64),
+    stocks: { NVDA: { symbol: 'NVDA', asset_id: 7, name: hex(viewGz) + '.json.gz', bytes: viewGz.length, sha256: hex(viewGz), json_bytes: viewJson.length, json_sha256: hex(viewJson) } },
+    qgv: { asset_id: 9, name: 'd'.repeat(64) + '.json.gz', bytes: 10, sha256: 'd'.repeat(64), json_bytes: 20, json_sha256: 'e'.repeat(64) } };
   const statusFile = { schema: ['private', 'area-status/1'].join('-'), publication_scope: 'OWNER_PRIVATE_ONLY', run_at: '2026-11-05T03:00:00Z',
     worker_read_token: { state: 'NO_EXPIRY', code: null, expires_on: null, days_left: null, verification: 'NOT_CHECKED' } };
   const upstream = async (input) => {
     const url = new URL(String(input));
     if (url.origin === 'https://oauth2.googleapis.com') return new Response(JSON.stringify({ aud: CLIENT_ID, email: OWNER, email_verified: true, expires_in: '3600' }), { status: 200 });
     await new Promise((r) => setTimeout(r, 300));                // a GitHub read is not instant
+    if (url.origin === 'https://release-assets.githubusercontent.com') return new Response(viewGz, { status: 200 });
+    if (/^\/repos\/[^/]+\/[^/]+\/releases\/assets\/7$/.test(url.pathname)) return new Response(null, { status: 302, headers: { Location: 'https://release-assets.githubusercontent.com/synthetic/7?sig=x' } });
+    if (/\/contents\/views\/[a-z-]+\.json$/.test(url.pathname)) return new Response(JSON.stringify(stockIndex), { status: 200 });
     const m = /^\/repos\/[^/]+\/[^/]+\/contents\/([a-z]+)\//.exec(url.pathname);
     if (m && m[1] === 'status') return new Response(JSON.stringify(statusFile), { status: 200 });
     if (m && files[m[1]]) return new Response(JSON.stringify(files[m[1]]), { status: 200 });
