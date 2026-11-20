@@ -61,7 +61,7 @@ const NAMESPACES=Object.freeze({data:'data.js',prices:'prices.js',store:'store.j
 const API=Object.freeze({
  data:{FILES:'v',CORE:'v',LIST_FILES:'v',STATIC:'v',READERS:'v',MAX_BYTES:'v',EVENT:'v',strictFetch:'p',ready:'p',get:'s',screens:'s',state:'s',
   publication:'s',list:'p',shares:'p',financials:'p',refresh:'a',static:'p',peek:'p',subscribe:'sub',universe:'p',official:'p'},
- prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',kisState:'s',kisSubscribe:'sub',kisConnect:'a',kisDisconnect:'a',kisRead:'a',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
+ prices:{UNIVERSE_SOURCE_KEY:'v',WORKER_ORIGIN_KEY:'v',status:'s',subscribe:'sub',kisState:'s',kisSubscribe:'sub',kisConnect:'a',kisDisconnect:'a',kisRead:'a',kisTimed:'a',deviceSettings:'p',prepare:'a',login:'a',logout:'a',readUniverse:'a',
   universeView:{prices:'s',priceBasis:'s',readStatus:'s',ranks:'s'},universeRanks:'s',rankFor:'s',useTabs:'a',loadTabs:'a',syncSymbols:'a',
   syncUniverse:'a',history:'a',held:'s',quote:'p',periodReturns:'p'},
  store:{KEYS:'v',prefs:'s',savePrefs:'a',recent:'s',pushRecent:'a',clearRecent:'a',weights:'s',saveWeights:'a',holdings:'p',playbook:'s',saveThesis:'a',saveHold:'a',saveRecord:'a',

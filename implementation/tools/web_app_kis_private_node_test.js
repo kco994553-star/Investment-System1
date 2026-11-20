@@ -356,15 +356,17 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     await assert.rejects(h.c.get('analysis', '../x'), /REQUEST_INVALID/); await assert.rejects(h.c.get('orders', null), /ROUTE_UNKNOWN/);
     await assert.rejects(h.c.get('technical', null), /REQUEST_INVALID/, 'technical needs a symbol');
   });
-  await ok('client: the five routes — chart, analysis and technical take a symbol, status and qgv take no query; no macro / news / classification', async () => {
-    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'qgv', 'status', 'technical']);
-    const h = harness({ answers: [{ status: 200, body: X.measures() }, { status: 200, body: X.qgv() }, { status: 200, body: { schema: X.K('status/1') } }] });
+  await ok('client: the six routes — chart, analysis, technical and stock take a symbol, status and qgv take no query; no macro / news / classification', async () => {
+    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'qgv', 'status', 'stock', 'technical']);
+    const h = harness({ answers: [{ status: 200, body: X.measures() }, { status: 200, body: X.qgv() }, { status: 200, body: { schema: X.K('status/1') } }, { status: 200, body: { synthetic: true } }] });
     await h.c.connect();
-    await h.c.get('technical', 'NVDA'); await h.c.get('qgv', 'NVDA'); await h.c.get('status', null);
-    assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.technical + '?symbol=NVDA', ORIGIN + KP.ROUTE.qgv, ORIGIN + KP.ROUTE.status]);
+    await h.c.get('technical', 'NVDA'); await h.c.get('qgv', 'NVDA'); await h.c.get('status', null); await h.c.get('stock', 'BRK-B');
+    assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.technical + '?symbol=NVDA', ORIGIN + KP.ROUTE.qgv, ORIGIN + KP.ROUTE.status, ORIGIN + KP.ROUTE.stock + '?symbol=BRK-B']);
     for (const x of h.sent) { assert.deepEqual(x.init.headers, { Authorization: 'Bearer synthetic-token' }); assert.equal(x.init.redirect, 'error'); assert.equal(x.init.credentials, 'omit'); }
     for (const route of ['macro', 'news', 'classification']) await assert.rejects(h.c.get(route, null), /ROUTE_UNKNOWN/, route);
-    assert.equal(h.sent.length, 3);
+    await assert.rejects(h.c.get('stock', null), /REQUEST_INVALID/, 'stock needs a symbol');
+    await assert.rejects(h.c.get('stock', 'BRK/B'), /REQUEST_INVALID/, 'stock takes the request symbol, not the KIS file symbol');
+    assert.equal(h.sent.length, 4);
   });
   await ok('client: a wider scope is refused; a server 403 drops the token; expiry drops it; disconnect drops it', async () => {
     let h = harness({ scope: 'openid email https://www.googleapis.com/auth/drive.file' });

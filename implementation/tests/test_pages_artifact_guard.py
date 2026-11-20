@@ -870,9 +870,9 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(self.tar_receipt(self.make_tar()), receipt)
 
     # ---- the one narrow exception: owner-private panels on Pages (owner approval 2026-11-15; PAGES_PRIVATE_EXCEPTIONS) ------
-    # The five paths and the schema names are assembled at run time like the canaries above.
+    # The six paths (the sixth, stock, owner 2026-11-20 for the timing button) and the schema names are assembled at run time.
     EXCEPTED = "kis-private.js"
-    KIS_PATHS = tuple("/" + "k" + "is/" + route for route in ("status", "chart", "analysis", "technical", "qgv"))
+    KIS_PATHS = tuple("/" + "k" + "is/" + route for route in ("status", "chart", "analysis", "technical", "qgv", "stock"))
     KIS_SCHEMAS = tuple("k" + "is-" + name for name in ("bars/1", "bars/1/analysis", "technical-measures/1", "qgv/1", "status/1"))
 
     def repinned(self, guard, name, payload, exception=True):
@@ -908,8 +908,8 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertEqual(tokens, set(self.KIS_SCHEMAS))
         for path in self.KIS_PATHS:
             self.assertEqual(text.count("'" + path + "'"), 1, path)
-        # Without the exception the same bytes fail both rules: 5 paths and 10 schema-name hits (the published build passes).
-        self.assertEqual(guard.private_code_paths(text), 5)
+        # Without the exception the same bytes fail both rules: 6 paths and 10 schema-name hits (the published build passes).
+        self.assertEqual(guard.private_code_paths(text), 6)
         self.assertEqual(guard.private_schema_names(text), 10)
         self.assertEqual(self.check_with(guard, self.EXCEPTED, published), Counter())
         # private-expand-live.js needs no exception: it trips no rule, and only kis-private.js is excepted.
@@ -924,7 +924,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         published = (self.baseline / self.EXCEPTED).read_bytes()
         for extra, expected in (("f('/" + "k" + "is/news')", 1), ("f('/" + "k" + "is/status/x')", 1), ("'/lab" + "/x'", 1),
                                 ("'/priv" + "ate/x'", 1), ("'/K" + "IS/STATUS'", 1), ('"' + self.KIS_PATHS[0] + '"', 1),
-                                ("'" + self.KIS_PATHS[0] + "'", 6)):  # a listed path named twice excuses none of the five
+                                ("'" + self.KIS_PATHS[0] + "'", 7)):  # a listed path named twice excuses none of the six
             with self.subTest(extra=extra):
                 payload = published + ("\n" + extra + "\n").encode()
                 guard = self.repinned(self.guard(), self.EXCEPTED, payload)
@@ -956,7 +956,7 @@ class PagesArtifactGuardTests(unittest.TestCase):
         self.assertNotEqual(changed, published)
         # Neither pin moved: no exception at all, every rule on the whole file, and the hash pin fails.
         guard = self.guard()
-        both = {"private_area_paths": 5, "private_area_schema": 10}
+        both = {"private_area_paths": 6, "private_area_schema": 10}
         self.assertEqual(dict(self.check_with(guard, self.EXCEPTED, changed)), {**both, "unapproved_content": 1})
         (self.site / self.EXCEPTED).write_bytes(changed)
         self.assertEqual(guard.scan_artifact(self.site)["violations"], {**both, "unapproved_content": 1})
@@ -979,13 +979,13 @@ class PagesArtifactGuardTests(unittest.TestCase):
             with self.subTest(file=name):
                 # The whole excepted file under another published name, re-pinned there: no exception.
                 guard = self.repinned(self.guard(), name, published)
-                self.assertEqual(dict(self.check_with(guard, name, published)), {"private_area_paths": 5, "private_area_schema": 10})
+                self.assertEqual(dict(self.check_with(guard, name, published)), {"private_area_paths": 6, "private_area_schema": 10})
                 # The listed strings alone, appended to that file and re-pinned: each counts (kis-bars/1/analysis holds one hit).
                 payload = (self.baseline / name).read_bytes() + ("\n" + literals + "\n").encode()
                 guard = self.repinned(self.guard(), name, payload)
-                self.assertEqual(dict(self.check_with(guard, name, payload)), {"private_area_paths": 5, "private_area_schema": 5})
+                self.assertEqual(dict(self.check_with(guard, name, payload)), {"private_area_paths": 6, "private_area_schema": 5})
                 (self.site / name).write_bytes(payload)
-                self.assertEqual(guard.scan_artifact(self.site)["violations"], {"private_area_paths": 5, "private_area_schema": 5})
+                self.assertEqual(guard.scan_artifact(self.site)["violations"], {"private_area_paths": 6, "private_area_schema": 5})
                 (self.site / name).write_bytes((self.baseline / name).read_bytes())
         # In JSON there is no exception either.
         data = json.loads((self.baseline / "data.json").read_text(encoding="utf-8"))
