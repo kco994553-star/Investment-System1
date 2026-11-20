@@ -36,6 +36,39 @@ Pages 가드(`pages_artifact_guard.py`)는 게시 파일 코드 안의 비공개
 
 실사용 전 남은 일: ① Worker Secret/Text 반영과 `private-worker` 승인 배포 ② 비공개 저장소 `data` 가지의 `chart/`·`technical/`·`measures/`·`qgv/latest.json`·`status/private-area.json` 게시(수집기·상태 산출기, 별도 승인). (Pages 가드 예외와 `OWNER_PRIVATE` 해제는 `claude/pages-guard-kis-private-exception`에서 끝남.)
 
+## Worker `/kis/stock` — 종목 조회본 한 개 (2026-11-20)
+
+근거: [종목 조회본 릴리스 설계](KIS_STOCK_VIEW_RELEASES_20261120.md) §1·§5, Codex #571(`kis-stock-view/1`). Worker에만 더했다. 화면·워크플로·배포는 바꾸지 않았다. 기존 다섯 경로는 그대로다.
+
+**순서.**
+1. 오너 인증과 요청 제한을 다른 `/kis/*`와 똑같이 거친다(요청당 허가 1번, 반납 1번). 기호 검사도 `/kis/chart`와 같다(`symbol` 하나, 목록 안의 기호만).
+2. 비공개 저장소 `data` 가지의 `views/kis-stock-index.json`을 기존 읽기 토큰으로 읽는다(Contents API, 원본 형식).
+3. 목록에서 요청 기호를 찾는다. 그 `asset_id`로 릴리스 파일 API를 부른다(`Accept: application/octet-stream`, 읽기 토큰, `redirect: 'manual'`).
+4. 넘김을 한 번만, 인증 없이 따라간다(아래 예외).
+5. 받은 gzip의 크기와 sha256을 목록과 맞춘다. 압축을 풀면서 `json_bytes`를 넘으면 멈춘다. 푼 JSON의 크기와 sha256도 맞춘다.
+6. `kis-stock-view/1`인지 본다: 스키마, `OWNER_PRIVATE_ONLY`, 기호(목록의 `symbol`), 평가일(목록의 `evaluation_day`), 필드 17개, 행마다 값 17개, 추가 요청 수 두 개가 0.
+7. 푼 JSON 바이트를 그대로 돌려준다. `no-store`, CORS, 만료 임박 머리글은 다른 경로와 같다.
+
+하위 요청은 tokeninfo 1, 요청 제한 2, 목록 1, 릴리스 파일 API 1, 넘김 1이다.
+
+**목록 형식** (`kis-stock-asset-index/1`, 비공개 게시 작업이 쓴다). 맨 위 키는 정확히 `schema`, `publication_scope`, `evaluation_day`, `release_tag`, `generation_sha256`, `stocks`, `qgv`이다. 모르는 키가 있으면 거부한다. `stocks`의 키는 요청 기호(Worker 목록 안)이고, 값은 정확히 `symbol`(조회본 안의 기호, 예 `BRK/B`), `asset_id`(양의 안전 정수), `name`, `bytes`, `sha256`, `json_bytes`, `json_sha256`이다. `qgv`는 `symbol`만 없다. sha256은 소문자 16진 64자다. 두 크기는 1~1,800,000바이트다. `asset_id`는 서로 달라야 한다. 목록 파일 자체는 262,144바이트까지다.
+
+**넘김 예외는 이 경로 하나뿐이다.** 릴리스 파일 API의 답이 **302**이고, `Location`이 `https://release-assets.githubusercontent.com/`으로 시작하는 절대 주소일 때만 따라간다. 기본 포트만 되고 사용자 정보는 안 된다. 따라갈 때는 `Authorization`·쿠키를 붙이지 않는다. 그 요청도 `redirect: 'manual'`이라 두 번째 넘김은 거부한다. 다른 모든 요청(`upstreamFetch`, `github()`)의 넘김 거부는 그대로다. 서명된 주소, 토큰, 본문은 오류와 로그에 넣지 않는다.
+
+**오류 코드.**
+
+| 코드 | HTTP | 뜻 |
+| --- | --- | --- |
+| `KIS_SERIES_NOT_FOUND` | 404 | 목록 파일이 없거나 목록에 그 기호가 없음(기존 코드) |
+| `KIS_STOCK_INDEX_INVALID` | 502 | 목록이 형식에 맞지 않거나 너무 큼 |
+| `KIS_STOCK_ASSET_REDIRECT` | 502 | 릴리스 파일 API가 허용한 302가 아님(200 본문, 다른 3xx, 다른 호스트, `http:`, 상대 주소, 포트, 사용자 정보, `Location` 없음, 404), 또는 넘어간 곳이 다시 넘김 |
+| `KIS_STOCK_PIN` | 502 | gzip이나 JSON의 크기·sha256이 목록과 다름(한도를 넘으면 읽기를 멈춤) |
+| `KIS_STOCK_INVALID` | 502 | gzip이 아니거나, UTF-8 JSON이 아니거나, `kis-stock-view/1` 검사에 실패 |
+
+토큰·요청량 답(401·403·429)과 GitHub 장애(5xx·연결 실패·시간 초과)는 기존 코드(`TOKEN_REJECTED`, `UPSTREAM_RATE_LIMITED`, `UPSTREAM_UNAVAILABLE` 등)를 쓴다. 넘어간 곳의 200 아닌 답도 `UPSTREAM_UNAVAILABLE`이다.
+
+시험: `implementation/worker/tests/kis-stock.test.mjs`(합성 숫자만, 가격 없음).
+
 ## 시험
 
 - Worker: `implementation/worker/tests/kis.test.mjs`(익명·다른 계정·만료 거부, `NEVER`/`NO_EXPIRY`, 거부와 불일치 구분, `no-store`, 스키마 검사, 빠진 경로 404).

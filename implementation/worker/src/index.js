@@ -270,6 +270,10 @@ function krxNumber(value) {
 // /kis/status reads status/private-area.json (private-area-status/1, WORKER_READ_TOKEN_EXPIRY_20261115.md, DC-53) the same way and
 // answers only the rebuilt expiry fields and a fixed state code.
 // Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
+// GET /kis/stock?symbol=<SYM> (kis-stock-view/1, KIS_STOCK_VIEW_RELEASES_20261120.md §1, §5) reads views/kis-stock-index.json the
+// same way, then one release asset of the private repository. It is the one redirect exception (owner 2026-11-20): only the asset
+// API's 302 to release-assets.githubusercontent.com is followed, exactly once and with no credentials. Every other upstream call
+// keeps upstreamFetch / github() and their redirect refusal unchanged.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
@@ -291,6 +295,94 @@ const KIS_FILES = Object.freeze({
 // Routes that take no query string at all.
 const KIS_PLAIN = new Set(['/kis/status', '/kis/qgv']);
 const DAY_MS = 86_400_000;
+
+// ---------- /kis/stock: one stock's complete view from a private release asset ----------
+const KIS_STOCK_ROUTE = '/kis/stock';
+const KIS_STOCK_INDEX_PATH = 'views/kis-stock-index.json';
+const KIS_STOCK_INDEX_MAX_BYTES = 262_144;
+// The producer's uncompressed limit (#571); the gzip object is never larger either.
+const KIS_STOCK_MAX_BYTES = 1_800_000;
+const KIS_STOCK_FIELD_COUNT = 17;
+const KIS_ASSET_HOST = 'release-assets.githubusercontent.com';
+const HEX64 = /^[0-9a-f]{64}$/;
+const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const exactKeys = (v, keys) => plainObject(v) && Object.keys(v).length === keys.length && keys.every((k) => Object.hasOwn(v, k));
+const pinnedSize = (v) => Number.isSafeInteger(v) && v > 0 && v <= KIS_STOCK_MAX_BYTES;
+const hex64 = (v) => typeof v === 'string' && HEX64.test(v);
+
+function kisAssetEntryValid(v, withSymbol) {
+  const keys = ['asset_id', 'name', 'bytes', 'sha256', 'json_bytes', 'json_sha256'];
+  if (withSymbol) keys.push('symbol');
+  return exactKeys(v, keys) && Number.isSafeInteger(v.asset_id) && v.asset_id > 0
+    && typeof v.name === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,254}$/.test(v.name)
+    && pinnedSize(v.bytes) && pinnedSize(v.json_bytes) && hex64(v.sha256) && hex64(v.json_sha256)
+    && (!withSymbol || (typeof v.symbol === 'string' && /^[A-Z][A-Z0-9./_-]{0,15}$/.test(v.symbol)));
+}
+
+// kis-stock-asset-index/1: exact keys, request symbols from the Worker's list only, every asset id distinct.
+export function kisStockIndexValid(value) {
+  if (!exactKeys(value, ['schema', 'publication_scope', 'evaluation_day', 'release_tag', 'generation_sha256', 'stocks', 'qgv'])
+    || value.schema !== 'kis-stock-asset-index/1' || value.publication_scope !== 'OWNER_PRIVATE_ONLY'
+    || calendarDate(value.evaluation_day) === null
+    || typeof value.release_tag !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value.release_tag)
+    || !hex64(value.generation_sha256) || !plainObject(value.stocks) || !kisAssetEntryValid(value.qgv, false)) return false;
+  const ids = new Set([value.qgv.asset_id]);
+  for (const [symbol, entry] of Object.entries(value.stocks)) {
+    if (!KIS_SYMBOLS.has(symbol) || !kisAssetEntryValid(entry, true) || ids.has(entry.asset_id)) return false;
+    ids.add(entry.asset_id);
+  }
+  return true;
+}
+
+// The asset API's answer. Only a 302 whose Location is an absolute https URL on exactly the release asset host (default port,
+// no user info) is accepted; the normalised URL is returned. Anything else is null.
+export function kisAssetRedirectTarget(response) {
+  if (response.status !== 302 || response.type === 'opaqueredirect' || response.redirected === true) return null;
+  const location = response.headers.get('Location');
+  if (typeof location !== 'string' || location.length > 8192 || !/^[\x21-\x7e]+$/.test(location)
+    || !location.startsWith('https://' + KIS_ASSET_HOST + '/')) return null;
+  let url;
+  try { url = new URL(location); } catch { return null; }
+  if (url.protocol !== 'https:' || url.hostname !== KIS_ASSET_HOST || url.port !== '' || url.username !== '' || url.password !== '') return null;
+  return url.href;
+}
+
+// kis-stock-view/1 as the producer writes it (Codex #571 project_stock); the app validates the rest.
+export function kisStockViewValid(view, entry, evaluationDay) {
+  return plainObject(view) && view.schema === 'kis-stock-view/1' && view.publication_scope === 'OWNER_PRIVATE_ONLY'
+    && view.symbol === entry.symbol && view.evaluation_day === evaluationDay
+    && Array.isArray(view.fields) && view.fields.length === KIS_STOCK_FIELD_COUNT && view.fields.every((f) => typeof f === 'string')
+    && Array.isArray(view.rows) && view.rows.every((r) => Array.isArray(r) && r.length === KIS_STOCK_FIELD_COUNT)
+    && view.additional_requests_for_toggle === 0 && view.additional_requests_for_retained_period === 0;
+}
+
+// Reads a stream up to limit bytes; one byte more cancels it (overCode, 502). A broken stream is brokenCode.
+async function readCapped(stream, limit, overCode, brokenCode, brokenStatus) {
+  const reader = stream.getReader(), chunks = [];
+  let length = 0;
+  try {
+    while (true) {
+      let step;
+      try { step = await reader.read(); } catch { throw new Failure(brokenCode, brokenStatus); }
+      if (step.done) break;
+      length += step.value.byteLength;
+      if (length > limit) {
+        try { await reader.cancel(); } catch { /* Return only the fixed error. */ }
+        throw new Failure(overCode, 502);
+      }
+      chunks.push(step.value);
+    }
+  } finally { try { reader.releaseLock(); } catch { /* Already released. */ } }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  return bytes;
+}
+
+async function sha256Hex(bytes) {
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+  return Array.from(digest, (b) => b.toString(16).padStart(2, '0')).join('');
+}
 
 // Today as an Asia/Seoul calendar date (UTC+9, no daylight saving), 'YYYY-MM-DD'.
 export function seoulToday(nowMs) { return new Date(nowMs + 9 * 3_600_000).toISOString().slice(0, 10); }
@@ -557,12 +649,70 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     return new Response(bytes, { status: 200, headers: responseHeaders });
   }
 
+  // /kis/stock: index (1 GitHub read) → asset API (1, read token, redirect 'manual') → the one accepted 302 target (1, no
+  // credentials, redirect 'manual', no second hop) → size and sha256 pins of the gzip and of the JSON → kis-stock-view/1 check.
+  // The decompressed bytes are returned as published. No Location, token or body ever reaches an error.
+  async function kisStock(symbol, env, origin) {
+    const date = kisTokenDate(env, now());
+    if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
+    const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+    if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
+    if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
+    const bad = kisUpstreamState(response, date);
+    if (bad) return closeAndFail(response, bad.code, bad.http);
+    const index = await readJson(response, KIS_STOCK_INDEX_MAX_BYTES, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
+    if (!kisStockIndexValid(index)) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+    if (!Object.hasOwn(index.stocks, symbol)) throw new Failure('KIS_SERIES_NOT_FOUND', 404);
+    const entry = index.stocks[symbol];
+    const gzipped = await timed(15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
+      let api;
+      try {
+        api = await fetchImpl(GITHUB_API + '/repos/' + KIS_REPO + '/releases/assets/' + entry.asset_id, {
+          method: 'GET', signal, ...NO_CACHE,
+          headers: { Accept: 'application/octet-stream', Authorization: 'Bearer ' + env.PRIVATE_REPO_READ_TOKEN, 'User-Agent': 'investment-system1-private-worker', 'X-GitHub-Api-Version': '2022-11-28' },
+        });
+      } catch { throw new Failure('UPSTREAM_UNAVAILABLE', 503); }
+      const target = kisAssetRedirectTarget(api);
+      if (target === null) {
+        // Token and availability answers keep their existing codes; every other answer (a 200 stream, another 3xx, a bad
+        // Location, 404) is the fixed redirect refusal.
+        const s = api.status, state = s === 401 || s === 403 || s === 429 || s >= 500 ? kisUpstreamState(api, date) : null;
+        return closeAndFail(api, state ? state.code : 'KIS_STOCK_ASSET_REDIRECT', state ? state.http : 502);
+      }
+      try { await api.body?.cancel(); } catch { /* The redirect body is never read. */ }
+      let asset;
+      try {
+        asset = await fetchImpl(target, { method: 'GET', signal, ...NO_CACHE, headers: { 'User-Agent': 'investment-system1-private-worker' } });
+      } catch { throw new Failure('UPSTREAM_UNAVAILABLE', 503); }
+      if (asset.type === 'opaqueredirect' || asset.redirected === true || asset.status === 0 || (asset.status >= 300 && asset.status <= 399)) {
+        return closeAndFail(asset, 'KIS_STOCK_ASSET_REDIRECT', 502);
+      }
+      if (asset.status !== 200) return closeAndFail(asset, 'UPSTREAM_UNAVAILABLE', 503);
+      const advertised = asset.headers.get('Content-Length');
+      if (advertised && /^\d+$/.test(advertised) && Number(advertised) > entry.bytes) return closeAndFail(asset, 'KIS_STOCK_PIN', 502);
+      if (!asset.body) throw new Failure('KIS_STOCK_PIN', 502);
+      return readCapped(asset.body, entry.bytes, 'KIS_STOCK_PIN', 'UPSTREAM_UNAVAILABLE', 503);
+    });
+    if (gzipped.byteLength !== entry.bytes || await sha256Hex(gzipped) !== entry.sha256) throw new Failure('KIS_STOCK_PIN', 502);
+    let inflated;
+    try { inflated = new Blob([gzipped]).stream().pipeThrough(new DecompressionStream('gzip')); }
+    catch { throw new Failure('KIS_STOCK_INVALID', 502); }
+    const bytes = await readCapped(inflated, entry.json_bytes, 'KIS_STOCK_PIN', 'KIS_STOCK_INVALID', 502);
+    if (bytes.byteLength !== entry.json_bytes || await sha256Hex(bytes) !== entry.json_sha256) throw new Failure('KIS_STOCK_PIN', 502);
+    let view;
+    try { view = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_STOCK_INVALID', 502); }
+    if (!kisStockViewValid(view, entry, index.evaluation_day)) throw new Failure('KIS_STOCK_INVALID', 502);
+    const responseHeaders = headers(origin);
+    if (date.state === 'EXPIRING') { responseHeaders.set('X-Private-Token-Expires-On', date.expires_on); responseHeaders.set('Access-Control-Expose-Headers', 'X-Private-Token-Expires-On'); }
+    return new Response(bytes, { status: 200, headers: responseHeaders });
+  }
+
   return async function handle(request, env) {
     const origin = request.headers.get('Origin');
     if (origin !== ORIGIN) return failureResponse(new Failure('ORIGIN_FORBIDDEN', 403));
     try {
       const url = new URL(request.url);
-      const kis = url.pathname === '/kis/status' || Object.hasOwn(KIS_FILES, url.pathname);
+      const kis = url.pathname === '/kis/status' || url.pathname === KIS_STOCK_ROUTE || Object.hasOwn(KIS_FILES, url.pathname);
       if (url.pathname !== '/history' && !kis) throw new Failure('ROUTE_NOT_FOUND', 404);
       if (!['GET', 'OPTIONS'].includes(request.method)) throw new Failure('METHOD_NOT_ALLOWED', 405);
       let symbol = null, range = null;
@@ -585,6 +735,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       let response;
       try {
         if (url.pathname === '/kis/status') response = await kisStatus(env, origin);
+        else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, env, origin);
         else if (kis) response = await kisFile(url.pathname, symbol, env, origin);
         else {
           let result;
