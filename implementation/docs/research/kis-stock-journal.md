@@ -277,3 +277,60 @@ timing command is the restore command above with `--check-only` replacing
 measurements. It times local source replay, kernels and gzip, excluding
 collection, checkout, writing and upload. The 307.912 s measurement above
 used synthetic 1,260-session data. Actual five-year timing remains open.
+
+## Older-page admission and committed receipt replay
+
+The KIS caller still validates the exchange session date. Compare each
+accepted row with its **original receipt clock in New York**. For a session
+strictly before that local date, no exact close timestamp is needed. For the
+same local date, the known regular or early close must be at or before the
+receipt timestamp. Future sessions fail. This is also applied when reopening
+normalized rows, which carry their original receipt times. No exact close
+timestamp is inferred for 2025-12-26, and the shared PIT decision-time
+calendar retains its unverified status.
+
+Commit a page with the ordinary keyless `kis_request_builder ingest-page`
+command. A repeated receipt is a no-op only when the pinned committed ancestry
+contains it and the original receipt bytes, body hash/size, parsed header,
+provider rows and normalized values match. The first contract file hash stays
+pinned even when its JSON can be re-encoded with different whitespace. An
+uncommitted receipt or conflicting source is not a successful duplicate. Main
+can pass repeated pages through the same command without a filename skip list.
+
+For an approved older-only backfill, Main records the approved workflow run
+and pin of the private capture manifest in the short
+`kis_stock_journal append --revision-reference` argument. For example,
+`PR580/older-only/<run-id>/<manifest-sha256>` is a reference string, not a
+special schema. It permits older new dates to enter the source journal.
+Do not pass a general backfill reference to `ingest-page` as authority to
+change an existing value. A differing overlap needs its own reviewed
+correction before publication.
+
+Offline execution order for Main:
+
+1. Mount the existing retained MODP0 bodies and receipts read-only. Verify the
+   selected input manifest, checksums and admitted codes. Use a scratch copy of
+   the verified monthly baseline. Run `ingest-page` once per accepted page, in
+   original receipt order per series, with pinned evidence and receipt bytes.
+   Keep complete counters for new, unchanged, revised and refused rows.
+2. Run `freeze` on the complete scratch monthly store with the pinned
+   financial, symbol and optional month-end snapshots. Keep the newest approved
+   price evaluation day and a calculation clock that follows the late receipts.
+   Check the full selected scope and actual per-series first/last session dates.
+3. Run `append` with its pinned request, previous committed capture pin and
+   the approved backfill reference. Use its new local staging directory.
+   Merge that staging into a separate scratch source snapshot for this check.
+   Keep the original checkout and the published head unchanged.
+4. Run `restore --source-root "$TEMP_SOURCE" --head "$CAPTURE_PATH"
+   --head-sha256 "$CAPTURE_SHA256" --check-only` on that snapshot. Its
+   `elapsed_seconds`, `max_stock_json_bytes`, `max_stock_gzip_bytes`,
+   `bytes` and stock counts are local rebuild measurements. `bytes` includes
+   the gzip stock files, separate QGV, generation manifest and small
+   query reference. Retain the stage elapsed times separately. This command
+   does not publish or require a provider key.
+
+For the daily workflow, use the same page command with existing latest-page
+guards and the previous complete monthly store asset staged in scratch. A
+calendar/receipt/correction failure must leave both prior source and serving
+generation intact. For older-only planning, derive the next earliest-date
+cursor from the validated committed source as described above.

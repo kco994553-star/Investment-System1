@@ -60,6 +60,18 @@ def _stamp(day):
     return datetime.combine(date.fromisoformat(day), time(0), ZoneInfo('America/New_York'))
 
 
+def _require_completed_session(day, captured):
+    """Check an already validated session against its original receipt clock."""
+    capture_day = captured.astimezone(ZoneInfo('America/New_York')).date()
+    if day < capture_day:
+        return
+    if day == capture_day:
+        close = session_close(day).close_at
+        if close is not None and close <= captured:
+            return
+    raise ValueError('INCOMPLETE_SESSION_AT_CAPTURE')
+
+
 def _query_window(request, captured):
     """Admission bounds, never an invented source query or price timestamp."""
     bymd=request.get('BYMD')
@@ -109,7 +121,7 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
     if hashlib.sha256(body).hexdigest()!=receipt.get('sha256') or len(body)!=receipt.get('bytes'):
         raise ValueError('SOURCE_HASH_OR_SIZE_MISMATCH')
     if receipt.get('http_status')!=200: raise ValueError('SOURCE_HTTP_FAILURE')
-    captured=receipt.get('fetched_at');_ts(captured)
+    captured=receipt.get('fetched_at');capture_time=_ts(captured)
     if request.get('MODP')!='0' or request.get('GUBN')!='0': raise ValueError('RAW_DAILY_SOURCE_REQUIRED')
     symbol=request.get('SYMB');exchange=request.get('EXCD')
     if (not isinstance(symbol,str) or len(symbol)>16 or
@@ -130,8 +142,7 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
         seen.add(day)
         if not schedule.is_session(date.fromisoformat(day)):
             rejected.append({'date':day,'reason':'REFERENCE_CALENDAR_CLOSED'});continue
-        close=session_close(date.fromisoformat(day)).close_at
-        if close is None or close>_ts(captured): raise ValueError('INCOMPLETE_SESSION_AT_CAPTURE')
+        _require_completed_session(date.fromisoformat(day),capture_time)
         try:
             values={k:_decimal(record.get(v),zero=k in ('volume','amount')) for k,v in zip(FIELDS,('open','high','low','clos','tvol','tamt'))}
             o,h,l,c=(values[k] for k in ('open','high','low','close'))
@@ -178,16 +189,16 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
 def validate_contract(c):
     if c.get('schema') not in (SCHEMA,'retained-daily-price/1') or c.get('basis') not in ('RAW','SPLIT_ADJUSTED') or c.get('currency')!='USD':
         raise ValueError('INVALID_DAILY_CONTRACT')
-    _ts(c['collected_at'])
+    header_capture=_ts(c['collected_at'])
     for key in ('raw_bars','bars'):
         days=[_day(r['date']) for r in c[key]]
         if days!=sorted(set(days)) or any(not schedule.is_session(date.fromisoformat(d)) for d in days):
             raise ValueError('INVALID_SESSION_SET')
         for row in c[key]:
             if not re.fullmatch('[0-9a-f]{64}',row.get('source_sha256','')):raise ValueError('ROW_SOURCE_HASH_REQUIRED')
-            if _ts(row['collected_at'])>_ts(c['collected_at']):raise ValueError('ROW_CAPTURE_AFTER_HEADER')
-            close=session_close(date.fromisoformat(row['date'])).close_at
-            if close is None or close>_ts(row['collected_at']):raise ValueError('INCOMPLETE_SESSION_AT_CAPTURE')
+            observed=_ts(row['collected_at'])
+            if observed>header_capture:raise ValueError('ROW_CAPTURE_AFTER_HEADER')
+            _require_completed_session(date.fromisoformat(row['date']),observed)
             for f in FIELDS:_decimal(row.get(f),zero=f in ('volume','amount'))
             values=[_decimal(row.get(k)) for k in ('open','high','low','close')]
             o,h,l,cl=values
