@@ -84,7 +84,7 @@ let phase = 'START';
     browser = await chromium.launch({ executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || undefined });
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await ctx.newPage(), seen = site.watch(page, s.origin, { allow404: [] });
-    const log = [], unexpected = [];
+    const log = [], unexpected = [], gzipped = [];
     await ctx.route('**/*', async (route) => {
       const req = route.request(), url = new URL(req.url());
       if (url.origin === s.origin) { await route.continue(); return; }
@@ -92,8 +92,16 @@ let phase = 'START';
       if (req.url() === GIS_CLIENT) { await route.fulfill({ status: 200, contentType: 'application/javascript', body: GIS_STUB }); return; }
       if (url.origin === WORKER) {
         const res = await handler(new Request(url.href, { method: req.method(), headers: { ...req.headers(), origin: ORIGIN } }), env);
-        const body = Buffer.from(await res.arrayBuffer()), headers = {};
+        let body = Buffer.from(await res.arrayBuffer()); const headers = {};
         res.headers.forEach((v, k) => { headers[k] = v; });
+        // Light read (owner 2026-11-21): the Worker passes the pinned gzip bytes through with Content-Encoding: gzip, unread.
+        // A browser's network layer inflates them; Playwright's fulfill does not, so the stand-in transport does it here,
+        // after checking the bytes are exactly the pinned asset.
+        if (headers['content-encoding'] === 'gzip') {
+          assert.ok(url.pathname === '/kis/stock' && body.equals(viewGz), 'only the stock route answers gzip, and with the pinned bytes unchanged');
+          gzipped.push(url.pathname + url.search);
+          body = zlib.gunzipSync(body); delete headers['content-encoding'];
+        }
         headers['access-control-allow-origin'] = s.origin;           // the test site stands in for the Pages origin
         log.push({ at: Date.now(), path: url.pathname + url.search, status: res.status });
         await route.fulfill({ status: res.status, headers, body }); return;
@@ -159,10 +167,12 @@ let phase = 'START';
 
     phase = 'boundaries';
     assert.deepEqual(unexpected, [], phase + ': no other outside request');
+    assert.deepEqual(gzipped, log.filter((l) => l.path === READS[0] && l.status === 200).map((l) => l.path), phase + ': every answered stock read was the pinned gzip bytes, passed through');
+    assert.ok(gzipped.length >= 1, phase + ': at least one pass-through read');
     const st = await site.storage(page);
     assert.ok(!Object.keys(st.localItems).some((k) => /kis|token|private-layer/i.test(k)), phase + ': no private key on the device');
     assert.deepEqual(site.leaks([...Object.values(st.localItems), page.url(), ...seen.errors], [TOKEN, ...X.MEASURE_RAW]), [], phase + ': no token or private value in storage, the address or the console');
-    console.log('web_app_kis_private_limiter_browser_test: PASS (real Worker limiter, app.html 390: token check then expand, second tap while reading, check while reading; ' + log.length + ' admitted reads, 0 refused)');
+    console.log('web_app_kis_private_limiter_browser_test: PASS (real Worker limiter, app.html 390: token check then expand, second tap while reading, check while reading; ' + log.length + ' admitted reads, 0 refused, ' + gzipped.length + ' gzip pass-through)');
   } catch (e) {
     console.error('FAIL ' + phase + ': ' + (e && e.message ? e.message.split('\n')[0] : e)); process.exitCode = 1;
   } finally {

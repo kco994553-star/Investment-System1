@@ -12,7 +12,7 @@ exception is the official rank at the exact path rows.<code>.rank of `qgv-offici
 Private area (owner approval 2026-10-31, design docs/private_area/PRIVATE_AREA_KIS_DESIGN_20261031.md §7, §18.3, §20.1):
 KIS markers, private-area schema names and private Worker paths fail the build in every public file (added checks only).
 The one narrow exception (owner approval 2026-11-15, design §20.1 "파일 하나·주소 하나로 좁힌 예외"): the owner-private
-reader kis-private.js at the artifact root, at its pinned bytes, may name exactly its six Worker paths and five schema names
+reader kis-private.js at the artifact root, at its pinned bytes, may name exactly its six Worker paths and six schema names
 (PAGES_PRIVATE_EXCEPTIONS below). Every other file, every other path or name, and any other bytes keep every rule unchanged.
 """
 from __future__ import annotations
@@ -196,12 +196,12 @@ APPROVED_SHA256 = {
     "data.js": "5a06bf6ceb49997b7f2aed31411e9c4a5eebafb0122f1d87eee9c926c6ac51ff",
     "engines.js": "6e3604dfe4c347d29b8e66fce01c8330f7a6f7823481a7132184767112ab27a2",
     "lab.js": "91e1b57ab4face44e07cb3db3ef9f3b243084202160f25082146d6ffe5f3168c",
-    "kis-private.js": "fba8e94a3bf68d2dff62f9e4fee0a4cc4e484cc2e2d3088db9e6dd8902682323",
+    "kis-private.js": "02f9d77e7b893efb31b523ae655bba875e6fce7868b5f9162b206e763d89c76a",
     "loader.js": "504ade9ca04bf6b2e24c478e2dc76601c74a4485ecd08281f6aa3de9939bc00e",
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
     "prices.js": "7016abc44f8dfdb7570548e70a7884ea39c74e915dabb47885898d8fe468efe6",
-    "private-expand-live.js": "64c3b521fbe2147d1652e5b0f4e36709ec85e81f31622225cc5ff75f97637d9d",
+    "private-expand-live.js": "4c991288c5627df89a4259759053aa56cd0aff218d802172a68e666e75ec6f34",
     "private.js": "e37ffe513a4e90db9e5688c8ddcaab2cf4794d2aa0bb81f804142cdf6bbd9c92",
     "qgv.js": "527fee2b8395b721f9d2d8d348fea98a6976ee6f0d66274d6d1a5900c7dec091",
     "screen-lab-live.js": "eeb5d00c6b93108f656dc0ba7da55f0a0d236805d2a0ed06250edf9f070d7d21",
@@ -364,9 +364,9 @@ _PATH_HINTS = ("/kis", "/lab", "/private")
 # private-expand-live.js (the panel component) needs no exception: it names no private path or schema.
 PAGES_PRIVATE_EXCEPTIONS = {
     "kis-private.js": {
-        "sha256": "fba8e94a3bf68d2dff62f9e4fee0a4cc4e484cc2e2d3088db9e6dd8902682323",
+        "sha256": "02f9d77e7b893efb31b523ae655bba875e6fce7868b5f9162b206e763d89c76a",
         "paths": ("/kis/status", "/kis/chart", "/kis/analysis", "/kis/technical", "/kis/qgv", "/kis/stock"),
-        "schemas": ("kis-bars/1", "kis-bars/1/analysis", "kis-technical-measures/1", "kis-qgv/1", "kis-status/1"),
+        "schemas": ("kis-bars/1", "kis-bars/1/analysis", "kis-technical-measures/1", "kis-qgv/1", "kis-status/1", "kis-stock-view/1"),
     },
 }
 _SCHEMA_TOKEN_CHARS = frozenset("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_./-")
