@@ -320,19 +320,22 @@ function kisAssetEntryValid(v, withSymbol) {
     && (!withSymbol || (typeof v.symbol === 'string' && /^[A-Z][A-Z0-9./_-]{0,15}$/.test(v.symbol)));
 }
 
-// kis-stock-asset-index/1: exact keys, request symbols from the Worker's list only, every asset id distinct.
-export function kisStockIndexValid(value) {
+// kis-stock-asset-index/1, the top level and the one entry this request needs (owner 2026-11-21 proposal A, CPU on the free
+// plan): exact top-level keys, schema, scope, day, tag, generation and the qgv entry; then, for a stock request, the requested
+// symbol from the Worker's list, its entry's exact keys and ranges, and an asset id other than the qgv one. The other entries
+// are not read here: the publish workflow checks every entry's shape and that every asset id is distinct before it writes the
+// index, and each answer is still held to its own size and sha256 pins below. Returns the entry, 'MISSING' or 'INVALID'.
+export function kisStockIndexEntry(value, symbol) {
   if (!exactKeys(value, ['schema', 'publication_scope', 'evaluation_day', 'release_tag', 'generation_sha256', 'stocks', 'qgv'])
     || value.schema !== 'kis-stock-asset-index/1' || value.publication_scope !== 'OWNER_PRIVATE_ONLY'
     || calendarDate(value.evaluation_day) === null
     || typeof value.release_tag !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value.release_tag)
-    || !hex64(value.generation_sha256) || !plainObject(value.stocks) || !kisAssetEntryValid(value.qgv, false)) return false;
-  const ids = new Set([value.qgv.asset_id]);
-  for (const [symbol, entry] of Object.entries(value.stocks)) {
-    if (!KIS_SYMBOLS.has(symbol) || !kisAssetEntryValid(entry, true) || ids.has(entry.asset_id)) return false;
-    ids.add(entry.asset_id);
-  }
-  return true;
+    || !hex64(value.generation_sha256) || !plainObject(value.stocks) || !kisAssetEntryValid(value.qgv, false)) return 'INVALID';
+  if (symbol === null) return value.qgv;
+  if (!KIS_SYMBOLS.has(symbol)) return 'INVALID';
+  if (!Object.hasOwn(value.stocks, symbol)) return 'MISSING';
+  const entry = value.stocks[symbol];
+  return kisAssetEntryValid(entry, true) && entry.asset_id !== value.qgv.asset_id ? entry : 'INVALID';
 }
 
 // The asset API's answer. Only a 302 whose Location is an absolute https URL on exactly the release asset host (default port,
@@ -654,9 +657,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     const bad = kisUpstreamState(response, date);
     if (bad) return closeAndFail(response, bad.code, bad.http);
     const index = await readJson(response, KIS_STOCK_INDEX_MAX_BYTES, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
-    if (!kisStockIndexValid(index)) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-    if (part === null && !Object.hasOwn(index.stocks, symbol)) throw new Failure('KIS_SERIES_NOT_FOUND', 404);
-    const entry = part === 'qgv' ? index.qgv : index.stocks[symbol];
+    const entry = kisStockIndexEntry(index, part === 'qgv' ? null : symbol);
+    if (entry === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+    if (entry === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
     const gzipped = await timed(15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
       let api;
       try {
