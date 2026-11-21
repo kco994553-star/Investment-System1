@@ -131,6 +131,9 @@ function renderStock(body,[sRaw],ctx,status){const K=I.kisPrivate,p=K.stockParts
  // The view must be the company asked for (the Worker no longer reads the view; a class share's file names BRK/B for BRK-B).
  if(K.requestSymbol(sRaw.symbol)!==ctx.symbol)throw Error('SYMBOL_MISMATCH');
  if(p.value.analysis===null)throw Error('KIS_STOCK_INVALID');
+ // One check line (owner 2026-11-21): the view's own first / last session, bar count and split basis, as given; nothing recomputed.
+ const c=p.value.chart,bars=c.bars,n=bars.length,splits=Array.isArray(c.splits)?c.splits.length:0,adj=c.basis==='SPLIT_ADJUSTED';
+ if(n)status.push(['자료 범위',bars[0].date+' ~ '+bars[n-1].date+' · '+n.toLocaleString('en-US')+'봉 · 분할 반영 '+(adj?'예':'아니오')+' ('+splits+'건)',{privateRange:adj?'SPLIT_ADJUSTED':'RAW'}]);
  renderTechnical(body,[p.value.analysis,p.value.chart,p.value.measures],ctx,status);}
 // The KIS V panel reads the QGV object of the same release generation (owner 2026-11-21), no longer the qgv route.
 const READS=Object.freeze({technical:t=>(t.symbol?[['stock',t.symbol]]:null),qgv:()=>[['stockQgv',null]]});
