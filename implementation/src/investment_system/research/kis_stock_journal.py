@@ -6,6 +6,7 @@ complete private view generation separately from the immutable source commit.
 import argparse
 from collections.abc import Mapping
 import gzip
+import io
 import json
 from pathlib import Path
 import re
@@ -21,6 +22,7 @@ from .private_kis_reference import reference_files, official_reference
 
 SCOPE = 'OWNER_PRIVATE_ONLY'
 JOURNAL = 'kis-stock-journal/1'
+INDEXED_JOURNAL = 'kis-stock-journal/2'
 VIEW = 'kis-stock-generation/1'
 PROJECTION_VERSION = 'KIS_STOCK_GSQ015_1'
 SMALL_LIMIT = 3072
@@ -161,6 +163,18 @@ def archive_files(config, patches, parent, revision=None):
                  context=clock_context(config), parts=parts, revision=revision)
     value = json_bytes(frame)
     limit = MAX_BYTES if parent is None else SMALL_LIMIT
+    if len(value) > limit and parts:
+        # A historical append may have many independently capped row blobs.
+        # Keep regular frames byte-compatible and pin one list on overflow.
+        part_list = json_bytes(parts)
+        need(len(part_list) <= MAX_BYTES, 'STOCK_ARCHIVE_FILE_LIMIT')
+        part_index = gzip.compress(part_list, compresslevel=6, mtime=0)
+        need(len(part_index) <= MAX_BYTES, 'STOCK_ARCHIVE_FILE_LIMIT')
+        path = f'rows/{sha(part_index)}.json.gz'
+        files[path] = part_index
+        del frame['parts']
+        frame.update(schema=INDEXED_JOURNAL, parts_index=ref(path, part_index))
+        value = json_bytes(frame)
     need(len(value) <= limit, 'STOCK_ARCHIVE_SUMMARY_LIMIT')
     index = ref(f'captures/{sha(value)}.json', value)
     files[index['path']] = value
@@ -175,7 +189,7 @@ def replay(root, head):
         need(head['sha256'] not in seen, 'JOURNAL_CAPTURE_CYCLE')
         seen.add(head['sha256'])
         frame = parse(root, head)
-        need(frame['schema'] == JOURNAL and frame['publication_scope'] == SCOPE, 'JOURNAL_CONTRACT')
+        need(frame['schema'] in (JOURNAL, INDEXED_JOURNAL) and frame['publication_scope'] == SCOPE, 'JOURNAL_CONTRACT')
         chain.append(frame)
         head = frame['previous']
     need(chain, 'STOCK_ARCHIVE_HEAD_REQUIRED')
@@ -189,7 +203,17 @@ def replay(root, head):
         need(previous_time is None or moment >= previous_time, 'JOURNAL_CLOCK_REGRESSION')
         previous_day, previous_time = day, moment
         codes = set()
-        for part in frame['parts']:
+        if frame['schema'] == INDEXED_JOURNAL:
+            need('parts' not in frame, 'JOURNAL_CONTRACT')
+            with gzip.GzipFile(fileobj=io.BytesIO(read(root, frame['parts_index']))) as stream:
+                part_list = stream.read(MAX_BYTES + 1)
+            need(len(part_list) <= MAX_BYTES, 'STOCK_ARCHIVE_FILE_LIMIT')
+            parts = json.loads(part_list)
+            need(isinstance(parts, list) and bool(parts), 'JOURNAL_PARTS_INDEX')
+        else:
+            need('parts_index' not in frame, 'JOURNAL_CONTRACT')
+            parts = frame['parts']
+        for part in parts:
             patches = json.loads(gzip.decompress(read(root, part)))
             need(not codes.intersection(patches), 'JOURNAL_DUPLICATE_CODE')
             codes.update(patches)
