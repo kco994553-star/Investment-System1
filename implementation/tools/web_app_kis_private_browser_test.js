@@ -192,6 +192,8 @@ let phase = 'START', pass = 0, where = '';
       assert.equal(await count(page, '[data-private-measures=READY]'), 1);
       assert.deepEqual(await page.locator('[data-private-panel=tech-kis-chart] [data-ram-price]').allTextContents(), ['2026-10-23 · 11', '11'], phase + ': values as RAM text only');
       assert.ok((await text(page, '[data-private-facts=technical]')).includes('공급처'), phase + ': the file facts are in the 상태 box');
+      // One check line (owner 2026-11-21): first / last session, bar count and split basis read off the view, nothing recomputed.
+      assert.match(await text(page, '[data-private-facts=technical] [data-private-range=RAW]'), /^\d{4}-\d{2}-\d{2} ~ 2026-10-23 · \d+봉 · 분할 반영 아니오 \(0건\)$/, phase + ': the range line');
       assert.equal(await count(page, '[data-indicator] [data-verdict]'), holds, phase + ': the public verdicts are unchanged');
 
       assert.equal(await count(page, '[data-private-timing]'), 0, phase + ': the 새 경로 시간 재기 button is gone after the switch');
