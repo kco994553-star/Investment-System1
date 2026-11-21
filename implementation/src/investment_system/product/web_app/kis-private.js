@@ -1,7 +1,7 @@
 /* Owner-private KIS layer: reader and authenticated client (IS2.kisPrivate; owner 2026-11-05 DC-44, 2026-11-14 DC-52, 2026-11-15
    DC-53; Codex #480 contract docs/research/KIS_PRIVATE_PRICE_BRIDGE_20261105.md). The one web source that names the private
    Worker routes (owner 2026-11-05 narrow exception: this file only, the routes below — status, chart, analysis, technical,
-   qgv, and since 2026-11-20 stock for the timing button only —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
+   qgv, and since 2026-11-20 stock, the technical panel's one read —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
    preview publishes this file under the narrow Pages guard exception (owner 2026-11-15: this root file only, at its pinned
    bytes, exactly these six routes and the five SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
    - A click asks for the owner's Google token (scope exactly openid email, include_granted_scopes false; NO_ZT §4.2), keeps it
@@ -27,8 +27,8 @@
 'use strict';
 const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1'});
 const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',
- // The sixth route (owner 2026-11-20 묶음 ⑤·⑥): the one-file stock view of the Worker's new stock route, read ONLY by the 상태 box's
- // 새 경로 시간 재기 button (IS2.prices.kisTimed) until the owner approves the screen switch; nothing on the screen shows it.
+ // The sixth route (owner 2026-11-20 screen switch): the technical panel's one read, the one-file stock view of the Worker's
+ // stock route. chart / analysis / technical stay here and on the Worker (owner: unchanged until told otherwise) but no panel reads them.
  stock:'/kis/stock'});
 // Routes that take ?symbol=<SYM>; the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical','stock']);
@@ -193,6 +193,27 @@ const validateMeasures=wrap(m=>{const at='$';
   if(r)raw++;if(v)adopted++;}
  if(!intOk(m.raw_count)||m.raw_count!==raw)refuse('COUNT_MISMATCH',at+'.raw_count');if(!intOk(m.adopted_count)||m.adopted_count!==adopted)refuse('COUNT_MISMATCH',at+'.adopted_count');
  return m;});
+
+/* The stock route's one-file view (owner 2026-11-20 screen switch; Codex #571 stock view contract, which the Worker checks before it
+   answers: scope, symbol, evaluation day, 17 fields, no extra request for a toggle or a period). stockParts only ASSEMBLES the three
+   parts the technical panel already reads: the chart in the chart reader's shape (SCHEMA.BARS) from the view's chart header and its first six
+   columns (date, open, high, low, close, volume; the RAW rows themselves, or raw_rows when the view carries a separate RAW
+   series), and the producer's own latest analysis and measures objects. Nothing is calculated here; validateBars,
+   validateAnalysis and validateMeasures then check every part exactly as before (first fault refuses). */
+const STOCK_OHLCV=Object.freeze(['date','open','high','low','close','volume']);
+const stockParts=wrap(v=>{const at='$';
+ need(v,['publication_scope','symbol','evaluation_day','fields','rows','chart','latest'],at);
+ if(v.publication_scope!=='OWNER_PRIVATE_ONLY')refuse('SCOPE',at+'.publication_scope');
+ if(!Array.isArray(v.fields)||STOCK_OHLCV.some((f,i)=>v.fields[i]!==f))refuse('STOCK_FIELDS',at+'.fields');
+ const bar=(r,i,p)=>{if(!Array.isArray(r)||r.length<6)refuse('TYPE',p+'['+i+']');return{date:r[0],open:r[1],high:r[2],low:r[3],close:r[4],volume:r[5]};};
+ if(!Array.isArray(v.rows))refuse('TYPE',at+'.rows');
+ const bars=v.rows.map((r,i)=>bar(r,i,at+'.rows'));
+ const raw=own(v,'raw_rows')?(Array.isArray(v.raw_rows)?v.raw_rows.map((r,i)=>bar(r,i,at+'.raw_rows')):refuse('TYPE',at+'.raw_rows')):bars;
+ if(!isObj(v.chart)||!isObj(v.latest))refuse('TYPE',at+'.chart');
+ const header={};for(const[k,x]of Object.entries(v.chart))if(k!=='schema')header[k]=x;
+ if(header.symbol!==v.symbol)refuse('SYMBOL',at+'.chart.symbol');
+ return{chart:{...header,schema:SCHEMA.BARS,bars,raw_bars:raw},analysis:own(v.latest,'technical')?v.latest.technical:null,
+  measures:own(v.latest,'measures')?v.latest.measures:null};});
 
 /* kis-qgv/1: the private layer of the common engine. Never a rank, never the official publication or TARGET. */
 /* KIS V stage 1 (owner 2026-11-15): the official method (calc 23.1) fed with KIS closes. The exact kis-qgv/1 fields are being agreed
@@ -373,5 +394,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,stockParts,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

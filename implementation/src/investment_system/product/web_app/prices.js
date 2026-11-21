@@ -280,23 +280,6 @@ function create({win,action,data}){
     let r;try{r=await kisOne(route,symbol,signal);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}
    return out;});
   kisQueue=run.catch(()=>{});return run;});}
- // 새 경로 시간 재기 (owner 2026-11-20 묶음 ⑥; removed once the screen switch is done): ONE click = the three reads the technical
- // panel sends today (analysis, chart, technical) and then the one read of the new stock route, through the same queue and the
- // same 5 s spacing. Each body is dropped at once: only its JSON length (characters) is kept, never a value. A part that fails
- // keeps its error code and the next part still runs; a sign-in failure or a cancel stops the click. Times are monotonic ms.
- const KIS_TIMED=Object.freeze(['analysis','chart','technical','stock']);
- function kisTimed(event,symbol){return action.run(event,'PRIVATE_READ',signal=>{
-  const run=kisQueue.then(async()=>{const parts=[];
-   for(const route of KIS_TIMED){const spans=[];let chars=null,code=null;
-    try{const b=await kisOne(route,symbol,signal,spans);chars=JSON.stringify(b).length;}
-    catch(e){const c=e&&typeof e.message==='string'?e.message:'PRIVATE_READ_FAILED';
-     if(['CANCELED','AUTH_REQUIRED','AUTH_FORBIDDEN','REQUEST_INVALID','LOADER_FAILED'].includes(c))throw e;code=c;}
-    const at=spans.length?spans[0][0]:null,end=spans.length?spans[spans.length-1][1]:null;
-    parts.push(Object.freeze({route,ms:spans.length?Math.round(spans[spans.length-1][1]-spans[spans.length-1][0]):null,chars,code,at,end}));}
-   const old=parts.slice(0,3),neu=parts[3];
-   return Object.freeze({parts:Object.freeze(parts.map(({route,ms,chars,code})=>Object.freeze({route,ms,chars,code}))),
-    old_wall_ms:old[0].at!==null&&old[2].end!==null?Math.round(old[2].end-old[0].at):null,new_ms:neu.ms});});
-  kisQueue=run.catch(()=>{});return run;});}
  // The private Worker admits one owner request at a time, at least 5 s apart (MIN_SPACING_MS; found on the retained-archive replay
  // 2026-11-05: parallel reads of one click were refused 429). The reads of a click therefore run one after another with that gap,
  // and a read refused as RATE_LIMITED is tried once more after the gap. The gap counts from the last request this window sent, of
@@ -309,12 +292,11 @@ function create({win,action,data}){
   if(wait<=0){resolve();return;}
   const t=win.setTimeout(()=>{if(signal)signal.removeEventListener('abort',stop);resolve();},wait);
   const stop=()=>{win.clearTimeout(t);reject(Error('CANCELED'));};if(signal)signal.addEventListener('abort',stop,{once:true});});}
- async function kisSend(route,symbol,signal,spans){await kisPause(signal);const t0=kisNow();kisLastAt=t0;
-  try{return await kisC().get(route,symbol,signal);}finally{kisLastAt=kisNow();if(spans)spans.push([t0,kisLastAt]);}}
- async function kisOne(route,symbol,signal,spans){try{return await kisSend(route,symbol,signal,spans);}
-  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;return kisSend(route,symbol,signal,spans);}}
+ async function kisSend(route,symbol,signal){await kisPause(signal);kisLastAt=kisNow();try{return await kisC().get(route,symbol,signal);}finally{kisLastAt=kisNow();}}
+ async function kisOne(route,symbol,signal){try{return await kisSend(route,symbol,signal);}
+  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;return kisSend(route,symbol,signal);}}
  return Object.freeze({UNIVERSE_SOURCE_KEY,WORKER_ORIGIN_KEY,status,subscribe,deviceSettings,prepare,login,logout,readUniverse,universeView,universeRanks:()=>ranks,rankFor,
-  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade,kisState,kisSubscribe,kisConnect,kisDisconnect,kisRead,kisTimed});
+  useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade,kisState,kisSubscribe,kisConnect,kisDisconnect,kisRead});
 }
 return Object.freeze({create});
 });

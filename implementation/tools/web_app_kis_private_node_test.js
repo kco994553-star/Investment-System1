@@ -368,6 +368,32 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     await assert.rejects(h.c.get('stock', 'BRK/B'), /REQUEST_INVALID/, 'stock takes the request symbol, not the KIS file symbol');
     assert.equal(h.sent.length, 4);
   });
+  await ok('stockParts: the one-file view is only assembled into the three parts the panel reads; the readers then check them', async () => {
+    const c = X.bars({ symbol: 'NVDA' }), a = X.analysis({ adopted: true }), m = X.measures({ symbol: 'NVDA' });
+    const { bars, raw_bars: rawBars, schema, ...header } = c;
+    const fields = ['date', 'open', 'high', 'low', 'close', 'volume', 'amount', ...Array.from({ length: 10 }, (_, i) => 'I' + i)];
+    const view = () => ({ schema: X.K('stock-view/1'), publication_scope: 'OWNER_PRIVATE_ONLY', symbol: 'NVDA', evaluation_day: a.evaluation_day, fields,
+      rows: bars.map((b) => [b.date, b.open, b.high, b.low, b.close, b.volume, null, ...Array(10).fill(1.5)]), chart: { ...header, schema: X.K('chart-metadata/1') },
+      latest: { technical: a, measures: m }, additional_requests_for_toggle: 0, additional_requests_for_retained_period: 0 });
+    const r = KP.stockParts(view());
+    assert.equal(r.ok, true);
+    assert.equal(r.value.chart.schema, KP.SCHEMA.BARS);
+    assert.deepEqual(r.value.chart.bars.map((b) => [b.date, b.close]), bars.map((b) => [b.date, b.close]), 'the six columns as given, no value changed');
+    assert.deepEqual(r.value.chart.raw_bars, r.value.chart.bars, 'a RAW view: the RAW rows themselves');
+    assert.equal(KP.validateBars(r.value.chart).ok, true, 'the assembled chart passes the unchanged chart reader');
+    assert.deepEqual([KP.validateAnalysis(r.value.analysis).ok, KP.validateMeasures(r.value.measures).ok], [true, true]);
+    const noMeasures = view(); delete noMeasures.latest.measures;
+    assert.equal(KP.stockParts(noMeasures).value.measures, null, 'no measures object: that part alone is 자료 없음');
+    const split = view(); split.raw_rows = split.rows.map((x) => [...x]);
+    assert.equal(KP.stockParts(split).value.chart.raw_bars.length, bars.length, 'a separate RAW series is carried');
+    for (const [label, change, code] of [
+      ['fields out of order', (v) => { v.fields = ['open', 'date', ...v.fields.slice(2)]; }, 'STOCK_FIELDS'],
+      ['short row', (v) => { v.rows[0] = v.rows[0].slice(0, 5); }, 'TYPE'],
+      ['another symbol in the header', (v) => { v.chart.symbol = 'AMD'; }, 'SYMBOL'],
+      ['scope', (v) => { v.publication_scope = 'PUBLIC'; }, 'SCOPE'],
+      ['no latest', (v) => { delete v.latest; }, 'KEY_MISSING'],
+    ]) { const v = view(); change(v); const x = KP.stockParts(v); assert.deepEqual([x.ok, x.code], [false, code], label); }
+  });
   await ok('client: a wider scope is refused; a server 403 drops the token; expiry drops it; disconnect drops it', async () => {
     let h = harness({ scope: 'openid email https://www.googleapis.com/auth/drive.file' });
     await assert.rejects(h.c.connect(), /LOGIN_REFUSED/); assert.equal(h.c.state().connected, false);

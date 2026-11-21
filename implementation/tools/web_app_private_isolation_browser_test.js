@@ -147,8 +147,9 @@ let phase = 'START';
     await close(base);
 
     // Data failures after a sign-in: the private cell takes its short state, the public screen stays.
-    // A transport or auth failure stops the click at its first read; a file of the wrong schema is refused after the click's reads.
-    const ALL = ['/kis/analysis', '/kis/chart', '/kis/technical'];
+    // The technical panel's click is one read of the stock route (owner 2026-11-20 switch): a transport or auth failure is that
+    // read's answer, and a file of the wrong shape is refused after it.
+    const ALL = ['/kis/stock'];
     for (const [label, answer, st, reads] of [
       ['403', { status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } }, 'LOGIN_REQUIRED', ALL.slice(0, 1)],
       ['500', { status: 500, body: { error: { code: 'UPSTREAM_UNAVAILABLE' } } }, 'ERROR', ALL.slice(0, 1)],
