@@ -74,3 +74,53 @@ def test_older_page_cursor_reads_committed_journal_not_the_newest_receipt(tmp_pa
     out = builder.plan_coverage(source, head['path'], head['sha256'], result)
     assert out['series'] == 1
     assert json.loads(result.read_bytes())['CODE'] == {'earliest':'20261019','latest':'20261023'}
+
+
+def test_older_page_with_unknown_close_reaches_frozen_append_and_restore(tmp_path, capsys):
+    from investment_system.research import kis_stock_journal as journal
+    from investment_system.research._private_artifacts import json_bytes
+    req, initial = inputs(tmp_path/'input')
+    root = req.parent
+    original = json.loads(req.read_bytes())
+    req.rename(root/'baseline.json')
+    code = next(iter(json.loads((root/'symbols.json').read_bytes())))
+    old_patch = journal.changes({code:initial}, {}, original, None)
+    old_files, old_head = journal.archive_files(original, old_patch, None)
+
+    def put(files):
+        for path, value in files.items():
+            dest = root/path
+            if dest.exists():
+                assert dest.read_bytes() == value
+            else:
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(value)
+
+    put(old_files)
+    old_query = dict(initial['source_query'], BYMD='20251226')
+    body = json_bytes(dict(rt_cd='0', output1=dict(rsym='DNASSYN'), output2=[
+        dict(xymd='20251226',open='10',high='12',low='9',clos='11',tvol='100',tamt='1100')]))
+    receipt = json_bytes(dict(sha256=sha(body),bytes=len(body),http_status=200,
+                              fetched_at='2026-11-20T16:00:00Z',request=old_query))
+    evidence = dict(currency='USD',currency_reference='SYNTHETIC_NOT_A_COMPANY')
+    result = builder.ingest_page(root/'store', body, receipt, sha(receipt), evidence)
+    assert result['new_rows'] == 1
+    frozen = builder.freeze(root, store_path='store', evaluation_day=original['evaluation_day'],
+                            calculated_at='2026-11-20T17:00:00Z',
+                            financial=original['financial'], symbols=original['symbols'], expected_series=1)
+    _, config, contracts = load_request(req, frozen['request_sha256'])
+    _, state = journal.replay(root, old_head)
+    with pytest.raises(ValueError, match='JOURNAL_REVISION_REFERENCE_REQUIRED'):
+        journal.changes(contracts, state, config, None)
+    review = 'SYNTHETIC_APPROVED_OLDER_ONLY'
+    update = journal.changes(contracts, state, config, review)
+    assert len(update[code]['rows']) == 1
+    files, head = journal.archive_files(config, update, old_head, review)
+    put(files)
+    assert journal.main(['restore','--source-root',str(root),'--head',head['path'],
+                         '--head-sha256',head['sha256'],'--check-only']) == 0
+    restored = json.loads(capsys.readouterr().out)
+    assert restored['stock_written'] == 1 and restored['max_stock_gzip_bytes'] > 0
+    _, latest = journal.replay(root, head)
+    assert sorted(latest[code]['rows'])[0] == '2025-12-26'
+    assert sorted(latest[code]['rows'])[-1] == original['evaluation_day']

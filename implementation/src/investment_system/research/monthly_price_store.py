@@ -243,13 +243,52 @@ def ingest(root, *, contract_bytes, body, receipt_bytes, expected_contract_sha25
                               expected_contract_sha256, revision_reference)
 
 
+def _committed_receipt(root, latest, receipt_path):
+    """Resolve only a receipt in the verified committed chain."""
+    current = latest
+    sid = latest['series_id']
+    seen = set()
+    while current is not None:
+        pin = current['manifest_sha256']
+        _need(pin not in seen, 'MANIFEST_CHAIN_CYCLE')
+        seen.add(pin)
+        if current['receipt']['path'] == receipt_path:
+            return current
+        prior = current['previous_manifest']
+        if prior is None:
+            break
+        _need(isinstance(prior, str) and re.fullmatch('[0-9a-f]{64}', prior), 'MANIFEST_PREDECESSOR_PIN')
+        path = f'series/{sid}/manifests/{prior}.json'
+        current = json.loads(_path(root, path).read_bytes())
+        _check_manifest(current)
+        _need(current['manifest_sha256'] == prior and current['series_id'] == sid, 'MANIFEST_PREDECESSOR_PIN')
+    return None
+
+
+def _economic_bar(row):
+    return {key: value for key, value in (row or {}).items()
+            if key not in ('source_sha256', 'collected_at')}
+
+
+def _verify_committed_replay(root, manifest, received, source, bars):
+    saved = retained_metadata(root, manifest)
+    # JSON whitespace/encoding in the derived contract is not source evidence.
+    # The original contract hash remains pinned in the existing receipt object.
+    _need({k:v for k,v in saved.items() if k != 'input_contract_sha256'} ==
+          {k:v for k,v in received.items() if k != 'input_contract_sha256'}, 'RECEIPT_REPLAY_MISMATCH')
+    historical = _latest(read_records(root, manifest))
+    for row in source['output2']:
+        day = datetime.strptime(row['xymd'], '%Y%m%d').date().isoformat()
+        existing = historical.get(day)
+        _need(existing is not None and existing['provider'] == row and
+              _economic_bar(existing['bar']) == _economic_bar(bars.get(day)), 'RECEIPT_REPLAY_MISMATCH')
+
+
 def _ingest_locked(root, c, source, receipt, receipt_bytes, series, sid, contract_hash, review):
     previous = load_manifest(root, sid) if _path(root, f'series/{sid}/latest.json').exists() else None
     evidence = {k: c.get(k) for k in _EVIDENCE}
     if previous:
         _need(previous['series'] == series and previous['evidence'] == evidence, 'SERIES_EVIDENCE_CHANGE')
-        _need(_ts(c['collected_at']) >= _ts(previous['collected_at']), 'CAPTURE_REGRESSION')
-    existing = _latest(read_records(root, previous)) if previous else {}
     receipt_hash = _sha(receipt_bytes)
     receipt_path = f'series/{sid}/receipts/{receipt_hash}.json.gz'
     header = {k: v for k, v in c.items() if k not in ('raw_bars', 'bars')}
@@ -258,21 +297,26 @@ def _ingest_locked(root, c, source, receipt, receipt_bytes, series, sid, contrac
                 input_contract_sha256=contract_hash, original_body_sha256=receipt['sha256'],
                 original_body_bytes=receipt['bytes'], raw_body_retained=False,
                 original_body_reconstructable=False)
-    rb = gzip.compress(json_bytes(meta), mtime=0)
-    if previous and previous['receipt']['path'] == receipt_path:
-        _need(_path(root, receipt_path).read_bytes() == rb, 'RECEIPT_REPLAY_MISMATCH')
-        return dict(series_id=sid, manifest_sha256=previous['manifest_sha256'],
-                    new_rows=0, revised_rows=0, unchanged_rows=len(source['output2']), appended_bytes=0)
     bars = {r['date']: r for r in c['raw_bars']}
+    if previous and (_path(root, receipt_path).exists() or
+                     _ts(c['collected_at']) <= _ts(previous['collected_at'])):
+        committed = _committed_receipt(root, previous, receipt_path)
+        if committed is not None:
+            _verify_committed_replay(root, committed, meta, source, bars)
+            return dict(series_id=sid, manifest_sha256=previous['manifest_sha256'],
+                        new_rows=0, revised_rows=0, unchanged_rows=len(source['output2']), appended_bytes=0)
+    if previous:
+        _need(_ts(c['collected_at']) >= _ts(previous['collected_at']), 'CAPTURE_REGRESSION')
+    existing = _latest(read_records(root, previous)) if previous else {}
+    rb = gzip.compress(json_bytes(meta), mtime=0)
     pending, counts = {}, dict(new_rows=0, revised_rows=0, unchanged_rows=0)
     for row in source['output2']:
         day = datetime.strptime(row['xymd'], '%Y%m%d').date().isoformat()
         prior = existing.get(day)
         # Capture/source hashes alone must never turn overlapping rows into revisions.
-        old_bar = {k: v for k, v in (prior['bar'] or {}).items()
-                   if k not in ('source_sha256', 'collected_at')} if prior else None
+        old_bar = _economic_bar(prior['bar']) if prior else None
         bar = bars.get(day)
-        new_bar = {k: v for k, v in (bar or {}).items() if k not in ('source_sha256', 'collected_at')}
+        new_bar = _economic_bar(bar)
         if prior and prior['provider'] == row and old_bar == new_bar:
             counts['unchanged_rows'] += 1
             continue

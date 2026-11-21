@@ -277,3 +277,112 @@ timing command is the restore command above with `--check-only` replacing
 measurements. It times local source replay, kernels and gzip, excluding
 collection, checkout, writing and upload. The 307.912 s measurement above
 used synthetic 1,260-session data. Actual five-year timing remains open.
+
+## Older-page admission and committed receipt replay
+
+The KIS caller still validates the exchange session date. Compare each
+accepted row with its **original receipt clock in New York**. For a session
+strictly before that local date, no exact close timestamp is needed. For the
+same local date, the known regular or early close must be at or before the
+receipt timestamp. Future sessions fail. This is also applied when reopening
+normalized rows, which carry their original receipt times. No exact close
+timestamp is inferred for 2025-12-26, and the shared PIT decision-time
+calendar retains its unverified status.
+
+Commit a page with the ordinary keyless `kis_request_builder ingest-page`
+command. A repeated receipt is a no-op only when the pinned committed ancestry
+contains it and the original receipt bytes, body hash/size, parsed header,
+provider rows and normalized values match. The first contract file hash stays
+pinned even when its JSON can be re-encoded with different whitespace. An
+uncommitted receipt or conflicting source is not a successful duplicate. Main
+can pass repeated pages through the same command without a filename skip list.
+
+For an approved older-only backfill, Main records the approved workflow run
+and pin of the private capture manifest in the short
+`kis_stock_journal append --revision-reference` argument. For example,
+`PR580/older-only/<run-id>/<manifest-sha256>` is a reference string, not a
+special schema. It permits older new dates to enter the source journal.
+Do not pass a general backfill reference to `ingest-page` as authority to
+change an existing value. A differing overlap needs its own reviewed
+correction before publication.
+
+Offline execution order for Main:
+
+1. Mount the existing retained MODP0 bodies and receipts read-only. Verify the
+   selected input manifest, checksums and admitted codes. Use a scratch copy of
+   the verified monthly baseline. Run `ingest-page` once per accepted page, in
+   original receipt order per series, with pinned evidence and receipt bytes.
+   Keep complete counters for new, unchanged, revised and refused rows.
+2. Run `freeze` on the complete scratch monthly store with the pinned
+   financial, symbol and optional month-end snapshots. Keep the newest approved
+   price evaluation day and a calculation clock that follows the late receipts.
+   Check the full selected scope and actual per-series first/last session dates.
+3. Run `append` with its pinned request, previous committed capture pin and
+   the approved backfill reference. Use its new local staging directory.
+   Merge that staging into a separate scratch source snapshot for this check.
+   Keep the original checkout and the published head unchanged.
+4. Run `restore --source-root "$TEMP_SOURCE" --head "$CAPTURE_PATH"
+   --head-sha256 "$CAPTURE_SHA256" --check-only` on that snapshot. Its
+   `elapsed_seconds`, `max_stock_json_bytes`, `max_stock_gzip_bytes`,
+   `bytes` and stock counts are local rebuild measurements. `bytes` includes
+   the gzip stock files, separate QGV, generation manifest and small
+   query reference. Retain the stage elapsed times separately. This command
+   does not publish or require a provider key.
+
+For the daily workflow, use the same page command with existing latest-page
+guards and the previous complete monthly store asset staged in scratch. A
+calendar/receipt/correction failure must leave both prior source and serving
+generation intact. For older-only planning, derive the next earliest-date
+cursor from the validated committed source as described above.
+
+### Large backfill summaries
+
+The 3,072-byte limit for a capture with a parent still applies. Each capture
+pins only its own changed rows and its immediate parent. Main's retained
+five-year test produced 16 row blobs between 1,136,982 and 1,278,059 bytes.
+Their inline pins accounted for about 2.9 KB of the 3,633-byte frame. The
+other fields were the existing context, parent and review reference.
+Ordinary one-part daily captures retain the existing journal/1 encoding.
+
+If the inline frame exceeds the limit, the writer puts the complete ordered
+pin list in one immutable gzip JSON file at rows/<sha256>.json.gz. A
+journal/2 capture then contains a single parts_index reference with its
+path, compressed size and SHA256. Replay verifies this reference before
+opening the bounded list, then verifies each original row blob as before.
+The new reader also handles old journal/1 heads. Use the same producer
+revision for append, restore and coverage once an indexed capture exists.
+The publisher must stage every file that append emits in rows/ and captures/.
+Files under rows/ retain the same naming convention. The indexed object is
+identified by the capture, and has no serving-route role.
+
+Replacing the 16 inline pins with one indexed pin reduces the reported
+3,633-byte frame to about 918 bytes by field-length accounting. A synthetic
+list with 16 equivalent pins took 857 gzip bytes. The large append adds one
+file (16 row blobs + one index + one capture = 18 files). No large index is
+added to normal daily frames. Compared with the previous estimate, allow up
+to 4 KiB for the one-time summary and list in this measured-shape scenario.
+An unusually large later backfill would use the same overflow path and count
+as a separate batch.
+
+The daily release asset index is separate from the journal parts index. The
+Worker's current asset-index/1 also requires decoded byte counts and hashes,
+which were outside the earlier 32 KB/day index estimate. A 20-generation
+synthetic size check of the current 517-stock + QGV schema, including both
+hashes, content-addressed names and ten-digit asset IDs, reached 173,577 JSON
+bytes (Worker limit 262,144) and 60,473 Git loose-blob bytes at zlib level 1.
+Budgeting 61 KB/day × 252 without delta credit gives 15.372 MB/year for this
+index. This updates the first-year estimate to about 214.09 MB including the
+one-time allowance, and subsequent years to 109.22 MB. The revision is due
+to the release index's required fields. Measure the actual index before
+publication. The oversized capture fix does not increase the daily budget.
+
+In Main's scratch trial with the summary stop bypassed, the same held inputs
+passed the remaining producer checks. Restore produced 517 stock objects,
+520 local files including support files, and 57,751,824 bytes total. The
+largest individual stock response was 344,464 bytes JSON and 140,127 bytes
+gzip. The 1,800,000-byte object/response limit is unchanged. Restore does not
+compare the aggregate size with the per-file cap. The planned 517 stock
+assets plus QGV and monthly source asset total 519, within the 1,000-assets
+limit per release. Release upload and the monthly source asset size remain
+Main-side checks. The reported trial precedes this fix and the full
+fixed-revision run is still pending.

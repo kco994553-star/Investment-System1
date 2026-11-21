@@ -79,6 +79,9 @@ def test_appending_ignores_repeated_history_and_reuses_past_view_rows(tmp_path):
     assert len(patch[code]['rows']) == 1
     assert all(p.read_bytes() == value for p,value in old_objects.items())
     assert (tmp_path/head['path']).stat().st_size < 3072
+    daily = json.loads((tmp_path/head['path']).read_bytes())
+    assert daily['schema'] == 'kis-stock-journal/1' and len(daily['parts']) == 1
+    assert 'parts_index' not in daily
     _, merged = journal.replay(tmp_path, head)
     actual = journal.Contracts(merged,'RAW')[code]
     assert actual['raw_bars'][0] == contract['raw_bars'][0]
@@ -140,3 +143,33 @@ def test_confirmed_split_keeps_raw_rows_and_rebuilds_affected_history(tmp_path):
     assert reused == 0
     assert response['rows'][0][4] == '5.5' and response['raw_rows'][0][4] == '11'
     assert response['rows'][-1][4] == response['raw_rows'][-1][4] == '11'
+
+
+def test_large_parented_append_uses_pinned_parts_index_and_replays(monkeypatch, tmp_path):
+    req, _ = inputs(tmp_path/'ingest')
+    config = json.loads(req.read_bytes())
+    _, parent = make_capture({}, {}, config, tmp_path)
+    # Reproduce the real append's 16-way split with small, disjoint fixtures.
+    patches = {f'SYN{i}': dict(header={}, remove=[], rows=[]) for i in range(16)}
+    parts = [gzip.compress(json_bytes({code: patch}), mtime=0) for code, patch in patches.items()]
+    monkeypatch.setattr(journal, 'patch_files', lambda *a, **kw: iter(parts))
+    files, child = journal.archive_files(config, patches, parent, 'SYNTHETIC_REVIEW')
+    stage(tmp_path, files.items())
+    frame = json.loads(files[child['path']])
+    assert child['bytes'] <= 3072 and len(files) == 18
+    index = frame['parts_index']
+    saved = json.loads(gzip.decompress(files[index['path']]))
+    assert len(saved) == 16 and len({part['sha256'] for part in saved}) == 16
+    _, restored = journal.replay(tmp_path, child)
+    assert set(restored) == set(patches)
+    # A subsequent small capture stays inline and can replay an indexed ancestor.
+    monkeypatch.setattr(journal, 'patch_files', lambda *a, **kw: iter(()))
+    next_files, next_head = journal.archive_files(config, {}, child)
+    assert json.loads(next_files[next_head['path']])['schema'] == 'kis-stock-journal/1'
+    assert len(next_files) == 1
+    stage(tmp_path, next_files.items())
+    assert journal.replay(tmp_path, next_head)[1] == restored
+    index_path = tmp_path / index['path']
+    index_path.write_bytes(index_path.read_bytes() + b' ')
+    with pytest.raises(ValueError, match='STOCK_ARCHIVE_PIN'):
+        journal.replay(tmp_path, next_head)

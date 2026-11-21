@@ -216,3 +216,67 @@ def test_saved_display_hold_is_pinned_and_never_silently_dropped(tmp_path):
     c['raw_bars'][0]['close']='10.5';c['bars']=deepcopy(c['raw_bars']);b=canonical_bytes(c)
     with pytest.raises(ValueError,match='SAVED_CHART_CONTEXT_MISMATCH'):
         api().query_bytes(tmp_path,m,saved_chart_bytes=b,expected_saved_chart_sha256=sha(b))
+
+
+def test_old_session_with_unverified_close_is_ingested_and_restored(tmp_path):
+    from datetime import date
+    from investment_system.research.pit_filings import session_close
+    d = date(2025, 12, 26)
+    assert session_close(d).reason == 'CLOSE_TIME_UNVERIFIED'
+    original = sample(('20251226',), fetched='2026-11-20T16:00:00Z')
+    out = put(tmp_path, original)
+    saved = api().retained_contract(tmp_path, api().load_manifest(tmp_path, out['series_id']))
+    assert out['new_rows'] == 1 and saved['raw_bars'] == original[0]['raw_bars']
+    assert saved['raw_bars'][0]['collected_at'] == '2026-11-20T16:00:00Z'
+
+
+@pytest.mark.parametrize('stamp, day', [
+    ('2025-12-26T22:00:00Z', '20251226'),  # unknown close on the same NY day
+    ('2026-11-02T19:00:00Z', '20261102'),  # regular, before close
+    ('2026-11-02T00:00:00Z', '20261102'),  # UTC day differs from NY
+    ('2026-11-27T17:59:59Z', '20261127'),  # 13:00 NY early close
+])
+def test_new_york_same_day_requires_known_close_and_future_is_blocked(stamp, day):
+    with pytest.raises(ValueError, match='INCOMPLETE_SESSION_AT_CAPTURE|DUPLICATE_OR_FUTURE_SESSION'):
+        sample((day,), fetched=stamp)
+
+
+def test_known_early_close_accepts_same_day_at_close():
+    contract, _, _ = sample(('20261127',), fetched='2026-11-27T18:00:00Z')
+    assert contract['raw_bars'][0]['date'] == '2026-11-27'
+
+
+@pytest.mark.parametrize('after_later_page', [False, True])
+def test_exact_committed_receipt_replay_tolerates_normalized_json_reencoding(tmp_path, after_later_page):
+    c, body, receipt = sample()
+    pretty = json.dumps(c, sort_keys=True, indent=1).encode()
+    original = api().ingest(tmp_path, contract_bytes=pretty, body=body, receipt_bytes=receipt,
+                            expected_contract_sha256=sha(pretty), expected_receipt_sha256=sha(receipt))
+    if after_later_page:
+        put(tmp_path, sample(('20261028',), fetched='2026-11-04T02:00:00Z'))
+    before = api().load_manifest(tmp_path, original['series_id'])
+    files = {p:p.read_bytes() for p in tmp_path.rglob('*') if p.is_file()}
+    out = put(tmp_path, (c, body, receipt))
+    assert out['new_rows'] == out['revised_rows'] == out['appended_bytes'] == 0
+    assert out['unchanged_rows'] == 3 and out['manifest_sha256'] == before['manifest_sha256']
+    assert files == {p:p.read_bytes() for p in tmp_path.rglob('*') if p.is_file()}
+
+
+def test_exact_receipt_with_changed_header_cannot_be_replayed(tmp_path):
+    c, body, receipt = sample()
+    first = put(tmp_path, (c, body, receipt))
+    c['historical_available_at'] = '2026-11-04T02:00:00Z'
+    with pytest.raises(ValueError, match='RECEIPT_REPLAY_MISMATCH'):
+        put(tmp_path, (c, body, receipt))
+    assert api().load_manifest(tmp_path, first['series_id'])['manifest_sha256'] == first['manifest_sha256']
+
+
+def test_missing_committed_receipt_is_not_replaced_on_retry(tmp_path):
+    first = put(tmp_path, sample())
+    before = api().load_manifest(tmp_path, first['series_id'])
+    path = tmp_path / before['receipt']['path']
+    path.unlink()
+    with pytest.raises(FileNotFoundError):
+        put(tmp_path, sample())
+    assert not path.exists()
+    assert api().load_manifest(tmp_path, first['series_id']) == before
