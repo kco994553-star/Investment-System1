@@ -214,10 +214,15 @@ const stockParts=wrap(v=>{const at='$';
  if(!isDay(v.evaluation_day))refuse('DATE',at+'.evaluation_day');
  if(v.additional_requests_for_toggle!==0||v.additional_requests_for_retained_period!==0)refuse('STOCK_REQUESTS',at+'.additional_requests_for_toggle');
  if(!Array.isArray(v.fields)||v.fields.length!==STOCK_FIELD_COUNT||v.fields.some(f=>typeof f!=='string')||STOCK_OHLCV.some((f,i)=>v.fields[i]!==f))refuse('STOCK_FIELDS',at+'.fields');
- const bar=(r,i,p)=>{if(!Array.isArray(r)||r.length!==STOCK_FIELD_COUNT)refuse('TYPE',p+'['+i+']');return{date:r[0],open:r[1],high:r[2],low:r[3],close:r[4],volume:r[5]};};
+ const bar=(n)=>(r,i,p)=>{if(!Array.isArray(r)||r.length!==n)refuse('TYPE',p+'['+i+']');return{date:r[0],open:r[1],high:r[2],low:r[3],close:r[4],volume:r[5]};};
  if(!Array.isArray(v.rows))refuse('TYPE',at+'.rows');
- const bars=v.rows.map((r,i)=>bar(r,i,at+'.rows'));
- const raw=own(v,'raw_rows')?(Array.isArray(v.raw_rows)?v.raw_rows.map((r,i)=>bar(r,i,at+'.raw_rows')):refuse('TYPE',at+'.raw_rows')):bars;
+ const bars=v.rows.map((r,i)=>bar(STOCK_FIELD_COUNT)(r,i,at+'.rows'));
+ // A SPLIT_ADJUSTED view carries the RAW series as raw_rows in its own columns, named by raw_fields (the producer writes
+ // date, open, high, low, close, volume, amount): the two come together, and the first six must be the OHLCV names.
+ if(own(v,'raw_rows')!==own(v,'raw_fields'))refuse('KEY_MISSING',at+(own(v,'raw_rows')?'.raw_fields':'.raw_rows'));
+ if(own(v,'raw_fields')&&(!Array.isArray(v.raw_fields)||v.raw_fields.length<STOCK_OHLCV.length||v.raw_fields.length>STOCK_FIELD_COUNT
+  ||v.raw_fields.some(f=>typeof f!=='string')||STOCK_OHLCV.some((f,i)=>v.raw_fields[i]!==f)))refuse('STOCK_FIELDS',at+'.raw_fields');
+ const raw=own(v,'raw_rows')?(Array.isArray(v.raw_rows)?v.raw_rows.map((r,i)=>bar(v.raw_fields.length)(r,i,at+'.raw_rows')):refuse('TYPE',at+'.raw_rows')):bars;
  if(!isObj(v.chart)||!isObj(v.latest))refuse('TYPE',at+'.chart');
  const header={};for(const[k,x]of Object.entries(v.chart))if(k!=='schema')header[k]=x;
  if(header.symbol!==v.symbol)refuse('SYMBOL',at+'.chart.symbol');
