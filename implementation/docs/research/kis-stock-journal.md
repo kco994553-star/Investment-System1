@@ -422,9 +422,11 @@ Main reads these fields from the existing single response for the stock:
 | `latest.technical.metrics.ATR_14` | Latest ATR. Historical ATR is not among the ten chart columns. |
 
 Rebuild from the existing capture with the documented journal `restore` command.
-The first restore with projection `KIS_STOCK_SPLIT_VIEW_2` rebuilds old-generation
+The first restore with projection `KIS_STOCK_SPLIT_VIEW_3` rebuilds old-generation
 responses. Subsequent member cache keys include that member's reviewed actions.
 Restore is independent of daily quote-column ingestion. Publish the new private
 generation and switch its pointer together after Main's validation. The existing
 QGV calculation continues to read raw evaluation-day closing prices and its own
 pinned financial and share inputs.
+
+For an applied, independently reviewed step, the technical display evidence provides the previous trading day, first trading day on the new basis, and source URL in `adjustment_start/end/reference`. `LATEST_REVIEWED_EVENT_STEP` covers that pair only. Separate events are listed under `chart.reviewed_split_steps`. Existing continuous verified coverage takes precedence. This annotation is attached after per-indicator adoption and leaves its decisions intact.

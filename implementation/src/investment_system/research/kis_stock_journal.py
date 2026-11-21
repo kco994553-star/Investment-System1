@@ -25,7 +25,7 @@ SCOPE = 'OWNER_PRIVATE_ONLY'
 JOURNAL = 'kis-stock-journal/1'
 INDEXED_JOURNAL = 'kis-stock-journal/2'
 VIEW = 'kis-stock-generation/1'
-PROJECTION_VERSION = 'KIS_STOCK_SPLIT_VIEW_2'
+PROJECTION_VERSION = 'KIS_STOCK_SPLIT_VIEW_3'
 SMALL_LIMIT = 3072
 ROW_FIELDS = ('raw_bars', 'bars', 'basis', 'price_basis_date')
 
@@ -289,6 +289,15 @@ def project_stock(contract, config, code, *, previous=None):
         for s in chart['splits'] if rows and rows[0][0] < s['date'] <= rows[-1][0]
         and chart['basis'] == 'SPLIT_ADJUSTED']
     if chart['basis'] == 'SPLIT_ADJUSTED':
+        # This display annotation is added after the adoption and window gates.
+        # Disjoint event windows never imply coverage between the events.
+        steps = chart.get('reviewed_split_steps', [])
+        evidence = result['latest']['technical']['evidence']
+        if steps and not evidence.get('adjustment_start') and not evidence.get('adjustment_end'):
+            step = steps[-1]
+            evidence.update(adjustment_start=step['start'], adjustment_end=step['end'],
+                            adjustment_reference=step['reference'],
+                            adjustment_range_scope='LATEST_REVIEWED_EVENT_STEP')
         result.update(raw_fields=FIELDS, raw_rows=[[r[k] for k in FIELDS] for r in raw])
     return result, start
 
@@ -302,7 +311,7 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
         previous_root, previous_ref = previous
         manifest = parse(previous_root, previous_ref)
         need(manifest['schema'] == VIEW and manifest['publication_scope'] == SCOPE, 'STOCK_GENERATION_CONTRACT')
-        need(manifest.get('projection_version') in ('KIS_STOCK_GSQ015_1', PROJECTION_VERSION), 'STOCK_PROJECTION_VERSION')
+        need(manifest.get('projection_version') in ('KIS_STOCK_GSQ015_1', 'KIS_STOCK_SPLIT_VIEW_2', PROJECTION_VERSION), 'STOCK_PROJECTION_VERSION')
         old = manifest['stocks'] if manifest['projection_version'] == PROJECTION_VERSION else {}
         need(manifest['evaluation_day'] <= config['evaluation_day'], 'STOCK_GENERATION_DATE')
     references = {}

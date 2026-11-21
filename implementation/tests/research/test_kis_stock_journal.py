@@ -192,6 +192,12 @@ def test_document_and_consecutive_raw_step_set_chart_basis(tmp_path, monkeypatch
     assert view['coverage'] == dict(scope='ALL_RETAINED_SESSIONS', retained_sessions=5,
         retained_start='2026-10-19', retained_end=day,
         applied_splits=[dict(effective_day=day, new_per_old='3', evidence=event)])
+    evidence = view['latest']['technical']['evidence']
+    assert (evidence['adjustment_start'], evidence['adjustment_end'], evidence['adjustment_reference']) == (
+        '2026-10-22', day, event['url'])
+    assert evidence['adjustment_range_scope'] == 'LATEST_REVIEWED_EVENT_STEP'
+    assert view['chart']['confirmed_ranges'] == original['confirmed_ranges'] == []
+    assert all(m['value'] is None for m in view['latest']['technical']['metrics'].values())
     assert view['rows'][0][1:7] == ['10','12','9','11','300','1100']
     assert view['raw_rows'][0][4:6] == ['33','100']
     assert view['rows'][-1][:7] == view['raw_rows'][-1]
@@ -219,7 +225,7 @@ def test_reverse_split_exact_fraction_and_declared_raw_boundary(tmp_path, monkey
     c['splits'] = [dict(date=day, ratio='2', status='CONFIRMED', evidence='SYNTHETIC')]
     monkeypatch.setattr(actions,'reviewed_actions',lambda:{})
     assert actions.chart_basis(c,'NASDAQ:SYN',day)[0]['basis'] == 'RAW'
-    event = dict(kind='SPLIT', cik='0000000001', date=day, new_shares=1, old_shares=3)
+    event = dict(kind='SPLIT', cik='0000000001', date=day, new_shares=1, old_shares=3, url='https://example.invalid/reverse')
     monkeypatch.setattr(actions,'reviewed_actions',lambda:{'NASDAQ:SYN':[event]})
     with pytest.raises(ValueError,match='SPLIT_RATIO_CONFLICT'):
         actions.chart_basis(c,'NASDAQ:SYN',day)

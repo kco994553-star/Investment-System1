@@ -28,6 +28,7 @@ def chart_basis(contract, code, day):
     declared = {r['date']: r for r in contract['splits']}
     events = declared.copy() if contract['basis'] == 'SPLIT_ADJUSTED' else {}
     marks = []
+    reviewed_steps = []
     raw = contract['raw_bars']
     for a, b in zip(raw, raw[1:]):
         when = b['date']
@@ -54,6 +55,7 @@ def chart_basis(contract, code, day):
                     raise ValueError('SPLIT_RATIO_CONFLICT')
                 events[when] = dict(date=when, ratio=str(ratio), status='CONFIRMED',
                                     new_shares=n, old_shares=d, evidence=action)
+                reviewed_steps.append(dict(start=a['date'], end=when, reference=action['url']))
                 continue
         if action and when in events:
             raise ValueError('SPLIT_REVIEW_CONFLICT')
@@ -66,5 +68,6 @@ def chart_basis(contract, code, day):
     if not events:
         return contract, marks
     chart = dict(contract, basis='SPLIT_ADJUSTED', splits=sorted(events.values(), key=lambda s: s['date']))
+    chart['reviewed_split_steps'] = reviewed_steps
     chart['bars'] = price_rows(chart, chart['price_basis_date'])
     return chart, marks
