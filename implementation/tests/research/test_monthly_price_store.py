@@ -16,9 +16,11 @@ def sha(b):
 
 
 def sample(days=('20261029', '20261030', '20261102'), *, changed=None,
-           fetched='2026-11-03T02:00:00Z'):
+           fetched='2026-11-03T02:00:00Z', first_row=None):
     rows = [dict(xymd=d, open='10', high='12', low='9', clos='11',
                  tvol='100', tamt='1100', extra='PRESERVE_PROVIDER_FIELD') for d in days]
+    if first_row:
+        rows[0].update(first_row)
     if changed:
         rows[0]['clos'] = changed
     body = canonical_bytes(dict(rt_cd='0', output1=dict(rsym='DNASSYN'), output2=rows))
@@ -83,6 +85,46 @@ def test_overlap_adds_only_new_row_and_preserves_old_month_bytes(tmp_path):
     assert len(api().read_records(tmp_path, m)) == 4
     assert before['months']['2026-11']['bytes'] < m['months']['2026-11']['bytes']
     assert len(api().read_records(tmp_path, before)) == 3  # historical prefix still readable
+
+
+def test_quote_only_overlap_keeps_first_snapshot_and_replays_both_receipts(tmp_path):
+    first = sample(days=('20261102',), first_row=dict(pbid='10', vbid='5', pask='12'))
+    overlap = sample(days=('20261102', '20261103'), fetched='2026-11-04T02:00:00Z',
+                     first_row=dict(pbid='9', vbid='6', vask='7'))
+    stored = put(tmp_path, first)
+    sid = stored['series_id']
+    old = api().load_manifest(tmp_path, sid)
+    prior_record, = api().read_records(tmp_path, old)
+    update = put(tmp_path, overlap)
+    assert (update['new_rows'], update['unchanged_rows'], update['revised_rows']) == (1, 1, 0)
+    current = api().load_manifest(tmp_path, sid)
+    assert api().read_records(tmp_path, current)[0] == prior_record
+    assert api().read_records(tmp_path, old) == [prior_record]
+    assert api().query_contract(tmp_path, current)['bars'][0] == first[0]['bars'][0]
+    for page in (overlap, first):
+        replay = put(tmp_path, page)
+        assert replay['manifest_sha256'] == current['manifest_sha256']
+        assert replay['appended_bytes'] == replay['new_rows'] == replay['revised_rows'] == 0
+
+
+def test_quote_only_new_receipt_appends_no_monthly_bytes(tmp_path):
+    first = put(tmp_path, sample(first_row=dict(pbid='10')))
+    before = api().load_manifest(tmp_path, first['series_id'])
+    latest = put(tmp_path, sample(fetched='2026-11-04T02:00:00Z', first_row=dict(pbid='11')))
+    after = api().load_manifest(tmp_path, first['series_id'])
+    assert latest['unchanged_rows'] == 3 and latest['appended_bytes'] == 0
+    assert after['months'] == before['months'] and after['receipt'] != before['receipt']
+
+
+@pytest.mark.parametrize('field,value', [
+    ('open','11'), ('high','13'), ('low','8'), ('clos','10'), ('tvol','101'),
+    ('tamt','1101'), ('extra','OTHER'), ('new_provider_field',None),
+])
+def test_quote_changes_do_not_mask_daily_bar_or_other_provider_changes(tmp_path, field, value):
+    original = put(tmp_path, sample())
+    with pytest.raises(ValueError, match='ROW_REVISION_REVIEW_REQUIRED'):
+        put(tmp_path, sample(fetched='2026-11-04T02:00:00Z', first_row={field:value, 'pbid':'9'}))
+    assert api().load_manifest(tmp_path, original['series_id'])['manifest_sha256'] == original['manifest_sha256']
 
 
 def test_correction_requires_explicit_review_and_preserves_previous(tmp_path):
