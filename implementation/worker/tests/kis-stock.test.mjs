@@ -8,7 +8,7 @@ const OWNER_EMAIL = ['owner', 'example.test'].join('@');
 const FAKE_TOKEN = ['github', 'pat', '11SYNTHETICONLY0000000000'].join('_');
 
 globalThis.fetch = async () => { throw new Error('Live network transport is disabled in these tests'); };
-const { createHandler, HistoryRateLimiter, kisStockIndexValid, kisAssetRedirectTarget } = await import('../src/index.js');
+const { createHandler, HistoryRateLimiter, kisStockIndexEntry, kisAssetRedirectTarget } = await import('../src/index.js');
 
 const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 10, 20, 3);
@@ -87,30 +87,39 @@ async function code(r) {
 const headerNames = (init) => Object.keys(init.headers ?? {}).map((k) => k.toLowerCase());
 
 // ---- the pure checks ----------------------------------------------------------------------------------------------------
-test('index validator: the published shape passes; unknown keys, bad types, ranges and hex are refused', () => {
+test('index reader: the top level and the requested entry are checked; unknown keys, bad types, ranges and hex are refused', () => {
   const good = makeIndex();
-  assert.equal(kisStockIndexValid(good), true);
   const e = good.stocks.NVDA;
+  const nvda = (v) => kisStockIndexEntry(JSON.parse(JSON.stringify(v ?? null)), 'NVDA');
+  assert.deepEqual(nvda(good), e);
+  assert.deepEqual(kisStockIndexEntry(good, null), good.qgv, 'the qgv part');
   const bad = [
     { ...good, extra: 1 }, (() => { const v = { ...good }; delete v.qgv; return v; })(), { ...good, schema: K('stock-view/1') },
     { ...good, publication_scope: 'PUBLIC' }, { ...good, evaluation_day: '2026-02-30' }, { ...good, evaluation_day: '2026-11-19T00:00:00Z' },
     { ...good, release_tag: '' }, { ...good, release_tag: 'a/b' }, { ...good, release_tag: 7 },
     { ...good, generation_sha256: 'C'.repeat(64) }, { ...good, generation_sha256: 'c'.repeat(63) },
-    { ...good, stocks: [] }, { ...good, stocks: null }, { ...good, stocks: { ZZZZ: e } }, { ...good, stocks: { 'BRK_B': e } },
+    { ...good, stocks: [] }, { ...good, stocks: null },
     { ...good, stocks: { NVDA: { ...e, extra: 1 } } }, { ...good, stocks: { NVDA: { ...e, symbol: undefined } } },
     { ...good, stocks: { NVDA: { ...e, symbol: 'nvda' } } }, { ...good, stocks: { NVDA: { ...e, name: '../x' } } },
     ...[0, -1, 1.5, '7', 2 ** 53, null].map((asset_id) => ({ ...good, stocks: { NVDA: { ...e, asset_id } } })),
     ...[0, 1_800_001, '10', 2.5].map((bytes) => ({ ...good, stocks: { NVDA: { ...e, bytes } } })),
     ...[0, 1_800_001].map((json_bytes) => ({ ...good, stocks: { NVDA: { ...e, json_bytes } } })),
     { ...good, stocks: { NVDA: { ...e, sha256: 'A'.repeat(64) } } }, { ...good, stocks: { NVDA: { ...e, json_sha256: 'f'.repeat(65) } } },
-    { ...good, stocks: { NVDA: e, AAPL: { ...e, symbol: 'AAPL' } } }, { ...good, stocks: { NVDA: { ...e, asset_id: 9 } } },
+    { ...good, stocks: { NVDA: { ...e, asset_id: good.qgv.asset_id } } }, { ...good, stocks: { NVDA: null } }, { ...good, stocks: { NVDA: [e] } },
     { ...good, qgv: { ...good.qgv, symbol: 'X' } }, { ...good, qgv: { ...good.qgv, bytes: 1_800_001 } }, [good], null, 'x',
   ];
-  for (const [i, v] of bad.entries()) assert.equal(kisStockIndexValid(JSON.parse(JSON.stringify(v ?? null))), false, 'case ' + i);
-  assert.equal(kisStockIndexValid(JSON.parse(JSON.stringify(good).replace('"stocks":{', '"stocks":{"__proto__":{},'))), false, 'a __proto__ key is a key');
-  assert.equal(kisStockIndexValid({ ...good, stocks: {} }), true, 'an empty stock map is a valid index (every request is then 404)');
-  assert.equal(kisStockIndexValid({ ...good, stocks: { 'BRK-B': { ...e, symbol: 'BRK/B' } } }), true, 'request symbol key, view symbol value');
-  assert.equal(kisStockIndexValid({ ...good, stocks: { NVDA: { ...e, bytes: 1_800_000, json_bytes: 1_800_000 } } }), true, 'the cap itself');
+  for (const [i, v] of bad.entries()) assert.equal(nvda(v), 'INVALID', 'case ' + i);
+  for (const v of [[good], null, { ...good, qgv: { ...good.qgv, bytes: 0 } }]) assert.equal(kisStockIndexEntry(v, null), 'INVALID', 'qgv part');
+  assert.equal(kisStockIndexEntry(good, 'ZZZZ'), 'INVALID', 'a symbol outside the Worker list');
+  assert.equal(nvda({ ...good, stocks: {} }), 'MISSING', 'an empty stock map: every request is 404');
+  assert.equal(nvda({ ...good, stocks: { AAPL: { ...e, symbol: 'AAPL' } } }), 'MISSING');
+  assert.equal(nvda(JSON.parse(JSON.stringify(good).replace('"stocks":{', '"stocks":{"__proto__":{},'))).asset_id, e.asset_id, 'own keys only');
+  assert.equal(kisStockIndexEntry({ ...good, stocks: { 'BRK-B': { ...e, symbol: 'BRK/B' } } }, 'BRK-B').symbol, 'BRK/B', 'request symbol key, view symbol value');
+  assert.equal(nvda({ ...good, stocks: { NVDA: { ...e, bytes: 1_800_000, json_bytes: 1_800_000 } } }).bytes, 1_800_000, 'the cap itself');
+  // Proposal A: the other entries are not read per request (the publish workflow checks all of them before it writes the index).
+  for (const others of [{ ZZZZ: e }, { BRK_B: e }, { AAPL: { ...e, symbol: 'AAPL' } }, { AAPL: { ...e, extra: 1 } }]) {
+    assert.deepEqual(nvda({ ...good, stocks: { NVDA: e, ...others } }), e, 'another entry does not stop this one');
+  }
 });
 
 test('redirect target: only https on exactly the release asset host, default port, no user info, status 302', () => {
