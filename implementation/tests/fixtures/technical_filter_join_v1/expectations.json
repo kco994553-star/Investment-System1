@@ -1,0 +1,91 @@
+{
+  "schema": "technical-filter-join-fixture-expectations/1",
+  "data_kind": "SYNTHETIC",
+  "actual_adoption_increase": 0,
+  "cases": {
+    "same_date_same_security": {
+      "error": null,
+      "selected_row_ids": [
+        "SYNTHETIC:ISSUER:1",
+        "SYNTHETIC:ISSUER:3"
+      ],
+      "original_qgv_ranks": [
+        4,
+        9
+      ],
+      "original_qgv_scores": [
+        80,
+        70
+      ]
+    },
+    "different_date": {
+      "error": "SIGNAL_DAY_MISMATCH",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "same_ticker_different_security": {
+      "error": "SECURITY_ID_NOT_IN_BOARD",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "different_share_class_without_map": {
+      "error": "SECURITY_ID_NOT_IN_BOARD",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "missing_mapping": {
+      "error": "FIXED_SECURITY_LINK_MISSING",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "duplicate_qgv_key": {
+      "error": "DUPLICATE_QGV_KEY",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "duplicate_mapping": {
+      "error": "DUPLICATE_SECURITY_LINK",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "expired_mapping": {
+      "error": "SECURITY_LINK_OUTSIDE_SIGNAL_DAY",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "future_mapping": {
+      "error": "SECURITY_LINK_OUTSIDE_SIGNAL_DAY",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    },
+    "inclusive_mapping_endpoints": {
+      "error": null,
+      "selected_row_ids": [
+        "SYNTHETIC:ISSUER:1",
+        "SYNTHETIC:ISSUER:3"
+      ],
+      "original_qgv_ranks": [
+        4,
+        9
+      ],
+      "original_qgv_scores": [
+        80,
+        70
+      ]
+    },
+    "missing_fixed_security_id": {
+      "error": "PERMANENT_SECURITY_ID_REQUIRED",
+      "selected_row_ids": null,
+      "original_qgv_ranks": null,
+      "original_qgv_scores": null
+    }
+  }
+}
