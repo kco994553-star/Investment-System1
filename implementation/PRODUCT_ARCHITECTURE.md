@@ -1,4 +1,5 @@
-> SUPERSEDED by implementation/docs/frontend_ia_v1/COCKPIT_IA_v1.md (2026-10-09). 기록 보존용.
+> **SUPERSEDED · 대체됨:** 현재 전체 구조 안내는 [ARCHITECTURE.md](../ARCHITECTURE.md)에서 관리한다(2026-11-15). 아래는 기록 보존용이다.
+> 이전 UI 대체 문서: [COCKPIT_IA_v1.md](docs/frontend_ia_v1/COCKPIT_IA_v1.md) (2026-10-09). 당시 대체 이력도 보존한다.
 # Product / UI Architecture mapping
 
 Status: PROVISIONAL overlay on Architecture v1.0. Existing engines not rewritten.
