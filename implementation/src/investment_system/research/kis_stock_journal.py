@@ -16,6 +16,7 @@ import zlib
 from ._private_artifacts import digest, json_bytes, MAX_BYTES
 from .kis_rebuild import child, load_request, pinned, sha, need, write_bundle
 from .kis_price_bridge import validate_contract, price_rows, _day, _ts
+from .kis_chart_actions import chart_basis, reviewed_actions
 from .kis_stock_bundle import indicator_series, FIELDS, INDICATORS
 from .private_kis_preprocess import calculate_and_project
 from .private_kis_reference import reference_files, official_reference
@@ -24,7 +25,7 @@ SCOPE = 'OWNER_PRIVATE_ONLY'
 JOURNAL = 'kis-stock-journal/1'
 INDEXED_JOURNAL = 'kis-stock-journal/2'
 VIEW = 'kis-stock-generation/1'
-PROJECTION_VERSION = 'KIS_STOCK_GSQ015_1'
+PROJECTION_VERSION = 'KIS_STOCK_SPLIT_VIEW_2'
 SMALL_LIMIT = 3072
 ROW_FIELDS = ('raw_bars', 'bars', 'basis', 'price_basis_date')
 
@@ -244,6 +245,7 @@ def history_key(raw, chart):
 
 def project_stock(contract, config, code, *, previous=None):
     day = config['evaluation_day']
+    contract, markers = chart_basis(contract, code, day)
     items = reference_files(calculate_and_project(contract, evaluation_day=day,
         series_id=config['series_id_prefix']+code, expected_contract_hash=digest(contract)), contract, day)
     payload = {path.split('/')[0]: json.loads(value) for path, value in items.items()
@@ -281,6 +283,11 @@ def project_stock(contract, config, code, *, previous=None):
                       retained_start=rows[0][0] if rows else None, retained_end=rows[-1][0] if rows else None),
         additional_requests_for_toggle=0, additional_requests_for_retained_period=0,
         history_sha256=history_key(raw, chart))
+    result['chart']['action_markers'] = markers
+    result['coverage']['applied_splits'] = [
+        dict(effective_day=s['date'], new_per_old=s['ratio'], evidence=s['evidence'])
+        for s in chart['splits'] if rows and rows[0][0] < s['date'] <= rows[-1][0]
+        and chart['basis'] == 'SPLIT_ADJUSTED']
     if chart['basis'] == 'SPLIT_ADJUSTED':
         result.update(raw_fields=FIELDS, raw_rows=[[r[k] for k in FIELDS] for r in raw])
     return result, start
@@ -295,8 +302,8 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
         previous_root, previous_ref = previous
         manifest = parse(previous_root, previous_ref)
         need(manifest['schema'] == VIEW and manifest['publication_scope'] == SCOPE, 'STOCK_GENERATION_CONTRACT')
-        need(manifest.get('projection_version') == PROJECTION_VERSION, 'STOCK_PROJECTION_VERSION')
-        old = manifest['stocks']
+        need(manifest.get('projection_version') in ('KIS_STOCK_GSQ015_1', PROJECTION_VERSION), 'STOCK_PROJECTION_VERSION')
+        old = manifest['stocks'] if manifest['projection_version'] == PROJECTION_VERSION else {}
         need(manifest['evaluation_day'] <= config['evaluation_day'], 'STOCK_GENERATION_DATE')
     references = {}
     contract_hashes = {}
@@ -308,7 +315,8 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
         need(symbol not in references, 'DUPLICATE_STOCK_SYMBOL')
         # Includes the label/clock context used by the existing technical engine.
         contract_hashes[code] = digest(contract)
-        key = digest([PROJECTION_VERSION, code, contract_hashes[code], config['evaluation_day'], config['series_id_prefix']])
+        key = digest([PROJECTION_VERSION, code, contract_hashes[code], reviewed_actions().get(code, []),
+                      config['evaluation_day'], config['series_id_prefix']])
         old_ref = old.get(symbol)
         if old_ref and old_ref['input_sha256'] == key:
             # Confirm the previous object is still available before reusing it.
