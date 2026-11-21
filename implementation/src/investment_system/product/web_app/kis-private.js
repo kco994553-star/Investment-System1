@@ -3,7 +3,7 @@
    Worker routes (owner 2026-11-05 narrow exception: this file only, the routes below — status, chart, analysis, technical,
    qgv, and since 2026-11-20 stock, the technical panel's one read —, requests only after a click, Bearer header only; tests/test_private_boundary_static.py pins it). The public Pages
    preview publishes this file under the narrow Pages guard exception (owner 2026-11-15: this root file only, at its pinned
-   bytes, exactly these six routes and the five SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
+   bytes, exactly these six routes and the six SCHEMA names below; tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS).
    - A click asks for the owner's Google token (scope exactly openid email, include_granted_scopes false; NO_ZT §4.2), keeps it
      in this module's memory only, and reads the routes of the private Worker, which checks the owner on the server before it
      reads anything. 연결 끊기 drops the token; an expired token is dropped before use.
@@ -25,13 +25,15 @@
      cache 'no-store', no referrer. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.kisPrivate=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
-const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1'});
+const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1',STOCK:'kis-stock-view/1'});
 const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',
  // The sixth route (owner 2026-11-20 screen switch): the technical panel's one read, the one-file stock view of the Worker's
  // stock route. chart / analysis / technical stay here and on the Worker (owner: unchanged until told otherwise) but no panel reads them.
  stock:'/kis/stock'});
 // Routes that take ?symbol=<SYM>; the others take no query.
 const BY_SYMBOL=Object.freeze(['chart','analysis','technical','stock']);
+// The stock route's other answer (owner 2026-11-21): the QGV object of the same release generation, read by the KIS V panel.
+const PARTS=Object.freeze({stockQgv:Object.freeze({route:'stock',query:'?part=qgv'})});
 const SCOPES=Object.freeze(['email','openid']);
 const SYMBOL=/^[A-Z][A-Z0-9-]{0,9}$/;
 // The two class shares (owner 2026-11-15): KIS names them BRK/B and BF/B (stored under the folder keys BRK_B / BF_B); the app
@@ -201,11 +203,18 @@ const validateMeasures=wrap(m=>{const at='$';
    series), and the producer's own latest analysis and measures objects. Nothing is calculated here; validateBars,
    validateAnalysis and validateMeasures then check every part exactly as before (first fault refuses). */
 const STOCK_OHLCV=Object.freeze(['date','open','high','low','close','volume']);
+const STOCK_FIELD_COUNT=17;
+// Since the light read (owner 2026-11-21) the Worker only pins the gzip bytes; the checks it made on the view are made here,
+// first, with the same rules: the schema, scope, an evaluation day, 17 named fields, 17-value rows, no extra request counted.
 const stockParts=wrap(v=>{const at='$';
- need(v,['publication_scope','symbol','evaluation_day','fields','rows','chart','latest'],at);
+ need(v,['schema','publication_scope','symbol','evaluation_day','fields','rows','chart','latest','additional_requests_for_toggle','additional_requests_for_retained_period'],at);
+ if(v.schema!==SCHEMA.STOCK)refuse('SCHEMA_VERSION',at+'.schema');
  if(v.publication_scope!=='OWNER_PRIVATE_ONLY')refuse('SCOPE',at+'.publication_scope');
- if(!Array.isArray(v.fields)||STOCK_OHLCV.some((f,i)=>v.fields[i]!==f))refuse('STOCK_FIELDS',at+'.fields');
- const bar=(r,i,p)=>{if(!Array.isArray(r)||r.length<6)refuse('TYPE',p+'['+i+']');return{date:r[0],open:r[1],high:r[2],low:r[3],close:r[4],volume:r[5]};};
+ if(!fileSymbol(v.symbol))refuse('SYMBOL',at+'.symbol');
+ if(!isDay(v.evaluation_day))refuse('DATE',at+'.evaluation_day');
+ if(v.additional_requests_for_toggle!==0||v.additional_requests_for_retained_period!==0)refuse('STOCK_REQUESTS',at+'.additional_requests_for_toggle');
+ if(!Array.isArray(v.fields)||v.fields.length!==STOCK_FIELD_COUNT||v.fields.some(f=>typeof f!=='string')||STOCK_OHLCV.some((f,i)=>v.fields[i]!==f))refuse('STOCK_FIELDS',at+'.fields');
+ const bar=(r,i,p)=>{if(!Array.isArray(r)||r.length!==STOCK_FIELD_COUNT)refuse('TYPE',p+'['+i+']');return{date:r[0],open:r[1],high:r[2],low:r[3],close:r[4],volume:r[5]};};
  if(!Array.isArray(v.rows))refuse('TYPE',at+'.rows');
  const bars=v.rows.map((r,i)=>bar(r,i,at+'.rows'));
  const raw=own(v,'raw_rows')?(Array.isArray(v.raw_rows)?v.raw_rows.map((r,i)=>bar(r,i,at+'.raw_rows')):refuse('TYPE',at+'.raw_rows')):bars;
@@ -381,9 +390,11 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   client.requestAccessToken();});}
  function disconnect(){drop();}
  async function get(route,symbol,signal){
-  if(!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=BY_SYMBOL.includes(route);if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');
+  const part=own(PARTS,route)?PARTS[route]:null;
+  if(!part&&!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=!part&&BY_SYMBOL.includes(route);if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');
+  if(part&&symbol!==null&&symbol!==undefined)throw Error('REQUEST_INVALID');
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
-  const url=origin+ROUTE[route]+(bySym?'?symbol='+symbol:'');
+  const url=part?origin+ROUTE[part.route]+part.query:origin+ROUTE[route]+(bySym?'?symbol='+symbol:'');
   let res;try{res=await send(url,{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal});}
   catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw Error('UPSTREAM_UNAVAILABLE');}
   if(mine!==epoch)throw Error('CANCELED');
@@ -394,5 +405,5 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
-return Object.freeze({SCHEMA,ROUTE,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,stockParts,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
+return Object.freeze({SCHEMA,ROUTE,PARTS,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,stockParts,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

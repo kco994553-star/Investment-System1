@@ -94,7 +94,9 @@ let phase = 'START', pass = 0, where = '';
         if (w.lastAt !== undefined && at - w.lastAt < 5000) { w.refused = (w.refused || 0) + 1; await route.fulfill({ status: 429, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ error: { code: 'RATE_LIMITED' } }) }); return; }
         w.lastAt = at;
         w.log.push({ at, path: url.pathname + url.search, auth: hd.authorization || null, cookie: hd.cookie || null, referer: hd.referer || null });
-        const a = url.pathname === '/kis/stock' ? stockAnswer(w, url.searchParams.get('symbol'))
+        // KIS V reads the qgv part of the stock route (owner 2026-11-21 light read): answered by answers.qgv.
+        const a = url.pathname === '/kis/stock' && url.search === '?part=qgv' ? (w.answers.qgv || fail)(null)
+          : url.pathname === '/kis/stock' ? stockAnswer(w, url.searchParams.get('symbol'))
           : (w.answers[url.pathname.slice(5)] || (() => ({ status: 500, body: { error: { code: 'UPSTREAM_UNAVAILABLE' } } })))(url.searchParams.get('symbol'));
         await route.fulfill({ status: a.status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*', 'cache-control': 'no-store' }, body: a.raw !== undefined ? a.raw : JSON.stringify(a.body) }); return;
       }
@@ -250,6 +252,18 @@ let phase = 'START', pass = 0, where = '';
         [['analysis', 'BASIS_MISMATCH'], ['measures', 'BASIS_MISMATCH']], phase + ': both results refused on a 원주가 chart');
       assert.equal(await count(page, '[data-private-metric]'), 0, phase + ': no value attached');
 
+      phase = where + 'technical SYMBOL_MISMATCH';
+      // The Worker passes the pinned view through unread (owner 2026-11-21 light read): the screen refuses a view of another company.
+      await expand(page, 'technical'); delete w.lastAt;
+      const chartBefore = w.answers.chart;
+      w.answers.analysis = () => ({ status: 200, body: X.analysis() });
+      w.answers.chart = () => ({ status: 200, body: X.bars({ symbol: 'AMD' }) });
+      await expand(page, 'technical'); await waitState(page, 'tech-kis-chart', 'ERROR');
+      assert.match(await note(page, 'technical'), /SYMBOL_MISMATCH/, phase + ': a view of another company is refused with its code');
+      assert.equal(await count(page, '[data-private-layer]'), 0, phase + ': nothing of the refused view');
+      w.answers.chart = chartBefore; delete w.lastAt;
+      await expand(page, 'technical'); await waitState(page, 'tech-kis-chart', 'READY');
+
       phase = where + 'technical measures 404 alone';
       await expand(page, 'technical'); delete w.lastAt;
       w.answers.analysis = () => ({ status: 200, body: X.analysis() });
@@ -297,7 +311,7 @@ let phase = 'START', pass = 0, where = '';
       const Q556 = X.codexQgv([other, code, 'NYSE:ZZZZ']), row = Q556.rows[code], r1 = (x) => String(Math.round(x * 10) / 10);
       w.answers.qgv = () => ({ status: 200, body: Q556 });
       await expand(page, 'qgv'); await page.locator('[data-private-row="' + code + '"]').waitFor({ timeout: 20000 });
-      assert.deepEqual(w.log.map((l) => l.path), ['/kis/qgv'], phase + ': one read for the click');
+      assert.deepEqual(w.log.map((l) => l.path), ['/kis/stock?part=qgv'], phase + ': one read of the qgv part of the stock route for the click');
       assert.equal(await count(page, '[data-private-timing]'), 0, phase + ': no timing button');
       assert.equal(await text(page, '[data-private-layer=qgv]'), 'KIS · 비공개 · 공식 아님 · 가격 기준일 2026-10-23 · 출처 KIS · 계산 판 ' + Q556.calc_version + ' 검증 전(참고)', phase + ': label, price basis day, source, calc version and the producer\'s tag');
       assert.deepEqual(await page.locator('[data-private-row="' + code + '"] [data-private-axis] td').allTextContents(),
@@ -328,7 +342,7 @@ let phase = 'START', pass = 0, where = '';
     await s.close(); s = null;
     if (pagesOut) { fs.rmSync(pagesOut, { recursive: true, force: true }); pagesOut = null; }
    }
-    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups, development build and Pages artifact app.html: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, one stock-route read, BASIS_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), technical tiers from Codex #556 output (검증됨, 검증 전(참고), WITHHELD, fail closed), qgv 390 (Codex #556 kis-qgv/1, KIS V label, V 미산출, fail closed, ERROR / EMPTY / 403, public ranks unchanged))');
+    console.log('web_app_kis_private_browser_test: PASS (' + pass + ' groups, development build and Pages artifact app.html: technical 1440 (public default, sign-in, read token status NO_EXPIRY / rejected / mismatch / malformed, one stock-route read, BASIS_MISMATCH, SYMBOL_MISMATCH, measures 404 alone, EMPTY vs ERROR, 500, 403), technical tiers from Codex #556 output (검증됨, 검증 전(참고), WITHHELD, fail closed), qgv 390 (the qgv part of the stock route, Codex #556 kis-qgv/1, KIS V label, V 미산출, fail closed, ERROR / EMPTY / 403, public ranks unchanged))');
   } catch (e) {
     console.error('web_app_kis_private_browser_test failed at ' + phase + ':', e && e.stack || e);
     process.exitCode = 1;

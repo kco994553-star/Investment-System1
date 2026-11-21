@@ -15,7 +15,7 @@
      미산출 with its reasons; a raw value appears only as the producer's reference_value, tagged. A result whose basis differs from the chart file's is not
      attached (IS2.kisPrivate.basisAgreement): that part shows the mismatch line and no value ([data-private-basis-agreement]).
      A missing measures file (404) is that part's 자료 없음; a refused one that part's refusal; the analysis and chart stay.
-   - kind 'qgv': the qgv route → label KIS · 비공개 · 공식 아님, the price basis day and the source, the target().code row's
+   - kind 'qgv': the stock route's QGV part (?part=qgv; owner 2026-11-21, from the qgv route) → label KIS · 비공개 · 공식 아님, the price basis day and the source, the target().code row's
      Q / G / V (미산출 + reason, never 0), the total only when V exists, no rank, and the coverage counts. Nothing here
      recomputes a score or a rank: the file's values are shown as they are.
    - Tiers come only from the producer's display fields (Codex #556; IS2.kisPrivate displayOf / analysisTiers / measuresTiers):
@@ -127,10 +127,13 @@ function renderQgv(body,[qRaw],{code,publicBasis},status){const K=I.kisPrivate,q
 
 // The technical panel reads the one-file stock view (owner 2026-11-20 screen switch): one request instead of three spaced ones.
 // IS2.kisPrivate.stockParts assembles the chart / analysis / measures parts the panel already shows; nothing is calculated.
-function renderStock(body,[sRaw],ctx,status){const p=I.kisPrivate.stockParts(sRaw);if(!p.ok)throw Error(p.code);
+function renderStock(body,[sRaw],ctx,status){const K=I.kisPrivate,p=K.stockParts(sRaw);if(!p.ok)throw Error(p.code);
+ // The view must be the company asked for (the Worker no longer reads the view; a class share's file names BRK/B for BRK-B).
+ if(K.requestSymbol(sRaw.symbol)!==ctx.symbol)throw Error('SYMBOL_MISMATCH');
  if(p.value.analysis===null)throw Error('KIS_STOCK_INVALID');
  renderTechnical(body,[p.value.analysis,p.value.chart,p.value.measures],ctx,status);}
-const READS=Object.freeze({technical:t=>(t.symbol?[['stock',t.symbol]]:null),qgv:()=>[['qgv',null]]});
+// The KIS V panel reads the QGV object of the same release generation (owner 2026-11-21), no longer the qgv route.
+const READS=Object.freeze({technical:t=>(t.symbol?[['stock',t.symbol]]:null),qgv:()=>[['stockQgv',null]]});
 const RENDER=Object.freeze({technical:renderStock,qgv:renderQgv});
 
 function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){

@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { gzipSync } from 'node:zlib';
+import { gzipSync, gunzipSync } from 'node:zlib';
 // /kis/stock of the private Worker (KIS_STOCK_VIEW_RELEASES_20261120.md §5). Synthetic values only: the read token, the Google
 // client id, the owner address, the signed URL and every number are made up here; no KIS value and no price exists in this file.
 const OWNER_EMAIL = ['owner', 'example.test'].join('@');
 const FAKE_TOKEN = ['github', 'pat', '11SYNTHETICONLY0000000000'].join('_');
 
 globalThis.fetch = async () => { throw new Error('Live network transport is disabled in these tests'); };
-const { createHandler, HistoryRateLimiter, kisStockIndexValid, kisAssetRedirectTarget, kisStockViewValid } = await import('../src/index.js');
+const { createHandler, HistoryRateLimiter, kisStockIndexValid, kisAssetRedirectTarget } = await import('../src/index.js');
 
 const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 10, 20, 3);
@@ -128,25 +128,19 @@ test('redirect target: only https on exactly the release asset host, default por
   assert.equal(kisAssetRedirectTarget(new Response(makeAsset().gz, { status: 200 })), null, 'a 200 stream');
 });
 
-test('view validator: schema, scope, symbol, day, 17 fields, 17-value rows, zero extra requests', () => {
-  const entry = { symbol: 'NVDA' };
-  assert.equal(kisStockViewValid(makeView(), entry, '2026-11-19'), true);
-  assert.equal(kisStockViewValid(makeView({ rows: [] }), entry, '2026-11-19'), true, 'no retained session yet');
-  for (const v of [makeView({ schema: K('bars/1') }), makeView({ publication_scope: 'PUBLIC' }), makeView({ symbol: 'AAPL' }),
-    makeView({ evaluation_day: '2026-11-18' }), makeView({ fields: FIELDS.slice(1) }), makeView({ fields: [...FIELDS.slice(1), 3] }),
-    makeView({ rows: [row(1).slice(1)] }), makeView({ rows: [{}] }), makeView({ rows: {} }),
-    makeView({ additional_requests_for_toggle: 1 }), makeView({ additional_requests_for_retained_period: '0' }), [makeView()], null]) {
-    assert.equal(kisStockViewValid(v, entry, '2026-11-19'), false, JSON.stringify(v)?.slice(0, 80));
-  }
-});
+// The view itself is no longer checked here (owner 2026-11-21 light read): the app's stockParts and its readers check it
+// (implementation/tools/web_app_kis_private_node_test.js 'stockParts' cases). The Worker keeps every pin below.
 
 // ---- the route ------------------------------------------------------------------------------------------------------------
-test('happy path: index, asset API, one credential-free hop; the published JSON bytes come back unchanged', async () => {
+test('happy path: index, asset API, one credential-free hop; the pinned gzip bytes go out as they are, Content-Encoding gzip', async () => {
   const asset = makeAsset(), s = setup({ asset }), r = await s.run();
   assert.equal(r.status, 200); noStore(r);
   assert.equal(r.headers.get('Access-Control-Allow-Origin'), ORIGIN);
   assert.equal(r.headers.get('Content-Type'), 'application/json; charset=utf-8');
-  assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(asset.json), 'not re-serialised');
+  assert.equal(r.headers.get('Content-Encoding'), 'gzip');
+  const out = new Uint8Array(await r.arrayBuffer());
+  assert.deepEqual(out, new Uint8Array(asset.gz), 'the published gzip bytes, not inflated, not re-compressed');
+  assert.deepEqual(new Uint8Array(gunzipSync(out)), new Uint8Array(asset.json), 'they inflate to the published JSON');
   const [index, api, hop, ...rest] = s.upstream();
   assert.equal(rest.length, 0, 'three upstream reads, no more');
   assert.equal(index.url, INDEX_URL);
@@ -172,7 +166,23 @@ test('EXPIRING still serves with the one exposed date header; the share-class ke
   const asset = makeAsset(makeView({ symbol: 'BRK/B' }));
   s = setup({ asset, index: makeIndex(asset, { stocks: { 'BRK-B': entryOf(asset, 7, 'BRK/B') } }) });
   r = await s.run('/kis/stock?symbol=BRK-B');
-  assert.equal(r.status, 200); assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(asset.json));
+  assert.equal(r.status, 200); assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(asset.gz));
+});
+
+test('?part=qgv: the index QGV object through the same pins and hop; nothing else is a part', async () => {
+  const stock = makeAsset(), qgvJson = Buffer.from(JSON.stringify({ schema: K('qgv/1'), rows: {} }), 'utf8'), qgvGz = gzipSync(qgvJson);
+  const index = makeIndex(stock, { qgv: { asset_id: 9, name: 'q.json.gz', bytes: qgvGz.length, sha256: sha(qgvGz), json_bytes: qgvJson.length, json_sha256: sha(qgvJson) } });
+  let s = setup({ asset: stock, index, target: () => new Response(qgvGz, { status: 200 }) }), r = await s.run('/kis/stock?part=qgv');
+  assert.equal(r.status, 200); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
+  assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(qgvGz));
+  assert.equal(s.upstream()[1].url, API + '/releases/assets/9', 'the QGV asset id from the index');
+  assert.deepEqual(s.limiterCalls, ['/admit', '/release'], 'one admission like a stock read');
+  s = setup({ asset: stock, index, target: () => new Response(stock.gz, { status: 200 }) }); r = await s.run('/kis/stock?part=qgv');
+  assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_PIN', 'another asset under the QGV id is refused by its pins');
+  for (const path of ['/kis/stock?part=QGV', '/kis/stock?part=qgv&symbol=NVDA', '/kis/stock?part=stock', '/kis/stock?part=qgv#x', '/kis/qgv?part=qgv']) {
+    s = setup(); r = await s.run(path);
+    assert.equal(r.status, 400, path); assert.equal(await code(r), 'REQUEST_INVALID', path); assert.equal(s.calls.length, 0, path);
+  }
 });
 
 test('unauthenticated or wrong symbol: refused before any GitHub call or admission', async () => {
@@ -256,7 +266,7 @@ test('redirect target: a second hop is refused, a non-200 is refused, the second
   }
 });
 
-test('pins: gzip size and sha256, JSON size and sha256; a body over the pinned size is cut off', async () => {
+test('pins: gzip size and sha256; a body over the pinned size is cut off', async () => {
   const asset = makeAsset(), e = entryOf(asset);
   const tampered = Buffer.from(asset.gz); tampered[tampered.length - 9] ^= 1;
   const cases = [
@@ -264,9 +274,6 @@ test('pins: gzip size and sha256, JSON size and sha256; a body over the pinned s
     { index: makeIndex(asset, {}, { bytes: e.bytes + 1 }) },
     { index: makeIndex(asset, {}, { bytes: e.bytes - 1 }) },
     { target: () => new Response(tampered, { status: 200 }) },
-    { index: makeIndex(asset, {}, { json_sha256: 'f'.repeat(64) }) },
-    { index: makeIndex(asset, {}, { json_bytes: e.json_bytes + 1 }) },
-    { index: makeIndex(asset, {}, { json_bytes: e.json_bytes - 1 }), note: 'decompressed size over its cap' },
     { target: () => new Response(Buffer.concat([asset.gz, Buffer.alloc(4096)]), { status: 200 }), note: 'gzip over its cap' },
     { target: () => new Response(asset.gz, { status: 200, headers: { 'Content-Length': String(e.bytes + 1) } }), note: 'advertised over the cap' },
     { target: () => new Response(null, { status: 200 }) },
@@ -282,22 +289,14 @@ test('pins: gzip size and sha256, JSON size and sha256; a body over the pinned s
   assert.equal(await code(r), 'KIS_STOCK_PIN'); assert.ok(cancelled, 'cancelled'); assert.ok(pulled <= 3, 'stops near the cap');
 });
 
-test('content: wrong evaluation_day, symbol, schema, fields, rows, request counters, bad gzip and bad UTF-8 are KIS_STOCK_INVALID', async () => {
-  const views = [makeView({ evaluation_day: '2026-11-18' }), makeView({ symbol: 'AAPL' }), makeView({ schema: K('bars/1') }),
-    makeView({ publication_scope: 'PUBLIC' }), makeView({ fields: FIELDS.slice(0, 16) }), makeView({ rows: [row(1), row(2).slice(0, 16)] }),
-    makeView({ additional_requests_for_toggle: 1 }), makeView({ additional_requests_for_retained_period: 2 })];
-  for (const view of views) {
-    const asset = makeAsset(view), s = setup({ asset }), r = await s.run();
-    assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INVALID');
+test('content is not read here: a pinned view of any shape passes as published (the app refuses a wrong one)', async () => {
+  for (const view of [makeView({ evaluation_day: '2026-11-18' }), makeView({ schema: K('bars/1') }), makeView({ rows: [row(1).slice(0, 16)] })]) {
+    const asset = makeAsset(view), r = await setup({ asset }).run();
+    assert.equal(r.status, 200); assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(asset.gz));
   }
-  for (const json of [Buffer.from('[1]'), Buffer.from('{"a":'), Buffer.from([0x7b, 0xff, 0x7d])]) {
-    const asset = { json, gz: gzipSync(json) }, r = await setup({ asset }).run();
-    assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INVALID');
-  }
-  // Pinned bytes that are not gzip.
-  const junk = Buffer.from('not gzip at all, synthetic'), asset = { json: Buffer.from('{}'), gz: junk };
-  const r = await setup({ asset }).run();
-  assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INVALID');
+  // Pinned bytes that are not gzip still go out as pinned; the browser's inflate fails and the app shows its error code.
+  const junk = Buffer.from('not gzip at all, synthetic'), r = await setup({ asset: { json: Buffer.from('{}'), gz: junk } }).run();
+  assert.equal(r.status, 200); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
 });
 
 test('the other routes keep their own reads: /kis/chart still reads its Contents file and refuses any redirect', async () => {

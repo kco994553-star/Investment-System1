@@ -299,10 +299,11 @@ const DAY_MS = 86_400_000;
 // ---------- /kis/stock: one stock's complete view from a private release asset ----------
 const KIS_STOCK_ROUTE = '/kis/stock';
 const KIS_STOCK_INDEX_PATH = 'views/kis-stock-index.json';
+// The one other answer of the stock route (owner 2026-11-21): the index's QGV object, the same release generation.
+const KIS_STOCK_QGV_QUERY = '?part=qgv';
 const KIS_STOCK_INDEX_MAX_BYTES = 262_144;
 // The producer's uncompressed limit (#571); the gzip object is never larger either.
 const KIS_STOCK_MAX_BYTES = 1_800_000;
-const KIS_STOCK_FIELD_COUNT = 17;
 const KIS_ASSET_HOST = 'release-assets.githubusercontent.com';
 const HEX64 = /^[0-9a-f]{64}$/;
 const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -345,15 +346,6 @@ export function kisAssetRedirectTarget(response) {
   try { url = new URL(location); } catch { return null; }
   if (url.protocol !== 'https:' || url.hostname !== KIS_ASSET_HOST || url.port !== '' || url.username !== '' || url.password !== '') return null;
   return url.href;
-}
-
-// kis-stock-view/1 as the producer writes it (Codex #571 project_stock); the app validates the rest.
-export function kisStockViewValid(view, entry, evaluationDay) {
-  return plainObject(view) && view.schema === 'kis-stock-view/1' && view.publication_scope === 'OWNER_PRIVATE_ONLY'
-    && view.symbol === entry.symbol && view.evaluation_day === evaluationDay
-    && Array.isArray(view.fields) && view.fields.length === KIS_STOCK_FIELD_COUNT && view.fields.every((f) => typeof f === 'string')
-    && Array.isArray(view.rows) && view.rows.every((r) => Array.isArray(r) && r.length === KIS_STOCK_FIELD_COUNT)
-    && view.additional_requests_for_toggle === 0 && view.additional_requests_for_retained_period === 0;
 }
 
 // Reads a stream up to limit bytes; one byte more cancels it (overCode, 502). A broken stream is brokenCode.
@@ -649,10 +641,11 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     return new Response(bytes, { status: 200, headers: responseHeaders });
   }
 
-  // /kis/stock: index (1 GitHub read) → asset API (1, read token, redirect 'manual') → the one accepted 302 target (1, no
-  // credentials, redirect 'manual', no second hop) → size and sha256 pins of the gzip and of the JSON → kis-stock-view/1 check.
-  // The decompressed bytes are returned as published. No Location, token or body ever reaches an error.
-  async function kisStock(symbol, env, origin) {
+  // /kis/stock?symbol=… (a stock's view) or ?part=qgv (the QGV object): index (1 GitHub read) → asset API (1, read token,
+  // redirect 'manual') → the one accepted 302 target (1, no credentials, redirect 'manual', no second hop) → size and sha256
+  // pins of the gzip → the gzip bytes as published, Content-Encoding gzip (no inflate, no parse here; the app checks the content).
+  // No Location, token or body ever reaches an error.
+  async function kisStock(symbol, part, env, origin) {
     const date = kisTokenDate(env, now());
     if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
     const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
@@ -662,8 +655,8 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     if (bad) return closeAndFail(response, bad.code, bad.http);
     const index = await readJson(response, KIS_STOCK_INDEX_MAX_BYTES, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
     if (!kisStockIndexValid(index)) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-    if (!Object.hasOwn(index.stocks, symbol)) throw new Failure('KIS_SERIES_NOT_FOUND', 404);
-    const entry = index.stocks[symbol];
+    if (part === null && !Object.hasOwn(index.stocks, symbol)) throw new Failure('KIS_SERIES_NOT_FOUND', 404);
+    const entry = part === 'qgv' ? index.qgv : index.stocks[symbol];
     const gzipped = await timed(15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
       let api;
       try {
@@ -694,17 +687,13 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       return readCapped(asset.body, entry.bytes, 'KIS_STOCK_PIN', 'UPSTREAM_UNAVAILABLE', 503);
     });
     if (gzipped.byteLength !== entry.bytes || await sha256Hex(gzipped) !== entry.sha256) throw new Failure('KIS_STOCK_PIN', 502);
-    let inflated;
-    try { inflated = new Blob([gzipped]).stream().pipeThrough(new DecompressionStream('gzip')); }
-    catch { throw new Failure('KIS_STOCK_INVALID', 502); }
-    const bytes = await readCapped(inflated, entry.json_bytes, 'KIS_STOCK_PIN', 'KIS_STOCK_INVALID', 502);
-    if (bytes.byteLength !== entry.json_bytes || await sha256Hex(bytes) !== entry.json_sha256) throw new Failure('KIS_STOCK_PIN', 502);
-    let view;
-    try { view = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_STOCK_INVALID', 502); }
-    if (!kisStockViewValid(view, entry, index.evaluation_day)) throw new Failure('KIS_STOCK_INVALID', 502);
+    // Light read (owner 2026-11-21, CPU headroom on the free plan): the pinned gzip bytes go out as they are, with
+    // Content-Encoding: gzip; the browser inflates them and the app's reader checks the view (kis-private.js stockParts and
+    // its three readers, or validateQgv). encodeBody 'manual' keeps the runtime from compressing them a second time.
     const responseHeaders = headers(origin);
+    responseHeaders.set('Content-Encoding', 'gzip');
     if (date.state === 'EXPIRING') { responseHeaders.set('X-Private-Token-Expires-On', date.expires_on); responseHeaders.set('Access-Control-Expose-Headers', 'X-Private-Token-Expires-On'); }
-    return new Response(bytes, { status: 200, headers: responseHeaders });
+    return new Response(gzipped, { status: 200, headers: responseHeaders, encodeBody: 'manual' });
   }
 
   return async function handle(request, env) {
@@ -715,8 +704,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       const kis = url.pathname === '/kis/status' || url.pathname === KIS_STOCK_ROUTE || Object.hasOwn(KIS_FILES, url.pathname);
       if (url.pathname !== '/history' && !kis) throw new Failure('ROUTE_NOT_FOUND', 404);
       if (!['GET', 'OPTIONS'].includes(request.method)) throw new Failure('METHOD_NOT_ALLOWED', 405);
-      let symbol = null, range = null;
+      let symbol = null, range = null, part = null;
       if (KIS_PLAIN.has(url.pathname)) { if (url.search || url.hash) throw new Failure('REQUEST_INVALID', 400); }
+      else if (url.pathname === KIS_STOCK_ROUTE && url.search === KIS_STOCK_QGV_QUERY && !url.hash) part = 'qgv';
       else if (kis) symbol = kisChartSymbol(url);
       else ({ symbol, range } = validateQuery(url));
       if (request.method === 'OPTIONS') {
@@ -735,7 +725,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       let response;
       try {
         if (url.pathname === '/kis/status') response = await kisStatus(env, origin);
-        else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, env, origin);
+        else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, part, env, origin);
         else if (kis) response = await kisFile(url.pathname, symbol, env, origin);
         else {
           let result;

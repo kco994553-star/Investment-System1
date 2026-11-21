@@ -368,11 +368,20 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     await assert.rejects(h.c.get('stock', 'BRK/B'), /REQUEST_INVALID/, 'stock takes the request symbol, not the KIS file symbol');
     assert.equal(h.sent.length, 4);
   });
+  await ok('client: KIS V reads the qgv part of the stock route (no symbol); a symbol on the part is refused', async () => {
+    assert.deepEqual(KP.PARTS, { stockQgv: { route: 'stock', query: '?part=qgv' } });
+    const h = harness({ answers: [{ status: 200, body: X.qgv() }] });
+    await h.c.connect();
+    await h.c.get('stockQgv', null);
+    assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.stock + '?part=qgv']);
+    await assert.rejects(h.c.get('stockQgv', 'NVDA'), /REQUEST_INVALID/, 'the part takes no symbol');
+    assert.equal(h.sent.length, 1);
+  });
   await ok('stockParts: the one-file view is only assembled into the three parts the panel reads; the readers then check them', async () => {
     const c = X.bars({ symbol: 'NVDA' }), a = X.analysis({ adopted: true }), m = X.measures({ symbol: 'NVDA' });
     const { bars, raw_bars: rawBars, schema, ...header } = c;
     const fields = ['date', 'open', 'high', 'low', 'close', 'volume', 'amount', ...Array.from({ length: 10 }, (_, i) => 'I' + i)];
-    const view = () => ({ schema: X.K('stock-view/1'), publication_scope: 'OWNER_PRIVATE_ONLY', symbol: 'NVDA', evaluation_day: a.evaluation_day, fields,
+    const view = () => ({ schema: X.K('stock-view/1'), publication_scope: 'OWNER_PRIVATE_ONLY', symbol: 'NVDA', evaluation_day: a.evaluation_day, fields: [...fields],
       rows: bars.map((b) => [b.date, b.open, b.high, b.low, b.close, b.volume, null, ...Array(10).fill(1.5)]), chart: { ...header, schema: X.K('chart-metadata/1') },
       latest: { technical: a, measures: m }, additional_requests_for_toggle: 0, additional_requests_for_retained_period: 0 });
     const r = KP.stockParts(view());
@@ -392,6 +401,16 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
       ['another symbol in the header', (v) => { v.chart.symbol = 'AMD'; }, 'SYMBOL'],
       ['scope', (v) => { v.publication_scope = 'PUBLIC'; }, 'SCOPE'],
       ['no latest', (v) => { delete v.latest; }, 'KEY_MISSING'],
+      ['another schema', (v) => { v.schema = X.K('stock-view/2'); }, 'SCHEMA_VERSION'],
+      ['a request symbol, not the file symbol', (v) => { v.symbol = 'NVDA/X'; v.chart.symbol = 'NVDA/X'; }, 'SYMBOL'],
+      ['not a day', (v) => { v.evaluation_day = '2026-1-05'; }, 'DATE'],
+      ['a toggle request counted', (v) => { v.additional_requests_for_toggle = 1; }, 'STOCK_REQUESTS'],
+      ['a retained-period request counted', (v) => { v.additional_requests_for_retained_period = 2; }, 'STOCK_REQUESTS'],
+      ['16 fields', (v) => { v.fields = v.fields.slice(0, 16); }, 'STOCK_FIELDS'],
+      ['a field not a string', (v) => { v.fields[9] = 9; }, 'STOCK_FIELDS'],
+      ['a long row', (v) => { v.rows[1] = [...v.rows[1], 0]; }, 'TYPE'],
+      ['a short RAW row', (v) => { v.raw_rows = v.rows.map((x) => [...x]); v.raw_rows[0].pop(); }, 'TYPE'],
+      ['rows not a list', (v) => { v.rows = {}; }, 'TYPE'],
     ]) { const v = view(); change(v); const x = KP.stockParts(v); assert.deepEqual([x.ok, x.code], [false, code], label); }
   });
   await ok('client: a wider scope is refused; a server 403 drops the token; expiry drops it; disconnect drops it', async () => {
