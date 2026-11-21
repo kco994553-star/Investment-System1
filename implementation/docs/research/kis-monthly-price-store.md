@@ -34,7 +34,20 @@ store has:
 
 An identical receipt is idempotent. A later capture containing unchanged values
 adds receipt/manifest metadata but zero monthly-row bytes; its clock does not
-replace each row's first observation time. Any changed provider/normalized value
+replace each row's first observation time. The four order-book snapshot fields
+`pbid`, `vbid`, `pask`, and `vask` retain their first received values
+(including absence) in the stored provider row. Later differences in those
+fields alone add no row or revision. Both new-page overlap and an exact
+committed-receipt replay use this rule. Every response still has its own
+unmodified body and receipt hash checked before comparison. An approved
+correction appends the complete corrected version and preserves its predecessor.
+
+Session date is the row key. OHLC, volume, turnover, other provider fields
+(including unknown fields), and normalized bar/admission status remain
+review-sensitive. Price normalization supplies OHLCV and turnover to charts and
+indicators; the private V adapter selects the session's raw close. Neither
+calculation reads the quote snapshot. Existing monthly objects, receipts and
+manifest pins require no migration. Any other changed provider/normalized value
 requires an explicit `revision_reference`. It is retained alongside its previous
 version, never silently adopted as a split or adjusted price.
 

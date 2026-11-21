@@ -265,6 +265,18 @@ def _committed_receipt(root, latest, receipt_path):
     return None
 
 
+_QUOTE_SNAPSHOT_FIELDS = frozenset(('pbid', 'vbid', 'pask', 'vask'))
+
+
+def _same_provider_bar(saved, incoming):
+    # Preserve complete provider rows on write. Only these transient snapshots
+    # may disagree across captures of the same session.
+    return saved == incoming or (
+        {k: v for k, v in saved.items() if k not in _QUOTE_SNAPSHOT_FIELDS}
+        == {k: v for k, v in incoming.items() if k not in _QUOTE_SNAPSHOT_FIELDS}
+    )
+
+
 def _economic_bar(row):
     return {key: value for key, value in (row or {}).items()
             if key not in ('source_sha256', 'collected_at')}
@@ -280,7 +292,7 @@ def _verify_committed_replay(root, manifest, received, source, bars):
     for row in source['output2']:
         day = datetime.strptime(row['xymd'], '%Y%m%d').date().isoformat()
         existing = historical.get(day)
-        _need(existing is not None and existing['provider'] == row and
+        _need(existing is not None and _same_provider_bar(existing['provider'], row) and
               _economic_bar(existing['bar']) == _economic_bar(bars.get(day)), 'RECEIPT_REPLAY_MISMATCH')
 
 
@@ -317,7 +329,7 @@ def _ingest_locked(root, c, source, receipt, receipt_bytes, series, sid, contrac
         old_bar = _economic_bar(prior['bar']) if prior else None
         bar = bars.get(day)
         new_bar = _economic_bar(bar)
-        if prior and prior['provider'] == row and old_bar == new_bar:
+        if prior and _same_provider_bar(prior['provider'], row) and old_bar == new_bar:
             counts['unchanged_rows'] += 1
             continue
         if prior:
