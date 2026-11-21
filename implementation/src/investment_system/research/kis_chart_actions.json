@@ -1,0 +1,585 @@
+{
+  "NASDAQ:AVGO": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-07-15",
+      "legal_or_distribution_day": null,
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1730168/000173016824000099/0001730168-24-000099-index.htm",
+      "sha256": "3bdb6644c12addf1e63c4dc861008d7804fbf3d3f5aa6eb9b97f72c0e89a7adf",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-07-12",
+      "cik": "0001730168",
+      "accession": "0001730168-24-000099",
+      "fact_as_of": "2024-07-12",
+      "archive_locator": "sec-universe-raw-2026-10-29-all-shard3/0001730168/companyfacts.json"
+    }
+  ],
+  "NASDAQ:BKNG": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-04-06",
+      "legal_or_distribution_day": "2026-04-02",
+      "new_shares": 25,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1075531/000107553126000045/bkng-20260930.htm",
+      "sha256": "7e4cb9911c9a9d46eb8d4ed4d7e6cd6a4c97398c153d9cf9a86f3c1584dd1ce1",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001075531",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0001075531/cover-0001075531-26-000045.xml",
+      "accession": "0001075531-26-000045"
+    }
+  ],
+  "NASDAQ:COO": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-02-20",
+      "legal_or_distribution_day": null,
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/711404/000071140424000043/0000711404-24-000043-index.htm",
+      "sha256": "6afb43201133dcb934decf48b1a099835969d31c57f5c77aee2cfddab0f0caa4",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-02-16",
+      "cik": "0000711404",
+      "accession": "0000711404-24-000043",
+      "fact_as_of": "2024-02-16",
+      "archive_locator": "sec-universe-raw-2026-10-29-shard4/0000711404/companyfacts.json"
+    }
+  ],
+  "NASDAQ:CPRT": [
+    {
+      "kind": "SPLIT",
+      "date": "2023-08-22",
+      "legal_or_distribution_day": "2023-08-21",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/900075/000119312526405731/cprt-20260731.htm",
+      "sha256": "e192c7776d20a82650812cd1dc9aa5bf2f44e05341870f65c7c2107fdc5d7ea5",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0000900075",
+      "archive_locator": "sec-universe-raw-2026-10-29-shard4/0000900075/cover-0001193125-26-405731.xml",
+      "accession": "0001193125-26-405731"
+    }
+  ],
+  "NASDAQ:CRWD": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-07-02",
+      "legal_or_distribution_day": "2026-07-01",
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1535527/000153552726000031/crwd-20260731.htm",
+      "sha256": "b6f5b5105b5744c09cadc3e18c448c87d7f38c3ecbf6b42b022cfbedb3997489",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001535527",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0001535527/cover-0001535527-26-000031.xml",
+      "accession": "0001535527-26-000031"
+    }
+  ],
+  "NASDAQ:CTAS": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-09-12",
+      "legal_or_distribution_day": "2024-09-11",
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/723254/000072325424000040/ctas-20240911.htm",
+      "sha256": "cdb1012385ca1b250c27644127877be5ccf57e36fd4216b388febc60f6b8c8ea",
+      "locator": "Retained primary filing / 0000723254:2024-09-12",
+      "cik": "0000723254"
+    }
+  ],
+  "NASDAQ:DXCM": [
+    {
+      "kind": "SPLIT",
+      "date": "2022-06-13",
+      "legal_or_distribution_day": null,
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1093557/000109355722000146/0001093557-22-000146-index.htm",
+      "sha256": "df15465e89f092e6b10c1ef309d5c529b07c13961153a7319b3ac1d84e926472",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2022-06-10",
+      "cik": "0001093557",
+      "accession": "0001093557-22-000146",
+      "fact_as_of": "2022-06-10",
+      "archive_locator": "sec-universe-raw-2026-10-29-shard4/0001093557/companyfacts.json"
+    }
+  ],
+  "NASDAQ:FAST": [
+    {
+      "kind": "SPLIT",
+      "date": "2025-05-22",
+      "legal_or_distribution_day": null,
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/815556/000081555625000106/0000815556-25-000106-index.htm",
+      "sha256": "4b49d6f2199b5a4a558d808ddd14e97773606885631f81e1b6a5c8c93d9f75da",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2025-05-21",
+      "cik": "0000815556",
+      "accession": "0000815556-25-000106",
+      "fact_as_of": "2025-05-21",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0000815556/companyfacts.json"
+    }
+  ],
+  "NASDAQ:KLAC": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-06-12",
+      "legal_or_distribution_day": "2026-06-11",
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/319201/000031920126000034/klac-20260930.htm",
+      "sha256": "5f679b5a7eda474b7cbc253e31df604293ec9157fb9c3b20cf3d2581e8de3dde",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0000319201",
+      "archive_locator": "sec-universe-raw-2026-10-29-shard4/0000319201/cover-0000319201-26-000034.xml",
+      "accession": "0000319201-26-000034"
+    }
+  ],
+  "NASDAQ:LRCX": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-10-03",
+      "legal_or_distribution_day": null,
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/707549/000070754925000014/0000707549-25-000014-index.htm",
+      "sha256": "46289dd93caeb9cf61ad8a0884f51999549c8179f17ad7b0ef9bdadfe9aff626",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-10-02",
+      "cik": "0000707549",
+      "accession": "0000707549-25-000014",
+      "fact_as_of": "2024-10-02",
+      "archive_locator": "sec-universe-raw-2026-10-30-shard5/0000707549/companyfacts.json"
+    }
+  ],
+  "NASDAQ:MNST": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-08-11",
+      "legal_or_distribution_day": "2026-08-10",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/865752/000110465926123503/mnst-20260930x10q.htm",
+      "sha256": "7eea3689dad3fe3d80a380daef90962d4062c0720282b5047d8032ff2e5bcaf2",
+      "locator": "Stock split note",
+      "cik": "0000865752"
+    }
+  ],
+  "NASDAQ:NDAQ": [
+    {
+      "kind": "SPLIT",
+      "date": "2022-08-29",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1120193/000112019322000020/0001120193-22-000020-index.htm",
+      "sha256": "d4aee59387759d831635d520c225a811bc66520b0da000455397a2707b33c5fb",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2022-08-26",
+      "cik": "0001120193",
+      "accession": "0001120193-22-000020",
+      "fact_as_of": "2022-08-26",
+      "archive_locator": "sec-universe-raw-2026-10-30-shard5/0001120193/companyfacts.json"
+    }
+  ],
+  "NASDAQ:NFLX": [
+    {
+      "kind": "SPLIT",
+      "date": "2025-11-17",
+      "legal_or_distribution_day": "2025-11-14",
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1065280/000106528026000291/nflx-20260930.htm",
+      "sha256": "291b2d4ff47db3bd2ed0358c278656762792cebd984595f3f69ae6405739b662",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001065280",
+      "archive_locator": "sec-universe-raw-2026-10-29-all-shard3/0001065280/cover-0001065280-26-000291.xml",
+      "accession": "0001065280-26-000291"
+    }
+  ],
+  "NASDAQ:NVDA": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-06-10",
+      "legal_or_distribution_day": "2024-06-07",
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2025",
+      "sha256": "de513cf9e2db874690e45fa023adbb21520b714e57757433f5660158cce9b6a5",
+      "locator": "Stock Split section; SEC 10-Q XBRL StockholdersEquityNoteStockSplitConversionRatio1",
+      "cik": "0001045810",
+      "sec_ratio_accession": "0001045810-24-000264",
+      "sec_charter_index_accession": "0001045810-24-000144",
+      "date_source": "ISSUER_RELEASE_AND_SEC_EVENT_INDEX",
+      "sec_fact_archive_locator": "sec-universe-raw-2026-11-01-shard0/0001045810/companyfacts.json",
+      "sec_fact_archive_sha256": "19ef503a5770f5660964b3c3aea6937579d9b359da344afe6a9adf59c63d26ff"
+    }
+  ],
+  "NASDAQ:ORLY": [
+    {
+      "kind": "SPLIT",
+      "date": "2025-06-10",
+      "legal_or_distribution_day": null,
+      "new_shares": 15,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/898173/000089817325000057/0000898173-25-000057-index.htm",
+      "sha256": "29a5e7ccfb4acae0edb20b5c9f9bd6dd8c68ca08da883bb2ae34ad1c5e43ec77",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2025-06-10",
+      "cik": "0000898173",
+      "accession": "0000898173-25-000057",
+      "fact_as_of": "2025-06-10",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0000898173/companyfacts.json"
+    }
+  ],
+  "NASDAQ:PANW": [
+    {
+      "kind": "SPLIT",
+      "date": "2022-09-14",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1327567/000132756722000038/0001327567-22-000038-index.htm",
+      "sha256": "881c1ced47689b87bd0d5c5cad9c8365c90cd2ba4e167bcfe78ba7504e8b9896",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2022-09-13",
+      "cik": "0001327567",
+      "accession": "0001327567-22-000038",
+      "fact_as_of": "2022-09-13",
+      "archive_locator": "sec-universe-raw-2026-11-01-shard0/0001327567/companyfacts.json"
+    },
+    {
+      "kind": "SPLIT",
+      "date": "2024-12-16",
+      "legal_or_distribution_day": "2024-12-13",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1327567/000119312524277082/d817166d8k.htm",
+      "sha256": "1d03caa4b20be75dac953a2a02b04ad7da5fb7e203ca1b82d864a877324f21cc",
+      "locator": "Retained primary filing / 0001327567:2024-12-16",
+      "cik": "0001327567"
+    }
+  ],
+  "NASDAQ:SMCI": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-10-01",
+      "legal_or_distribution_day": "2024-09-30",
+      "new_shares": 10,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1375365/000137536524000035/smci-20240927.htm",
+      "sha256": "f7cf504ce0aefa4b26e7f71b94df2fa8f648f6a95803af3c7e4517cbbefa56bd",
+      "locator": "Retained primary filing / 0001375365:2024-10-01",
+      "cik": "0001375365"
+    }
+  ],
+  "NASDAQ:TECH": [
+    {
+      "kind": "SPLIT",
+      "date": "2022-11-30",
+      "legal_or_distribution_day": null,
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/842023/000155837023000979/0001558370-23-000979-index.htm",
+      "sha256": "fb186297274487b25e9aa43d19b5fed006c5b777eb960bc8fb188ae47a9d1fee",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2022-11-29",
+      "cik": "0000842023",
+      "accession": "0001558370-23-000979",
+      "fact_as_of": "2022-11-29",
+      "archive_locator": "sec-universe-raw-2026-10-29-all-shard3/0000842023/companyfacts.json"
+    }
+  ],
+  "NASDAQ:TSCO": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-12-20",
+      "legal_or_distribution_day": "2024-12-19",
+      "new_shares": 5,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/916365/000091636524000117/tsco-20241219.htm",
+      "sha256": "ccc6f5cbe9fbd8aeb9483a39573a42dc5b50f8be7cd0f6c2ad74c41d1ff301b7",
+      "locator": "Retained primary filing / 0000916365:2024-12-20",
+      "cik": "0000916365"
+    }
+  ],
+  "NASDAQ:WMT": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-02-26",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/104169/000010416924000105/0000104169-24-000105-index.htm",
+      "sha256": "49330f98609f70fcef4054edc90bc811398a58c4bf26dc0b218d607967a8dbe4",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-02-23",
+      "cik": "0000104169",
+      "accession": "0000104169-24-000105",
+      "fact_as_of": "2024-02-23",
+      "archive_locator": "sec-universe-raw-2026-10-30-shard5/0000104169/companyfacts.json"
+    }
+  ],
+  "NYSE:AMCR": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-01-15",
+      "legal_or_distribution_day": "2026-01-14",
+      "new_shares": 1,
+      "old_shares": 5,
+      "url": "https://www.sec.gov/Archives/edgar/data/1748790/000174879026000022/amcr-20260630.htm",
+      "sha256": "f10146c31f290c4ae7bb4243c02c562c998ce730b06d9982c97ab9eff6d354b8",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001748790",
+      "archive_locator": "sec-universe-raw-2026-11-02-shard1/0001748790/cover-0001748790-26-000022.xml",
+      "accession": "0001748790-26-000022"
+    }
+  ],
+  "NYSE:ANET": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-12-04",
+      "legal_or_distribution_day": "2024-12-03",
+      "new_shares": 4,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1596532/000159653224000402/anet-20241203.htm",
+      "sha256": "6699b275ba64bcc6dc0c2b9aa6ca06f9d6c34b2d7c3d8468011ddfdad396a497",
+      "locator": "Retained primary filing / 0001596532:2024-12-04",
+      "cik": "0001596532"
+    }
+  ],
+  "NYSE:APH": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-06-12",
+      "legal_or_distribution_day": "2024-06-11",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/820313/000110465924070695/tm2416925d1_8k.htm",
+      "sha256": "58b5c5d853f5f69d7d00409b1bde0f3a04e8a6a3d1d29b691c31abed225a5bc9",
+      "locator": "Retained primary filing / 0000820313:2024-06-12",
+      "cik": "0000820313"
+    },
+    {
+      "kind": "SPLIT",
+      "date": "2026-09-03",
+      "legal_or_distribution_day": "2026-09-02",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/820313/000110465926120646/aph-20260930x10q.htm",
+      "sha256": "13feef6efb69053cb52ecd9f7c0087b69f3c5c67d88a32d579d07e7e391ee14e",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0000820313",
+      "archive_locator": "sec-universe-raw-2026-10-30-shard5/0000820313/cover-0001104659-26-120646.xml",
+      "accession": "0001104659-26-120646"
+    }
+  ],
+  "NYSE:CMG": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-06-26",
+      "legal_or_distribution_day": "2024-06-25",
+      "new_shares": 50,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1058090/000105809024000024/cmg-20240606.htm",
+      "sha256": "be94f16891b78e83d45f4701b7c0de8818c7164363301eff35e8de120ff2e55e",
+      "locator": "Retained primary filing / 0001058090:2024-06-26",
+      "cik": "0001058090"
+    }
+  ],
+  "NYSE:CVNA": [
+    {
+      "kind": "SPLIT",
+      "date": "2026-05-08",
+      "legal_or_distribution_day": "2026-05-08",
+      "new_shares": 5,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1690820/000169082026000067/cvna-20260930.htm",
+      "sha256": "af8aebb75f9429d73cec7a77067277a76fbf10e18e43b711f52536942447185f",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001690820",
+      "archive_locator": "sec-universe-raw-2026-10-29-shard4/0001690820/cover-0001690820-26-000067.xml",
+      "accession": "0001690820-26-000067"
+    }
+  ],
+  "NYSE:DD": [
+    {
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "date": "2025-11-03",
+      "legal_or_distribution_day": "2025-11-01",
+      "new_shares": 1,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1666700/000166670026000060/dd-20260930.htm",
+      "sha256": "e0a70fd396776226579a8d8865f1abf1306c8a643dc041108103b1332f2ad12f",
+      "locator": "Retained SEC XBRL / Electronics Separation",
+      "cik": "0001666700",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0001666700/cover-0001666700-26-000060.xml",
+      "accession": "0001666700-26-000060"
+    },
+    {
+      "kind": "SPLIT",
+      "date": "2026-06-24",
+      "legal_or_distribution_day": "2026-06-24",
+      "new_shares": 1,
+      "old_shares": 3,
+      "url": "https://www.sec.gov/Archives/edgar/data/1666700/000166670026000060/dd-20260930.htm",
+      "sha256": "e0a70fd396776226579a8d8865f1abf1306c8a643dc041108103b1332f2ad12f",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001666700",
+      "archive_locator": "sec-universe-raw-2026-11-03-shard2/0001666700/cover-0001666700-26-000060.xml",
+      "accession": "0001666700-26-000060"
+    }
+  ],
+  "NYSE:DECK": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-09-17",
+      "legal_or_distribution_day": "2024-09-16",
+      "new_shares": 6,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/910521/000091052124000048/deck09132024exhibit991.htm",
+      "sha256": "3f8ddfe392edc341b1c7ff724d151911778c85fa9a52a107ce34b77d1cf34d64",
+      "locator": "Retained primary filing / 0000910521:2024-09-17",
+      "cik": "0000910521"
+    }
+  ],
+  "NYSE:ETR": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-12-13",
+      "legal_or_distribution_day": "2024-12-12",
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/65984/000006598424000123/etr-20241212.htm",
+      "sha256": "6503eb0fcec77f351a5cecfc273d92628d9c0f13e3b6a08bfa2b0bc4b88db140",
+      "locator": "Retained primary filing / 0000065984:2024-12-13",
+      "cik": "0000065984"
+    }
+  ],
+  "NYSE:GE": [
+    {
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "date": "2024-04-02",
+      "legal_or_distribution_day": null,
+      "new_shares": 1,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/40545/000119312524084038/d792336d8k.htm",
+      "sha256": "1e657537b78da07f8003f56de04e981ff92b60971d02bfeee6040f9d3e9e2d33",
+      "locator": "Retained primary filing / 0000040545:2024-04-02",
+      "cik": "0000040545"
+    }
+  ],
+  "NYSE:MMM": [
+    {
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "date": "2024-04-01",
+      "legal_or_distribution_day": null,
+      "new_shares": 1,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/66740/000006674024000044/mmm-20240401.htm",
+      "sha256": "690293fd2b3c5315880cb5f79a42ee267d4d1e48541c0f661470b895e6d2014d",
+      "locator": "Retained primary filing / 0000066740:2024-04-01",
+      "cik": "0000066740"
+    }
+  ],
+  "NYSE:NOW": [
+    {
+      "kind": "SPLIT",
+      "date": "2025-12-18",
+      "legal_or_distribution_day": "2025-12-17",
+      "new_shares": 5,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1373715/000137371526000096/now-20260930.htm",
+      "sha256": "0081adea7ee7393c348b1f417f1c03f99ebbf27dadb5d6b7f88651743b3e56ee",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001373715",
+      "archive_locator": "sec-universe-raw-2026-11-02-shard1/0001373715/cover-0001373715-26-000096.xml",
+      "accession": "0001373715-26-000096"
+    }
+  ],
+  "NYSE:RJF": [
+    {
+      "kind": "SPLIT",
+      "date": "2021-09-22",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 2,
+      "url": "https://www.sec.gov/Archives/edgar/data/720005/000072000522000027/0000720005-22-000027-index.htm",
+      "sha256": "b6fe2bb269a394dc0f7a25a696eeba257859b5894e62cd1d2ff365a0415713f7",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2021-09-21",
+      "cik": "0000720005",
+      "accession": "0000720005-22-000027",
+      "fact_as_of": "2021-09-21",
+      "archive_locator": "sec-universe-raw-2026-10-29-all-shard3/0000720005/companyfacts.json"
+    }
+  ],
+  "NYSE:SPGI": [
+    {
+      "kind": "SPINOFF_PARENT_UNCHANGED",
+      "date": "2026-07-01",
+      "legal_or_distribution_day": "2026-07-01",
+      "new_shares": 1,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/64040/000110465926080005/tm2619099d1_8k.htm",
+      "sha256": "2d4755b6be5504a2c9cb1f41c5b9e2c5376af0f1b161e4fb15fac48fcfb5c7bc",
+      "locator": "Separation of Mobility Global",
+      "cik": "0000064040"
+    }
+  ],
+  "NYSE:TPL": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-03-27",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1811074/000181107424000031/0001811074-24-000031-index.htm",
+      "sha256": "0b05127bff231a8e650b4be3fbe00b2ce63937a5a1c1a2134989266ce2e8d42a",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-03-26",
+      "cik": "0001811074",
+      "accession": "0001811074-24-000031",
+      "fact_as_of": "2024-03-26",
+      "archive_locator": "sec-universe-raw-2026-10-31-shard6/0001811074/companyfacts.json"
+    },
+    {
+      "kind": "SPLIT",
+      "date": "2025-12-23",
+      "legal_or_distribution_day": "2025-12-22",
+      "new_shares": 3,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/1811074/000181107426000058/tpl-20260630.htm",
+      "sha256": "d970b5bcb1b560eaf98ab0ba685d4fcd5a32d9ff60305448ca9b48529974ccd6",
+      "locator": "Retained SEC XBRL / Stock Split disclosure",
+      "cik": "0001811074",
+      "archive_locator": "sec-universe-raw-2026-10-31-shard6/0001811074/cover-0001811074-26-000058.xml",
+      "accession": "0001811074-26-000058"
+    }
+  ],
+  "NYSE:WRB": [
+    {
+      "kind": "SPLIT",
+      "date": "2022-03-24",
+      "legal_or_distribution_day": null,
+      "new_shares": 3,
+      "old_shares": 2,
+      "url": "https://www.sec.gov/Archives/edgar/data/11544/000001154422000016/0000011544-22-000016-index.htm",
+      "sha256": "25fb6de152757d1c85eb8af0d032482b025e7e0342ce966384779865ed1456b5",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2022-03-23",
+      "cik": "0000011544",
+      "accession": "0000011544-22-000016",
+      "fact_as_of": "2022-03-23",
+      "archive_locator": "sec-universe-raw-2026-11-01-shard0/0000011544/companyfacts.json"
+    }
+  ],
+  "NYSE:WSM": [
+    {
+      "kind": "SPLIT",
+      "date": "2024-07-09",
+      "legal_or_distribution_day": null,
+      "new_shares": 2,
+      "old_shares": 1,
+      "url": "https://www.sec.gov/Archives/edgar/data/719955/000162828024038362/0001628280-24-038362-index.htm",
+      "sha256": "16afd59c6d21ea7be1f7cbaa84e26fbc0ab5d9ea9a4938decf2f3f7077618d5c",
+      "locator": "us-gaap:StockholdersEquityNoteStockSplitConversionRatio1 / instant 2024-07-09",
+      "cik": "0000719955",
+      "accession": "0001628280-24-038362",
+      "fact_as_of": "2024-07-09",
+      "archive_locator": "sec-universe-raw-2026-10-29-all-shard3/0000719955/companyfacts.json"
+    }
+  ]
+}

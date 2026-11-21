@@ -92,13 +92,21 @@ def _split_adjust(rows, splits):
     adjusted=deepcopy(rows)
     for split in splits:
         ratio=Decimal(split['ratio'])
-        for row in adjusted:
-            if row['date']<split['date']:
-                with localcontext() as ctx:
-                    ctx.prec=50
-                    for field in ('open','high','low','close'):
-                        if row.get(field) is not None:row[field]=_str(Decimal(row[field])/ratio)
-                    if row.get('volume') is not None:row['volume']=_str(Decimal(row['volume'])*ratio)
+        with localcontext() as ctx:
+            ctx.prec = 50
+            new, old = ratio, 1
+            if 'new_shares' in split or 'old_shares' in split:
+                new, old = split.get('new_shares'), split.get('old_shares')
+                if not all(type(v) is int and v > 0 for v in (new, old)) or Decimal(new)/old != ratio:
+                    raise ValueError('SPLIT_RATIO_CONFLICT')
+            for row in adjusted:
+                if row['date'] >= split['date']:
+                    continue
+                for field in ('open','high','low','close'):
+                    if row.get(field) is not None:
+                        row[field] = _str(Decimal(row[field])*old/new)
+                if row.get('volume') is not None:
+                    row['volume'] = _str(Decimal(row['volume'])*new/old)
     return adjusted
 
 

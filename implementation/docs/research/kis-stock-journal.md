@@ -386,3 +386,45 @@ assets plus QGV and monthly source asset total 519, within the 1,000-assets
 limit per release. Release upload and the monthly source asset size remain
 Main-side checks. The reported trial precedes this fix and the full
 fixed-revision run is still pending.
+
+### Confirmed splits in the single-stock response
+
+The producer reads the retained MODP0 daily OHLCV and a dated register of
+reviewed issuer actions (`kis_chart_actions.json`). A split entry identifies
+the listing, issuer, first trading session on the new basis and exact number of
+new and old shares. References identify the retained filing, disclosure or XBRL
+fact, and its digest. For an archived XBRL member, the digest covers the member
+named by `archive_locator`. An instant fact can corroborate the distribution or
+trading session. Its accounting date alone does not establish a legal effective
+timestamp. NVIDIA's SEC ratio, charter filing index and issuer release have
+separate locators. The release supplies the after-close and first-trade dates.
+
+The producer compares the previous session's raw close with the event-day open
+on equivalent shares (8% relative tolerance). Prices before that trading day
+are multiplied by old/new and volume by new/old. Turnover and the newest
+as-traded close retain their original units. Cash dividends and MODP1 are
+excluded. Other adjacent close moves of at least 30% are marked for review.
+A documented distribution with unchanged parent shares is annotated without
+adjustment. A held move remains visible at its observed size. Markers and
+coverage refer to the retained series, not an exhaustive action history.
+The view is a retrospective display as of the evaluation day.
+
+Main reads these fields from the existing single response for the stock:
+
+| Field | Meaning |
+|---|---|
+| `fields`, `rows` | Display OHLCV, turnover and ten indicator columns on `chart.basis`. |
+| `chart.basis` | `SPLIT_ADJUSTED` when confirmed splits were applied, otherwise `RAW`. |
+| `raw_fields`, `raw_rows` | Original observations when a second series is needed for the raw-price option. |
+| `coverage.retained_start`, `retained_end`, `retained_sessions` | First and last observed dates and actual number of bars. |
+| `coverage.applied_splits[]` | `effective_day` is the first trading day on the new basis. `new_per_old` is a decimal string. Reviewed events also give exact integers under `evidence.new_shares/old_shares`. |
+| `chart.action_markers[]` | Date, preceding observed session, raw close ratio, review state and any matching source. |
+| `latest.technical.metrics.ATR_14` | Latest ATR. Historical ATR is not among the ten chart columns. |
+
+Rebuild from the existing capture with the documented journal `restore` command.
+The first restore with projection `KIS_STOCK_SPLIT_VIEW_2` rebuilds old-generation
+responses. Subsequent member cache keys include that member's reviewed actions.
+Restore is independent of daily quote-column ingestion. Publish the new private
+generation and switch its pointer together after Main's validation. The existing
+QGV calculation continues to read raw evaluation-day closing prices and its own
+pinned financial and share inputs.
