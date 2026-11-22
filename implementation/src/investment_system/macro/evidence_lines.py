@@ -44,6 +44,9 @@ SCOPE = {"screen": "EXPLORATION_ONLY", "official_judgement": False, "probability
 STATES = ("LIVE", "PARTIAL", "NOT_AVAILABLE")
 PREVIOUS = ("LOADED", "NO_LIVE", "UNAVAILABLE", "NOT_COLLECTED")
 CONTINUITY = ("CONTINUOUS", "BASELINE", "RESET_PREVIOUS_UNAVAILABLE", "NOT_COLLECTED")
+# Why a run started the history again (owner 2026-11-22: a reset is never silent; it is counted in the file).
+RESET_REASONS = ("NO_LIVE", "PREVIOUS_UNAVAILABLE", "PREVIOUS_DISCARDED", "PREVIOUS_PLACEHOLDER")
+MAX_RESETS = 500
 BASES = ("SOURCE_LAST_MODIFIED", "COLLECTION_TIME", "BASELINE")
 RECORD_KINDS = ("FIRST", "REVISION")
 VERSION_KINDS = ("BASELINE", "FIRST", "REVISION")
@@ -258,7 +261,13 @@ def _series_step(sid: str, old: dict, capture: dict | None, now: datetime) -> tu
         obs = {p: v for p, v in old["obs"]}
         history = row["history"]
         new_records = []
+        # Only the periods the published window keeps can be a release: a source that returns a longer span than the
+        # window (BEA, G.17, SLOOS ...) must not record the same old periods as FIRST again on every run.
+        kept = sorted(set(obs) | set(capture["rows"]), key=lambda q: period_index(q, frequency))[-WINDOW[frequency]:]
+        floor = period_index(kept[0], frequency) if kept else None
         for period, value in sorted(capture["rows"].items()):
+            if floor is not None and period_index(period, frequency) < floor:
+                continue
             if period not in obs:
                 if not baseline:
                     history.setdefault(period, []).append({"v": value, "kind": "FIRST", **timing})
@@ -314,7 +323,7 @@ def _failed_series(sid: str, old: dict, now: datetime) -> dict:
 
 
 def build(captures: dict, *, previous: dict | None, previous_state: str, now: datetime,
-          failures: list | None = None) -> dict:
+          failures: list | None = None, reset_reason: str | None = None, prior_resets: list | None = None) -> dict:
     """The next payload from this run's captures ({series_id: capture}) and the validated previous payload.
 
     capture = {"rows": {period: float}, "acquired_at": aware datetime, "release": {"at": datetime|None, "date": str|None}}
@@ -351,13 +360,21 @@ def build(captures: dict, *, previous: dict | None, previous_state: str, now: da
         events.extend(new_events)
         ids.update(e["id"] for e in new_events)
         replay.extend(new_replay)
+    if continuity == "CONTINUOUS":
+        resets = list(previous.get("resets", []))
+    else:
+        reason = reset_reason or ("PREVIOUS_PLACEHOLDER" if previous is not None else
+                                  "PREVIOUS_UNAVAILABLE" if previous_state == "UNAVAILABLE" else "NO_LIVE")
+        before = list((previous or {}).get("resets", [])) or list(prior_resets or [])
+        resets = (before + [{"at": iso(now), "reason": reason,
+                             "previous_generated_at": (previous or {}).get("generated_at")}])[-MAX_RESETS:]
     payload = {
         "schema": SCHEMA, "kind": KIND, "catalog": es.CATALOG, "generated_at": iso(now),
         "collection_started_at": (previous or {}).get("collection_started_at") or iso(now),
         "previous": previous_state, "continuity": continuity, "scope": dict(SCOPE), "labels": dict(LABELS),
         "indicators": [indicator_view(i, series_out) for i in es.INDICATORS],
         "series": series_out, "releases": prev_records + records, "events": prev_events + events,
-        "replay_events": replay, "summary": summary(series_out, prev_events + events),
+        "replay_events": replay, "summary": summary(series_out, prev_events + events), "resets": resets,
     }
     state_values = [i["state"] for i in payload["indicators"]]
     payload["state"] = ("LIVE" if all(s == "LIVE" for s in state_values) else
@@ -395,16 +412,37 @@ def indicator_view(indicator: dict, series_out: dict) -> dict:
 
 
 def adopt_catalog(payload):
-    """A previous copy written under an earlier catalog text (e.g. E14 terms_note / publication, owner 2026-11-22): its
-    indicator views are derived only from the catalog and its own series, so they are rebuilt from the current catalog.
-    Nothing else is touched; the caller still validates the whole copy strictly. Anything unexpected -> returned as is."""
-    if type(payload) is not dict or type(payload.get("series")) is not dict:
+    """Carry a previous copy across a change of the catalog text or the derived views (owner 2026-11-22, general rule).
+
+    Rebuilt from the current catalog: catalog / scope / labels constants, the indicator views and the summary. Series
+    that the catalog no longer lists are dropped with their records and events; series it newly lists start empty; a
+    series the catalog now holds from publication is emptied as TERMS_UNVERIFIED. Every series row, record and event is
+    otherwise kept as it was and the caller still validates the whole copy strictly. The copy is discarded only when it
+    is not this schema/kind, or a kept row, record or event fails its checks (see tools/macro_evidence.load_previous).
+    Anything unexpected here -> the copy is returned as it was (and then fails validation)."""
+    if type(payload) is not dict or payload.get("schema") != SCHEMA or payload.get("kind") != KIND:
         return payload
     try:
-        views = [indicator_view(i, payload["series"]) for i in es.INDICATORS]
+        old = payload["series"]
+        if type(old) is not dict:
+            return payload
+        series = {}
+        for sid in es.SERIES_IDS:
+            row = old.get(sid)
+            series[sid] = ({**_empty_series(sid), "reason": "TERMS_UNVERIFIED"} if _held(sid) and (row or {}).get("obs")
+                           else row if row is not None else _empty_series(sid))
+        keep = lambda items: [x for x in items if type(x) is dict and x.get("series") in series] if type(items) is list else items
+        out = {**payload, "catalog": es.CATALOG, "scope": dict(SCOPE), "labels": dict(LABELS), "series": series,
+               "releases": keep(payload.get("releases")), "events": keep(payload.get("events")),
+               "replay_events": keep(payload.get("replay_events"))}
+        out["indicators"] = [indicator_view(i, series) for i in es.INDICATORS]
+        out["summary"] = summary(series, out["events"])
+        values = [i["state"] for i in out["indicators"]]
+        out["state"] = ("LIVE" if all(v == "LIVE" for v in values) else
+                        "NOT_AVAILABLE" if all(v == "NOT_AVAILABLE" for v in values) else "PARTIAL")
+        return out
     except Exception:
         return payload
-    return {**payload, "indicators": views}
 
 
 def summary(series_out: dict, events: list) -> dict:
@@ -438,7 +476,7 @@ def empty_payload(now: datetime) -> dict:
     payload = {"schema": SCHEMA, "kind": KIND, "catalog": es.CATALOG, "generated_at": None, "collection_started_at": None,
                "previous": "NOT_COLLECTED", "continuity": "NOT_COLLECTED", "scope": dict(SCOPE), "labels": dict(LABELS),
                "indicators": [indicator_view(i, series) for i in es.INDICATORS], "series": series, "releases": [],
-               "events": [], "replay_events": [], "summary": summary(series, []), "state": "NOT_AVAILABLE"}
+               "events": [], "replay_events": [], "summary": summary(series, []), "state": "NOT_AVAILABLE", "resets": []}
     return require_macro_evidence(payload)
 
 
@@ -523,6 +561,24 @@ def _require_series_row(sid, row) -> None:
         _need(row["current"][key] is None or valid_period(row["current"][key], frequency))
 
 
+def _require_reset(entry) -> None:
+    _keys(entry, ("at", "reason", "previous_generated_at"))
+    parse_iso(entry["at"])
+    _need(entry["reason"] in RESET_REASONS)
+    _time_or_none(entry["previous_generated_at"])
+
+
+def valid_resets(value) -> list:
+    """The reset log of a copy that is otherwise discarded, kept when every entry is well formed; else []."""
+    try:
+        _need(type(value) is list and len(value) <= MAX_RESETS)
+        for entry in value:
+            _require_reset(entry)
+        return list(value)
+    except (ValueError, KeyError, TypeError, IndexError, AttributeError):
+        return []
+
+
 def _require_record(record, series) -> None:
     _keys(record, ("series", "period", "kind", "at", "basis", "rd"))
     _need(record["series"] in series and record["kind"] in RECORD_KINDS and record["basis"] != "BASELINE")
@@ -556,7 +612,12 @@ def require_macro_evidence(payload) -> dict:
 
 def _require(p) -> dict:
     _keys(p, ("schema", "kind", "catalog", "generated_at", "collection_started_at", "previous", "continuity", "scope",
-              "labels", "indicators", "series", "releases", "events", "replay_events", "summary", "state"))
+              "labels", "indicators", "series", "releases", "events", "replay_events", "summary", "state")
+          + (("resets",) if type(p) is dict and "resets" in p else ()))
+    if "resets" in p:
+        _need(type(p["resets"]) is list and len(p["resets"]) <= MAX_RESETS)
+        for entry in p["resets"]:
+            _require_reset(entry)
     _need(p["schema"] == SCHEMA and p["kind"] == KIND and p["catalog"] == es.CATALOG and p["scope"] == SCOPE and p["labels"] == LABELS)
     _need(p["previous"] in PREVIOUS and p["continuity"] in CONTINUITY and p["state"] in STATES)
     _time_or_none(p["generated_at"])

@@ -14,6 +14,8 @@ const ORIGIN = 'https://kco994553-star.github.io';
 const NOW = Date.UTC(2026, 10, 20, 3);
 const API = 'https://api.github.com/repos/kco994553-star/investment-system1-kis-private';
 const INDEX_URL = API + '/contents/views/kis-stock-index.json?ref=data';
+const ROOT_URL = API + '/contents/views/kis-stock-packs.json?ref=data';
+const SHARD_URL = (n) => API + '/contents/views/kis-stock-packs/' + n + '?ref=data';
 const ASSET_HOST = 'release-assets.githubusercontent.com';
 const SIGNED = 'https://' + ASSET_HOST + '/github-production-release-asset/1/2?sp=r&sig=SYNTHETICSIGNATURE';
 // Schema names are assembled at run time so this file carries no private schema literal (tests/test_private_boundary_static.py).
@@ -49,7 +51,7 @@ class Storage {
   async transaction(callback) { const r = this.queue.then(() => callback(this)); this.queue = r.catch(() => {}); return r; }
 }
 
-function setup({ asset = makeAsset(), index, indexResponse, assetApi, target, authStatus = 200, env = {} } = {}) {
+function setup({ asset = makeAsset(), index, indexResponse, assetApi, target, authStatus = 200, env = {}, packs = null } = {}) {
   const clock = { now: NOW }, calls = [], limiterCalls = [];
   const limiter = new HistoryRateLimiter({ storage: new Storage() }, {}, { now: () => clock.now });
   const ns = { idFromName: (n) => n, get: () => ({ fetch: (input, init) => {
@@ -68,15 +70,21 @@ function setup({ asset = makeAsset(), index, indexResponse, assetApi, target, au
       if (authStatus !== 200) return new Response('{}', { status: authStatus });
       return new Response(JSON.stringify({ aud: e.GOOGLE_CLIENT_ID, email: e.ALLOWED_EMAIL, email_verified: true, expires_in: '3600' }), { status: 200 });
     }
+    if (url === ROOT_URL) return packs ? (packs.rootResponse ? packs.rootResponse() : new Response(packs.rootBytes, { status: 200 })) : new Response('{}', { status: 404 });
+    if (packs && url.startsWith(API + '/contents/views/kis-stock-packs/')) {
+      const name = url.slice((API + '/contents/views/kis-stock-packs/').length).split('?')[0];
+      return packs.shards[name] ? new Response(packs.shards[name], { status: 200 }) : new Response('{}', { status: 404 });
+    }
     if (url === INDEX_URL) return indexResponse ? indexResponse() : new Response(JSON.stringify(idx), { status: 200 });
     if (url.startsWith(API + '/releases/assets/')) return assetApi ? assetApi(url) : new Response(null, { status: 302, headers: { Location: SIGNED } });
-    if (new URL(url).hostname === ASSET_HOST) return target ? target(url) : new Response(asset.gz, { status: 200 });
+    if (new URL(url).hostname === ASSET_HOST) return target ? target(url, init) : packs ? packs.serve(init) : new Response(asset.gz, { status: 200 });
     throw new Error('unexpected upstream in test: ' + new URL(url).hostname);
   };
   const handler = createHandler({ fetch, now: () => clock.now });
   const req = (path, headers = {}, method = 'GET') => new Request('https://private-worker.example' + path, { method, headers: { Origin: ORIGIN, Authorization: 'Bearer fake-access-token', ...headers } });
   return { run: (path = '/kis/stock?symbol=NVDA', headers, method) => handler(req(path, headers, method), e), calls, limiterCalls, clock,
-    upstream: () => calls.filter((c) => c.url !== 'https://oauth2.googleapis.com/tokeninfo') };
+    // Without a bundle root the root probe (one 404 read) is left out here; 'bundle path' tests below count it explicitly.
+    upstream: () => calls.filter((c) => c.url !== 'https://oauth2.googleapis.com/tokeninfo' && (packs || c.url !== ROOT_URL)) };
 }
 const noStore = (r) => { assert.equal(r.headers.get('Cache-Control'), 'private, no-store, max-age=0'); assert.equal(r.headers.get('Vary'), 'Origin'); assert.equal(r.headers.get('X-Content-Type-Options'), 'nosniff'); };
 async function code(r) {
@@ -165,7 +173,7 @@ test('happy path: index, asset API, one credential-free hop; the pinned gzip byt
   assert.ok(!headerNames(hop.init).includes('cookie'), 'no cookie on the redirect');
   assert.doesNotMatch(JSON.stringify(hop.init.headers), /SYNTHETICONLY|github_pat_/);
   assert.deepEqual(s.limiterCalls, ['/admit', '/release'], 'one admission, one release');
-  assert.equal(s.calls.length, 4, 'tokeninfo + index + asset API + redirect target');
+  assert.equal(s.calls.length, 5, 'tokeninfo + root probe (404) + index + asset API + redirect target');
 });
 
 test('EXPIRING still serves with the one exposed date header; the share-class key reads the view symbol', async () => {
@@ -323,4 +331,99 @@ test('the other routes keep their own reads: /kis/chart still reads its Contents
   assert.equal(r.status, 502); assert.equal(await code(r), 'REPO_MOVED');
   const reads = s.calls.filter((c) => c.url !== 'https://oauth2.googleapis.com/tokeninfo');
   assert.deepEqual(reads.map((c) => c.url), [API + '/contents/chart/N/NVDA.json?ref=data'], 'the 302 to the asset host is not followed elsewhere');
+});
+
+// ---- bundle path (owner 2026-11-22: GitHub private release bundles + 64 index shards) ------------------------------------
+const bucketOf = (symbol) => createHash('sha256').update(symbol).digest()[0] >> 2;
+const shardName = (b) => String(b).padStart(2, '0') + '.json';
+const GEN = { publication_scope: 'OWNER_PRIVATE_ONLY', evaluation_day: '2026-11-19', release_tag: 'view-2026-11-19-' + 'b'.repeat(12), generation_sha256: 'c'.repeat(64) };
+// One bundle holding the members in order; the root pins every shard. qgv is a separate whole asset (id 9).
+function makePacks(members, { shardOverrides = {}, rootOverrides = {}, qgv } = {}) {
+  const pack = Buffer.concat(members.map((m) => m.asset.gz)), packSha = sha(pack);
+  const shards = {}, files = {};
+  let offset = 0;
+  for (const m of members) {
+    const b = bucketOf(m.symbol), name = shardName(b);
+    shards[name] ??= { schema: K('stock-pack-shard/1'), ...GEN, bucket: b, stocks: {} };
+    shards[name].stocks[m.symbol] = { pack: packSha, offset, bytes: m.asset.gz.length, sha256: sha(m.asset.gz), json_bytes: m.asset.json.length, json_sha256: sha(m.asset.json) };
+    offset += m.asset.gz.length;
+  }
+  const pins = {};
+  for (const [name, shard] of Object.entries(shards)) {
+    const bytes = Buffer.from(JSON.stringify({ ...shard, ...(shardOverrides[name] ?? {}) }), 'utf8');
+    files[name] = bytes; pins[name] = { bytes: bytes.length, sha256: sha(bytes) };
+  }
+  const root = { schema: K('stock-pack-root/1'), ...GEN, buckets: 64, bucket_rule: 'sha256(symbol)[0]>>2',
+    qgv: qgv ?? { asset_id: 9, name: 'qgv.json.gz', bytes: 10, sha256: 'd'.repeat(64), json_bytes: 20, json_sha256: 'e'.repeat(64) },
+    packs: { [packSha]: { asset_id: 11, bytes: pack.length } }, shards: pins, ...rootOverrides };
+  // The release-asset host answers a Range request with the exact 206 slice.
+  const serve = (init) => {
+    const m = /^bytes=(\d+)-(\d+)$/.exec(init?.headers?.Range ?? '');
+    if (!m) return new Response(pack, { status: 200 });
+    const a = Number(m[1]), z = Number(m[2]);
+    return new Response(pack.subarray(a, z + 1), { status: 206, headers: { 'Content-Range': 'bytes ' + a + '-' + z + '/' + pack.length, 'Content-Length': String(z - a + 1) } });
+  };
+  return { rootBytes: Buffer.from(JSON.stringify(root), 'utf8'), shards: files, serve, pack, root };
+}
+const NV = () => ({ symbol: 'NVDA', asset: makeAsset() });
+const AA = () => ({ symbol: 'AAPL', asset: makeAsset(makeView({ symbol: 'AAPL' })) });
+
+test('bundle path: root, the symbol\'s pinned shard, asset API, one credential-free Range read of the member', async () => {
+  const nv = NV(), aa = AA(), packs = makePacks([aa, nv]), s = setup({ packs }), r = await s.run();
+  assert.equal(r.status, 200); noStore(r); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
+  assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(nv.asset.gz), 'exactly the member, not the bundle');
+  const [root, shard, api, hop, ...rest] = s.upstream();
+  assert.equal(rest.length, 0, 'four upstream reads');
+  assert.equal(root.url, ROOT_URL); assert.equal(shard.url, SHARD_URL(shardName(bucketOf('NVDA'))));
+  assert.equal(shard.init.headers.Authorization, 'Bearer ' + FAKE_TOKEN); assert.equal(shard.init.redirect, 'manual');
+  assert.equal(api.url, API + '/releases/assets/11', 'the bundle asset id');
+  assert.equal(hop.url, SIGNED); assert.equal(hop.init.redirect, 'manual');
+  assert.equal(hop.init.headers.Authorization, undefined, 'no credentials on the redirect target');
+  assert.equal(hop.init.headers.Range, 'bytes=' + aa.asset.gz.length + '-' + (aa.asset.gz.length + nv.asset.gz.length - 1));
+  assert.ok(!s.calls.some((c) => c.url === INDEX_URL), 'the single index is not read while the root exists');
+});
+
+test('bundle path: shard pin, generation and membership are checked before any asset call', async () => {
+  const nv = NV(), name = shardName(bucketOf('NVDA'));
+  let packs = makePacks([nv]); packs.shards[name] = Buffer.concat([packs.shards[name], Buffer.from(' ')]);
+  let s = setup({ packs }), r = await s.run();
+  assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', 'a shard that does not match its pin');
+  assert.equal(s.upstream().length, 2);
+  packs = makePacks([nv], { shardOverrides: { [name]: { release_tag: 'view-2026-11-18-' + 'f'.repeat(12) } } });
+  s = setup({ packs }); r = await s.run();
+  assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', 'a shard of another generation'); assert.equal(s.upstream().length, 2);
+  packs = makePacks([AA()]); s = setup({ packs }); r = await s.run();
+  assert.ok([404, 502].includes(r.status), 'a symbol with no member is not served');
+  assert.ok(['KIS_SERIES_NOT_FOUND', 'KIS_STOCK_INDEX_INVALID'].includes(await code(r)));
+  assert.equal(s.upstream().filter((c) => c.url.startsWith(API + '/releases/')).length, 0, 'no asset call');
+  for (const over of [{ buckets: 32 }, { bucket_rule: 'x' }, { schema: 'x' }, { packs: [] }]) {
+    s = setup({ packs: makePacks([nv], { rootOverrides: over }) }); r = await s.run();
+    assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', JSON.stringify(over)); assert.equal(s.upstream().length, 1);
+  }
+});
+
+test('bundle path: the member must come back as exactly the requested 206 range with its pinned bytes', async () => {
+  const nv = NV(), aa = AA();
+  const cases = [
+    [(p) => () => new Response(p.pack, { status: 200 }), 502, 'KIS_STOCK_PIN', 'the whole bundle (200) is refused unread'],
+    [(p) => () => new Response(p.pack.subarray(0, nv.asset.gz.length), { status: 206, headers: { 'Content-Range': 'bytes 0-' + (nv.asset.gz.length - 1) + '/' + p.pack.length } }), 502, 'KIS_STOCK_PIN', 'another range'],
+    [(p) => (url, init) => { const res = p.serve(init); return new Response(Buffer.alloc(nv.asset.gz.length), { status: 206, headers: { 'Content-Range': res.headers.get('Content-Range') } }); }, 502, 'KIS_STOCK_PIN', 'right range, wrong bytes'],
+    [() => () => new Response('x', { status: 500 }), 503, 'UPSTREAM_UNAVAILABLE', 'an error status'],
+  ];
+  for (const [make, status, c, why] of cases) {
+    const packs = makePacks([aa, nv]), s = setup({ packs, target: make(packs) }), r = await s.run();
+    assert.equal(r.status, status, why); assert.equal(await code(r), c, why); assert.equal(s.upstream().length, 4, why);
+  }
+});
+
+test('bundle path: ?part=qgv reads the root\'s qgv asset whole; no root (404) keeps the single index', async () => {
+  const qgvJson = Buffer.from(JSON.stringify({ schema: K('qgv/1'), rows: {} }), 'utf8'), qgvGz = gzipSync(qgvJson);
+  const packs = makePacks([NV()], { qgv: { asset_id: 9, name: 'q.json.gz', bytes: qgvGz.length, sha256: sha(qgvGz), json_bytes: qgvJson.length, json_sha256: sha(qgvJson) } });
+  let s = setup({ packs, target: (url, init) => { assert.equal(init.headers.Range, undefined, 'no Range for a whole asset'); return new Response(qgvGz, { status: 200 }); } });
+  let r = await s.run('/kis/stock?part=qgv');
+  assert.equal(r.status, 200); assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(qgvGz));
+  assert.deepEqual(s.upstream().map((c) => c.url), [ROOT_URL, API + '/releases/assets/9', SIGNED]);
+  s = setup(); r = await s.run();
+  assert.equal(r.status, 200);
+  assert.deepEqual(s.calls.filter((c) => c.url.startsWith(API)).map((c) => c.url), [ROOT_URL, INDEX_URL, API + '/releases/assets/7'], 'root probe, then the single index as before');
 });

@@ -338,6 +338,64 @@ export function kisStockIndexEntry(value, symbol) {
   return kisAssetEntryValid(entry, true) && entry.asset_id !== value.qgv.asset_id ? entry : 'INVALID';
 }
 
+// ---------- /kis/stock bundle path (owner 2026-11-22: GitHub private release bundles + 64 index shards) ----------
+// views/kis-stock-packs.json (kis-stock-pack-root/1) names one generation, its qgv asset, its bundle assets (sha256 → asset id,
+// bytes) and the size and sha256 of each of the 64 shards views/kis-stock-packs/NN.json (kis-stock-pack-shard/1). A shard maps
+// a symbol to [bundle, offset, length, sha256, json_bytes, json_sha256]; the Worker reads that member alone with one Range
+// request on the same single release-asset redirect and returns its gzip bytes. While the root file is absent (404) the
+// single index above is read exactly as before, so this reader can be deployed before any bundle is published.
+const KIS_PACK_ROOT_PATH = 'views/kis-stock-packs.json';
+const KIS_PACK_SHARD_DIR = 'views/kis-stock-packs/';
+const KIS_PACK_BUCKETS = 64;
+const KIS_PACK_SHARD_MAX_BYTES = 262_144;
+const KIS_PACK_MAX_BYTES = 1_800_000;
+const GENERATION_KEYS = ['publication_scope', 'evaluation_day', 'release_tag', 'generation_sha256'];
+
+// The root's top level, the qgv entry and the one shard pin and bundle a request needs (the publish workflow checks the rest).
+export function kisPackRoot(value) {
+  if (!exactKeys(value, ['schema', ...GENERATION_KEYS, 'buckets', 'bucket_rule', 'qgv', 'packs', 'shards'])
+    || value.schema !== 'kis-stock-pack-root/1' || value.publication_scope !== 'OWNER_PRIVATE_ONLY'
+    || calendarDate(value.evaluation_day) === null
+    || typeof value.release_tag !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value.release_tag)
+    || !hex64(value.generation_sha256) || value.buckets !== KIS_PACK_BUCKETS || value.bucket_rule !== 'sha256(symbol)[0]>>2'
+    || !kisAssetEntryValid(value.qgv, false) || !plainObject(value.packs) || !plainObject(value.shards)) return null;
+  return value;
+}
+
+export async function kisPackBucket(symbol) {
+  return parseInt((await sha256Hex(new TextEncoder().encode(symbol))).slice(0, 2), 16) >> 2;
+}
+export const kisPackShardName = (bucket) => String(bucket).padStart(2, '0') + '.json';
+
+export function kisPackShardPin(root, bucket) {
+  const pin = root.shards[kisPackShardName(bucket)];
+  return exactKeys(pin, ['bytes', 'sha256']) && Number.isSafeInteger(pin.bytes) && pin.bytes > 0
+    && pin.bytes <= KIS_PACK_SHARD_MAX_BYTES && hex64(pin.sha256) ? pin : null;
+}
+
+// The requested member of a pinned shard: the entry with its bundle's asset id and size, 'MISSING' or 'INVALID'.
+export function kisPackMember(shard, root, bucket, symbol) {
+  if (!exactKeys(shard, ['schema', ...GENERATION_KEYS, 'bucket', 'stocks']) || shard.schema !== 'kis-stock-pack-shard/1'
+    || GENERATION_KEYS.some((k) => shard[k] !== root[k]) || shard.bucket !== bucket || !plainObject(shard.stocks)) return 'INVALID';
+  if (!KIS_SYMBOLS.has(symbol)) return 'INVALID';
+  if (!Object.hasOwn(shard.stocks, symbol)) return 'MISSING';
+  const e = shard.stocks[symbol];
+  if (!exactKeys(e, ['pack', 'offset', 'bytes', 'sha256', 'json_bytes', 'json_sha256']) || !hex64(e.pack) || !Object.hasOwn(root.packs, e.pack)
+    || !Number.isSafeInteger(e.offset) || e.offset < 0 || !pinnedSize(e.bytes) || !pinnedSize(e.json_bytes)
+    || !hex64(e.sha256) || !hex64(e.json_sha256)) return 'INVALID';
+  const pack = root.packs[e.pack];
+  if (!exactKeys(pack, ['asset_id', 'bytes']) || !Number.isSafeInteger(pack.asset_id) || pack.asset_id <= 0
+    || pack.asset_id === root.qgv.asset_id || !Number.isSafeInteger(pack.bytes) || pack.bytes <= 0 || pack.bytes > KIS_PACK_MAX_BYTES
+    || e.offset + e.bytes > pack.bytes) return 'INVALID';
+  return { asset_id: pack.asset_id, pack_bytes: pack.bytes, offset: e.offset, bytes: e.bytes, sha256: e.sha256 };
+}
+
+// A Range answer is accepted only as 206 with exactly 'bytes <first>-<last>/<bundle size>' for the requested member.
+export function kisRangeAnswerOk(response, member) {
+  const last = member.offset + member.bytes - 1;
+  return response.status === 206 && response.headers.get('Content-Range') === 'bytes ' + member.offset + '-' + last + '/' + member.pack_bytes;
+}
+
 // The asset API's answer. Only a 302 whose Location is an absolute https URL on exactly the release asset host (default port,
 // no user info) is accepted; the normalised URL is returned. Anything else is null.
 export function kisAssetRedirectTarget(response) {
@@ -648,18 +706,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   // redirect 'manual') → the one accepted 302 target (1, no credentials, redirect 'manual', no second hop) → size and sha256
   // pins of the gzip → the gzip bytes as published, Content-Encoding gzip (no inflate, no parse here; the app checks the content).
   // No Location, token or body ever reaches an error.
-  async function kisStock(symbol, part, env, origin) {
-    const date = kisTokenDate(env, now());
-    if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
-    const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
-    if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
-    if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
-    const bad = kisUpstreamState(response, date);
-    if (bad) return closeAndFail(response, bad.code, bad.http);
-    const index = await readJson(response, KIS_STOCK_INDEX_MAX_BYTES, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
-    const entry = kisStockIndexEntry(index, part === 'qgv' ? null : symbol);
-    if (entry === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-    if (entry === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
+  // One release asset (or, with range, one member of a bundle): asset API (read token, redirect 'manual') → the one accepted
+  // 302 target (no credentials, redirect 'manual', no second hop) → size and sha256 pins of the bytes.
+  async function kisAssetBytes(entry, env, date, range) {
     const gzipped = await timed(15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
       let api;
       try {
@@ -676,20 +725,79 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
         return closeAndFail(api, state ? state.code : 'KIS_STOCK_ASSET_REDIRECT', state ? state.http : 502);
       }
       try { await api.body?.cancel(); } catch { /* The redirect body is never read. */ }
+      const assetHeaders = { 'User-Agent': 'investment-system1-private-worker' };
+      if (range) assetHeaders.Range = 'bytes=' + entry.offset + '-' + (entry.offset + entry.bytes - 1);
       let asset;
       try {
-        asset = await fetchImpl(target, { method: 'GET', signal, ...NO_CACHE, headers: { 'User-Agent': 'investment-system1-private-worker' } });
+        asset = await fetchImpl(target, { method: 'GET', signal, ...NO_CACHE, headers: assetHeaders });
       } catch { throw new Failure('UPSTREAM_UNAVAILABLE', 503); }
       if (asset.type === 'opaqueredirect' || asset.redirected === true || asset.status === 0 || (asset.status >= 300 && asset.status <= 399)) {
         return closeAndFail(asset, 'KIS_STOCK_ASSET_REDIRECT', 502);
       }
-      if (asset.status !== 200) return closeAndFail(asset, 'UPSTREAM_UNAVAILABLE', 503);
+      // A bundle member must come back as exactly the requested 206 range; a 200 (whole bundle) or another range is a pin
+      // refusal and is never read. Any other status is the fixed availability answer.
+      if (range && (asset.status === 200 || asset.status === 206) && !kisRangeAnswerOk(asset, entry)) return closeAndFail(asset, 'KIS_STOCK_PIN', 502);
+      if (asset.status !== (range ? 206 : 200)) return closeAndFail(asset, 'UPSTREAM_UNAVAILABLE', 503);
       const advertised = asset.headers.get('Content-Length');
       if (advertised && /^\d+$/.test(advertised) && Number(advertised) > entry.bytes) return closeAndFail(asset, 'KIS_STOCK_PIN', 502);
       if (!asset.body) throw new Failure('KIS_STOCK_PIN', 502);
       return readCapped(asset.body, entry.bytes, 'KIS_STOCK_PIN', 'UPSTREAM_UNAVAILABLE', 503);
     });
     if (gzipped.byteLength !== entry.bytes || await sha256Hex(gzipped) !== entry.sha256) throw new Failure('KIS_STOCK_PIN', 502);
+    return gzipped;
+  }
+
+  // A pinned JSON file of the data branch: the raw bytes up to limit, then (when pin) their size and sha256, then the parse.
+  async function kisDataFile(path, env, date, limit, pin) {
+    const response = await github('/repos/' + KIS_REPO + '/contents/' + path + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+    if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
+    if (response.status === 404) { try { await response.body?.cancel(); } catch { /* Not read. */ } return null; }
+    const bad = kisUpstreamState(response, date);
+    if (bad) return closeAndFail(response, bad.code, bad.http);
+    if (!pin) return readJson(response, limit, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
+    if (!response.body) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+    const bytes = await readCapped(response.body, pin.bytes, 'KIS_STOCK_INDEX_INVALID', 'UPSTREAM_UNAVAILABLE', 503);
+    if (bytes.byteLength !== pin.bytes || await sha256Hex(bytes) !== pin.sha256) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+    try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_STOCK_INDEX_INVALID', 502); }
+  }
+
+  // /kis/stock?symbol=… (a stock's view) or ?part=qgv (the QGV object). With views/kis-stock-packs.json present: root (1 GitHub
+  // read) → the symbol's shard (1 read, size and sha256 pinned by the root) → asset API (1) → one Range read of the member on
+  // the accepted 302 target (1). Without it: the single index (1) → asset API (1) → the whole asset (1), as before.
+  // The gzip bytes go out as published, Content-Encoding gzip (no inflate, no parse here; the app checks the content).
+  // No Location, token or body ever reaches an error.
+  async function kisStock(symbol, part, env, origin) {
+    const date = kisTokenDate(env, now());
+    if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
+    let gzipped;
+    const rootValue = await kisDataFile(KIS_PACK_ROOT_PATH, env, date, KIS_STOCK_INDEX_MAX_BYTES, null);
+    if (rootValue !== null) {
+      const root = kisPackRoot(rootValue);
+      if (root === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+      if (part === 'qgv') gzipped = await kisAssetBytes(root.qgv, env, date, false);
+      else {
+        if (!KIS_SYMBOLS.has(symbol)) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+        const bucket = await kisPackBucket(symbol), pin = kisPackShardPin(root, bucket);
+        if (pin === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+        const shard = await kisDataFile(KIS_PACK_SHARD_DIR + kisPackShardName(bucket), env, date, KIS_PACK_SHARD_MAX_BYTES, pin);
+        if (shard === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+        const member = kisPackMember(shard, root, bucket, symbol);
+        if (member === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+        if (member === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
+        gzipped = await kisAssetBytes(member, env, date, true);
+      }
+    } else {
+      const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+      if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
+      if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
+      const bad = kisUpstreamState(response, date);
+      if (bad) return closeAndFail(response, bad.code, bad.http);
+      const index = await readJson(response, KIS_STOCK_INDEX_MAX_BYTES, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
+      const entry = kisStockIndexEntry(index, part === 'qgv' ? null : symbol);
+      if (entry === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
+      if (entry === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
+      gzipped = await kisAssetBytes(entry, env, date, false);
+    }
     // Light read (owner 2026-11-21, CPU headroom on the free plan): the pinned gzip bytes go out as they are, with
     // Content-Encoding: gzip; the browser inflates them and the app's reader checks the view (kis-private.js stockParts and
     // its three readers, or validateQgv). encodeBody 'manual' keeps the runtime from compressing them a second time.

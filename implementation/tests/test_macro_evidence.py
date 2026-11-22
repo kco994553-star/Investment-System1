@@ -644,6 +644,117 @@ def test_tool_names_the_failed_series_and_still_writes_the_file(tmp_path, capsys
     assert payload['series']['FED:FOMC:TARGET_RANGE']['reason'] == 'SCHEMA_MISMATCH'
 
 
+# ---------------------------------------------------------------- history continuity (owner 2026-11-22)
+
+class _Live(io.BytesIO):
+    status = 200
+
+    def geturl(self):
+        import macro_evidence as tool
+        return tool.SOURCE
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+def _serve(body):
+    return lambda request, timeout: _Live(body)
+
+
+def test_periods_outside_the_window_are_never_recorded_again():
+    """Run 54 (2026-11-22): sources return longer spans than the window; the same old periods were recorded as FIRST on
+    every run (2,200 a run) until the file passed its size budget and the build failed."""
+    sid, at = 'FED:G17:IP.B50001.S', AT
+    months = ['%04d-%02d' % (2000 + k // 12, k % 12 + 1) for k in range(el.WINDOW['M'] + 40)]
+    cap = lambda t: {sid: {'rows': {m: float(i) for i, m in enumerate(months)}, 'acquired_at': t, 'release': {'at': None, 'date': None}}}
+    first = el.build(cap(at), previous=None, previous_state='NO_LIVE', now=at)
+    assert len(first['series'][sid]['obs']) == el.WINDOW['M']
+    later = el.build(cap(at + timedelta(days=1)), previous=first, previous_state='LOADED', now=at + timedelta(days=1))
+    assert later['continuity'] == 'CONTINUOUS' and later['releases'] == [] and later['series'][sid]['history'] == {}
+    new = '%04d-%02d' % (2000 + len(months) // 12, len(months) % 12 + 1)  # one genuinely new month after the window
+    rows = {m: float(i) for i, m in enumerate(months)} | {new: 9.0}
+    third = el.build({sid: {'rows': rows, 'acquired_at': at + timedelta(days=2), 'release': {'at': None, 'date': None}}},
+                     previous=later, previous_state='LOADED', now=at + timedelta(days=2))
+    assert [(r['period'], r['kind']) for r in third['releases']] == [(new, 'FIRST')]
+
+
+def test_a_failed_build_carries_the_live_copy_instead_of_the_placeholder(tmp_path, capsys, monkeypatch):
+    import macro_evidence as tool
+    live = el.encode(fx.runs()[-1])
+    out = tmp_path / 'site'
+    out.mkdir()
+    tool.emit_empty(out)  # what the offline cockpit build leaves in the output
+    monkeypatch.setattr(el, 'build', lambda *a, **k: (_ for _ in ()).throw(ValueError('MACRO_EVIDENCE_TOO_LARGE')))
+    code = tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(responses()), open_previous=_serve(live))
+    printed = capsys.readouterr().out
+    assert code == 1 and (out / el.FILENAME).read_bytes() == live
+    assert 'BUILD_FAILED nothing_written type=ValueError' in printed and 'PREVIOUS_RESTORED' in printed
+    assert '::warning title=Macro evidence not rebuilt::' in printed
+
+
+def test_previous_copy_is_carried_across_text_changes_and_discarded_only_on_named_conditions():
+    import macro_evidence as tool
+    current = fx.runs()[-1]
+    old = copy.deepcopy(current)
+    old['labels'] = dict(old['labels'], summary='older wording')
+    old['indicators'] = [dict(v, name='older name') for v in old['indicators']]
+    old['summary'] = {k: dict(v, warning_families=[]) for k, v in old['summary'].items()}
+    old.pop('resets', None)  # copies written before the reset log existed
+    payload, state, reason, _ = tool.load_previous_detail(_serve(json.dumps(old).encode()))
+    assert (state, reason) == ('LOADED', None)
+    assert payload['series'] == current['series'] and payload['releases'] == current['releases'] and payload['events'] == current['events']
+    assert payload['indicators'] == current['indicators'] and payload['labels'] == current['labels']
+    # named discard conditions
+    tampered = copy.deepcopy(old)
+    tampered['series']['BTS:TSI:FREIGHT']['obs'].append(['bad', 1.0])
+    tampered['resets'] = [{'at': '2026-11-19T03:24:22Z', 'reason': 'NO_LIVE', 'previous_generated_at': None}]
+    assert tool.load_previous_detail(_serve(json.dumps(tampered).encode()))[1:] == (
+        'NO_LIVE', 'PREVIOUS_DISCARDED', tampered['resets'])
+    assert tool.load_previous_detail(_serve(json.dumps(dict(old, schema='macro-evidence/2')).encode()))[2] == 'PREVIOUS_DISCARDED'
+    placeholder = el.encode(el.empty_payload(AT))
+    assert tool.load_previous_detail(_serve(placeholder))[1:3] == ('LOADED', 'PREVIOUS_PLACEHOLDER')
+
+    def down(request, timeout):
+        raise OSError('down')
+    assert tool.load_previous_detail(down)[1:3] == ('UNAVAILABLE', 'PREVIOUS_UNAVAILABLE')
+
+
+def test_every_reset_is_counted_in_the_file_and_announced(tmp_path, capsys):
+    import macro_evidence as tool
+    out = tmp_path / 'site'
+    out.mkdir()
+    placeholder = el.encode(el.empty_payload(AT))
+    tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={}, now=lambda: AT,
+                          transport=FakeTransport(responses()), open_previous=_serve(placeholder))
+    first = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    printed = capsys.readouterr().out
+    assert first['continuity'] == 'BASELINE' and first['resets'] == [
+        {'at': '2026-10-20T01:00:00Z', 'reason': 'PREVIOUS_PLACEHOLDER', 'previous_generated_at': None}]
+    assert 'MACRO_EVIDENCE HISTORY_RESET reason=PREVIOUS_PLACEHOLDER resets=1' in printed
+    assert '::warning title=Macro evidence history reset::' in printed
+    # a continuous run keeps the log and prints no warning
+    body = (out / el.FILENAME).read_bytes()
+    tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={}, now=lambda: AT + timedelta(days=1),
+                          transport=FakeTransport(responses()), open_previous=_serve(body))
+    second = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert second['continuity'] == 'CONTINUOUS' and second['resets'] == first['resets']
+    assert '::warning' not in capsys.readouterr().out
+    # a discarded copy's log survives into the next file
+    broken = json.loads(body)
+    broken['series']['BTS:TSI:FREIGHT']['obs'].append(['bad', 1.0])
+    tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={}, now=lambda: AT + timedelta(days=2),
+                          transport=FakeTransport(responses()), open_previous=_serve(json.dumps(broken).encode()))
+    third = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert [r['reason'] for r in third['resets']] == ['PREVIOUS_PLACEHOLDER', 'PREVIOUS_DISCARDED']
+    bad = dict(third, resets=[{'at': 'x', 'reason': 'NO_LIVE', 'previous_generated_at': None}])
+    with pytest.raises(ValueError):
+        el.require_macro_evidence(bad)
+
+
 # ---------------------------------------------------------------- E14 publication (owner 2026-11-22)
 
 def test_dol_mismatch_keeps_only_tag_names_and_counts(tmp_path):
