@@ -30,7 +30,8 @@
 // The old modules in the old page's relative order (backup /5 validators chart-workbench.js and macro-cycle-ring.js included),
 // then the P1 layer action → data → prices → store → qgv → engines, then the common base companies → private → lab
 // (2026-10-31), then screen logic files (web_app; P1_DATA_LAYER.md §1.1). tech-screen.js is the reader of the 1.1.8 기술 조건 필터
-// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. kis-private.js
+// (feature 3.5, owner 2026-11-03) that screen-tech-filter-live.js uses; it installs IS2.techScreen and reads nothing. common-taxonomy.js is the
+// common 10-sector dictionary (IS2.taxonomy, owner 2026-11-22, DC-48); it reads nothing and no screen reads it yet. kis-private.js
 // is the owner-private reader and client (IS2.kisPrivate, DC-44 / DC-52; network through prices.js) and private-expand-live.js its
 // common panel component on the technical and QGV private panels (IS2.privateExpand). Both stay last, on their own line (OWNER_PRIVATE
 // below): one that is missing or throws never fails the public layer. The Pages preview publishes both (owner 2026-11-15).
@@ -48,7 +49,7 @@ const LOAD_ORDER=Object.freeze([
  'action.js','data.js','prices.js','store.js','qgv.js','engines.js',
  'companies.js','private.js','lab.js',
  'search-part-live.js','screen-search-live.js','screen-qgv-live.js','screen-macro-live.js','screen-prompts-live.js','screen-tree-live.js',
- 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','screen-tech-filter-live.js',
+ 'screen-technical-live.js','screen-news-live.js','screen-lab-live.js','tech-screen.js','common-taxonomy.js','screen-tech-filter-live.js',
  'kis-private.js','private-expand-live.js',
 ]);
 // A plain lowercase script name. tools/build_web_app.py holds this exact line (the build fails when the two differ).
