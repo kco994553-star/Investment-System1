@@ -27,7 +27,10 @@ let phase = 'START';
       page.on('pageerror', (e) => errors.push(String(e)));
       await page.goto(BASE + '#/'); await page.locator('main[data-route]').waitFor(); await page.evaluate(() => window.IS2.ready);
       const before = await page.evaluate(() => ({ ls: localStorage.length, ss: sessionStorage.length }));
-      const at0 = await page.evaluate(() => performance.getEntriesByType('resource').length);
+      // The app keeps loading its own public JSON after IS2.ready (universe codes, names, catalog); count only once that settles,
+      // so the check below sees requests the panels make, not the page's own late loads.
+      const settled = async () => { let last = -1; for (let i = 0; i < 50; i++) { const n = await page.evaluate(() => performance.getEntriesByType('resource').length); if (n === last) return n; last = n; await page.waitForTimeout(200); } throw new Error('resources never settled'); };
+      const at0 = await settled();
       const r = await page.evaluate(() => {
         const P = window.IS2.parts, host = document.createElement('div'); host.dataset.testHost = ''; document.querySelector('main').appendChild(host);
         const out = {}, view = (p) => ({ state: p.node.dataset.privateState, label: p.node.querySelector('[data-private-label]').textContent,
