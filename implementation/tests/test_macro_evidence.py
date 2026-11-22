@@ -470,6 +470,7 @@ def test_pipeline_hook_never_stops_the_sec_collection(monkeypatch, capsys):
     assert seen['called'] == (True, ['macro', 'macro_curve_v1', 'macro_v0', 'schema_version', 'sec', 'thirteen_f'])
     out = capsys.readouterr().out
     assert 'MACRO_EVIDENCE BUILD_FAILED nothing_written' in out and 'source text' not in out
+    assert 'MACRO_EVIDENCE BUILD_FAILED nothing_written type=RuntimeError' in out
 
 
 def test_rejected_redirect_names_only_a_fixed_target_file():

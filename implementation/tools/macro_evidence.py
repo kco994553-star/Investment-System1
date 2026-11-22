@@ -136,8 +136,8 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
         write_bytes(directory, el.encode(payload))
         _summary(payload)
         return 0
-    except Exception:
-        print('MACRO_EVIDENCE BUILD_FAILED nothing_written')
+    except Exception as error:   # the class name only (never the message, which could carry provider text)
+        print('MACRO_EVIDENCE BUILD_FAILED nothing_written type=%s' % type(error).__name__)
         return 1
 
 
