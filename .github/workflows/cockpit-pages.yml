@@ -204,6 +204,12 @@ jobs:
           trap 'kill "$SERVER_PID" "$M2_SERVER_PID"' EXIT
           M2_BROWSER_EVIDENCE="$RUNNER_TEMP/m2-browser-evidence" node implementation/tools/sec_m2_candidates_browser_test.js
 
+      # Size early warning (owner 2026-11-22, PUBLIC_FILE_INCIDENTS.md §3): last step before the upload. File names, sizes,
+      # the guard's per-file limit and the ratio only; 80% → ::warning, 95% → top of the run summary. Read-only, exit 0,
+      # never withholds the upload; no guard or limit changes.
+      - name: Report the final artifact's file sizes against the Pages limits (names and sizes only)
+        continue-on-error: true
+        run: python implementation/tools/pages_size_report.py --artifact-dir "$RUNNER_TEMP/public-cockpit"
       - name: Upload checked price-free Pages artifact
         if: github.event_name == 'workflow_dispatch' && github.ref_name == 'claude/investment-system-top500-validation-alrugm'
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
