@@ -585,13 +585,46 @@ def test_tool_live_writes_validated_file_and_prints_codes_only(tmp_path, capsys)
 
 
 def test_tool_failures_never_block_and_previous_paths(tmp_path, capsys):
-    # network failure reading the previous copy: nothing written, exit 0 (SEC deploy continues)
+    # network failure reading the previous copy (owner 2026-11-22, the #613 rule): a fresh collection whose reset is
+    # recorded in the file and the log, exit 0 (SEC deploy continues); never the silent empty placeholder
     code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(exc=urllib.error.URLError('down')))
-    assert code == 0 and 'PREVIOUS_FETCH_FAILED nothing_written' in out and not (tmp_path / ns.FILENAME).exists()
-    # invalid previous copy: discarded, fresh collection proceeds
+    assert code == 0 and 'NEWS_SIGNALS PREVIOUS_FETCH_FAILED\n' in out
+    assert 'NEWS_SIGNALS HISTORY_RESET reason=PREVIOUS_UNAVAILABLE resets=1 previous_as_of=-' in out
+    assert '::warning title=News signals history reset::reason=PREVIOUS_UNAVAILABLE, resets so far=1' in out
+    fresh = ns.require_news_signals(json.loads((tmp_path / ns.FILENAME).read_text()))
+    assert fresh['resets'] == [{'at': ns.instant(NOW), 'reason': 'PREVIOUS_UNAVAILABLE', 'previous_as_of': None}]
+    # invalid previous copy: discarded, fresh collection proceeds, reset recorded
     code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, b'{"kind":"NEWS_SIGNALS"}'))
-    assert code == 0 and 'PREVIOUS_DISCARDED' in out
-    previous = (tmp_path / ns.FILENAME).read_bytes()
+    assert code == 0 and 'PREVIOUS_DISCARDED' in out and 'HISTORY_RESET reason=PREVIOUS_DISCARDED resets=1' in out
+    # the empty build placeholder as the live copy: not carried, recorded with its as_of
+    placeholder = ns.encode(ns.merge(None, {}, as_of=NOW - timedelta(hours=5)))
+    code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, placeholder))
+    assert code == 0 and 'HISTORY_RESET reason=PREVIOUS_PLACEHOLDER resets=1' in out
+    assert json.loads((tmp_path / ns.FILENAME).read_text())['resets'][0]['previous_as_of'] == ns.instant(NOW - timedelta(hours=5))
+    # a discarded copy keeps its own valid reset log; the new entry is appended
+    broken = json.loads((tmp_path / ns.FILENAME).read_text())
+    broken['items'] = 'x'
+    code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, json.dumps(broken).encode()))
+    assert code == 0 and 'HISTORY_RESET reason=PREVIOUS_DISCARDED resets=2' in out
+    assert [r['reason'] for r in json.loads((tmp_path / ns.FILENAME).read_text())['resets']] == [
+        'PREVIOUS_PLACEHOLDER', 'PREVIOUS_DISCARDED']
+    # the file cannot be built: the live copy is carried byte for byte over the placeholder
+    first = json.loads((tmp_path / ns.FILENAME).read_text())
+    del first['resets']  # a copy that never reset has the earlier shape
+    previous = ns.encode(ns.require_news_signals(first))
+    t = importlib.import_module('news_signals')
+    t.emit_empty(tmp_path, now=lambda: NOW)
+    real_merge = ns.merge
+    try:
+        ns.merge = lambda *a, **k: (_ for _ in ()).throw(RuntimeError('synthetic'))
+        code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, previous))
+    finally:
+        ns.merge = real_merge
+    assert code == 1 and 'OUTPUT_FAILED nothing_written' in out and 'PREVIOUS_CARRIED' in out
+    assert (tmp_path / ns.FILENAME).read_bytes() == previous
+    # a carried run that does not reset writes no `resets` key
+    code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, previous))
+    assert code == 0 and 'HISTORY_RESET' not in out and 'resets' not in json.loads((tmp_path / ns.FILENAME).read_text())
     # GDELT rate limit: remaining GDELT companies are not requested and keep previous rows; IR still runs
     limited = routes()
     first = nf.gdelt_url(ns.GDELT_COMPANIES[1])
@@ -623,10 +656,15 @@ def test_tool_failures_never_block_and_previous_paths(tmp_path, capsys):
     quiet = Transport({})
     code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=quiet, live=False, preserve=True)
     assert code == 0 and 'PREVIOUS_RESTORED items=' in out and quiet.calls == []
-    for prev, text in ((opener(404), 'PREVIOUS_NOT_AVAILABLE'), (opener(exc=urllib.error.URLError('x')), 'PREVIOUS_FETCH_FAILED'),
-                       (opener(200, b'[]'), 'PREVIOUS_DISCARDED')):
+    for prev, text in ((opener(404), 'PREVIOUS_NOT_AVAILABLE'), (opener(200, b'[]'), 'PREVIOUS_DISCARDED')):
         code, out, _, _ = run_tool(tmp_path, capsys, previous=prev, transport=quiet, live=False, preserve=True)
         assert code == 0 and text in out
+    # the live copy cannot be read in a UI deploy: withheld (exit 1) instead of the placeholder over the live copy
+    before = (tmp_path / ns.FILENAME).read_bytes()
+    code, out, _, _ = run_tool(tmp_path, capsys, previous=opener(exc=urllib.error.URLError('x')), transport=quiet, live=False,
+                               preserve=True)
+    assert code == 1 and 'PREVIOUS_FETCH_FAILED nothing_written deploy_withheld' in out and '::warning' in out
+    assert (tmp_path / ns.FILENAME).read_bytes() == before
     code, out, _, _ = run_tool(tmp_path, capsys, live=False)
     assert code == 1 and 'LIVE_OPT_IN_REQUIRED' in out
     with pytest.raises(SystemExit):
@@ -766,3 +804,49 @@ def test_js_timeline_nests_related_ir_under_8k_and_collapses_repeats():
     assert news['https://news.example.com/nvda-record'][5] == ['https://wire.example.org/nvda-revenue']
     assert 'https://wire.example.org/nvda-revenue' not in news
     assert all(r[3] not in news for r in [('', '', '', link) for link in sec_rows[acc(101)][4]])
+
+
+def reset_cases(valid, validate):
+    """Reset-log shapes for one payload: name -> (payload, accepted by the Python validator)."""
+    at = valid['as_of']
+    entry = {'at': at, 'reason': 'PREVIOUS_UNAVAILABLE', 'previous_as_of': None}
+    shapes = {
+        'none': None,
+        'one': [entry],
+        'two': [dict(entry, reason='NO_LIVE', at='2026-01-01T00:00:00+00:00'), dict(entry, previous_as_of='2025-12-31T00:00:00+00:00')],
+        'empty_list': [],
+        'bad_reason': [dict(entry, reason='OTHER')],
+        'future': [dict(entry, at='2999-01-01T00:00:00+00:00')],
+        'out_of_order': [entry, dict(entry, at='2026-01-01T00:00:00+00:00')],
+        'extra_key': [dict(entry, note='x')],
+        'prev_after_at': [dict(entry, previous_as_of='2999-01-01T00:00:00+00:00')],
+        'not_list': {'at': at},
+        'too_many': [entry] * 501,
+        'bad_instant': [dict(entry, at='2026-01-01')],
+    }
+    out = {}
+    for name, value in shapes.items():
+        p = copy.deepcopy(valid)
+        if value is not None:
+            p['resets'] = value
+        try:
+            validate(copy.deepcopy(p))
+            ok = True
+        except ValueError:
+            ok = False
+        out[name] = (p, ok)
+    return out
+
+
+def test_reset_log_is_optional_and_checked_the_same_in_python_and_js():
+    cases = reset_cases(payload()[0], ns.require_news_signals)
+    expected = {name: ok for name, (_, ok) in cases.items()}
+    assert expected == {'none': True, 'one': True, 'two': True, 'empty_list': False, 'bad_reason': False, 'future': False,
+                        'out_of_order': False, 'extra_key': False, 'prev_after_at': False, 'not_list': False,
+                        'too_many': False, 'bad_instant': False}
+    if NODE is None:
+        pytest.skip('node not installed')
+    script = ("const api=require(%s);let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const c=JSON.parse(s),out={};"
+              "for(const[k,v]of Object.entries(c)){try{api.validate(v);out[k]=true;}catch(_){out[k]=false;}}"
+              "process.stdout.write(JSON.stringify(out));});") % json.dumps(str(JS))
+    assert node(script, {name: p for name, (p, _) in cases.items()}) == expected

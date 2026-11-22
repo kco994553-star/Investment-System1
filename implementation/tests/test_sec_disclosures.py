@@ -314,27 +314,69 @@ def test_tool_live_writes_validated_file_and_prints_codes_only(tmp_path, capsys)
 
 def test_tool_previous_and_failure_paths(tmp_path, capsys):
     t = tool()
-    # network failure reading the previous copy: nothing written, exit 1
+    # network failure reading the previous copy (owner 2026-11-22, the #613 rule): a fresh collection whose reset is
+    # recorded in the file and the log, never a silent empty file
     code, out = run_tool(tmp_path, capsys, previous=opener(exc=urllib.error.URLError('down')))
-    assert code == 1 and 'PREVIOUS_FETCH_FAILED nothing_written' in out and not (tmp_path / sd.FILENAME).exists()
-    # invalid previous copy: discarded, fresh collection proceeds
+    assert code == 0 and 'SEC_8K_DISCLOSURES PREVIOUS_FETCH_FAILED\n' in out
+    assert 'SEC_8K_DISCLOSURES HISTORY_RESET reason=PREVIOUS_UNAVAILABLE resets=1 previous_as_of=-' in out
+    assert '::warning title=SEC 8-K disclosures history reset::reason=PREVIOUS_UNAVAILABLE, resets so far=1' in out
+    fresh = sd.require_sec_disclosures(json.loads((tmp_path / sd.FILENAME).read_text()))
+    assert fresh['resets'] == [{'at': sd.instant(NOW), 'reason': 'PREVIOUS_UNAVAILABLE', 'previous_as_of': None}]
+    # invalid previous copy: discarded, fresh collection proceeds, the reset recorded
     code, out = run_tool(tmp_path, capsys, previous=opener(200, b'{"kind":"SEC_DISCLOSURES"}'))
-    assert code == 0 and 'PREVIOUS_DISCARDED' in out
-    previous = (tmp_path / sd.FILENAME).read_bytes()
-    # one company fails: others collected, failure printed with index and fixed code only
+    assert code == 0 and 'PREVIOUS_DISCARDED' in out and 'HISTORY_RESET reason=PREVIOUS_DISCARDED resets=1' in out
+    (tmp_path / sd.FILENAME).unlink()
+    code, out = run_tool(tmp_path, capsys)  # 404 (the default opener)
+    assert code == 0 and 'HISTORY_RESET reason=NO_LIVE resets=1' in out
+    first = json.loads((tmp_path / sd.FILENAME).read_text())
+    del first['resets']  # a copy that never reset has the earlier shape
+    previous = sd.encode(sd.require_sec_disclosures(first))
+    # one company fails: others collected, failure printed with index and fixed code only; no reset, no `resets` key
     failing = Transport(full_subs(), full_indexes(), fail={'nvda'})
     code, out = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=failing)
-    assert code == 0 and 'SEC_8K_FAILURE company_index=13 code=SEC_HTTP_403' in out
+    assert code == 0 and 'SEC_8K_FAILURE company_index=13 code=SEC_HTTP_403' in out and 'HISTORY_RESET' not in out
     carried = json.loads((tmp_path / sd.FILENAME).read_text())
-    assert len(carried['events']) == 5  # nvda rows carried from the previous copy
-    # all fail without previous: nothing written
-    (tmp_path / sd.FILENAME).unlink()
+    assert len(carried['events']) == 5 and 'resets' not in carried  # nvda rows carried from the previous copy
+    # the collection does not run, with a live copy: the live copy is carried byte for byte (never the placeholder)
+    t.emit_empty(tmp_path, now=lambda: NOW)
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, previous), environ={})
+    assert code == 1 and 'SEC_USER_AGENT_MISSING' in out and 'PREVIOUS_CARRIED' in out
+    assert (tmp_path / sd.FILENAME).read_bytes() == previous
+    t.emit_empty(tmp_path, now=lambda: NOW)
     dead = Transport(full_subs(), full_indexes(), fail=set(US_LISTINGS))
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=dead)
+    assert code == 0 and 'ALL_FAILED previous_kept' in out
+    assert [e['accession'] for e in json.loads((tmp_path / sd.FILENAME).read_text())['events']] == [
+        e['accession'] for e in json.loads(previous)['events']]
+    # all fail without previous: an empty file that records the reset, not the silent placeholder
+    t.emit_empty(tmp_path, now=lambda: NOW)
     code, out = run_tool(tmp_path, capsys, transport=dead)
-    assert code == 1 and 'ALL_FAILED nothing_written' in out and not (tmp_path / sd.FILENAME).exists()
-    # missing user agent
-    code, out = run_tool(tmp_path, capsys, environ={})
-    assert code == 1 and 'SEC_USER_AGENT_MISSING' in out
+    assert code == 1 and 'ALL_FAILED nothing_written' in out and 'HISTORY_RESET reason=NO_LIVE resets=1' in out
+    empty = sd.require_sec_disclosures(json.loads((tmp_path / sd.FILENAME).read_text()))
+    assert empty['events'] == [] and [r['reason'] for r in empty['resets']] == ['NO_LIVE']
+    assert not t.is_placeholder(empty)
+    # the next run carries that record and adds nothing for an empty copy it can carry
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, sd.encode(empty)))
+    assert code == 0 and 'HISTORY_RESET' not in out
+    assert [r['reason'] for r in json.loads((tmp_path / sd.FILENAME).read_text())['resets']] == ['NO_LIVE']
+    # the empty build placeholder as the live copy: not carried, recorded as such with its as_of
+    placeholder = sd.encode(sd.merge(None, {}, as_of=NOW - timedelta(hours=5)))
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, placeholder))
+    assert code == 0 and 'HISTORY_RESET reason=PREVIOUS_PLACEHOLDER resets=1' in out
+    assert json.loads((tmp_path / sd.FILENAME).read_text())['resets'][0]['previous_as_of'] == sd.instant(NOW - timedelta(hours=5))
+    # a discarded copy keeps its own valid reset log; the new entry is appended
+    broken = json.loads(sd.encode(empty))
+    broken['events'] = 'x'
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, json.dumps(broken).encode()))
+    assert code == 0 and 'HISTORY_RESET reason=PREVIOUS_DISCARDED resets=2' in out
+    assert [r['reason'] for r in json.loads((tmp_path / sd.FILENAME).read_text())['resets']] == ['NO_LIVE', 'PREVIOUS_DISCARDED']
+    # preserve-only and the live copy cannot be read: the UI deploy is withheld (exit 1), nothing written over it
+    t.emit_empty(tmp_path, now=lambda: NOW)
+    before = (tmp_path / sd.FILENAME).read_bytes()
+    code, out = run_tool(tmp_path, capsys, previous=opener(exc=urllib.error.URLError('down')), transport=Transport({}, {}),
+                         live=False, preserve=True)
+    assert code == 1 and 'PREVIOUS_FETCH_FAILED nothing_written deploy_withheld' in out and '::warning' in out
+    assert (tmp_path / sd.FILENAME).read_bytes() == before
     # preserve-only: no SEC requests, previous restated
     quiet = Transport({}, {})
     code, out = run_tool(tmp_path, capsys, previous=opener(200, previous), transport=quiet, live=False, preserve=True)
@@ -475,3 +517,49 @@ def test_js_earnings_status_and_period_end_match_python(tmp_path):
     assert out['confirmed'] == {'status': 'CONFIRMED', 'date': '2026-08-27', 'period_end': '2026-07-27',
                                 'accession': acc(101), 'basis': 'SEC_8K_ITEM_2_02'}
     assert out['nextQuarter'] == 'ESTIMATED'
+
+
+def reset_cases(valid, validate):
+    """Reset-log shapes for one payload: name -> (payload, accepted by the Python validator)."""
+    at = valid['as_of']
+    entry = {'at': at, 'reason': 'PREVIOUS_UNAVAILABLE', 'previous_as_of': None}
+    shapes = {
+        'none': None,
+        'one': [entry],
+        'two': [dict(entry, reason='NO_LIVE', at='2026-01-01T00:00:00+00:00'), dict(entry, previous_as_of='2025-12-31T00:00:00+00:00')],
+        'empty_list': [],
+        'bad_reason': [dict(entry, reason='OTHER')],
+        'future': [dict(entry, at='2999-01-01T00:00:00+00:00')],
+        'out_of_order': [entry, dict(entry, at='2026-01-01T00:00:00+00:00')],
+        'extra_key': [dict(entry, note='x')],
+        'prev_after_at': [dict(entry, previous_as_of='2999-01-01T00:00:00+00:00')],
+        'not_list': {'at': at},
+        'too_many': [entry] * 501,
+        'bad_instant': [dict(entry, at='2026-01-01')],
+    }
+    out = {}
+    for name, value in shapes.items():
+        p = copy.deepcopy(valid)
+        if value is not None:
+            p['resets'] = value
+        try:
+            validate(copy.deepcopy(p))
+            ok = True
+        except ValueError:
+            ok = False
+        out[name] = (p, ok)
+    return out
+
+
+def test_reset_log_is_optional_and_checked_the_same_in_python_and_js():
+    cases = reset_cases(payload_nvda(), sd.require_sec_disclosures)
+    expected = {name: ok for name, (_, ok) in cases.items()}
+    assert expected == {'none': True, 'one': True, 'two': True, 'empty_list': False, 'bad_reason': False, 'future': False,
+                        'out_of_order': False, 'extra_key': False, 'prev_after_at': False, 'not_list': False,
+                        'too_many': False, 'bad_instant': False}
+    if NODE is None:
+        pytest.skip('node not installed')
+    script = ("const api=require(%s);let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const c=JSON.parse(s),out={};"
+              "for(const[k,v]of Object.entries(c)){try{api.validate(v);out[k]=true;}catch(_){out[k]=false;}}"
+              "process.stdout.write(JSON.stringify(out));});") % json.dumps(str(JS))
+    assert node(script, {name: p for name, (p, _) in cases.items()}) == expected

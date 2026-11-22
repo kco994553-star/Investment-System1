@@ -32,6 +32,7 @@ import string
 from urllib.parse import urlsplit
 
 from ..markets.us import US_LISTINGS
+from . import reset_log
 
 FILENAME = 'news-signals.json'
 KIND = 'NEWS_SIGNALS'
@@ -438,7 +439,7 @@ def _dedupe(items, counts):
     return out
 
 
-def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
+def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None, resets=None):
     """Build the next public payload (schema 2).
 
     previous: validated payload (schema 1 or 2) or None. collected: {'GDELT'|'IR': {company_id: {'acquired_at': datetime,
@@ -449,6 +450,9 @@ def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
 
     A run is recorded (`refresh`) when something was collected or `failures` is given; a listed company neither
     collected nor failed is NOT_RUN/NOT_COLLECTED. Without a run (build copy, tests) `refresh` is null.
+
+    resets: this run's history-reset log (product.reset_log); None carries the previous copy's. The `resets` key is
+    written only once the list is non-empty.
     """
     counts = {} if counts is None else counts
     as_of = datetime.fromisoformat(instant(as_of))
@@ -506,9 +510,10 @@ def merge(previous, collected, *, as_of, sec=None, counts=None, failures=None):
         else:
             item.update(relation='NONE', related_8k_accession=None)
     run = {'previous_links': {i['link'] for i in previous_items}} if attempted else None
-    payload = _payload(as_of, sources, items, run)
+    resets = reset_log.next_resets(previous, at=instant(as_of), reason=None) if resets is None else resets
+    payload = _payload(as_of, sources, items, run, resets)
     while len(encode(payload)) > SIZE_BUDGET and payload['items']:
-        payload = _payload(as_of, sources, payload['items'][:-1], run)
+        payload = _payload(as_of, sources, payload['items'][:-1], run, resets)
     return require_news_signals(payload)
 
 
@@ -555,7 +560,7 @@ def refresh_result(summaries):
     return 'FAILED' if 'FAILED' in results else 'NOT_RUN'
 
 
-def _payload(as_of, sources, items, run):
+def _payload(as_of, sources, items, run, resets=()):
     items = _order(assign_groups(_order(items)[:MAX_ITEMS]))
     sources = json.loads(json.dumps(sources))
     refresh = None
@@ -578,13 +583,21 @@ def _payload(as_of, sources, items, run):
             'reason_codes': reasons, 'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(STALE_AFTER.total_seconds()),
             'window_days': WINDOW_DAYS, 'channel': 'NEWS', 'score_effect': 'NONE',
             'attribution': json.loads(json.dumps(ATTRIBUTION)), 'matching_rule': MATCHING_RULE,
-            'sources': sources, 'refresh': refresh, 'items': items}
+            'sources': sources, 'refresh': refresh, 'items': items,
+            **_resets_key(resets)}
+
+
+def _resets_key(resets):
+    return {'resets': [dict(e) for e in resets]} if resets else {}
 
 
 def _require(p):
     _need(isinstance(p, dict) and type(p.get('schema_version')) is int and p['schema_version'] in SCHEMA_VERSIONS)
     v2 = p['schema_version'] == 2
-    _need(set(p) == set(TOP_KEYS_V2 if v2 else TOP_KEYS) and p['kind'] == KIND)
+    base = set(TOP_KEYS_V2 if v2 else TOP_KEYS)
+    _need(set(p) in (base, base | {'resets'}) and p['kind'] == KIND)
+    if 'resets' in p:
+        reset_log.require(p['resets'], p['as_of'])
     cut = _clock(p['as_of'])
     _need(p['freshness_basis'] == 'SOURCE_ACQUISITION' and p['channel'] == 'NEWS' and p['score_effect'] == 'NONE')
     _need(type(p['stale_after_seconds']) is int and p['stale_after_seconds'] == int(STALE_AFTER.total_seconds()))

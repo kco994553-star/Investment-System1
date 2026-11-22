@@ -16,6 +16,7 @@ import json
 import re
 
 from ..markets.us import US_LISTINGS
+from . import reset_log
 from ..providers.sec_8k_disclosures import (ARCHIVE_URL, CLASSIFICATIONS, FORMS, ITEMS, TITLE_MAX, classify_report, quarterly_earnings_title,
               index_url)
 
@@ -111,13 +112,15 @@ def pending_exhibits(previous, collected):
     return due
 
 
-def merge(previous, collected, *, as_of, exhibits=None):
+def merge(previous, collected, *, as_of, exhibits=None, resets=None):
     """Build the next public payload.
 
     previous: validated payload or None. collected: {company_id: {'acquired_at': datetime, 'rows': [...]}} for
     companies collected this run (rows from providers.sec_8k_disclosures.current_reports). exhibits:
     {accession: {'title','url'} | reason_code} looked up this run. Companies not collected keep their
-    previous rows and acquisition time. Rows older than the rolling window are dropped.
+    previous rows and acquisition time. Rows older than the rolling window are dropped. resets: this run's
+    history-reset log (product.reset_log); None carries the previous copy's. The `resets` key is written only once the
+    list is non-empty.
     """
     exhibits = exhibits or {}
     as_of = datetime.fromisoformat(instant(as_of))
@@ -168,6 +171,9 @@ def merge(previous, collected, *, as_of, exhibits=None):
                'freshness_basis': 'SOURCE_ACQUISITION', 'stale_after_seconds': int(STALE_AFTER.total_seconds()),
                'window_days': WINDOW_DAYS, 'channel': 'DISCLOSURE', 'score_effect': 'NONE',
                'companies': companies, 'events': events}
+    resets = reset_log.next_resets(previous, at=instant(as_of), reason=None) if resets is None else resets
+    if resets:
+        payload['resets'] = [dict(e) for e in resets]
     while len(encode(payload)) > SIZE_BUDGET and payload['events']:
         # Withhold the oldest rows explicitly instead of truncating fields.
         payload['events'] = _order(assign_groups(payload['events'][:-1]))
@@ -190,9 +196,11 @@ def _exhibit(e):
 
 
 def _require(p):
-    _need(isinstance(p, dict) and set(p) == set(TOP_KEYS))
+    _need(isinstance(p, dict) and set(p) in (set(TOP_KEYS), set(TOP_KEYS) | {'resets'}))
     _need(type(p['schema_version']) is int and p['schema_version'] == 1 and p['kind'] == KIND)
     cut = _clock(p['as_of'])
+    if 'resets' in p:
+        reset_log.require(p['resets'], p['as_of'])
     _need(p['freshness_basis'] == 'SOURCE_ACQUISITION' and p['channel'] == 'DISCLOSURE' and p['score_effect'] == 'NONE')
     _need(type(p['stale_after_seconds']) is int and p['stale_after_seconds'] == int(STALE_AFTER.total_seconds()))
     _need(type(p['window_days']) is int and p['window_days'] == WINDOW_DAYS)
