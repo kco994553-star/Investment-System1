@@ -470,3 +470,34 @@ def test_pipeline_hook_never_stops_the_sec_collection(monkeypatch, capsys):
     assert seen['called'] == (True, ['macro', 'macro_curve_v1', 'macro_v0', 'schema_version', 'sec', 'thirteen_f'])
     out = capsys.readouterr().out
     assert 'MACRO_EVIDENCE BUILD_FAILED nothing_written' in out and 'source text' not in out
+
+
+def test_rejected_redirect_names_only_a_fixed_target_file():
+    """Owner 2026-11-22: a refused redirect keeps only the target file name (missing_key / invalid_key / other)."""
+    from investment_system.providers import macro_v0_collection as mv
+
+    assert mv.redirect_name('https://api.census.gov/data/missing_key.html') == 'missing_key'
+    assert mv.redirect_name('https://api.census.gov/data/invalid_key.html?x=1') == 'invalid_key'
+    for other in ('https://example.test/login', 'https://api.census.gov/data/key=SECRET.html', '', None, 'http://[bad'):
+        assert mv.redirect_name(other) == 'other'
+    with pytest.raises(mv.MacroV0FetchError) as caught:
+        mv._NoRedirect().redirect_request(None, None, 302, 'Found', {}, 'https://api.census.gov/data/missing_key.html?key=SECRET')
+    assert (caught.value.code, caught.value.redirect) == ('REDIRECT_REJECTED', 'missing_key')
+    assert 'SECRET' not in repr(caught.value.__dict__)
+    assert mv.MacroV0FetchError('REDIRECT_REJECTED', redirect='https://x/y').redirect is None
+
+
+def test_census_redirect_reaches_the_diagnostic_line_without_url_or_key(tmp_path, capsys):
+    from investment_system.providers import macro_v0_collection as mv
+
+    def transport(url, **_):
+        raise mv.MacroV0FetchError('REDIRECT_REJECTED', redirect='invalid_key')
+
+    diagnostics = []
+    try:
+        mc.collect_macro_evidence(tmp_path, {}, environ={'CENSUS_API_KEY': 'SECRET-KEY'}, diagnostics=diagnostics, transport=transport)
+    except Exception:
+        pass
+    census = [d for d in diagnostics if str(d.get('stage', '')).startswith('CENSUS')]
+    assert census and all(d['code'] == 'REDIRECT_REJECTED' and d['redirect'] == 'invalid_key' for d in census)
+    assert 'SECRET' not in json.dumps(diagnostics)

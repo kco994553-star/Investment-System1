@@ -129,8 +129,8 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
         kwargs = {'transport': transport} if transport is not None else {}
         captures = collect_macro_evidence(root, manifest, environ=environ, diagnostics=diagnostics, **kwargs)
         for d in diagnostics:
-            print('MACRO_EVIDENCE_FETCH stage=%s code=%s http=%s size=%s' % tuple(
-                (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'size')))
+            print('MACRO_EVIDENCE_FETCH stage=%s code=%s http=%s size=%s redirect=%s' % tuple(
+                (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'size', 'redirect')))
         prior, state = previous if previous is not None else load_previous(open_previous)
         payload = el.build(captures, previous=prior, previous_state=state, now=now())
         write_bytes(directory, el.encode(payload))
