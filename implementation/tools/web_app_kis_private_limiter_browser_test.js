@@ -69,6 +69,8 @@ let phase = 'START';
     await new Promise((r) => setTimeout(r, 300));                // a GitHub read is not instant
     if (url.origin === 'https://release-assets.githubusercontent.com') return new Response(viewGz, { status: 200 });
     if (/^\/repos\/[^/]+\/[^/]+\/releases\/assets\/7$/.test(url.pathname)) return new Response(null, { status: 302, headers: { Location: 'https://release-assets.githubusercontent.com/synthetic/7?sig=x' } });
+    // No bundle root yet (Worker reader-first, 2026-11-22): its probe is a 404 and the single index is read as before.
+    if (/\/contents\/views\/kis-stock-packs\.json$/.test(url.pathname)) return new Response('{}', { status: 404 });
     if (/\/contents\/views\/[a-z-]+\.json$/.test(url.pathname)) return new Response(JSON.stringify(stockIndex), { status: 200 });
     const m = /^\/repos\/[^/]+\/[^/]+\/contents\/([a-z]+)\//.exec(url.pathname);
     if (m && m[1] === 'status') return new Response(JSON.stringify(statusFile), { status: 200 });
