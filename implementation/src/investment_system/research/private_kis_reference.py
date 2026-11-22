@@ -77,8 +77,12 @@ def mask_incomplete_totals(packet):
  return out
 
 
-def official_reference(payload,contracts,links,*,day,calculated_at,expected_payload_hash,expected_links_hash,expected_contract_hashes,monthends=None):
- """Same official engine/gates; only quote supplier changes. Reference, never official."""
+def official_reference(payload,contracts,links,*,day,calculated_at,expected_payload_hash,expected_links_hash,expected_contract_hashes,monthends=None,kis_v4_history=False,v4_audit_sink=None):
+ """Same official engine/gates; optional KIS V4 input is explicit/private only."""
+ if type(kis_v4_history) is not bool:raise ValueError('V4_OPT_IN_BOOLEAN_REQUIRED')
+ if kis_v4_history and monthends:raise ValueError('V4_HISTORY_SOURCE_CONFLICT')
+ if v4_audit_sink is not None and (not kis_v4_history or not callable(v4_audit_sink)):
+  raise ValueError('V4_PRIVATE_AUDIT_SINK_REQUIRES_OPT_IN')
  from .kis_price_bridge import _ts,validate_contract
  if digest(payload)!=expected_payload_hash or digest(links)!=expected_links_hash:raise ValueError('SOURCE_PIN_MISMATCH')
  if payload['calc_version']!=v2_factors.CALC_VERSION:raise ValueError('CALC_VERSION_MISMATCH')
@@ -101,13 +105,23 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
  supplied=SimpleNamespace(day=day,quotes=quotes,status=statuses)
  st=common.price_status(ctx,supplied,months=monthends or {})
  engine,excluded=common.engine_quotes(ctx,supplied,st,monthends or {})
+ v4_audit={}
+ if kis_v4_history:
+  from .kis_v4_history import kis_month_closes
+  for key,quote in engine.items():
+   code=ctx['keys'][key];raw=common._raw_v(payload,key) or {}
+   closes,audit=kis_month_closes(contracts[code],raw.get('ebit_per_share_history'),company_code=code,
+    evaluation_day=day,expected_contract_hash=expected_contract_hashes[code],expected_query=links[code],
+    available_at=calculated_at)
+   if closes:quote['month_closes']=closes
+   v4_audit[key]=audit
  calculated=common.score(ctx,engine)
  rows={k:common.projection(v) for k,v in calculated.items()}
  detail={k:deepcopy(v['detail']) for k,v in calculated.items()}
  counts=dict(price=sum(k in engine for k in payload['records']),
   raw_any=sum(any(detail[k].get(f) is not None for f in ('ebit_yield','fcf_yield','expectation_gap')) for k in payload['records']),
   role_any=sum(any(v['score'] is not None for f,v in rows[k]['factors'].items() if f.startswith('v_')) for k in payload['records']))
- return mask_incomplete_totals(dict(schema='kis-qgv/1',layer='OWNER_PRIVATE',calc_version=payload['calc_version'],engine_version=qgv_v2.VERSION,
+ packet=mask_incomplete_totals(dict(schema='kis-qgv/1',layer='OWNER_PRIVATE',calc_version=payload['calc_version'],engine_version=qgv_v2.VERSION,
   calculation_path='qgv_official.prepare/price_status/engine_quotes/score/projection',
   price_basis_date=day,calculated_at=calculated_at,financial_input_as_of=payload['as_of'],
   input_sha256=expected_payload_hash,lookup_sha256=expected_links_hash,
@@ -122,3 +136,11 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
    engine_total_computed=sum(r['total'] is not None for k,r in rows.items() if k in payload['records'])),
   rank=None,rank_reason='PRIVATE_REFERENCE_NOT_OFFICIAL_RANK',historical_pit_proven=False,
   official_publication_replaced=False,TARGET_modified=False))
+ if kis_v4_history:
+  packet['v4_history']=dict(enabled=True,policy='kis-v4-month-close/1',provider='KIS',
+   valuation_day=day,diagnostics_hash=digest(v4_audit),evaluated_rows=len(v4_audit),
+   axis_state_labels={'READY':'전체 산출','PARTIAL':'부분 산출','NOT_AVAILABLE':'미산출'},
+   connected_observations=sum(o['reason']=='CONNECTED_KIS_MONTH_CLOSE' for row in v4_audit.values() for o in row['observations']),
+   price_admission_changed=False,validation_tier='UNVERIFIED_REFERENCE')
+  if v4_audit_sink is not None:v4_audit_sink(deepcopy(v4_audit))
+ return packet
