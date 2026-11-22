@@ -77,6 +77,51 @@ def mask_incomplete_totals(packet):
  return out
 
 
+# Private presentation only. Keep the original reason for drill-down.
+_V_FACTOR_LABELS = {
+    'AVAILABLE': '산출',
+    'NOT_APPLICABLE': '규칙상 해당 없음',
+    'MODEL_UNSUPPORTED': '모형 미지원',
+    'DATA_UNAVAILABLE': '자료 없음',
+    'CALCULATION_CONDITION': '계산 조건 미충족',
+    'UNCLASSIFIED': '사유 미확인',
+}
+_V_MISSING_DATA = {
+    'V_INPUTS_NOT_AVAILABLE', 'NO_DEVICE_PRICE', 'SHARES_NOT_AVAILABLE',
+    'DEBT_CASH_NOT_AVAILABLE', 'NORMALIZED_EARNINGS_NOT_AVAILABLE',
+    'EBIT_NOT_AVAILABLE', 'FCF_NOT_AVAILABLE', 'REALIZED_GROWTH_NOT_AVAILABLE',
+    'PRICE_HISTORY_NOT_AVAILABLE', 'HISTORY_TOO_SHORT', 'CROSS_SECTION_TOO_SMALL',
+    'CURRENCY_BASIS_UNCONFIRMED', 'SHARE_BASIS_UNCONFIRMED', 'CASHFLOW_BASIS_UNCONFIRMED',
+}
+_V_CALCULATION_CONDITIONS = {
+    'EV_NON_POSITIVE', 'NON_POSITIVE_CASHFLOW', 'ROOT_NOT_BRACKETED',
+    'ROOT_NOT_CONVERGED', 'NUMERIC_OVERFLOW', 'PARAMETER_INVALID',
+    'PARAMETER_APPROVAL_PENDING', 'GORDON_RATE_ORDER', 'INPUT_INVALID', 'SOLVER_INVALID',
+}
+
+
+def _v_display_state(role, factor):
+    if factor['score'] is not None:
+        return 'AVAILABLE'
+    reason = factor['reason']
+    if reason == 'FINANCIAL_PROFILE_V_NOT_DEFINED':
+        return 'MODEL_UNSUPPORTED'
+    if role == 'v_vs_own_history' and reason == 'NORMALIZED_HISTORY_NOT_AVAILABLE':
+        return 'NOT_APPLICABLE'
+    if reason in _V_MISSING_DATA:
+        return 'DATA_UNAVAILABLE'
+    if reason in _V_CALCULATION_CONDITIONS:
+        return 'CALCULATION_CONDITION'
+    return 'UNCLASSIFIED'
+
+
+def _label_v_factors(rows):
+    for row in rows.values():
+        for role in qgv_v2.WEIGHTS['V']:
+            factor = row['factors'][role]
+            factor['display_state'] = _v_display_state(role, factor)
+
+
 def official_reference(payload,contracts,links,*,day,calculated_at,expected_payload_hash,expected_links_hash,expected_contract_hashes,monthends=None,kis_v4_history=False,v4_audit_sink=None):
  """Same official engine/gates; optional KIS V4 input is explicit/private only."""
  if type(kis_v4_history) is not bool:raise ValueError('V4_OPT_IN_BOOLEAN_REQUIRED')
@@ -137,8 +182,9 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
   rank=None,rank_reason='PRIVATE_REFERENCE_NOT_OFFICIAL_RANK',historical_pit_proven=False,
   official_publication_replaced=False,TARGET_modified=False))
  if kis_v4_history:
+  _label_v_factors(packet['rows'])
   packet['v4_history']=dict(enabled=True,policy='kis-v4-month-close/1',provider='KIS',
-   valuation_day=day,diagnostics_hash=digest(v4_audit),evaluated_rows=len(v4_audit),
+   factor_state_labels=dict(_V_FACTOR_LABELS),valuation_day=day,diagnostics_hash=digest(v4_audit),evaluated_rows=len(v4_audit),
    axis_state_labels={'READY':'전체 산출','PARTIAL':'부분 산출','NOT_AVAILABLE':'미산출'},
    connected_observations=sum(o['reason']=='CONNECTED_KIS_MONTH_CLOSE' for row in v4_audit.values() for o in row['observations']),
    price_admission_changed=False,validation_tier='UNVERIFIED_REFERENCE')

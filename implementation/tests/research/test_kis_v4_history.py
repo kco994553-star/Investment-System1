@@ -99,6 +99,12 @@ def test_official_reference_requires_explicit_opt_in_and_preserves_other_roles()
     assert after['rows'][code]['factors']['v_vs_own_history']['score'] is not None
     assert 'v4_history' not in before and after['v4_history']['enabled'] is True
     for row in after['rows'].values():
+        for role, factor in row['factors'].items():
+            if role.startswith('v_'):
+                assert factor['display_state'] in after['v4_history']['factor_state_labels']
+                assert (factor['display_state'] == 'AVAILABLE') == (factor['score'] is not None)
+            else:
+                assert 'display_state' not in factor
         axis = row['axes']['V']
         label = after['v4_history']['axis_state_labels'][axis['state']]
         if axis['score'] is None:
@@ -109,7 +115,9 @@ def test_official_reference_requires_explicit_opt_in_and_preserves_other_roles()
     assert digest(audits[0])==after['v4_history']['diagnostics_hash']
     for axis in ['Q','G']:assert before['rows'][code]['axes'][axis]==after['rows'][code]['axes'][axis]
     for role in ['v_earnings_yield','v_fcf_yield','v_vs_industry','v_expectation_check']:
-        assert before['rows'][code]['factors'][role]==after['rows'][code]['factors'][role]
+        original = before['rows'][code]['factors'][role]
+        assert 'display_state' not in original
+        assert original == {k:v for k,v in after['rows'][code]['factors'][role].items() if k != 'display_state'}
     assert after['display']==before['display'] and after['rank'] is None
     assert after['official_publication_replaced'] is False
     with pytest.raises(ValueError,match='HISTORY_SOURCE_CONFLICT'):
@@ -149,3 +157,22 @@ def test_v_display_states_use_the_engine_weight_and_include_a_zero_score():
         else:
             assert axis['state'] == ('READY' if share == 1 else 'PARTIAL')
             assert axis['score'] == 0
+
+
+@pytest.mark.parametrize('role,score,reason,expected', [
+    ('v_vs_own_history', None, 'NORMALIZED_HISTORY_NOT_AVAILABLE', 'NOT_APPLICABLE'),
+    ('v_fcf_yield', None, 'FINANCIAL_PROFILE_V_NOT_DEFINED', 'MODEL_UNSUPPORTED'),
+    ('v_vs_own_history', None, 'FINANCIAL_PROFILE_V_NOT_DEFINED', 'MODEL_UNSUPPORTED'),
+    ('v_earnings_yield', None, 'NORMALIZED_HISTORY_NOT_AVAILABLE', 'UNCLASSIFIED'),
+    ('v_vs_own_history', None, 'PRICE_HISTORY_NOT_AVAILABLE', 'DATA_UNAVAILABLE'),
+    ('v_earnings_yield', None, 'NORMALIZED_EARNINGS_NOT_AVAILABLE', 'DATA_UNAVAILABLE'),
+    ('v_expectation_check', None, 'NON_POSITIVE_CASHFLOW', 'CALCULATION_CONDITION'),
+    ('v_expectation_check', None, 'ROOT_NOT_BRACKETED', 'CALCULATION_CONDITION'),
+    ('v_vs_industry', None, 'FUTURE_REASON', 'UNCLASSIFIED'),
+    ('v_vs_industry', None, None, 'UNCLASSIFIED'),
+    ('v_vs_industry', 0, None, 'AVAILABLE'),
+])
+def test_private_factor_display_uses_observed_reason(role, score, reason, expected):
+    from investment_system.research.private_kis_reference import _v_display_state
+
+    assert _v_display_state(role, {'score': score, 'reason': reason}) == expected
