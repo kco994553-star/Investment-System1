@@ -79,8 +79,10 @@ INDICATORS = (
     _ind(id="E14", name="신규 실업수당 청구 (SA, 주간)", family="LU", cycles=("economy",), frequency="W", unit="건",
          series=("DOL:ETA539:INITIAL_CLAIMS_SA",), agency="DOL", source="DOL ETA 539 · 신규 청구, SA, 주간",
          url="https://oui.doleta.gov/unemploy/claims.asp", official_statistic=True, license_class="FREE_OFFICIAL",
-         terms_checked_on="2026-10-20", terms_note="DOL 저작권 페이지가 수집 환경에서 HTTP 403. 원문 미확인이라 공개 보류",
-         publication="HELD_TERMS_UNVERIFIED", collection="NEW_DOL_WEEKLY_XML",
+         terms_checked_on="2026-11-22",
+         terms_note=("DOL 저작권 원문 확인(#598): 연방정부 작성 공개저작물, 복제·배포 가능. DOL 추천 암시 금지, 제3자 저작물 제외. "
+                     "공개 범위(오너 2026-11-22): 전국 SA 신규 청구 수와 그 파생값만. 출처 DOL ETA 539, 기준 주=주 끝(토)"),
+         publication="PUBLIC", collection="NEW_DOL_WEEKLY_XML",
          rule=_ind(version="E14.v0", text="4주 평균이 26주 평균을 위(아래)로 교차", source_class="PROPOSAL", realtime_validation="UNVALIDATED"),
          edges=MappingProxyType({"up": _ind(label="신규 청구 ↑ (4주 평균 상향 교차)", interpretation="악화", candidate="WARNING"),
                                  "down": _ind(label="신규 청구 ↓ (4주 평균 하향 교차)", interpretation="개선", candidate="IMPROVING")})),

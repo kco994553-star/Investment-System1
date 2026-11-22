@@ -58,7 +58,7 @@ def parse_json(body: bytes) -> dict:
     return json.loads(body.decode('utf-8', errors='strict'), object_pairs_hook=unique, parse_constant=constant)
 
 
-def previous_copy(open_response=None):
+def previous_copy(open_response=None, *, adopt=False):
     """(validated payload, live bytes); (None, None) on 404. Network errors raise OSError, invalid copies ValueError."""
     request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
@@ -75,13 +75,16 @@ def previous_copy(open_response=None):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     if len(body) > el.MAX_BYTES:
         raise ValueError('MACRO_EVIDENCE_PREVIOUS_TOO_LARGE')
-    return el.require_macro_evidence(parse_json(body)), body
+    value = parse_json(body)
+    return el.require_macro_evidence(el.adopt_catalog(value) if adopt else value), body
 
 
 def load_previous(open_response=None):
-    """(payload or None, LOADED | NO_LIVE | UNAVAILABLE)."""
+    """(payload or None, LOADED | NO_LIVE | UNAVAILABLE). A copy written under an earlier catalog text is carried with its
+    indicator views rebuilt from the current catalog (el.adopt_catalog); its series, records and events are unchanged and
+    validated as strictly as before. The preserve-only path below still republishes only a copy valid as it stands."""
     try:
-        payload, _ = previous_copy(open_response)
+        payload, _ = previous_copy(open_response, adopt=True)
     except ValueError:
         print('MACRO_EVIDENCE PREVIOUS_DISCARDED')
         return None, 'NO_LIVE'

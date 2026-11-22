@@ -74,7 +74,10 @@ def test_registry_is_the_catalog_p1_set_with_required_fields():
     text = json.dumps([dict(i, rule=dict(i['rule']), edges={k: dict(v) for k, v in i['edges'].items()}) for i in es.INDICATORS], ensure_ascii=False)
     for word in ('SPY', 'HYG', 'IEF', 'VIX', 'fred.stlouisfed', 'ICE BofA'):
         assert word not in text
-    assert es.BY_ID['E14']['publication'] == 'HELD_TERMS_UNVERIFIED'
+    # E14 (owner 2026-11-22): DOL terms read in #598; national SA initial claims and values derived from them only.
+    assert es.BY_ID['E14']['publication'] == 'PUBLIC' and es.BY_ID['E14']['terms_checked_on'] == '2026-11-22'
+    assert es.BY_ID['E14']['series'] == ('DOL:ETA539:INITIAL_CLAIMS_SA',) and 'SA' in es.BY_ID['E14']['source']
+    assert all(i['publication'] == 'PUBLIC' for i in es.INDICATORS)
 
 
 # ---------------------------------------------------------------- parsers on recorded responses
@@ -178,9 +181,9 @@ def test_baseline_records_nothing_and_rebuilds_replay_only():
     assert payload['continuity'] == 'BASELINE' and payload['releases'] == [] and payload['events'] == []
     assert payload['replay_events'] and all(set(e) == {'indicator', 'series', 'rule', 'direction', 'period'} for e in payload['replay_events'])
     dol = payload['series']['DOL:ETA539:INITIAL_CLAIMS_SA']
-    assert dol['state'] == 'NOT_AVAILABLE' and dol['reason'] == 'TERMS_UNVERIFIED' and dol['obs'] == [] and dol['history'] == {}
+    assert dol['state'] == 'LIVE' and dol['reason'] is None and dol['obs'] and dol['history'] == {}  # baseline: no vintages yet
     assert {i['id']: i['reason'] for i in payload['indicators'] if i['state'] != 'LIVE'} == {
-        'E14': 'TERMS_UNVERIFIED', 'E21': 'SOURCE_KEY_NOT_CONFIGURED', 'E26': 'SOURCE_KEY_NOT_CONFIGURED'}
+        'E21': 'SOURCE_KEY_NOT_CONFIGURED', 'E26': 'SOURCE_KEY_NOT_CONFIGURED'}
     assert payload['scope'] == {'screen': 'EXPLORATION_ONLY', 'official_judgement': False, 'probability': False,
                                 'macro_gate': False, 'decision': 'MEV-10'}
 
@@ -342,7 +345,10 @@ def test_collector_reuses_macro_files_and_fetches_only_fixed_requests(tmp_path):
     assert not any(u in (mc.ENDPOINTS['BEA'],) or 'treasury' in u or 'NipaDataQ' in u for u in urls)  # reused, not re-fetched
     assert urls.count(mc.ENDPOINTS['BLS']) == 1
     payload = el.build(caps, previous=None, previous_state='NO_LIVE', now=AT)
-    assert payload['series']['DOL:ETA539:INITIAL_CLAIMS_SA']['obs'] == []
+    dol = payload['series']['DOL:ETA539:INITIAL_CLAIMS_SA']
+    assert dol['state'] == 'LIVE' and dol['obs']
+    assert all(datetime.fromisoformat(week).weekday() == 5 for week, _ in dol['obs'])  # reference week = week ended (Saturday)
+    assert dol['release_evidence'] == {'at': None, 'date': None}  # the release date is not in the file: none is recorded
     assert {d['stage'] for d in diagnostics} == {'DDP_CHOOSE_SLOOS'}
 
 
@@ -636,3 +642,56 @@ def test_tool_names_the_failed_series_and_still_writes_the_file(tmp_path, capsys
     assert 'MACRO_EVIDENCE SERIES_FAILED series=FED:FOMC:TARGET_RANGE type=ZeroDivisionError' in printed
     payload = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
     assert payload['series']['FED:FOMC:TARGET_RANGE']['reason'] == 'SCHEMA_MISMATCH'
+
+
+# ---------------------------------------------------------------- E14 publication (owner 2026-11-22)
+
+def test_dol_mismatch_keeps_only_tag_names_and_counts(tmp_path):
+    bad = (b'<r539cyNational rundate="11/21/2026"><week><weekEnded>11/15/2026</weekEnded><InitialClaims><SA>215,000</SA>'
+           b'</InitialClaims></week><week><weekEnded>2026-11-22</weekEnded><Initial_Claims><SA>1</SA></Initial_Claims></week>'
+           b'</r539cyNational>')
+    transport = FakeTransport(responses({(mc.DOL_URL, None): (bad, {})}))
+    diagnostics = []
+    caps = mc.collect_macro_evidence(tmp_path, reused_root(tmp_path), environ={}, year=2026, transport=transport,
+                                     clock=lambda: AT, diagnostics=diagnostics)
+    assert caps['DOL:ETA539:INITIAL_CLAIMS_SA'] == {'reason': 'SCHEMA_MISMATCH'}
+    dol = [d for d in diagnostics if d['stage'] == 'DOL_ETA539'][0]
+    assert (dol['columns'], dol['rows']) == ('r539cyNational:InitialClaims,Initial_Claims,weekEnded;bad=1', 2)
+    assert '215' not in json.dumps(diagnostics) and '11/15' not in json.dumps(diagnostics)
+    assert mc.dol_shape(b'<html><body>x</body></html>')['columns'] == 'html:;bad=0'
+    assert mc.dol_shape(b'not xml') == {'columns': 'NOT_XML', 'rows': None}
+
+
+def test_previous_copy_under_the_earlier_e14_text_is_carried_not_reset():
+    import macro_evidence as tool
+    current = fx.runs()[-1]
+    old = copy.deepcopy(current)
+    row = old['series']['DOL:ETA539:INITIAL_CLAIMS_SA']
+    row.update(el._empty_series('DOL:ETA539:INITIAL_CLAIMS_SA'), reason='TERMS_UNVERIFIED')
+    old['indicators'] = [dict(v) for v in old['indicators']]
+    for view in old['indicators']:
+        if view['id'] == 'E14':
+            view.update(state='NOT_AVAILABLE', reason='TERMS_UNVERIFIED',
+                        source=dict(view['source'], publication='HELD_TERMS_UNVERIFIED', terms_checked_on='2026-10-20'))
+    old['state'] = 'PARTIAL'
+    with pytest.raises(ValueError):
+        el.require_macro_evidence(copy.deepcopy(old))  # strict as it stands: the preserve-only path still refuses it
+    body = json.dumps(old).encode()
+
+    class Response(io.BytesIO):
+        status = 200
+
+        def geturl(self):
+            return tool.SOURCE
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+    payload, state = tool.load_previous(lambda request, timeout: Response(body))
+    assert state == 'LOADED' and payload['series'] == old['series'] and payload['events'] == old['events']
+    assert payload['releases'] == old['releases'] and [v['source']['publication'] for v in payload['indicators']] == ['PUBLIC'] * 13
+    tampered = copy.deepcopy(old)
+    tampered['series']['BTS:TSI:FREIGHT']['obs'].append(['bad', 1.0])
+    assert tool.load_previous(lambda request, timeout: Response(json.dumps(tampered).encode())) == (None, 'NO_LIVE')

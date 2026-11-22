@@ -394,6 +394,19 @@ def indicator_view(indicator: dict, series_out: dict) -> dict:
             "system_validation": "UNVALIDATED", "v0": True}
 
 
+def adopt_catalog(payload):
+    """A previous copy written under an earlier catalog text (e.g. E14 terms_note / publication, owner 2026-11-22): its
+    indicator views are derived only from the catalog and its own series, so they are rebuilt from the current catalog.
+    Nothing else is touched; the caller still validates the whole copy strictly. Anything unexpected -> returned as is."""
+    if type(payload) is not dict or type(payload.get("series")) is not dict:
+        return payload
+    try:
+        views = [indicator_view(i, payload["series"]) for i in es.INDICATORS]
+    except Exception:
+        return payload
+    return {**payload, "indicators": views}
+
+
 def summary(series_out: dict, events: list) -> dict:
     """Per cycle: families whose current candidate state is WARNING / IMPROVING / mixed (catalog §6-4, §7-3; the
     'current' definition is the EVL-1 candidate, not approved). One family counts once; families mix -> neither side.
