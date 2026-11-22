@@ -26,12 +26,11 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else{const I=root.IS2=root.IS2||{};I.kisPrivate=api;}})(typeof globalThis==='object'?globalThis:this,function(){
 'use strict';
 const SCHEMA=Object.freeze({BARS:'kis-bars/1',ANALYSIS:'kis-bars/1/analysis',MEASURES:'kis-technical-measures/1',QGV:'kis-qgv/1',STATUS:'kis-status/1',STOCK:'kis-stock-view/1'});
-const ROUTE=Object.freeze({status:'/kis/status',chart:'/kis/chart',analysis:'/kis/analysis',technical:'/kis/technical',qgv:'/kis/qgv',
- // The sixth route (owner 2026-11-20 screen switch): the technical panel's one read, the one-file stock view of the Worker's
- // stock route. chart / analysis / technical stay here and on the Worker (owner: unchanged until told otherwise) but no panel reads them.
- stock:'/kis/stock'});
+// The two routes the panels read (owner 2026-11-22: the four older per-file routes, which no panel read since the 2026-11-20
+// screen switch, are removed here first and from the Worker afterwards). The stock route also answers ?part=qgv (PARTS).
+const ROUTE=Object.freeze({status:'/kis/status',stock:'/kis/stock'});
 // Routes that take ?symbol=<SYM>; the others take no query.
-const BY_SYMBOL=Object.freeze(['chart','analysis','technical','stock']);
+const BY_SYMBOL=Object.freeze(['stock']);
 // The stock route's other answer (owner 2026-11-21): the QGV object of the same release generation, read by the KIS V panel.
 const PARTS=Object.freeze({stockQgv:Object.freeze({route:'stock',query:'?part=qgv'})});
 const SCOPES=Object.freeze(['email','openid']);
