@@ -98,6 +98,13 @@ def test_official_reference_requires_explicit_opt_in_and_preserves_other_roles()
     assert before['rows'][code]['factors']['v_vs_own_history']['score'] is None
     assert after['rows'][code]['factors']['v_vs_own_history']['score'] is not None
     assert 'v4_history' not in before and after['v4_history']['enabled'] is True
+    for row in after['rows'].values():
+        axis = row['axes']['V']
+        label = after['v4_history']['axis_state_labels'][axis['state']]
+        if axis['score'] is None:
+            assert label == '미산출'
+        else:
+            assert label == ('전체 산출' if axis['weight_available'] == 1 else '부분 산출')
     assert 'rows' not in after['v4_history'] and after['v4_history']['evaluated_rows']==1
     assert digest(audits[0])==after['v4_history']['diagnostics_hash']
     for axis in ['Q','G']:assert before['rows'][code]['axes'][axis]==after['rows'][code]['axes'][axis]
@@ -124,3 +131,21 @@ def test_unknown_and_known_factors_in_shared_month_do_not_cross_fill():
     closes,audit=call(contract(),h)
     assert not closes
     assert all(r['reason']=='CONFLICTING_FISCAL_MONTH_BASIS' for r in audit['observations'])
+
+
+def test_v_display_states_use_the_engine_weight_and_include_a_zero_score():
+    from investment_system.qgv import qgv_v2
+
+    weights = qgv_v2.WEIGHTS['V']
+    for mask in range(1 << len(weights)):
+        scores = {key: 0 if mask & (1 << i) else None for i, key in enumerate(weights)}
+        axis = qgv_v2.axis_score(scores, 'V')
+        used = [key for key, value in scores.items() if value is not None]
+        share = sum(weights[key] for key in used) / sum(weights.values())
+        assert axis['weight_available'] == share
+        assert axis['factors_available'] == len(used)
+        if share < qgv_v2.MIN_AXIS_WEIGHT:
+            assert axis['state'] == 'NOT_AVAILABLE' and axis['score'] is None
+        else:
+            assert axis['state'] == ('READY' if share == 1 else 'PARTIAL')
+            assert axis['score'] == 0

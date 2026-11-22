@@ -7,7 +7,7 @@ inputs; missing evidence is never replaced by 1 or by another month's price.
 from calendar import monthrange
 from datetime import date,timedelta
 
-from ..providers.iex_monthend import _factor, MONTHEND_BASIS_CUTS
+from ..qgv.v2_factors import MONTHEND_BASIS_CUTS, fiscal_share_basis_factor
 from ..qgv.qgv_v2 import positive
 from . import pit_filings
 from ._private_artifacts import digest
@@ -54,7 +54,7 @@ def kis_month_closes(contract, raw_history, *, company_code, evaluation_day,
         month=fy[:7];row['month']=month
         if cut and fy<cut[0]:row['reason']=cut[1]
         else:
-            factor,reason=_factor(item)
+            factor,reason=fiscal_share_basis_factor(item)
             if factor is None:row['reason']=reason
             # A monthly close without an exact future-free trade day must not
             # enter an unfinished current month, even if a partial bar exists.
@@ -83,7 +83,7 @@ def kis_month_closes(contract, raw_history, *, company_code, evaluation_day,
     by_month={}
     for item in raw_history if isinstance(raw_history,list) else ():
         if isinstance(item,dict) and isinstance(item.get('fiscal_year_end'),str):
-            by_month.setdefault(item['fiscal_year_end'][:7],set()).add(_factor(item)[0])
+            by_month.setdefault(item['fiscal_year_end'][:7],set()).add(fiscal_share_basis_factor(item)[0])
     conflicts={month for month,bases in by_month.items() if len(bases)>1}
     for month in conflicts:closes.pop(month,None)
     for row in observations:

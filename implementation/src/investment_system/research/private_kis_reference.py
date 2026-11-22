@@ -139,6 +139,7 @@ def official_reference(payload,contracts,links,*,day,calculated_at,expected_payl
  if kis_v4_history:
   packet['v4_history']=dict(enabled=True,policy='kis-v4-month-close/1',provider='KIS',
    valuation_day=day,diagnostics_hash=digest(v4_audit),evaluated_rows=len(v4_audit),
+   axis_state_labels={'READY':'전체 산출','PARTIAL':'부분 산출','NOT_AVAILABLE':'미산출'},
    connected_observations=sum(o['reason']=='CONNECTED_KIS_MONTH_CLOSE' for row in v4_audit.values() for o in row['observations']),
    price_admission_changed=False,validation_tier='UNVERIFIED_REFERENCE')
   if v4_audit_sink is not None:v4_audit_sink(deepcopy(v4_audit))
