@@ -88,6 +88,7 @@ APPROVED_SHA256 = {
     "classification-screens.js": "23ed7302742bf769068ef128dc48075fe6c88d6610585356e6b4e88d14db0a8f",
     "manager-styles-v0.js": "b32f434b17ba00d6ec1e4813517884e5caded996779df9b1976dfc38964ab38e",
     "screen-detail.js": "d4bed4772a5d70daf6d03491fbc0acfbd0b878789b55de2fdfdf13706f2f354b",
+    "common-taxonomy.js": "4caba2c2ef18b5db015a10c06e3e1cf0cdc17d7b1a0eafa02c7ee83c991c926e",  # common 10-sector dictionary reader (owner 2026-11-22, from #526; names only, not loaded by a screen)
     "virtual-trading.js": "c7f7cb4833d9065039adca7e199b1d036fad2e75d88f211b015525deba2f304e",
     "technical-cards.js": "7f4fb2ce3a586a9f024c6edc212c65893a7acc44a3fd58b611f2f38616b660b3",
     "leaderboard-screen.js": "b09c4a9f4d0eea0854939c293f763958fb393811cd092a93462a79f58c12e5f0",
@@ -197,7 +198,7 @@ APPROVED_SHA256 = {
     "engines.js": "6e3604dfe4c347d29b8e66fce01c8330f7a6f7823481a7132184767112ab27a2",
     "lab.js": "91e1b57ab4face44e07cb3db3ef9f3b243084202160f25082146d6ffe5f3168c",
     "kis-private.js": "56f53076e9738e1a015465917f570132952d3f6bdbc761b2b16de9dccc560563",
-    "loader.js": "504ade9ca04bf6b2e24c478e2dc76601c74a4485ecd08281f6aa3de9939bc00e",
+    "loader.js": "ecd20ba2cc660d3f7300c6d0df943bfe2a7d6a6b1b6e4b128a9e958ca7f4419a",
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
     "prices.js": "7016abc44f8dfdb7570548e70a7884ea39c74e915dabb47885898d8fe468efe6",

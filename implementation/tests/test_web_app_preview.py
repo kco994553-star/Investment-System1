@@ -99,7 +99,7 @@ class WebAppPreviewTest(unittest.TestCase):
         # the preview must fit with all of them, so a web_app that grows past the entry limit fails here, not at deploy.
         live_only = {n for n in self.guard.ALLOWED_NAMES if n.endswith('.json')} - {p.name for p in self.with_preview.iterdir()}
         self.assertLessEqual(receipt['files_scanned'] + len(live_only), self.guard.MAX_ENTRIES)
-        self.assertEqual((receipt['files_scanned'], len(live_only)), (178, 7))  # 185 of 192 (owner 2026-11-15: +2)
+        self.assertEqual((receipt['files_scanned'], len(live_only)), (179, 7))  # 186 of 192 (owner 2026-11-22: + common-taxonomy.js; 2026-11-15: +2)
         self.assertEqual(self.guard.MAX_ENTRIES, 192)
         self.assertEqual(self.guard.MAX_FILE_BYTES, 2 * 1024 * 1024)
         for name in self.added():
