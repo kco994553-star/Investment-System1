@@ -1,0 +1,2651 @@
+{
+  "old": {
+    "metrics": {
+      "employment": {
+        "months": 384,
+        "true": 99,
+        "ref": 5,
+        "hit": 5,
+        "miss": 0,
+        "starts": 5,
+        "false": 0,
+        "false_starts": [],
+        "lag": 4,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-04",
+            4,
+            false
+          ],
+          [
+            "1973-11",
+            "1974-04",
+            5,
+            false
+          ],
+          [
+            "1980-01",
+            "1980-03",
+            2,
+            false
+          ],
+          [
+            "1981-07",
+            "1981-12",
+            5,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-10",
+            3,
+            false
+          ]
+        ]
+      },
+      "cpi5": {
+        "months": 384,
+        "true": 149,
+        "ref": 5,
+        "hit": 1,
+        "miss": 4,
+        "starts": 6,
+        "false": 2,
+        "false_starts": [
+          "1977-02",
+          "1989-05"
+        ],
+        "lag": 2,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            null,
+            null,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-09",
+            2,
+            false
+          ]
+        ]
+      },
+      "cpi8": {
+        "months": 384,
+        "true": 63,
+        "ref": 5,
+        "hit": 1,
+        "miss": 4,
+        "starts": 2,
+        "false": 1,
+        "false_starts": [
+          "1978-10"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-12",
+            1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "curve": {
+        "months": 120,
+        "true": 0,
+        "ref": 1,
+        "hit": 0,
+        "miss": 1,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_warning": {
+        "months": 384,
+        "true": 97,
+        "ref": 5,
+        "hit": 3,
+        "miss": 2,
+        "starts": 4,
+        "false": 1,
+        "false_starts": [
+          "1978-10"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-10",
+            3,
+            false
+          ]
+        ]
+      },
+      "public_crisis": {
+        "months": 384,
+        "true": 35,
+        "ref": 5,
+        "hit": 3,
+        "miss": 2,
+        "starts": 3,
+        "false": 0,
+        "false_starts": [],
+        "lag": 5,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1974-04",
+            5,
+            false
+          ],
+          [
+            "1980-01",
+            "1980-03",
+            2,
+            false
+          ],
+          [
+            "1981-07",
+            "1981-12",
+            5,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_stress": {
+        "months": 384,
+        "true": 82,
+        "ref": 5,
+        "hit": 3,
+        "miss": 2,
+        "starts": 6,
+        "false": 2,
+        "false_starts": [
+          "1971-01",
+          "1978-10"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1991-01",
+            6,
+            false
+          ]
+        ]
+      },
+      "v0_risk": {
+        "months": 384,
+        "true": 19,
+        "ref": 5,
+        "hit": 3,
+        "miss": 2,
+        "starts": 6,
+        "false": 1,
+        "false_starts": [
+          "1971-01"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1991-01",
+            6,
+            false
+          ]
+        ]
+      },
+      "v0_shock": {
+        "months": 384,
+        "true": 63,
+        "ref": 5,
+        "hit": 1,
+        "miss": 4,
+        "starts": 2,
+        "false": 1,
+        "false_starts": [
+          "1978-10"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-12",
+            1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ]
+        ]
+      }
+    },
+    "v0_cross": {
+      "INFLATION_SHOCK": [
+        63,
+        29
+      ],
+      "STAGFLATION_RISK": [
+        19,
+        15
+      ],
+      "EXPANSION": [
+        66,
+        0
+      ],
+      "NEUTRAL": [
+        236,
+        13
+      ]
+    },
+    "gdp_initial_overlap": 380,
+    "v0_label_changed": 27,
+    "v0_growth_revision_examples": [
+      [
+        "1973-10",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1973-11",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1978-05",
+        "STAGFLATION_RISK",
+        "NEUTRAL"
+      ],
+      [
+        "1978-06",
+        "STAGFLATION_RISK",
+        "NEUTRAL"
+      ],
+      [
+        "1982-10",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1982-11",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1986-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1986-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1986-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1992-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1994-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1994-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1996-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1997-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1997-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ]
+    ]
+  },
+  "later": {
+    "metrics": {
+      "employment": {
+        "months": 300,
+        "true": 55,
+        "ref": 3,
+        "hit": 3,
+        "miss": 0,
+        "starts": 4,
+        "false": 2,
+        "false_starts": [
+          "2003-08",
+          "2020-05"
+        ],
+        "lag": 3,
+        "post_trough": 1,
+        "events": [
+          [
+            "2001-03",
+            "2001-07",
+            4,
+            false
+          ],
+          [
+            "2007-12",
+            "2008-02",
+            2,
+            false
+          ],
+          [
+            "2020-02",
+            "2020-05",
+            3,
+            true
+          ]
+        ]
+      },
+      "cpi5": {
+        "months": 300,
+        "true": 24,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 2,
+        "false": 1,
+        "false_starts": [
+          "2021-07"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "cpi8": {
+        "months": 300,
+        "true": 7,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "2022-04"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "curve": {
+        "months": 300,
+        "true": 42,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 5,
+        "false": 2,
+        "false_starts": [
+          "2006-08",
+          "2022-11"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_warning": {
+        "months": 300,
+        "true": 15,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 2,
+        "false": 1,
+        "false_starts": [
+          "2022-04"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_crisis": {
+        "months": 300,
+        "true": 0,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_stress": {
+        "months": 300,
+        "true": 7,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "2022-04"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_risk": {
+        "months": 300,
+        "true": 0,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_shock": {
+        "months": 300,
+        "true": 7,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "2022-04"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      }
+    },
+    "v0_cross": {
+      "INFLATION_SHOCK": [
+        7,
+        0
+      ],
+      "STAGFLATION_RISK": [
+        0,
+        0
+      ],
+      "EXPANSION": [
+        84,
+        0
+      ],
+      "NEUTRAL": [
+        209,
+        28
+      ]
+    },
+    "gdp_initial_overlap": 300,
+    "v0_label_changed": 71,
+    "v0_growth_revision_examples": [
+      [
+        "2002-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2002-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2002-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2003-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2003-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2003-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2004-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2004-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2004-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2005-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-08",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-09",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2011-01",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-02",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-03",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-04",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2012-01",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-02",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-03",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-04",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2015-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2015-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-01",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-02",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-03",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-04",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-08",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-09",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ]
+    ]
+  },
+  "total": {
+    "metrics": {
+      "employment": {
+        "months": 684,
+        "true": 154,
+        "ref": 8,
+        "hit": 8,
+        "miss": 0,
+        "starts": 9,
+        "false": 2,
+        "false_starts": [
+          "2003-08",
+          "2020-05"
+        ],
+        "lag": 3.5,
+        "post_trough": 1,
+        "events": [
+          [
+            "1969-12",
+            "1970-04",
+            4,
+            false
+          ],
+          [
+            "1973-11",
+            "1974-04",
+            5,
+            false
+          ],
+          [
+            "1980-01",
+            "1980-03",
+            2,
+            false
+          ],
+          [
+            "1981-07",
+            "1981-12",
+            5,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-10",
+            3,
+            false
+          ],
+          [
+            "2001-03",
+            "2001-07",
+            4,
+            false
+          ],
+          [
+            "2007-12",
+            "2008-02",
+            2,
+            false
+          ],
+          [
+            "2020-02",
+            "2020-05",
+            3,
+            true
+          ]
+        ]
+      },
+      "cpi5": {
+        "months": 684,
+        "true": 173,
+        "ref": 8,
+        "hit": 1,
+        "miss": 7,
+        "starts": 8,
+        "false": 3,
+        "false_starts": [
+          "1977-02",
+          "1989-05",
+          "2021-07"
+        ],
+        "lag": 2,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            null,
+            null,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-09",
+            2,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "cpi8": {
+        "months": 684,
+        "true": 70,
+        "ref": 8,
+        "hit": 1,
+        "miss": 7,
+        "starts": 3,
+        "false": 2,
+        "false_starts": [
+          "1978-10",
+          "2022-04"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-12",
+            1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "curve": {
+        "months": 420,
+        "true": 42,
+        "ref": 4,
+        "hit": 0,
+        "miss": 4,
+        "starts": 5,
+        "false": 2,
+        "false_starts": [
+          "2006-08",
+          "2022-11"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_warning": {
+        "months": 684,
+        "true": 112,
+        "ref": 8,
+        "hit": 3,
+        "miss": 5,
+        "starts": 6,
+        "false": 2,
+        "false_starts": [
+          "1978-10",
+          "2022-04"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1990-10",
+            3,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_crisis": {
+        "months": 684,
+        "true": 35,
+        "ref": 8,
+        "hit": 3,
+        "miss": 5,
+        "starts": 3,
+        "false": 0,
+        "false_starts": [],
+        "lag": 5,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1974-04",
+            5,
+            false
+          ],
+          [
+            "1980-01",
+            "1980-03",
+            2,
+            false
+          ],
+          [
+            "1981-07",
+            "1981-12",
+            5,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_stress": {
+        "months": 684,
+        "true": 89,
+        "ref": 8,
+        "hit": 3,
+        "miss": 5,
+        "starts": 7,
+        "false": 3,
+        "false_starts": [
+          "1971-01",
+          "1978-10",
+          "2022-04"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1991-01",
+            6,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_risk": {
+        "months": 684,
+        "true": 19,
+        "ref": 8,
+        "hit": 3,
+        "miss": 5,
+        "starts": 6,
+        "false": 1,
+        "false_starts": [
+          "1971-01"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            "1970-01",
+            1,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-10",
+            -1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            "1991-01",
+            6,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_shock": {
+        "months": 684,
+        "true": 70,
+        "ref": 8,
+        "hit": 1,
+        "miss": 7,
+        "starts": 3,
+        "false": 2,
+        "false_starts": [
+          "1978-10",
+          "2022-04"
+        ],
+        "lag": 1,
+        "post_trough": 0,
+        "events": [
+          [
+            "1969-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "1973-11",
+            "1973-12",
+            1,
+            false
+          ],
+          [
+            "1980-01",
+            null,
+            null,
+            false
+          ],
+          [
+            "1981-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1990-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "2001-03",
+            null,
+            null,
+            false
+          ],
+          [
+            "2007-12",
+            null,
+            null,
+            false
+          ],
+          [
+            "2020-02",
+            null,
+            null,
+            false
+          ]
+        ]
+      }
+    },
+    "v0_cross": {
+      "INFLATION_SHOCK": [
+        70,
+        29
+      ],
+      "STAGFLATION_RISK": [
+        19,
+        15
+      ],
+      "EXPANSION": [
+        150,
+        0
+      ],
+      "NEUTRAL": [
+        445,
+        41
+      ]
+    },
+    "gdp_initial_overlap": 680,
+    "v0_label_changed": 98,
+    "v0_growth_revision_examples": [
+      [
+        "1973-10",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1973-11",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1978-05",
+        "STAGFLATION_RISK",
+        "NEUTRAL"
+      ],
+      [
+        "1978-06",
+        "STAGFLATION_RISK",
+        "NEUTRAL"
+      ],
+      [
+        "1982-10",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1982-11",
+        "NEUTRAL",
+        "STAGFLATION_RISK"
+      ],
+      [
+        "1986-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1986-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1986-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1992-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1994-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1994-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1994-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1996-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1997-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "1997-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1997-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1998-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1999-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2002-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2002-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2002-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2003-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2003-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2003-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2004-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2004-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2004-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2005-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-08",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-09",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2007-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2009-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2010-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2010-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2011-01",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-02",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-03",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2011-04",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2012-01",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-02",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-03",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-04",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2012-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2013-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2015-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2015-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2017-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-01",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-02",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-03",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-04",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2018-07",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-08",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-09",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-10",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-11",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2018-12",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-05",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-06",
+        "EXPANSION",
+        "NEUTRAL"
+      ],
+      [
+        "2019-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2019-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-07",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-08",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-09",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-10",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-11",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "2024-12",
+        "NEUTRAL",
+        "EXPANSION"
+      ]
+    ]
+  },
+  "early": {
+    "metrics": {
+      "employment": {
+        "months": 216,
+        "true": 53,
+        "ref": 3,
+        "hit": 3,
+        "miss": 0,
+        "starts": 4,
+        "false": 0,
+        "false_starts": [],
+        "lag": 4,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            "1953-12",
+            5,
+            false
+          ],
+          [
+            "1957-08",
+            "1957-08",
+            0,
+            false
+          ],
+          [
+            "1960-04",
+            "1960-08",
+            4,
+            false
+          ]
+        ]
+      },
+      "cpi5": {
+        "months": 216,
+        "true": 13,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "1951-01"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "cpi8": {
+        "months": 216,
+        "true": 6,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "1951-02"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "curve": {
+        "months": 0,
+        "true": 0,
+        "ref": 0,
+        "hit": 0,
+        "miss": 0,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": []
+      },
+      "public_warning": {
+        "months": 216,
+        "true": 6,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "1951-02"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "public_crisis": {
+        "months": 216,
+        "true": 0,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_stress": {
+        "months": 216,
+        "true": 6,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "1951-02"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_risk": {
+        "months": 216,
+        "true": 0,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 0,
+        "false": 0,
+        "false_starts": [],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      },
+      "v0_shock": {
+        "months": 216,
+        "true": 6,
+        "ref": 3,
+        "hit": 0,
+        "miss": 3,
+        "starts": 1,
+        "false": 1,
+        "false_starts": [
+          "1951-02"
+        ],
+        "lag": null,
+        "post_trough": 0,
+        "events": [
+          [
+            "1953-07",
+            null,
+            null,
+            false
+          ],
+          [
+            "1957-08",
+            null,
+            null,
+            false
+          ],
+          [
+            "1960-04",
+            null,
+            null,
+            false
+          ]
+        ]
+      }
+    },
+    "v0_cross": {
+      "INFLATION_SHOCK": [
+        6,
+        0
+      ],
+      "STAGFLATION_RISK": [
+        0,
+        0
+      ],
+      "EXPANSION": [
+        107,
+        5
+      ],
+      "NEUTRAL": [
+        103,
+        23
+      ]
+    },
+    "gdp_initial_overlap": 27,
+    "v0_label_changed": 2,
+    "v0_growth_revision_examples": [
+      [
+        "1967-05",
+        "NEUTRAL",
+        "EXPANSION"
+      ],
+      [
+        "1967-06",
+        "NEUTRAL",
+        "EXPANSION"
+      ]
+    ]
+  },
+  "source_inputs": {
+    "bls_ln.src": "2d4329709792e84dfbdd22b4498484bd0d05f8d16452930052d6ed24796cbf0f",
+    "bls_cu.src": "56c7afcbeef07f3070bffa1d5a16c16d5f8486ed8c8f92f61ba3ba4896e0d0a4",
+    "bea.src": "5a0a99782aaad12120888e1f854c0469c8d9ab061ea8d48873792a0bca01ae7e",
+    "treas_90.src": "d919b81cc3da48c6be08682fa5b92889f5bc4426a08bff5ee8918cee8cdefb17",
+    "tr2024.src": "06d89dea30821939c574e2632df28825eb643eb1a9fad205f994cbed782d24e2",
+    "tr2025.src": "154e5b286ebc78ccd444d40df47aa1e25d9e9277dd0783848ce6c4345d902a0a",
+    "tr2026.src": "b2a1d41a65f83a318ae4d80acd47d6ad6cdfa3e86a219424c264864b1a94b326",
+    "nber.src": "5ec285188cefdd052c3156af11557dbae354f16ee720cbb4d42a417b98dc9af2",
+    "rgdp.xlsx": "5885946698a5dd7446d9c7890ff964447bfe85caa0e6802afa6c0b08ad666211"
+  },
+  "M_RULE_C_selection": {
+    "2000-01..2002-12": {
+      "NORMAL": 36
+    },
+    "2007-07..2009-06": {
+      "NORMAL": 21,
+      "WARNING": 3
+    },
+    "2020-01..2020-12": {
+      "NORMAL": 12
+    },
+    "2022-01..2022-12": {
+      "NORMAL": 3,
+      "WARNING": 9
+    }
+  }
+}

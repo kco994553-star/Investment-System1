@@ -1,0 +1,127 @@
+{
+  "design": {
+    "months": 384,
+    "shown": 260,
+    "abstained": 124,
+    "statuses": {
+      "corroborated": 211,
+      "no_recent_support": 62,
+      "conflict": 51,
+      "carry": 33,
+      "transition": 16,
+      "await_confirmation": 10,
+      "over_width": 1
+    },
+    "band_counts": {
+      "expansion": 167,
+      "": 124,
+      "contraction": 59,
+      "slowdown": 14,
+      "recovery": 4,
+      "contraction|recovery": 4,
+      "recovery|expansion": 4,
+      "expansion|slowdown": 4,
+      "slowdown|contraction": 3,
+      "slowdown|expansion": 1
+    },
+    "binary_contains": 221,
+    "recession_months": 57,
+    "recession_contains": 35,
+    "dual_binary": 7,
+    "mean_width_half_cells": 2,
+    "local_reversals": 1,
+    "false_alarm": [
+      "1971-07",
+      "1976-02",
+      "1983-07",
+      "1991-10",
+      "1992-12"
+    ],
+    "phases": {
+      "contraction": {
+        "matches": 4,
+        "references": 5,
+        "starts": 11,
+        "unmatched_starts": 7
+      },
+      "recovery": {
+        "matches": 0,
+        "references": 5,
+        "starts": 5,
+        "unmatched_starts": 5
+      }
+    },
+    "anchor_entries": {
+      "expansion": 5,
+      "contraction": 4,
+      "recovery": 4,
+      "slowdown": 4
+    },
+    "families": {
+      "6": 265,
+      "7": 119
+    }
+  },
+  "temporal": {
+    "months": 300,
+    "shown": 203,
+    "abstained": 97,
+    "statuses": {
+      "corroborated": 157,
+      "no_recent_support": 54,
+      "conflict": 35,
+      "carry": 30,
+      "transition": 16,
+      "await_confirmation": 8
+    },
+    "band_counts": {
+      "expansion": 112,
+      "": 97,
+      "contraction": 38,
+      "slowdown": 30,
+      "recovery": 7,
+      "expansion|slowdown": 5,
+      "slowdown|contraction": 4,
+      "contraction|recovery": 3,
+      "recovery|expansion": 3,
+      "slowdown|expansion": 1
+    },
+    "binary_contains": 175,
+    "recession_months": 28,
+    "recession_contains": 20,
+    "dual_binary": 7,
+    "mean_width_half_cells": 2,
+    "local_reversals": 2,
+    "false_alarm": [
+      "2002-10",
+      "2010-04",
+      "2020-05",
+      "2020-11",
+      "2021-05",
+      "2024-09"
+    ],
+    "phases": {
+      "contraction": {
+        "matches": 3,
+        "references": 3,
+        "starts": 8,
+        "unmatched_starts": 5
+      },
+      "recovery": {
+        "matches": 0,
+        "references": 3,
+        "starts": 5,
+        "unmatched_starts": 5
+      }
+    },
+    "anchor_entries": {
+      "slowdown": 5,
+      "contraction": 4,
+      "expansion": 4,
+      "recovery": 3
+    },
+    "families": {
+      "7": 300
+    }
+  }
+}
