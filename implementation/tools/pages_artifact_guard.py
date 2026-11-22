@@ -197,7 +197,7 @@ APPROVED_SHA256 = {
     "data.js": "5a06bf6ceb49997b7f2aed31411e9c4a5eebafb0122f1d87eee9c926c6ac51ff",
     "engines.js": "6e3604dfe4c347d29b8e66fce01c8330f7a6f7823481a7132184767112ab27a2",
     "lab.js": "91e1b57ab4face44e07cb3db3ef9f3b243084202160f25082146d6ffe5f3168c",
-    "kis-private.js": "56f53076e9738e1a015465917f570132952d3f6bdbc761b2b16de9dccc560563",
+    "kis-private.js": "2ecf02cd7e438d695666eda0d0d7ab29a6982519bcae6532f59de54d19bb13de",
     "loader.js": "ecd20ba2cc660d3f7300c6d0df943bfe2a7d6a6b1b6e4b128a9e958ca7f4419a",
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
@@ -365,8 +365,8 @@ _PATH_HINTS = ("/kis", "/lab", "/private")
 # private-expand-live.js (the panel component) needs no exception: it names no private path or schema.
 PAGES_PRIVATE_EXCEPTIONS = {
     "kis-private.js": {
-        "sha256": "56f53076e9738e1a015465917f570132952d3f6bdbc761b2b16de9dccc560563",
-        "paths": ("/kis/status", "/kis/chart", "/kis/analysis", "/kis/technical", "/kis/qgv", "/kis/stock"),
+        "sha256": "2ecf02cd7e438d695666eda0d0d7ab29a6982519bcae6532f59de54d19bb13de",
+        "paths": ("/kis/status", "/kis/stock"),
         "schemas": ("kis-bars/1", "kis-bars/1/analysis", "kis-technical-measures/1", "kis-qgv/1", "kis-status/1", "kis-stock-view/1"),
     },
 }
