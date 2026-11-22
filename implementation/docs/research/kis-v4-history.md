@@ -62,7 +62,8 @@ opt-in 호출에서는 `rows[key].factors[역할].display_state`와
 | 상태 | 판독 기준 |
 |---|---|
 | AVAILABLE · 산출 | 0을 포함한 유효 점수 |
-| NOT_APPLICABLE · 규칙상 해당 없음 | 금융 프로필에서 미정의인 V 역할, 또는 경기민감 정상화 기준에서 보류되는 자기 과거 대비 |
+| NOT_APPLICABLE · 규칙상 해당 없음 | 경기민감 정상화 기준에서 보류되는 자기 과거 대비 |
+| MODEL_UNSUPPORTED · 모형 미지원 | 금융 프로필의 V 정의 미지원 |
 | DATA_UNAVAILABLE · 자료 없음 | 적격 입력·비교 관측 부족. 귀속·통화·기간 미확인은 원래 사유로 구분 |
 | CALCULATION_CONDITION · 계산 조건 미충족 | 비양수 현금흐름·EV, 역산 해·계산 파라미터 등 |
 | UNCLASSIFIED · 사유 미확인 | 비어 있거나 현 버전이 모르는 사유 |

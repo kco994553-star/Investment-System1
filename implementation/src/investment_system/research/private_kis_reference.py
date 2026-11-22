@@ -81,6 +81,7 @@ def mask_incomplete_totals(packet):
 _V_FACTOR_LABELS = {
     'AVAILABLE': '산출',
     'NOT_APPLICABLE': '규칙상 해당 없음',
+    'MODEL_UNSUPPORTED': '모형 미지원',
     'DATA_UNAVAILABLE': '자료 없음',
     'CALCULATION_CONDITION': '계산 조건 미충족',
     'UNCLASSIFIED': '사유 미확인',
@@ -103,9 +104,9 @@ def _v_display_state(role, factor):
     if factor['score'] is not None:
         return 'AVAILABLE'
     reason = factor['reason']
-    if reason == 'FINANCIAL_PROFILE_V_NOT_DEFINED' or (
-        role == 'v_vs_own_history' and reason == 'NORMALIZED_HISTORY_NOT_AVAILABLE'
-    ):
+    if reason == 'FINANCIAL_PROFILE_V_NOT_DEFINED':
+        return 'MODEL_UNSUPPORTED'
+    if role == 'v_vs_own_history' and reason == 'NORMALIZED_HISTORY_NOT_AVAILABLE':
         return 'NOT_APPLICABLE'
     if reason in _V_MISSING_DATA:
         return 'DATA_UNAVAILABLE'

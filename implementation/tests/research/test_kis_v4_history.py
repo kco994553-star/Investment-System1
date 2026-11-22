@@ -161,7 +161,9 @@ def test_v_display_states_use_the_engine_weight_and_include_a_zero_score():
 
 @pytest.mark.parametrize('role,score,reason,expected', [
     ('v_vs_own_history', None, 'NORMALIZED_HISTORY_NOT_AVAILABLE', 'NOT_APPLICABLE'),
-    ('v_fcf_yield', None, 'FINANCIAL_PROFILE_V_NOT_DEFINED', 'NOT_APPLICABLE'),
+    ('v_fcf_yield', None, 'FINANCIAL_PROFILE_V_NOT_DEFINED', 'MODEL_UNSUPPORTED'),
+    ('v_vs_own_history', None, 'FINANCIAL_PROFILE_V_NOT_DEFINED', 'MODEL_UNSUPPORTED'),
+    ('v_earnings_yield', None, 'NORMALIZED_HISTORY_NOT_AVAILABLE', 'UNCLASSIFIED'),
     ('v_vs_own_history', None, 'PRICE_HISTORY_NOT_AVAILABLE', 'DATA_UNAVAILABLE'),
     ('v_earnings_yield', None, 'NORMALIZED_EARNINGS_NOT_AVAILABLE', 'DATA_UNAVAILABLE'),
     ('v_expectation_check', None, 'NON_POSITIVE_CASHFLOW', 'CALCULATION_CONDITION'),
