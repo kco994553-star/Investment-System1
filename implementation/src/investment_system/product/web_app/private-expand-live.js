@@ -88,7 +88,7 @@ function measuresPart(K,raw,symbol,chartBasis,status,top=null){
  if(!g.same)return part('BASIS_MISMATCH',warn(g.text,{privateBasisAgreement:g.code,privateBasisPart:'measures'}));
  return part('READY',v.status!=='NORMAL'?warn(v.statusText,{privateMeasuresStatus:v.status}):null,...tierPart(K.measuresTiers(r.value),{privateMeasuresRows:''},'측정값 없음',top));}
 
-function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
+function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis,retained},status){const K=I.kisPrivate,a=K.validateAnalysis(aRaw),b=K.validateBars(bRaw);
  if(!a.ok||!b.ok){const r=a.ok?b:a;throw Error(r.code);}
  // The chart must be the company asked for (a class share's file names it BRK/B for BRK-B).
  if(K.requestSymbol(b.value.symbol)!==symbol)throw Error('SYMBOL_MISMATCH');
@@ -105,6 +105,7 @@ function renderTechnical(body,[aRaw,bRaw,mRaw],{symbol,publicBasis},status){cons
   :[warn(dc.line,{privateDisplay:dc.state,privateDisplayPart:'chart'})];
  I.append(body,[h('p',{class:'hand',dataset:{privateLayer:'technical'}},'KIS · 비공개 · 가격 기준일 ',h('span',{dataset:{privateBasisDate:''}},m.price_basis_date||'없음'),' · ',h('span',{dataset:{privateChartBasis:m.basisCode}},m.basis),
    dc.state==='AVAILABLE'?[' ',h('span',{class:'chip',dataset:{privateVerification:'REFERENCE'}},dc.tag)]:null),
+  retained?h('p',{class:'sub',dataset:{privateRetained:retained.code}},retained.text):null,
   v.status!=='NORMAL'?warn(v.statusText,{privateStatusLine:v.status}):null,
   ...closes,
   ...indicators,
@@ -134,7 +135,15 @@ function renderStock(body,[sRaw],ctx,status){const K=I.kisPrivate,p=K.stockParts
  // One check line (owner 2026-11-21): the view's own first / last session, bar count and split basis, as given; nothing recomputed.
  const c=p.value.chart,bars=c.bars,n=bars.length,splits=Array.isArray(c.splits)?c.splits.length:0,adj=c.basis==='SPLIT_ADJUSTED';
  if(n)status.push(['자료 범위',bars[0].date+' ~ '+bars[n-1].date+' · '+n.toLocaleString('en-US')+'봉 · 분할 반영 '+(adj?'예':'아니오')+' ('+splits+'건)',{privateRange:adj?'SPLIT_ADJUSTED':'RAW'}]);
- renderTechnical(body,[p.value.analysis,p.value.chart,p.value.measures],ctx,status);}
+ renderTechnical(body,[p.value.analysis,p.value.chart,p.value.measures],{...ctx,retained:retainedLine(sRaw,bars)},status);}
+/* 보관 기간 (owner 2026-11-22: the 6,673 securities keep one year, the operating 504 keep five). Words only: the producer's own
+   coverage {scope, retained_sessions, retained_start, retained_end} is shown as given, when it agrees with the view's rows (same
+   count, same first and last session); otherwise one 「보관 기간 정보 없음」 line. Nothing is computed or refused here. */
+function retainedLine(view,bars){const c=view&&typeof view==='object'?view.coverage:null,n=bars.length;
+ const ok=c!==null&&typeof c==='object'&&!Array.isArray(c)&&c.scope==='ALL_RETAINED_SESSIONS'&&Number.isInteger(c.retained_sessions)
+  &&c.retained_sessions===n&&n>0&&c.retained_start===bars[0].date&&c.retained_end===bars[n-1].date;
+ return ok?{code:String(n),text:'보관 기간 '+c.retained_start+' ~ '+c.retained_end+' · '+n.toLocaleString('en-US')+'거래일'}
+  :{code:'NONE',text:'보관 기간 정보 없음'};}
 // The KIS V panel reads the QGV object of the same release generation (owner 2026-11-21), no longer the qgv route.
 const READS=Object.freeze({technical:t=>(t.symbol?[['stock',t.symbol]]:null),qgv:()=>[['stockQgv',null]]});
 const RENDER=Object.freeze({technical:renderStock,qgv:renderQgv});

@@ -70,7 +70,8 @@ let phase = 'START', pass = 0, where = '';
     const { bars, raw_bars: rawBars, schema, ...header } = c.body;
     const row = (b) => [b.date, b.open, b.high, b.low, b.close, b.volume, ...Array(11).fill(null)];
     const view = { schema: X.K('stock-view/1'), publication_scope: 'OWNER_PRIVATE_ONLY', symbol: c.body.symbol, evaluation_day: a.body.evaluation_day,
-      fields: STOCK_FIELDS, rows: bars.map(row), chart: { ...header, schema: X.K('chart-metadata/1') }, indicators: {}, coverage: {},
+      fields: STOCK_FIELDS, rows: bars.map(row), chart: { ...header, schema: X.K('chart-metadata/1') }, indicators: {},
+      coverage: w.noCoverage ? {} : { scope: 'ALL_RETAINED_SESSIONS', retained_sessions: bars.length, retained_start: bars.length ? bars[0].date : null, retained_end: bars.length ? bars[bars.length - 1].date : null },
       latest: m.status === 200 ? { technical: a.body, measures: m.body } : { technical: a.body },
       additional_requests_for_toggle: 0, additional_requests_for_retained_period: 0 };
     if (c.body.basis === 'SPLIT_ADJUSTED') {         // the producer's shape (#593): 7 RAW columns named by raw_fields
@@ -197,6 +198,8 @@ let phase = 'START', pass = 0, where = '';
       assert.ok((await text(page, '[data-private-facts=technical]')).includes('공급처'), phase + ': the file facts are in the 상태 box');
       // One check line (owner 2026-11-21): first / last session, bar count and split basis read off the view, nothing recomputed.
       assert.match(await text(page, '[data-private-facts=technical] [data-private-range=RAW]'), /^\d{4}-\d{2}-\d{2} ~ 2026-10-23 · \d+봉 · 분할 반영 아니오 \(0건\)$/, phase + ': the range line');
+      // 보관 기간 (owner 2026-11-22): the producer's coverage, as given, in one visible line.
+      assert.match(await text(page, '[data-private-retained]:not([data-private-retained=NONE])'), /^보관 기간 \d{4}-\d{2}-\d{2} ~ 2026-10-23 · \d+거래일$/, phase + ': the retained-period line');
       assert.equal(await count(page, '[data-indicator] [data-verdict]'), holds, phase + ': the public verdicts are unchanged');
 
       assert.equal(await count(page, '[data-private-timing]'), 0, phase + ': the 새 경로 시간 재기 button is gone after the switch');
@@ -252,10 +255,13 @@ let phase = 'START', pass = 0, where = '';
       await expand(page, 'technical'); w.log.length = 0; delete w.lastAt;
       w.answers.analysis = () => ({ status: 200, body: X.analysis({ adopted: true, basis: 'SPLIT_ADJUSTED' }) });
       w.answers.technical = (sym) => ({ status: 200, body: X.measures({ symbol: sym, basis: 'SPLIT_ADJUSTED' }) });
+      w.noCoverage = true;             // a view without the producer's coverage: one 「보관 기간 정보 없음」 line, nothing refused
       await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
       assert.deepEqual(await page.locator('[data-private-basis-agreement]').evaluateAll((n) => n.map((x) => [x.dataset.privateBasisPart, x.dataset.privateBasisAgreement])),
         [['analysis', 'BASIS_MISMATCH'], ['measures', 'BASIS_MISMATCH']], phase + ': both results refused on a 원주가 chart');
       assert.equal(await count(page, '[data-private-metric]'), 0, phase + ': no value attached');
+      assert.equal(await text(page, '[data-private-retained=NONE]'), '보관 기간 정보 없음', phase + ': no coverage, words only');
+      w.noCoverage = false;
 
       phase = where + 'technical SPLIT_ADJUSTED view (#593 shape)';
       // A split-adjusted chart with matching results: the RAW series rides as raw_fields / raw_rows (7 columns) and the range
@@ -267,6 +273,7 @@ let phase = 'START', pass = 0, where = '';
       assert.equal(await count(page, '[data-private-basis-agreement]'), 0, phase + ': no basis refusal (chart and both results on the same basis)');
       assert.equal(await count(page, '[data-private-measures=READY]'), 1, phase + ': the measures are shown');
       assert.match(await text(page, '[data-private-facts=technical] [data-private-range=SPLIT_ADJUSTED]'), /^2026-10-26 ~ 2026-10-30 · 5봉 · 분할 반영 예 \(1건\)$/, phase + ': the range line');
+      assert.equal(await text(page, '[data-private-retained="5"]'), '보관 기간 2026-10-26 ~ 2026-10-30 · 5거래일', phase + ': the retained-period line');
       assert.equal(await count(page, '[data-private-layer=technical] [data-private-chart-basis=SPLIT_ADJUSTED]'), 1, phase + ': the chart is read as split-adjusted');
       w.answers.chart = splitChart; delete w.lastAt;
 
