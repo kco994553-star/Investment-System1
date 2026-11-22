@@ -1,0 +1,36 @@
+{
+  "repository": "https://github.com/kco994553-star/Investment-System1",
+  "pr": "https://github.com/kco994553-star/Investment-System1/pull/598",
+  "prior_commit": "e476ea4b69d6980eefb3d8b0dd9259097b2fb785",
+  "prior_repo_sha256": {
+    "implementation/docs/research/foundation_20261122/frequencies/macro-design.md": "34bb75a16b4adc4da4a18ecf70c4a87fc89338bbe67ba33c84e4f8b6ed7d79e1",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-frequencies.csv": "4f460fc83722caaa89a34c543a90d4a5a5ce37622e23599d54a1fb758e938a49",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-input-hashes.json": "b94f291f54c49a50515822816328f574f02c50a47155d94629402e5e3539708d",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-months.csv": "d59d0181e9b2e4c1be2b82f4ce7995adbb97c632d635e96ebab2ee5455640233",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-replay.py": "c41dc7ad48cf492b33d55f87f67ff350c73acebbe8da2d746a853ce85e06cb5d",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-report-ko.md": "85da98b417f7695571859da616a7326782437c6ad0d842d4b740e3f1d2b66563",
+    "implementation/docs/research/foundation_20261122/frequencies/macro-vintage-frequencies.csv": "87baa202b0c1891a5fe9fbc3ba84ed21c5281dfdd8b6bb5aaa6b856e935fdb32",
+    "implementation/src/investment_system/macro/evidence_lines.py": "e5d385a126b3bbf750fde0e28ca5633f838f798bc3ba0de413d96f9372e7de26",
+    "implementation/src/investment_system/macro/macro_lights_v1.json": "a5c07c609ac5ff0852c93aed40c025e333fa32d5b99f390d543aca138a8d94b1",
+    "implementation/src/investment_system/macro/macro_lights_v1.py": "effa228f5c2ee4f91b3b29f517ea13ae2587e436ba6f417384671c66d1f9e42f"
+  },
+  "research_input_sha256": {
+    "warnings/bls_ln.src": "2d4329709792e84dfbdd22b4498484bd0d05f8d16452930052d6ed24796cbf0f",
+    "warnings/bls_cu.src": "56c7afcbeef07f3070bffa1d5a16c16d5f8486ed8c8f92f61ba3ba4896e0d0a4",
+    "warnings/bea.src": "5a0a99782aaad12120888e1f854c0469c8d9ab061ea8d48873792a0bca01ae7e",
+    "warnings/rgdp.xlsx": "5885946698a5dd7446d9c7890ff964447bfe85caa0e6802afa6c0b08ad666211",
+    "warnings/nber.src": "5ec285188cefdd052c3156af11557dbae354f16ee720cbb4d42a417b98dc9af2",
+    "regime/observations.csv": "de3cd21bc1ae09c3bd003108b3dee62a1bf8c5851f45bf2580298ca5ba7068fc",
+    "allmonth.xls": "2fe39a1698a8c58e49180fafaf4bd3fb4afaf8a1ac587408a7760d7a9ba6035f"
+  },
+  "source_urls": {
+    "warnings/bls_ln.src": "https://download.bls.gov/pub/time.series/ln/ln.data.1.AllData",
+    "warnings/nber.src": "https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions",
+    "regime/observations.csv": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates",
+    "warnings/bls_cu.src": "https://download.bls.gov/pub/time.series/cu/cu.data.1.AllItems",
+    "warnings/bea.src": "https://apps.bea.gov/national/Release/TXT/NipaDataQ.txt",
+    "warnings/rgdp.xlsx": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/first-second-third",
+    "allmonth.xls": "https://www.newyorkfed.org/medialibrary/media/research/capital_markets/allmonth.xls"
+  },
+  "note": "Regime/observations is the earlier multiagency normalized file. Only 10Y3M_MEAN is used for Treasury. CPI/GDP files are read solely by the unmodified prior input loader. The NBER and NY Fed source tables are excluded from this packet."
+}

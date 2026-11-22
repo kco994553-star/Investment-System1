@@ -1,0 +1,4 @@
+sample,comparable_months,differing_months,both_on,v1_only_on,sahm_only_on,v1_only_current_recession,sahm_only_current_recession
+all,909,31,204,12,19,11,0
+selection,609,21,150,11,10,10,0
+test,300,10,54,1,9,1,0
