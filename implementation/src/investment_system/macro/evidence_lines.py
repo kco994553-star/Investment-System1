@@ -237,11 +237,90 @@ def _held(sid: str) -> bool:
     return es.BY_ID[es.SERIES_INDICATOR[sid]]["publication"] != "PUBLIC"
 
 
-def build(captures: dict, *, previous: dict | None, previous_state: str, now: datetime) -> dict:
+def _series_step(sid: str, old: dict, capture: dict | None, now: datetime) -> tuple:
+    """One series: (row, new release records, new events, replay events). Raises on anything unexpected; build()
+    then keeps only this series out of the run (owner 2026-11-22: one failed indicator never blocks the file)."""
+    indicator = es.SERIES_INDICATOR[sid]
+    frequency = es.SERIES_FREQUENCY[sid]
+    row = json.loads(json.dumps(old))  # deep copy of the carried state
+    records, events, replay = [], [], []
+    if _held(sid):
+        row.update(_empty_series(sid), state="NOT_AVAILABLE", reason="TERMS_UNVERIFIED",
+                   acquired_at=iso(capture["acquired_at"]) if capture and "rows" in capture else None)
+        return row, [], [], []
+    if capture is None or "rows" not in capture:
+        row.update(state="NOT_AVAILABLE", reason=(capture or {}).get("reason", "SOURCE_NOT_COLLECTED"), acquired_at=None)
+    else:
+        acquired = capture["acquired_at"]
+        last_success = parse_iso(old["last_success_at"]) if old.get("last_success_at") else None
+        baseline = old.get("baseline_at") is None
+        timing = _timing(capture, last_success)
+        obs = {p: v for p, v in old["obs"]}
+        history = row["history"]
+        new_records = []
+        for period, value in sorted(capture["rows"].items()):
+            if period not in obs:
+                if not baseline:
+                    history.setdefault(period, []).append({"v": value, "kind": "FIRST", **timing})
+                    new_records.append({"series": sid, "period": period, "kind": "FIRST", **timing})
+            elif abs(obs[period] - value) > EPS * max(1.0, abs(value)):
+                versions = history.setdefault(period, [])
+                if not versions:
+                    versions.append({"v": obs[period], "kind": "BASELINE", "at": old["baseline_at"], "basis": "BASELINE", "rd": None})
+                versions.append({"v": value, "kind": "REVISION", **timing})
+                new_records.append({"series": sid, "period": period, "kind": "REVISION", **timing})
+            obs[period] = value
+        ordered = sorted(obs.items(), key=lambda item: period_index(item[0], frequency))[-WINDOW[frequency]:]
+        row.update(state="LIVE", reason=None, acquired_at=iso(acquired), last_success_at=iso(acquired),
+                   baseline_at=old.get("baseline_at") or iso(acquired), obs=[[p, v] for p, v in ordered],
+                   release_evidence={"at": iso(capture["release"]["at"]) if (capture.get("release") or {}).get("at") else None,
+                                     "date": (capture.get("release") or {}).get("date")})
+        records.extend(new_records)
+        current = current_state(indicator, ordered, frequency)
+        before = old.get("current") or {}
+        defined = es.BY_ID[indicator]["edges"]
+        if not baseline and new_records:
+            cause = "FIRST" if any(r["kind"] == "FIRST" for r in new_records) else "REVISION"
+            if indicator == "E40":
+                firsts = {r["period"] for r in new_records if r["kind"] == "FIRST"}
+                for period, direction in edges(indicator, ordered, frequency):
+                    if period in firsts:
+                        events.append(_event(indicator, sid, period, direction, "AGENCY_EVENT", "FIRST", timing))
+            elif current["state"] != before.get("state"):
+                # A change caused only by revisions is dated at the latest revised period (§9-6), not moved back.
+                revised = max((r["period"] for r in new_records), key=lambda q: period_index(q, frequency))
+                period = current["since"] if cause == "FIRST" else revised
+                if current["state"] in defined:
+                    events.append(_event(indicator, sid, period, current["state"], "EDGE", cause, timing))
+                elif cause == "REVISION" and before.get("state") in defined:
+                    events.append(_event(indicator, sid, period, before["state"], "REVISION_CLEARED", cause, timing))
+        row["current"] = current
+        for period, direction in edges(indicator, ordered, frequency):
+            replay.append({"indicator": indicator, "series": sid, "rule": es.BY_ID[indicator]["rule"]["version"],
+                           "direction": direction, "period": period})
+    row["delayed"] = _delayed(row, now)
+    return row, records, events, replay
+
+
+def _failed_series(sid: str, old: dict, now: datetime) -> dict:
+    """The carried row of a series whose step failed: previous observations kept (append-only history), state
+    NOT_AVAILABLE with SCHEMA_MISMATCH, nothing from this run. A held series stays empty as its terms require."""
+    if _held(sid):
+        return {**_empty_series(sid), "reason": "TERMS_UNVERIFIED"}
+    row = json.loads(json.dumps(old))
+    row.update(state="NOT_AVAILABLE", reason="SCHEMA_MISMATCH", acquired_at=None)
+    row["delayed"] = _delayed(row, now)
+    return row
+
+
+def build(captures: dict, *, previous: dict | None, previous_state: str, now: datetime,
+          failures: list | None = None) -> dict:
     """The next payload from this run's captures ({series_id: capture}) and the validated previous payload.
 
     capture = {"rows": {period: float}, "acquired_at": aware datetime, "release": {"at": datetime|None, "date": str|None}}
-    or {"reason": REASON}. Series absent from `captures` keep their previous data with SOURCE_NOT_COLLECTED."""
+    or {"reason": REASON}. Series absent from `captures` keep their previous data with SOURCE_NOT_COLLECTED.
+    A series whose step raises or yields an invalid row keeps its previous data as NOT_AVAILABLE / SCHEMA_MISMATCH and
+    adds nothing from this run; the other series are published (`failures` gets {"series", "type": class name})."""
     if previous is not None:
         require_macro_evidence(previous)
     prev_series = (previous or {}).get("series", {})
@@ -249,70 +328,29 @@ def build(captures: dict, *, previous: dict | None, previous_state: str, now: da
     prev_records = list((previous or {}).get("releases", []))
     continuity = ("CONTINUOUS" if previous is not None and previous.get("generated_at") else
                   "RESET_PREVIOUS_UNAVAILABLE" if previous_state == "UNAVAILABLE" else "BASELINE")
-    series_out, records, events, replay = {}, [], [], []
+    series_out, records, events, replay, ids = {}, [], [], [], {e["id"] for e in prev_events}
     for sid in es.SERIES_IDS:
-        indicator = es.SERIES_INDICATOR[sid]
-        frequency = es.SERIES_FREQUENCY[sid]
         old = prev_series.get(sid) or _empty_series(sid)
-        row = json.loads(json.dumps(old))  # deep copy of the carried state
-        capture = captures.get(sid)
-        if _held(sid):
-            row.update(_empty_series(sid), state="NOT_AVAILABLE", reason="TERMS_UNVERIFIED",
-                       acquired_at=iso(capture["acquired_at"]) if capture and "rows" in capture else None)
-            series_out[sid] = row
-            continue
-        if capture is None or "rows" not in capture:
-            row.update(state="NOT_AVAILABLE", reason=(capture or {}).get("reason", "SOURCE_NOT_COLLECTED"), acquired_at=None)
-        else:
-            acquired = capture["acquired_at"]
-            last_success = parse_iso(old["last_success_at"]) if old.get("last_success_at") else None
-            baseline = old.get("baseline_at") is None
-            timing = _timing(capture, last_success)
-            obs = {p: v for p, v in old["obs"]}
-            history = row["history"]
-            new_records = []
-            for period, value in sorted(capture["rows"].items()):
-                if period not in obs:
-                    if not baseline:
-                        history.setdefault(period, []).append({"v": value, "kind": "FIRST", **timing})
-                        new_records.append({"series": sid, "period": period, "kind": "FIRST", **timing})
-                elif abs(obs[period] - value) > EPS * max(1.0, abs(value)):
-                    versions = history.setdefault(period, [])
-                    if not versions:
-                        versions.append({"v": obs[period], "kind": "BASELINE", "at": old["baseline_at"], "basis": "BASELINE", "rd": None})
-                    versions.append({"v": value, "kind": "REVISION", **timing})
-                    new_records.append({"series": sid, "period": period, "kind": "REVISION", **timing})
-                obs[period] = value
-            ordered = sorted(obs.items(), key=lambda item: period_index(item[0], frequency))[-WINDOW[frequency]:]
-            row.update(state="LIVE", reason=None, acquired_at=iso(acquired), last_success_at=iso(acquired),
-                       baseline_at=old.get("baseline_at") or iso(acquired), obs=[[p, v] for p, v in ordered],
-                       release_evidence={"at": iso(capture["release"]["at"]) if (capture.get("release") or {}).get("at") else None,
-                                         "date": (capture.get("release") or {}).get("date")})
-            records.extend(new_records)
-            current = current_state(indicator, ordered, frequency)
-            before = old.get("current") or {}
-            defined = es.BY_ID[indicator]["edges"]
-            if not baseline and new_records:
-                cause = "FIRST" if any(r["kind"] == "FIRST" for r in new_records) else "REVISION"
-                if indicator == "E40":
-                    firsts = {r["period"] for r in new_records if r["kind"] == "FIRST"}
-                    for period, direction in edges(indicator, ordered, frequency):
-                        if period in firsts:
-                            events.append(_event(indicator, sid, period, direction, "AGENCY_EVENT", "FIRST", timing))
-                elif current["state"] != before.get("state"):
-                    # A change caused only by revisions is dated at the latest revised period (§9-6), not moved back.
-                    revised = max((r["period"] for r in new_records), key=lambda q: period_index(q, frequency))
-                    period = current["since"] if cause == "FIRST" else revised
-                    if current["state"] in defined:
-                        events.append(_event(indicator, sid, period, current["state"], "EDGE", cause, timing))
-                    elif cause == "REVISION" and before.get("state") in defined:
-                        events.append(_event(indicator, sid, period, before["state"], "REVISION_CLEARED", cause, timing))
-            row["current"] = current
-            for period, direction in edges(indicator, ordered, frequency):
-                replay.append({"indicator": indicator, "series": sid, "rule": es.BY_ID[indicator]["rule"]["version"],
-                               "direction": direction, "period": period})
-        row["delayed"] = _delayed(row, now)
+        try:
+            row, new_records, new_events, new_replay = _series_step(sid, old, captures.get(sid), now)
+            _require_series_row(sid, row)
+            for record in new_records:
+                _require_record(record, es.SERIES_FREQUENCY)
+            seen = set(ids)
+            for event in new_events:
+                _require_event(event, es.SERIES_FREQUENCY, seen)
+                seen.add(event["id"])
+            for event in new_replay:
+                _require_replay(event, es.SERIES_FREQUENCY)
+        except Exception as error:  # this series only: carried data kept, nothing new from this run, fixed reason
+            if failures is not None:
+                failures.append({"series": sid, "type": type(error).__name__})
+            row, new_records, new_events, new_replay = _failed_series(sid, old, now), [], [], []
         series_out[sid] = row
+        records.extend(new_records)
+        events.extend(new_events)
+        ids.update(e["id"] for e in new_events)
+        replay.extend(new_replay)
     payload = {
         "schema": SCHEMA, "kind": KIND, "catalog": es.CATALOG, "generated_at": iso(now),
         "collection_started_at": (previous or {}).get("collection_started_at") or iso(now),
@@ -433,6 +471,68 @@ def _timing_ok(obj) -> None:
     _rd(obj["rd"])
 
 
+def _require_series_row(sid, row) -> None:
+    _keys(row, ("indicator", "frequency", "state", "reason", "acquired_at", "last_success_at", "baseline_at",
+                "release_evidence", "obs", "history", "current", "delayed"))
+    frequency = es.SERIES_FREQUENCY[sid]
+    _need(row["indicator"] == es.SERIES_INDICATOR[sid] and row["frequency"] == frequency)
+    _need(row["state"] in ("LIVE", "NOT_AVAILABLE"))
+    _need((row["state"] == "LIVE") == (row["reason"] is None) and (row["reason"] is None or row["reason"] in es.REASONS))
+    for key in ("acquired_at", "last_success_at", "baseline_at"):
+        _time_or_none(row[key])
+    _need(row["delayed"] in (None, True, False))
+    if row["release_evidence"] is not None:
+        _keys(row["release_evidence"], ("at", "date"))
+        _time_or_none(row["release_evidence"]["at"])
+        _rd(row["release_evidence"]["date"])
+    _need(type(row["obs"]) is list and len(row["obs"]) <= WINDOW[frequency])
+    last = None
+    for item in row["obs"]:
+        _need(type(item) is list and len(item) == 2 and valid_period(item[0], frequency) and _num(item[1]))
+        index = period_index(item[0], frequency)
+        _need(last is None or index > last)
+        last = index
+    held = es.BY_ID[row["indicator"]]["publication"] != "PUBLIC"
+    _need(not held or (row["state"] == "NOT_AVAILABLE" and not row["obs"] and not row["history"]
+                       and row["reason"] in ("TERMS_UNVERIFIED", "SOURCE_NOT_COLLECTED")))
+    _need(type(row["history"]) is dict)
+    for period, versions in row["history"].items():
+        _need(valid_period(period, frequency) and type(versions) is list and 1 <= len(versions) <= 64)
+        for k, version in enumerate(versions):
+            _keys(version, ("v", "kind", "at", "basis", "rd"))
+            _need(_num(version["v"]) and version["kind"] in VERSION_KINDS)
+            _need((version["kind"] == "BASELINE") == (version["basis"] == "BASELINE") and (version["kind"] != "REVISION" or k > 0))
+            _need(version["kind"] != "BASELINE" or k == 0)
+            _timing_ok(version)
+    _keys(row["current"], ("state", "since", "latest"))
+    _need(row["current"]["state"] in (None, "up", "down", "clear"))
+    for key in ("since", "latest"):
+        _need(row["current"][key] is None or valid_period(row["current"][key], frequency))
+
+
+def _require_record(record, series) -> None:
+    _keys(record, ("series", "period", "kind", "at", "basis", "rd"))
+    _need(record["series"] in series and record["kind"] in RECORD_KINDS and record["basis"] != "BASELINE")
+    _need(valid_period(record["period"], es.SERIES_FREQUENCY[record["series"]]))
+    _timing_ok(record)
+
+
+def _require_event(event, series, ids) -> None:
+    _keys(event, ("id", "indicator", "series", "rule", "direction", "kind", "period", "cause", "at", "basis", "rd", "layer"))
+    _need(event["series"] in series and event["indicator"] == es.SERIES_INDICATOR[event["series"]])
+    _need(event["rule"] == es.BY_ID[event["indicator"]]["rule"]["version"] and event["direction"] in ("up", "down"))
+    _need(event["kind"] in EVENT_KINDS and event["cause"] in RECORD_KINDS and event["layer"] == "REALTIME")
+    _need(type(event["id"]) is str and re.fullmatch(r"[0-9a-f]{20}", event["id"]) is not None and event["id"] not in ids)
+    _need(event["basis"] != "BASELINE" and valid_period(event["period"], es.SERIES_FREQUENCY[event["series"]]))
+    _timing_ok(event)
+
+
+def _require_replay(event, series) -> None:
+    _keys(event, ("indicator", "series", "rule", "direction", "period"))
+    _need(event["series"] in series and event["indicator"] == es.SERIES_INDICATOR[event["series"]] and event["direction"] in ("up", "down"))
+    _need(event["rule"] == es.BY_ID[event["indicator"]]["rule"]["version"] and valid_period(event["period"], es.SERIES_FREQUENCY[event["series"]]))
+
+
 def require_macro_evidence(payload) -> dict:
     """Strict schema of macro-evidence/1. Raises ValueError (fixed code) on anything else."""
     try:
@@ -452,64 +552,18 @@ def _require(p) -> dict:
     series = p["series"]
     _need(type(series) is dict and set(series) == set(es.SERIES_IDS))
     for sid, row in series.items():
-        _keys(row, ("indicator", "frequency", "state", "reason", "acquired_at", "last_success_at", "baseline_at",
-                    "release_evidence", "obs", "history", "current", "delayed"))
-        frequency = es.SERIES_FREQUENCY[sid]
-        _need(row["indicator"] == es.SERIES_INDICATOR[sid] and row["frequency"] == frequency)
-        _need(row["state"] in ("LIVE", "NOT_AVAILABLE"))
-        _need((row["state"] == "LIVE") == (row["reason"] is None) and (row["reason"] is None or row["reason"] in es.REASONS))
-        for key in ("acquired_at", "last_success_at", "baseline_at"):
-            _time_or_none(row[key])
-        _need(row["delayed"] in (None, True, False))
-        if row["release_evidence"] is not None:
-            _keys(row["release_evidence"], ("at", "date"))
-            _time_or_none(row["release_evidence"]["at"])
-            _rd(row["release_evidence"]["date"])
-        _need(type(row["obs"]) is list and len(row["obs"]) <= WINDOW[frequency])
-        last = None
-        for item in row["obs"]:
-            _need(type(item) is list and len(item) == 2 and valid_period(item[0], frequency) and _num(item[1]))
-            index = period_index(item[0], frequency)
-            _need(last is None or index > last)
-            last = index
-        held = es.BY_ID[row["indicator"]]["publication"] != "PUBLIC"
-        _need(not held or (row["state"] == "NOT_AVAILABLE" and not row["obs"] and not row["history"]
-                           and row["reason"] in ("TERMS_UNVERIFIED", "SOURCE_NOT_COLLECTED")))
-        _need(type(row["history"]) is dict)
-        for period, versions in row["history"].items():
-            _need(valid_period(period, frequency) and type(versions) is list and 1 <= len(versions) <= 64)
-            for k, version in enumerate(versions):
-                _keys(version, ("v", "kind", "at", "basis", "rd"))
-                _need(_num(version["v"]) and version["kind"] in VERSION_KINDS)
-                _need((version["kind"] == "BASELINE") == (version["basis"] == "BASELINE") and (version["kind"] != "REVISION" or k > 0))
-                _need(version["kind"] != "BASELINE" or k == 0)
-                _timing_ok(version)
-        _keys(row["current"], ("state", "since", "latest"))
-        _need(row["current"]["state"] in (None, "up", "down", "clear"))
-        for key in ("since", "latest"):
-            _need(row["current"][key] is None or valid_period(row["current"][key], frequency))
+        _require_series_row(sid, row)
     _need(type(p["releases"]) is list and len(p["releases"]) <= 50000)
     for record in p["releases"]:
-        _keys(record, ("series", "period", "kind", "at", "basis", "rd"))
-        _need(record["series"] in series and record["kind"] in RECORD_KINDS and record["basis"] != "BASELINE")
-        _need(valid_period(record["period"], es.SERIES_FREQUENCY[record["series"]]))
-        _timing_ok(record)
+        _require_record(record, series)
     _need(type(p["events"]) is list and len(p["events"]) <= 20000)
     ids = set()
     for event in p["events"]:
-        _keys(event, ("id", "indicator", "series", "rule", "direction", "kind", "period", "cause", "at", "basis", "rd", "layer"))
-        _need(event["series"] in series and event["indicator"] == es.SERIES_INDICATOR[event["series"]])
-        _need(event["rule"] == es.BY_ID[event["indicator"]]["rule"]["version"] and event["direction"] in ("up", "down"))
-        _need(event["kind"] in EVENT_KINDS and event["cause"] in RECORD_KINDS and event["layer"] == "REALTIME")
-        _need(type(event["id"]) is str and re.fullmatch(r"[0-9a-f]{20}", event["id"]) is not None and event["id"] not in ids)
-        _need(event["basis"] != "BASELINE" and valid_period(event["period"], es.SERIES_FREQUENCY[event["series"]]))
+        _require_event(event, series, ids)
         ids.add(event["id"])
-        _timing_ok(event)
     _need(type(p["replay_events"]) is list and len(p["replay_events"]) <= 20000)
     for event in p["replay_events"]:
-        _keys(event, ("indicator", "series", "rule", "direction", "period"))
-        _need(event["series"] in series and event["indicator"] == es.SERIES_INDICATOR[event["series"]] and event["direction"] in ("up", "down"))
-        _need(event["rule"] == es.BY_ID[event["indicator"]]["rule"]["version"] and valid_period(event["period"], es.SERIES_FREQUENCY[event["series"]]))
+        _require_replay(event, series)
     _need(type(p["summary"]) is dict and set(p["summary"]) == set(es.CYCLES))
     families = {i["family"] for i in es.INDICATORS}
     for block in p["summary"].values():
