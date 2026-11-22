@@ -6,7 +6,7 @@
 //    public lights (employment and curve lit, inflation not: 경고, 3 of 5 lights have data; the same lights as the home test) and
 //    one raw axis (Labor, published 4.6 % -> 0.046) LIVE; every other axis, the 8×6 cells and the observations stay empty.
 //  - evidence(): the synthetic multi-run macro-evidence.json (tests/fixtures/macro_evidence/browser_payload.json, written by
-//    tests/macro_evidence_fixture.py): 13 indicators, 14 realtime events, E14 held for unverified terms.
+//    tests/macro_evidence_fixture.py): 13 indicators, 14 realtime events, E14 public since 2026-11-22.
 //  - emptyEvidence() / emptyScreen() / classification(): the offline build's NOT_AVAILABLE files, served explicitly so a deploy
 //    build that carries live data does not change the test.
 //  - qgv(): the strict sec-qgv2.json fixture (tools/qgv_v2_fixture.js). A valid file without any industry_group would need every

@@ -10,7 +10,7 @@
 //  - Content: the concept ring (8 cells from MacroCycleRing.MODELS, 공식 판정 미산출 · NO_MODEL_OUTPUT, no arc / point /
 //    probability), cell browsing by pointer and keys (arrows, Home, End, ◀ ▶ with wrap-around words), the cycle switch that
 //    also moves the evidence tab; the evidence lines from MacroEvidence (per-cycle family counts, newest events 5 on a phone /
-//    10 on a PC and the rest under 더 보기, the 13-row catalog with E14 held); the old MacroLights card equal to
+//    10 on a PC and the rest under 더 보기, the 13-row catalog, E14 public since 2026-11-22); the old MacroLights card equal to
 //    IS2.engines.macro.current() and without the old renderer's price button; the 4.1 device quote (SPY · HYG · IEF): before a
 //    click 누르기 전 and no number; a real click without a Google price-sheet sign-in gives the layer's reason words for each
 //    symbol (AUTH_REQUIRED), no number, no request, nothing stored, the lights unchanged; the 8×6 board with its NA reasons;
@@ -194,7 +194,9 @@ let phase = 'START', pass = 0;
       assert.equal(await page.locator('[data-events-more]').getAttribute('data-events-more'), String(14 - N));
       assert.match(await text(page, '[data-events=economy] > li'), /^2026-10-08 10:00 UTC · E13 Sahm 규칙/);
       assert.equal(await count(page, '[data-catalog-row]'), 13);
-      assert.match(await page.locator('[data-catalog-row=E14]').textContent(), /약관 원문 미확인 · 이름과 상태만 표시/);
+      // E14 is public since 2026-11-22 (DOL terms read in #598): collected and shown like the others, never held.
+      assert.match(await page.locator('[data-catalog-row=E14]').textContent(), /^E14 신규 실업수당 청구 \(SA, 주간\) · 수집됨/);
+      assert.doesNotMatch(await page.locator('[data-catalog-row=E14]').textContent(), /약관 원문 미확인/);
       assert.match(await page.locator('[data-catalog-row=E21]').textContent(), /자료 없음 · SOURCE_KEY_NOT_CONFIGURED \(API 키 미설정\)/);
       await page.locator('[data-ev-tab=economy]').focus(); await page.keyboard.press('End');
       assert.equal(await page.evaluate(() => document.activeElement.dataset.evTab), 'industry');
@@ -296,7 +298,7 @@ let phase = 'START', pass = 0;
       assert.equal(await page.locator('[data-node=phase]').getAttribute('aria-pressed'), 'true');
       assert.equal(await page.evaluate(() => document.activeElement.dataset.node), 'phase');
       assert.match(await text(page, '[data-node-text]'), /^국면 · 경기 링 · 주식시장 링/);
-      assert.deepEqual(await page.locator('[data-facts] li').allTextContents(), ['경고등 · 자료 있는 경고등 3/5 · 참고 모드', '근거 지표 · 목록 13개 중 수집됨 10개', '상태판 8×6 · Level 원자료 0칸 · 나머지 NA']);
+      assert.deepEqual(await page.locator('[data-facts] li').allTextContents(), ['경고등 · 자료 있는 경고등 3/5 · 참고 모드', '근거 지표 · 목록 13개 중 수집됨 11개', '상태판 8×6 · Level 원자료 0칸 · 나머지 NA']);
       assert.deepEqual(await page.locator('[data-raw-axis]').evaluateAll((n) => n.map((x) => [x.dataset.rawAxis, x.dataset.rawState])),
         [['Growth', 'NOT_AVAILABLE'], ['Inflation', 'NOT_AVAILABLE'], ['Labor', 'LIVE'], ['Monetary Policy', 'NOT_AVAILABLE'], ['Liquidity', 'NOT_AVAILABLE'], ['Credit', 'NOT_AVAILABLE'], ['Fiscal', 'NOT_AVAILABLE'], ['FX', 'NOT_AVAILABLE']]);
       assert.equal(await text(page, '[data-raw-axis=Labor] [data-raw-value]'), '4.6%');
