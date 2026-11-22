@@ -1,0 +1,89 @@
+{
+  "schema_version": "common-classification-dictionary/1",
+  "version": "common-industry-dictionary/1",
+  "sector_version": "book-sector-map/1",
+  "sectors": {
+    "CONSUMER_DISCRETIONARY": "경기소비재",
+    "CONSUMER_STAPLES": "필수소비재",
+    "ENERGY": "에너지",
+    "FINANCIALS": "금융",
+    "HEALTH_CARE": "헬스케어",
+    "INDUSTRIALS": "산업재",
+    "INFORMATION_TECHNOLOGY": "정보기술",
+    "MATERIALS": "소재",
+    "TELECOMMUNICATIONS": "통신",
+    "UTILITIES": "유틸리티"
+  },
+  "industries": [
+    {
+      "id": "beverages",
+      "name": "음료",
+      "parent_sector": "CONSUMER_STAPLES",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "beverages",
+      "source_parent": "food_tobacco",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "computers",
+      "name": "컴퓨터",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "computers",
+      "source_parent": "manufacturing_industrial_tech",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "food_retail",
+      "name": "식품 소매",
+      "parent_sector": "CONSUMER_STAPLES",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "food_retail",
+      "source_parent": "wholesale_retail",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "health_services",
+      "name": "의료 서비스",
+      "parent_sector": "HEALTH_CARE",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "health_services",
+      "source_parent": "services_software_health",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "medical_devices",
+      "name": "의료기기",
+      "parent_sector": "HEALTH_CARE",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "medical_devices",
+      "source_parent": "manufacturing_industrial_tech",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "semiconductors",
+      "name": "반도체",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "semiconductors",
+      "source_parent": "manufacturing_industrial_tech",
+      "status": "RESEARCH_CORRESPONDENCE"
+    },
+    {
+      "id": "software",
+      "name": "소프트웨어",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "source_dictionary": "sic_industry_groups/v0",
+      "source_id": "software",
+      "source_parent": "services_software_health",
+      "status": "RESEARCH_CORRESPONDENCE"
+    }
+  ],
+  "exceptions": {
+    "REIT": "UPPER_SECTOR_AND_ACCOUNTING_NOT_RESOLVED",
+    "COMMUNICATION_SERVICES": "NOT_AN_ALIAS_OF_TELECOMMUNICATIONS",
+    "MULTI_BUSINESS": "PRIMARY_ACTIVITY_EVIDENCE_REQUIRED"
+  },
+  "etf_reference_version": "sector_etf_map/v1",
+  "source_classification_version": "sic_industry_groups/v0"
+}
