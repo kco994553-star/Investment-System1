@@ -343,30 +343,29 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     return { c, clock, sent, tokenRequests };
   }
   await ok('client: nothing without a token; scope exactly openid email; Bearer only, omit, no-store, no referrer', async () => {
-    const h = harness({ answers: [{ status: 200, body: X.analysis() }] });
-    await assert.rejects(h.c.get('analysis', 'NVDA'), /AUTH_REQUIRED/); assert.equal(h.sent.length, 0);
+    const h = harness({ answers: [{ status: 200, body: { synthetic: true } }] });
+    await assert.rejects(h.c.get('stock', 'NVDA'), /AUTH_REQUIRED/); assert.equal(h.sent.length, 0);
     await h.c.connect();
     assert.equal(h.tokenRequests[0].scope, 'openid email'); assert.equal(h.tokenRequests[0].include_granted_scopes, false);
-    const body = await h.c.get('analysis', 'NVDA');
-    assert.equal(body.status, 'NORMAL');
+    const body = await h.c.get('stock', 'NVDA');
+    assert.equal(body.synthetic, true);
     const [s] = h.sent;
-    assert.equal(s.url, ORIGIN + KP.ROUTE.analysis + '?symbol=NVDA');
+    assert.equal(s.url, ORIGIN + KP.ROUTE.stock + '?symbol=NVDA');
     assert.deepEqual(s.init.headers, { Authorization: 'Bearer synthetic-token' });
     assert.equal(s.init.credentials, 'omit'); assert.equal(s.init.cache, 'no-store'); assert.equal(s.init.referrerPolicy, 'no-referrer');
-    await assert.rejects(h.c.get('analysis', '../x'), /REQUEST_INVALID/); await assert.rejects(h.c.get('orders', null), /ROUTE_UNKNOWN/);
-    await assert.rejects(h.c.get('technical', null), /REQUEST_INVALID/, 'technical needs a symbol');
+    await assert.rejects(h.c.get('stock', '../x'), /REQUEST_INVALID/); await assert.rejects(h.c.get('orders', null), /ROUTE_UNKNOWN/);
   });
-  await ok('client: the six routes — chart, analysis, technical and stock take a symbol, status and qgv take no query; no macro / news / classification', async () => {
-    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['analysis', 'chart', 'qgv', 'status', 'stock', 'technical']);
-    const h = harness({ answers: [{ status: 200, body: X.measures() }, { status: 200, body: X.qgv() }, { status: 200, body: { schema: X.K('status/1') } }, { status: 200, body: { synthetic: true } }] });
+  await ok('client: the two routes the panels read — stock takes a symbol (and ?part=qgv), status takes no query; the four older routes and macro / news / classification are unknown', async () => {
+    assert.deepEqual(Object.keys(KP.ROUTE).sort(), ['status', 'stock']);
+    const h = harness({ answers: [{ status: 200, body: X.qgv() }, { status: 200, body: { schema: X.K('status/1') } }, { status: 200, body: { synthetic: true } }] });
     await h.c.connect();
-    await h.c.get('technical', 'NVDA'); await h.c.get('qgv', 'NVDA'); await h.c.get('status', null); await h.c.get('stock', 'BRK-B');
-    assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.technical + '?symbol=NVDA', ORIGIN + KP.ROUTE.qgv, ORIGIN + KP.ROUTE.status, ORIGIN + KP.ROUTE.stock + '?symbol=BRK-B']);
+    await h.c.get('stockQgv', null); await h.c.get('status', null); await h.c.get('stock', 'BRK-B');
+    assert.deepEqual(h.sent.map((x) => x.url), [ORIGIN + KP.ROUTE.stock + '?part=qgv', ORIGIN + KP.ROUTE.status, ORIGIN + KP.ROUTE.stock + '?symbol=BRK-B']);
     for (const x of h.sent) { assert.deepEqual(x.init.headers, { Authorization: 'Bearer synthetic-token' }); assert.equal(x.init.redirect, 'error'); assert.equal(x.init.credentials, 'omit'); }
-    for (const route of ['macro', 'news', 'classification']) await assert.rejects(h.c.get(route, null), /ROUTE_UNKNOWN/, route);
+    for (const route of ['chart', 'analysis', 'technical', 'qgv', 'macro', 'news', 'classification']) await assert.rejects(h.c.get(route, null), /ROUTE_UNKNOWN/, route);
     await assert.rejects(h.c.get('stock', null), /REQUEST_INVALID/, 'stock needs a symbol');
     await assert.rejects(h.c.get('stock', 'BRK/B'), /REQUEST_INVALID/, 'stock takes the request symbol, not the KIS file symbol');
-    assert.equal(h.sent.length, 4);
+    assert.equal(h.sent.length, 3);
   });
   await ok('client: KIS V reads the qgv part of the stock route (no symbol); a symbol on the part is refused', async () => {
     assert.deepEqual(KP.PARTS, { stockQgv: { route: 'stock', query: '?part=qgv' } });
@@ -429,13 +428,13 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     let h = harness({ scope: 'openid email https://www.googleapis.com/auth/drive.file' });
     await assert.rejects(h.c.connect(), /LOGIN_REFUSED/); assert.equal(h.c.state().connected, false);
     h = harness({ answers: [{ status: 403, body: { error: { code: 'AUTH_FORBIDDEN' } } }] }); await h.c.connect();
-    await assert.rejects(h.c.get('qgv', null), /AUTH_FORBIDDEN/); assert.equal(h.c.state().connected, false, 'server refusal drops the token');
+    await assert.rejects(h.c.get('status', null), /AUTH_FORBIDDEN/); assert.equal(h.c.state().connected, false, 'server refusal drops the token');
     h = harness({ expires: 60 }); await h.c.connect(); assert.equal(h.c.state().connected, true);
     h.clock.now += 61_000; assert.equal(h.c.state().connected, false, 'expired token dropped');
-    await assert.rejects(h.c.get('qgv', null), /AUTH_REQUIRED/); assert.equal(h.sent.length, 0);
+    await assert.rejects(h.c.get('status', null), /AUTH_REQUIRED/); assert.equal(h.sent.length, 0);
     h = harness(); await h.c.connect(); h.c.disconnect(); assert.equal(h.c.state().connected, false);
     h = harness({ answers: [{ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } }] }); await h.c.connect();
-    await assert.rejects(h.c.get('chart', 'NVDA'), /KIS_SERIES_NOT_FOUND/); assert.equal(h.c.state().connected, true, 'a missing file keeps the session');
+    await assert.rejects(h.c.get('stock', 'NVDA'), /KIS_SERIES_NOT_FOUND/); assert.equal(h.c.state().connected, true, 'a missing file keeps the session');
   });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error(e); process.exitCode = 1; });

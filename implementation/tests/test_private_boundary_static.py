@@ -13,11 +13,12 @@ is checked before it is committed; a plain walk if git is unavailable), `.gz` me
 - no public workflow references secrets.KIS_*, the KIS Secret names, a KIS host or TR id, the collector module, or runs
   anything from the private_area package;
 - the public web app and web_assets sources request no private Worker path (/kis/, /lab/, /private/). One narrow exception
-  (owner 2026-11-05, answer "좁은 예외 승인"; the owner-private area integration of 2026-11-15 keeps five of those routes, and the owner 2026-11-20 묶음 adds stock for the timing button):
-  web_app/kis-private.js may name exactly the six owner-checked routes below, each once as a single-quoted literal; any other
+  (owner 2026-11-05, answer "좁은 예외 승인"; the owner-private area integration of 2026-11-15 keeps five of those routes, and the owner 2026-11-20 묶음 adds stock for the timing button;
+  owner 2026-11-22: the four older per-file routes no panel reads are dropped, status and stock remain):
+  web_app/kis-private.js may name exactly the two owner-checked routes below, each once as a single-quoted literal; any other
   private path there, or any private path in any other web file, still fails. The Pages guard has its own matching narrow
   exception (owner 2026-11-15, tools/pages_artifact_guard.py PAGES_PRIVATE_EXCEPTIONS: the same file at the artifact root,
-  pinned bytes, the same six routes and its schema names), so the public preview publishes it.
+  pinned bytes, the same two routes and its schema names), so the public preview publishes it.
 - the two KIS Secret names (any spelling, GUARD.KIS_SECRET_NAME) appear in no public code, config, workflow or data file:
   the KIS keys live only in the private repository investment-system1-kis-private (owner 2026-10-31); only Markdown
   documentation may name them.
@@ -235,11 +236,11 @@ def workflow_findings(pairs) -> list:
 
 
 PRIVATE_READER_FILE = "implementation/src/investment_system/product/web_app/kis-private.js"
-PRIVATE_READER_ROUTES = tuple("'/" + "k" + "is/" + r + "'" for r in ("status", "chart", "analysis", "qgv", "technical", "stock"))
+PRIVATE_READER_ROUTES = tuple("'/" + "k" + "is/" + r + "'" for r in ("status", "stock"))
 
 
 def private_reader_rest(text: str) -> str:
-    """The reader's text without its six allowed route literals; each must be there exactly once."""
+    """The reader's text without its two allowed route literals; each must be there exactly once."""
     for literal in PRIVATE_READER_ROUTES:
         if text.count(literal) != 1:
             return text                          # missing or repeated: nothing is excused
@@ -329,11 +330,14 @@ def test_push_workflow_runs_only_this_test_with_no_secret():
 
 
 def test_private_reader_exception_is_exact():
-    assert len(PRIVATE_READER_ROUTES) == len(set(PRIVATE_READER_ROUTES)) == 6, "exactly six routes, each distinct"
+    assert len(PRIVATE_READER_ROUTES) == len(set(PRIVATE_READER_ROUTES)) == 2, "exactly two routes, each distinct"
     ok = "const R={a:" + ",b:".join(PRIVATE_READER_ROUTES) + "};"
     assert web_private_path_files([(PRIVATE_READER_FILE, ok)]) == []
     extra = ok + "f('/" + "k" + "is/other')"
-    assert web_private_path_files([(PRIVATE_READER_FILE, extra)]) == [PRIVATE_READER_FILE], "a sixth private path"
+    assert web_private_path_files([(PRIVATE_READER_FILE, extra)]) == [PRIVATE_READER_FILE], "a third private path"
+    for old in ("chart", "analysis", "technical", "qgv"):  # owner 2026-11-22: the four older routes are no longer excused
+        again = ok + "f('/" + "k" + "is/" + old + "')"
+        assert web_private_path_files([(PRIVATE_READER_FILE, again)]) == [PRIVATE_READER_FILE], "a dropped route: " + old
     dropped = ok + "f('/" + "k" + "is/macro')"
     assert web_private_path_files([(PRIVATE_READER_FILE, dropped)]) == [PRIVATE_READER_FILE], "a route outside this integration"
     for i, literal in enumerate(PRIVATE_READER_ROUTES):
