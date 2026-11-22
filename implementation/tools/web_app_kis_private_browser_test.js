@@ -73,7 +73,10 @@ let phase = 'START', pass = 0, where = '';
       fields: STOCK_FIELDS, rows: bars.map(row), chart: { ...header, schema: X.K('chart-metadata/1') }, indicators: {}, coverage: {},
       latest: m.status === 200 ? { technical: a.body, measures: m.body } : { technical: a.body },
       additional_requests_for_toggle: 0, additional_requests_for_retained_period: 0 };
-    if (c.body.basis === 'SPLIT_ADJUSTED') view.raw_rows = rawBars.map(row);
+    if (c.body.basis === 'SPLIT_ADJUSTED') {         // the producer's shape (#593): 7 RAW columns named by raw_fields
+      view.raw_fields = ['date', 'open', 'high', 'low', 'close', 'volume', 'amount'];
+      view.raw_rows = rawBars.map((b) => [b.date, b.open, b.high, b.low, b.close, b.volume, b.amount]);
+    }
     return { status: 200, body: view };
   }
   // The Worker stand-in: answers[route] = (symbol) => {status, body}; one owner request at a time, at least 5 s apart, like the real one.
@@ -253,6 +256,19 @@ let phase = 'START', pass = 0, where = '';
       assert.deepEqual(await page.locator('[data-private-basis-agreement]').evaluateAll((n) => n.map((x) => [x.dataset.privateBasisPart, x.dataset.privateBasisAgreement])),
         [['analysis', 'BASIS_MISMATCH'], ['measures', 'BASIS_MISMATCH']], phase + ': both results refused on a 원주가 chart');
       assert.equal(await count(page, '[data-private-metric]'), 0, phase + ': no value attached');
+
+      phase = where + 'technical SPLIT_ADJUSTED view (#593 shape)';
+      // A split-adjusted chart with matching results: the RAW series rides as raw_fields / raw_rows (7 columns) and the range
+      // line reads the chart's own basis and split count (one synthetic split here).
+      await expand(page, 'technical'); w.log.length = 0; delete w.lastAt;
+      const splitChart = w.answers.chart;
+      w.answers.chart = (sym) => ({ status: 200, body: { ...X.bars({ symbol: sym, basis: 'SPLIT_ADJUSTED' }), splits: [{ date: '2026-10-28', ratio: '2', status: 'CONFIRMED', new_shares: 2, old_shares: 1 }] } });
+      await expand(page, 'technical'); await page.locator('[data-private-layer=technical]').waitFor({ timeout: 30000 });
+      assert.equal(await count(page, '[data-private-basis-agreement]'), 0, phase + ': no basis refusal (chart and both results on the same basis)');
+      assert.equal(await count(page, '[data-private-measures=READY]'), 1, phase + ': the measures are shown');
+      assert.match(await text(page, '[data-private-facts=technical] [data-private-range=SPLIT_ADJUSTED]'), /^2026-10-26 ~ 2026-10-30 · 5봉 · 분할 반영 예 \(1건\)$/, phase + ': the range line');
+      assert.equal(await count(page, '[data-private-layer=technical] [data-private-chart-basis=SPLIT_ADJUSTED]'), 1, phase + ': the chart is read as split-adjusted');
+      w.answers.chart = splitChart; delete w.lastAt;
 
       phase = where + 'technical SYMBOL_MISMATCH';
       // The Worker passes the pinned view through unread (owner 2026-11-21 light read): the screen refuses a view of another company.

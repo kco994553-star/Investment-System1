@@ -393,8 +393,13 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     assert.deepEqual([KP.validateAnalysis(r.value.analysis).ok, KP.validateMeasures(r.value.measures).ok], [true, true]);
     const noMeasures = view(); delete noMeasures.latest.measures;
     assert.equal(KP.stockParts(noMeasures).value.measures, null, 'no measures object: that part alone is 자료 없음');
-    const split = view(); split.raw_rows = split.rows.map((x) => [...x]);
-    assert.equal(KP.stockParts(split).value.chart.raw_bars.length, bars.length, 'a separate RAW series is carried');
+    // The producer's SPLIT_ADJUSTED view (#593, kis_stock_journal.py): raw_fields date..amount and raw_rows in those 7 columns.
+    const RAW_FIELDS = ['date', 'open', 'high', 'low', 'close', 'volume', 'amount'];
+    const withRaw = (v) => { v.raw_fields = [...RAW_FIELDS]; v.raw_rows = v.rows.map((x) => x.slice(0, 6).concat(['1'])); return v; };
+    const split = KP.stockParts(withRaw(view()));
+    assert.equal(split.ok, true, 'a 7-column RAW series named by raw_fields');
+    assert.equal(split.value.chart.raw_bars.length, bars.length, 'a separate RAW series is carried');
+    assert.deepEqual(split.value.chart.raw_bars.map((b) => [b.date, b.close]), bars.map((b) => [b.date, b.close]), 'its six columns as given');
     for (const [label, change, code] of [
       ['fields out of order', (v) => { v.fields = ['open', 'date', ...v.fields.slice(2)]; }, 'STOCK_FIELDS'],
       ['short row', (v) => { v.rows[0] = v.rows[0].slice(0, 5); }, 'TYPE'],
@@ -409,7 +414,14 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
       ['16 fields', (v) => { v.fields = v.fields.slice(0, 16); }, 'STOCK_FIELDS'],
       ['a field not a string', (v) => { v.fields[9] = 9; }, 'STOCK_FIELDS'],
       ['a long row', (v) => { v.rows[1] = [...v.rows[1], 0]; }, 'TYPE'],
-      ['a short RAW row', (v) => { v.raw_rows = v.rows.map((x) => [...x]); v.raw_rows[0].pop(); }, 'TYPE'],
+      ['a short RAW row', (v) => { withRaw(v); v.raw_rows[0].pop(); }, 'TYPE'],
+      ['a long RAW row', (v) => { withRaw(v); v.raw_rows[1].push('2'); }, 'TYPE'],
+      ['raw_rows without raw_fields', (v) => { withRaw(v); delete v.raw_fields; }, 'KEY_MISSING'],
+      ['raw_fields without raw_rows', (v) => { withRaw(v); delete v.raw_rows; }, 'KEY_MISSING'],
+      ['raw_fields out of order', (v) => { withRaw(v); v.raw_fields = ['open', 'date', ...RAW_FIELDS.slice(2)]; }, 'STOCK_FIELDS'],
+      ['raw_fields too short', (v) => { withRaw(v); v.raw_fields = RAW_FIELDS.slice(0, 5); v.raw_rows = v.raw_rows.map((x) => x.slice(0, 5)); }, 'STOCK_FIELDS'],
+      ['raw_fields not strings', (v) => { withRaw(v); v.raw_fields[6] = 6; }, 'STOCK_FIELDS'],
+      ['raw_rows not a list', (v) => { withRaw(v); v.raw_rows = {}; }, 'TYPE'],
       ['rows not a list', (v) => { v.rows = {}; }, 'TYPE'],
     ]) { const v = view(); change(v); const x = KP.stockParts(v); assert.deepEqual([x.ok, x.code], [false, code], label); }
   });
