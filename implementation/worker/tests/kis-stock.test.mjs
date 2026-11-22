@@ -427,3 +427,20 @@ test('bundle path: ?part=qgv reads the root\'s qgv asset whole; no root (404) ke
   assert.equal(r.status, 200);
   assert.deepEqual(s.calls.filter((c) => c.url.startsWith(API)).map((c) => c.url), [ROOT_URL, INDEX_URL, API + '/releases/assets/7'], 'root probe, then the single index as before');
 });
+
+test('bundle path: an approved ETF (SPY) reads its member exactly like a stock; an unapproved one is refused first', async () => {
+  // Owner 2026-11-22: ETFs have no way to be opened on the phone screens (search covers Universe504 only), so the ETF read
+  // through the bundle path is checked here instead of on the phone.
+  const spy = { symbol: 'SPY', asset: makeAsset(makeView({ symbol: 'SPY' })) }, nv = NV(), packs = makePacks([nv, spy]);
+  const s = setup({ packs }), r = await s.run('/kis/stock?symbol=SPY');
+  assert.equal(r.status, 200); noStore(r); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
+  assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(spy.asset.gz), 'exactly the SPY member');
+  const [root, shard, api, hop, ...rest] = s.upstream();
+  assert.equal(rest.length, 0, 'four upstream reads');
+  assert.equal(root.url, ROOT_URL); assert.equal(shard.url, SHARD_URL(shardName(bucketOf('SPY'))));
+  assert.equal(api.url, API + '/releases/assets/11'); assert.equal(hop.init.headers.Authorization, undefined);
+  assert.equal(hop.init.headers.Range, 'bytes=' + nv.asset.gz.length + '-' + (nv.asset.gz.length + spy.asset.gz.length - 1));
+  const other = setup({ packs }), refused = await other.run('/kis/stock?symbol=QQQ');
+  assert.equal(refused.status, 400, 'an ETF outside the 15 approved is refused');
+  assert.equal(other.upstream().length, 0, 'before any GitHub read');
+});
