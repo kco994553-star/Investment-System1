@@ -173,3 +173,69 @@ def test_large_parented_append_uses_pinned_parts_index_and_replays(monkeypatch, 
     index_path.write_bytes(index_path.read_bytes() + b' ')
     with pytest.raises(ValueError, match='STOCK_ARCHIVE_PIN'):
         journal.replay(tmp_path, next_head)
+
+
+def test_document_and_consecutive_raw_step_set_chart_basis(tmp_path, monkeypatch):
+    from investment_system.research import kis_chart_actions as actions
+    req, c = inputs(tmp_path/'ingest')
+    day = '2026-10-23'
+    for r in c['raw_bars'][:-1]:
+        r.update(open='30', high='36', low='27', close='33')
+    c['raw_bars'][-1]['open'] = '11'
+    c['bars'] = deepcopy(c['raw_bars'])
+    event = dict(kind='SPLIT', cik='0000000001', date=day, new_shares=3, old_shares=1,
+                 url='https://example.invalid/filing', sha256='a'*64)
+    monkeypatch.setattr(actions, 'reviewed_actions', lambda: {'NASDAQ:SYN':[event]})
+    original = deepcopy(c)
+    view, _ = journal.project_stock(c, json.loads(req.read_bytes()), 'NASDAQ:SYN')
+    assert c == original
+    assert view['coverage'] == dict(scope='ALL_RETAINED_SESSIONS', retained_sessions=5,
+        retained_start='2026-10-19', retained_end=day,
+        applied_splits=[dict(effective_day=day, new_per_old='3', evidence=event)])
+    evidence = view['latest']['technical']['evidence']
+    assert (evidence['adjustment_start'], evidence['adjustment_end'], evidence['adjustment_reference']) == (
+        '2026-10-22', day, event['url'])
+    assert evidence['adjustment_range_scope'] == 'LATEST_REVIEWED_EVENT_STEP'
+    assert view['chart']['confirmed_ranges'] == original['confirmed_ranges'] == []
+    assert all(m['value'] is None for m in view['latest']['technical']['metrics'].values())
+    assert view['rows'][0][1:7] == ['10','12','9','11','300','1100']
+    assert view['raw_rows'][0][4:6] == ['33','100']
+    assert view['rows'][-1][:7] == view['raw_rows'][-1]
+    assert actions.chart_basis(c,'NASDAQ:SYN','2026-10-22')[0]['basis'] == 'RAW'
+    wrong_class, marks = actions.chart_basis(c,'NASDAQ:SYN.B',day)
+    assert wrong_class['basis'] == 'RAW' and marks[0]['state'] == 'EVIDENCE_OR_RAW_STEP_UNCONFIRMED'
+    event['new_shares'] = 10
+    assert actions.chart_basis(c,'NASDAQ:SYN',day)[0]['basis'] == 'RAW'
+    event['kind'] = 'SPINOFF_PARENT_UNCHANGED'
+    base, marks = actions.chart_basis(c,'NASDAQ:SYN',day)
+    assert base['basis'] == 'RAW' and marks[0]['state'] == 'NON_SPLIT_DISTRIBUTION'
+    c['source_query']['MODP'] = '1'
+    with pytest.raises(ValueError,match='RAW_DAILY_SOURCE_REQUIRED'):
+        actions.chart_basis(c,'NASDAQ:SYN',day)
+
+
+def test_reverse_split_exact_fraction_and_declared_raw_boundary(tmp_path, monkeypatch):
+    from investment_system.research import kis_chart_actions as actions
+    from decimal import Decimal, localcontext
+    _, c = inputs(tmp_path/'ingest')
+    for r in c['raw_bars'][:-1]:
+        r.update(open='3',high='4',low='2',close='3.5',volume='300')
+    c['bars'] = deepcopy(c['raw_bars'])
+    day = c['price_basis_date']
+    c['splits'] = [dict(date=day, ratio='2', status='CONFIRMED', evidence='SYNTHETIC')]
+    monkeypatch.setattr(actions,'reviewed_actions',lambda:{})
+    assert actions.chart_basis(c,'NASDAQ:SYN',day)[0]['basis'] == 'RAW'
+    event = dict(kind='SPLIT', cik='0000000001', date=day, new_shares=1, old_shares=3, url='https://example.invalid/reverse')
+    monkeypatch.setattr(actions,'reviewed_actions',lambda:{'NASDAQ:SYN':[event]})
+    with pytest.raises(ValueError,match='SPLIT_RATIO_CONFLICT'):
+        actions.chart_basis(c,'NASDAQ:SYN',day)
+    c['splits'] = []
+    out, _ = actions.chart_basis(c,'NASDAQ:SYN',day)
+    assert out['bars'][0]['close'] == '10.5' and out['bars'][0]['volume'] == '100'
+    with localcontext() as ctx:
+        ctx.prec = 50
+        assert out['splits'][0]['ratio'] == str(Decimal(1)/3)
+    for name in ('bars','raw_bars'):
+        del c[name][-2]
+    base, marks = actions.chart_basis(c,'NASDAQ:SYN',day)
+    assert base['basis'] == 'RAW' and marks[0]['state'] == 'EVIDENCE_OR_RAW_STEP_UNCONFIRMED'
