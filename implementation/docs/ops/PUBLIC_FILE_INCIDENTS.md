@@ -34,14 +34,25 @@
 | 공개 파일 | 게시본 이어받기 | 빌드의 빈 자리표시 (`build_pages_cockpit.py`) | 실패 시 동작 | 판단 |
 |---|---|---|---|---|
 | `macro-evidence.json` | 있음 | 있음 | #613 뒤: 게시본 유지 | 고침 |
-| `news-signals.json` | 있음 (`fetch_previous`) | 있음 (`emit_empty`) | `PREVIOUS_FETCH_FAILED nothing_written` → 자리표시가 남음 | **같은 위험** |
-| `sec-disclosures.json` | 있음 (`fetch_previous`) | 있음 (`emit_empty`) | 실패 시 쓰지 않음 → 자리표시가 남음 | **같은 위험** |
+| `news-signals.json` | 있음 (`fetch_previous`) | 있음 (`emit_empty`) | 이 문서 갱신 PR 뒤: 쓰지 못하면 게시본을 바이트 그대로 유지, 초기화는 `resets`·로그·경고로 기록 | 고침 (승인 대기) |
+| `sec-disclosures.json` | 있음 (`fetch_previous`) | 있음 (`emit_empty`) | 같음. 수집이 아예 안 돈 경우(UA 없음 등)도 게시본 유지 | 고침 (승인 대기) |
 | `forward-validation-ledger.json` | 있음 (덧붙이기 전용) | 없음 | 확인 필요 | 확인 필요 |
-| `sec-universe-shares.json`·`sec-universe-qg.json`·`sec-qgv2.json` | 있음 | 없음 | `PREVIOUS_FETCH_FAILED` 출력 | 확인 필요 |
+| `sec-universe-shares.json`·`sec-universe-qg.json`·`sec-qgv2.json` | 있음 | 없음 | 아래 2-1 | **없음** (근거 2-1) |
 | `dart-*.json` | 있음 (연간 이력) | 없음 | `DART_PREVIOUS_FETCH_FAILED` | 확인 필요 |
 | `qgv-official.json` | 있음 (재시도 뒤 유지) | 없음 | 유지(`preserve`) | 낮음 |
 
-- 「같은 위험」 두 파일은 #613과 같은 방식(실패 시 게시본 유지 + 초기화 기록)으로 고치는 PR을 따로 낸다(승인 뒤).
+- 「같은 위험」 두 파일은 #613과 같은 방식으로 고쳤다(2026-11-22, 병합은 승인 뒤).
+  - 실패하면 게시본을 유지한다. 정상 사본 위에 빈 자리표시를 올리지 않는다.
+  - 다시 시작할 때는 파일의 `resets`와 로그 `HISTORY_RESET`, `::warning`에 남긴다.
+  - 화면만 다시 올리는 배포(`--preserve-only`)에서 게시본을 읽지 못하면 exit 1로 그 배포를 보류한다.
+
+### 2-1. Universe 세 파일에 같은 위험이 없는 근거 (2026-11-22 코드 읽기)
+
+- 빌드가 이 세 파일의 빈 자리표시를 쓰지 않는다. `build_pages_cockpit.py`는 이 이름을 쓰지 않는다.
+- 매일 수집에서 게시본을 읽지 못하면 `sec_universe_shares.py`가 exit 1로 끝난다. 이 단계는 필수 단계(`continue-on-error` 없음)이므로 업로드가 일어나지 않고 게시본이 그대로 남는다. 화면 배포(`--preserve-only`)도 같다.
+- 파일을 쓰지 못하면(`SEC_QGV2 OUTPUT_FAILED`) 그 파일은 산출물에서 빠진다. 배포 직전의 `pages_freshness_guard.py`가 게시본의 행이 산출물에서 사라지거나(MISSING) 더 오래된 것(OLDER)을 거부하므로, 배포가 막히고 게시본이 남는다.
+- 남는 위험(낮음): 게시본 자체가 검증에 실패하면(`PREVIOUS_DISCARDED`) 오늘 샤드만으로 새로 시작한다. 이때 비교할 유효한 게시본이 없어 신선도 가드도 막지 않는다. 로그에 `PREVIOUS_DISCARDED` 한 줄만 남고 파일에는 기록이 없다. 필요하면 같은 `resets` 방식을 적용할 수 있다(승인 뒤).
+- `macro-evidence.json`의 화면 배포 경로: `macro_evidence.py --preserve-only`는 게시본을 읽지 못하면 exit 0으로 끝나고, 빌드의 자리표시가 남는다. 뉴스·공시와 같은 보류(exit 1) 처리를 할지는 오너가 결정한다.
 
 ## 3. 크기 한도 사전 경고 (제안, 구현은 승인 뒤)
 
@@ -59,3 +70,4 @@
   - 80% 이상이면 `::warning`으로 실행 요약에 띄운다. 95% 이상이면 오너에게 알린다.
   - 가드와 한도는 바꾸지 않는다(읽기만 하는 보고 단계).
 - `sec-qgv2.json`은 이미 82%다. 증가 속도를 다음 실행부터 기록한다.
+- 구현(2026-11-22 승인): `tools/pages_size_report.py`. 두 배포 워크플로의 업로드 직전에 둔다. 95% 표시는 새 알림 수단 없이 실행 요약 맨 위에 한다(#619, 병합은 승인 뒤).
