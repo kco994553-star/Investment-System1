@@ -170,6 +170,7 @@
 | **1** 기업 목록(Universe504 고정 504코드, `universe-codes.json`) | ✓ | ✓ | ✓ | 파일 | — |
 | **1** 한글 이름·분류(`company-names-ko.json`, `company-classification.json` 11/21 03:23) | ✓ | ✓ | ✓ | 파일 | — |
 | **1** 하나의 식별자 기준(계층 사이 같은 기업 = 같은 식별자) | △ | △ | ✗ | ? | 지금은 키가 여럿이다: Universe 코드(`EXCHANGE:SYMBOL`), TARGET `company_id`, Codex `issuer_id`·`security_id`, KIS 요청 기호·파일 기호(BRK-B ↔ BRK/B), CIK(대조용). 대응표는 Codex #562·#515와 Main #517에 있고 모두 Draft다 |
+| **1** 공통 분류(사전·시점별 기록, 이름 사전) | ✓(연구) | △ | ✗(분류 화면 연결 없음) | ? | 인수됨(2026-11-22): 사전·시점별 기록 핵심 #603, 이름 사전·소비 명세 #606, DC-48 #604. **미인수**: 그룹 결합(공통 그룹 명부 `group_join`), 기술·매크로 그룹(`technical_macro`·산업 매크로 근거), QGV 분류 연결(`common_classification/qgv`·`sector_qgv_classification`). 원본은 Draft #516·#525·#526·#538에 남아 있다(닫지 않음). 하위 산업 사전은 Codex 재작성 중(#605, 연구 버전) |
 | **1** 시총 Top500 모집단 | △(연구) | △ | ✗ | ? | 전환 전(DC-49). Codex #537·#544 Draft |
 | **2** Q·G 점수(`sec-qgv2.json`, calc 23.1, 11/21 03:21) | ✓ | ✓ | ✓ | 파일 | 표준 상태 `PROVISIONAL_DEFAULT_UNCALIBRATED`. 근거 칸(요소·비교집단·기준일)이 모든 행에 있는지는 열어 보지 않았다(?) |
 | **2** 공식 V·종합·순위(`qgv-official.json`) | ✓ | ✓ | ✓ | 파일 | **갱신 멈춤(원인 기록됨, DC-54)**: IEX HIST 주소가 2026-11-14부터 403이고 새 공급처 도입은 보류다. 마지막 정상본(가격 기준일 2026-11-11, 검증 11/13)과 오래됨 표시를 유지하고 IEX에 다시 요청하지 않는다. 정기 실행 시도는 `SUPPLY_FAILED`(`IEX_SOURCE_UNAVAILABLE`, 11/21 03:21). DC-57에 따라 기반 완성 조건은 아니다 |
