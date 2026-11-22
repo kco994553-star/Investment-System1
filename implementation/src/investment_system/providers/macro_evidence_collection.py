@@ -134,6 +134,26 @@ def census_query(spec, year: int, key: str | None) -> str:
     return urlencode(params)
 
 
+def _reason(error) -> str:
+    return error.reason if isinstance(error, es.SourceUnavailable) else "SCHEMA_MISMATCH"
+
+
+_COLUMN = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,39}", re.ASCII)
+
+
+def census_shape(body) -> dict:
+    """Owner 2026-11-22: when a Census body does not parse, keep only its header column names (public government
+    statistics field names; anything not a plain identifier becomes "?") and its data-row count. No value, no body."""
+    try:
+        obj = json.loads(body)
+    except Exception:
+        return {"columns": "NOT_JSON", "rows": None}
+    if type(obj) is not list or not obj or type(obj[0]) is not list:
+        return {"columns": "NO_HEADER_ROW", "rows": None}
+    names = [n if type(n) is str and _COLUMN.fullmatch(n) else "?" for n in obj[0][:24]]
+    return {"columns": ",".join(names) + (",+%d" % (len(obj[0]) - 24) if len(obj[0]) > 24 else ""), "rows": len(obj) - 1}
+
+
 def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[str, str], year: int | None = None,
                            transport: Callable[..., tuple] = default_transport, clock: Callable[[], datetime] = _now,
                            diagnostics: list | None = None) -> dict:
@@ -143,14 +163,18 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
     year = year if type(year) is int else clock().year
     captures = {}
 
-    def fail(sids, reason, stage=None, error=None):
+    def fail(sids, reason, stage=None, error=None, **shape):
+        # an error outside the fixed codes (parser bug, broken file): this source only, never the whole run
+        unexpected = error is not None and not isinstance(error, (MacroV0FetchError, es.SourceUnavailable))
         for sid in sids:
             captures[sid] = {"reason": reason if reason in es.REASONS else "SOURCE_NOT_AVAILABLE"}
         if diagnostics is not None and stage:
             diagnostics.append({"stage": stage, "code": getattr(error, "code", None) if isinstance(error, MacroV0FetchError) else
+                                "PARSE_UNEXPECTED" if unexpected and reason == "SCHEMA_MISMATCH" else
                                 ("PARSE_" + reason if reason in es.REASONS else "PARSE_OR_TRANSPORT_ERROR"),
                                 "http": getattr(error, "status", None), "size": getattr(error, "size", None),
-                                "redirect": getattr(error, "redirect", None)})
+                                "redirect": getattr(error, "redirect", None),
+                                "type": type(error).__name__ if unexpected else None, **shape})
 
     def capture(sid, rows, acquired, *, modified=None, release_date=None):
         captures[sid] = {"rows": rows, "acquired_at": acquired,
@@ -173,36 +197,49 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
                     return path.read_bytes(), datetime.fromisoformat(entry["acquired_at"]).astimezone(timezone.utc)
         return None
 
-    bls = reused(manifest.get("macro_v0"), "BLS_API_V1_JSON")
+    def reused_or_fail(entries, fmt, sid, stage):
+        try:
+            return reused(entries, fmt)
+        except Exception as error:
+            fail((sid,), "SOURCE_NOT_AVAILABLE", stage, error)
+            return False
+
+    bls = reused_or_fail(manifest.get("macro_v0"), "BLS_API_V1_JSON", "BLS:LNS14000000", "REUSED_BLS")
     if bls is None:
         fail(("BLS:LNS14000000",), "SOURCE_NOT_COLLECTED")
-    else:
+    elif bls:
         try:
             rows = es.parse_bls_v1(bls[0], ("CUUR0000SA0", "LNS14000000"))["BLS:LNS14000000"]
             capture("BLS:LNS14000000", rows, bls[1]) if isinstance(rows, dict) else fail(("BLS:LNS14000000",), rows)
-        except es.SourceUnavailable as error:
-            fail(("BLS:LNS14000000",), error.reason, "REUSED_BLS", error)
-    bea = reused(manifest.get("macro_v0"), "BEA_NIPA_FLAT_Q")
+        except Exception as error:
+            fail(("BLS:LNS14000000",), _reason(error), "REUSED_BLS", error)
+    bea = reused_or_fail(manifest.get("macro_v0"), "BEA_NIPA_FLAT_Q", "BEA:NIPA:A191RL:Q", "REUSED_BEA")
     if bea is None:
         fail(("BEA:NIPA:A191RL:Q",), "SOURCE_NOT_COLLECTED")
-    else:
+    elif bea:
         try:
             capture("BEA:NIPA:A191RL:Q", es.parse_bea_flat(bea[0], "A191RL", "Q"), bea[1])
-        except es.SourceUnavailable as error:
-            fail(("BEA:NIPA:A191RL:Q",), error.reason, "REUSED_BEA", error)
-    curves = [(root / e["file"]).read_bytes() for e in manifest.get("macro_curve_v1") or ()
-              if isinstance(e, Mapping) and e.get("file") and not e.get("synthetic", True)
-              and (root / e["file"]).is_file() and not (root / e["file"]).is_symlink()]
-    curve_times = [datetime.fromisoformat(e["acquired_at"]) for e in manifest.get("macro_curve_v1") or () if isinstance(e, Mapping) and e.get("file")]
+        except Exception as error:
+            fail(("BEA:NIPA:A191RL:Q",), _reason(error), "REUSED_BEA", error)
     sid = "TREASURY:BC_10YEAR-BC_3MONTH:MONTHLY_MEAN"
-    if not curves:
+    try:
+        curves = [(root / e["file"]).read_bytes() for e in manifest.get("macro_curve_v1") or ()
+                  if isinstance(e, Mapping) and e.get("file") and not e.get("synthetic", True)
+                  and (root / e["file"]).is_file() and not (root / e["file"]).is_symlink()]
+        curve_times = [datetime.fromisoformat(e["acquired_at"]) for e in manifest.get("macro_curve_v1") or () if isinstance(e, Mapping) and e.get("file")]
+    except Exception as error:
+        curves = None
+        fail((sid,), "SOURCE_NOT_AVAILABLE", "REUSED_CURVE", error)
+    if curves is None:
+        pass
+    elif not curves:
         fail((sid,), "SOURCE_NOT_COLLECTED")
     else:
-        acquired = max(curve_times).astimezone(timezone.utc)
         try:
+            acquired = max(curve_times).astimezone(timezone.utc)
             capture(sid, es.treasury_monthly_spread(curves, before_month=acquired.strftime("%Y-%m")), acquired)
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "REUSED_CURVE", error)
+        except Exception as error:
+            fail((sid,), _reason(error), "REUSED_CURVE", error)
 
     # ---- BLS v1: one batched request for the three evidence series
     bls_sids = tuple("BLS:" + s for s in es.BLS_EVIDENCE_IDS)
@@ -213,8 +250,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         try:
             for sid, rows in es.parse_bls_v1(got[0], es.BLS_EVIDENCE_IDS).items():
                 capture(sid, rows, got[2]) if isinstance(rows, dict) else fail((sid,), rows)
-        except es.SourceUnavailable as error:
-            fail(bls_sids, error.reason, "BLS_V1", error)
+        except Exception as error:
+            fail(bls_sids, _reason(error), "BLS_V1", error)
 
     # ---- BEA monthly flat file (core PCE price index)
     sid = "BEA:NIPA:DPCCRG:M"
@@ -222,8 +259,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
     if got:
         try:
             capture(sid, es.parse_bea_flat(got[0], "DPCCRG", "M"), got[2], modified=got[1].get("last-modified"))
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "BEA_FLAT_M", error)
+        except Exception as error:
+            fail((sid,), _reason(error), "BEA_FLAT_M", error)
 
     # ---- Fed DDP packages and their release dates
     for sid, package in es.DDP_PACKAGES.items():
@@ -233,11 +270,14 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         released = None
         page = fetch("DDP_CHOOSE_" + package["rel"], (), DDP_CHOOSE_URL, query=urlencode((("rel", package["rel"]),)))
         if page:
-            released = es.parse_ddp_release_date(page[0])
+            try:
+                released = es.parse_ddp_release_date(page[0])
+            except Exception:  # the release date is optional evidence; the series itself still publishes
+                released = None
         try:
             capture(sid, es.parse_ddp_csv(got[0], package["column"]), got[2], release_date=released)
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "DDP_" + package["rel"], error)
+        except Exception as error:
+            fail((sid,), _reason(error), "DDP_" + package["rel"], error)
 
     # ---- FOMC target range changes
     sid = "FED:FOMC:TARGET_RANGE"
@@ -246,8 +286,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         try:
             capture(sid, {r["date"]: r["upper"] for r in es.parse_fomc_openmarket(got[0])}, got[2],
                     modified=got[1].get("last-modified"))
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "FOMC_OPENMARKET", error)
+        except Exception as error:
+            fail((sid,), _reason(error), "FOMC_OPENMARKET", error)
 
     # ---- DOL weekly claims (collected; publication held until the DOL terms are confirmed)
     sid = "DOL:ETA539:INITIAL_CLAIMS_SA"
@@ -257,8 +297,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
     if got:
         try:
             capture(sid, es.parse_dol_weekly(got[0]), got[2])
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "DOL_ETA539", error)
+        except Exception as error:
+            fail((sid,), _reason(error), "DOL_ETA539", error)
 
     # ---- BTS TSI
     sid = "BTS:TSI:FREIGHT"
@@ -266,8 +306,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
     if got:
         try:
             capture(sid, es.parse_bts_tsi(got[0]), got[2], modified=got[1].get("last-modified"))
-        except es.SourceUnavailable as error:
-            fail((sid,), error.reason, "BTS_TSI", error)
+        except Exception as error:
+            fail((sid,), _reason(error), "BTS_TSI", error)
 
     # ---- Census EITS (key required; never printed)
     key = environ.get(CENSUS_KEY_SLOT) if hasattr(environ, "get") else None
@@ -280,6 +320,6 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         if got:
             try:
                 capture(sid, es.parse_census_eits(got[0], category=spec["category"], data_type=spec["data_type"]), got[2])
-            except es.SourceUnavailable as error:
-                fail((sid,), error.reason, "CENSUS_" + spec["program"].upper(), error)
+            except Exception as error:
+                fail((sid,), _reason(error), "CENSUS_" + spec["program"].upper(), error, **census_shape(got[0]))
     return captures

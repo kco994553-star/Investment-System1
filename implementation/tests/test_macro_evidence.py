@@ -502,3 +502,137 @@ def test_census_redirect_reaches_the_diagnostic_line_without_url_or_key(tmp_path
     census = [d for d in diagnostics if str(d.get('stage', '')).startswith('CENSUS')]
     assert census and all(d['code'] == 'REDIRECT_REJECTED' and d['redirect'] == 'invalid_key' for d in census)
     assert 'SECRET' not in json.dumps(diagnostics)
+
+
+# ---------------------------------------------------------------- one series never blocks the file (owner 2026-11-22)
+
+def _caps(tmp_path):
+    return mc.collect_macro_evidence(tmp_path, reused_root(tmp_path), environ={}, year=2026,
+                                     transport=FakeTransport(responses()), clock=lambda: AT)
+
+
+def test_a_series_that_raises_is_left_out_and_the_rest_is_published(tmp_path, monkeypatch):
+    caps = _caps(tmp_path)
+    whole = el.build(caps, previous=None, previous_state='NO_LIVE', now=AT)
+    real = el._series_step
+
+    def step(sid, old, capture, now):
+        if sid == 'BTS:TSI:FREIGHT':
+            raise KeyError('provider text that must not leave')
+        return real(sid, old, capture, now)
+    monkeypatch.setattr(el, '_series_step', step)
+    failures = []
+    payload = el.build(caps, previous=None, previous_state='NO_LIVE', now=AT, failures=failures)
+    assert failures == [{'series': 'BTS:TSI:FREIGHT', 'type': 'KeyError'}]
+    row = payload['series']['BTS:TSI:FREIGHT']
+    assert (row['state'], row['reason'], row['obs'], row['acquired_at']) == ('NOT_AVAILABLE', 'SCHEMA_MISMATCH', [], None)
+    for sid in es.SERIES_IDS:
+        if sid != 'BTS:TSI:FREIGHT':
+            assert payload['series'][sid] == whole['series'][sid], sid
+    assert [i for i in payload['indicators'] if i['id'] == 'E01'][0]['state'] == 'NOT_AVAILABLE'
+    assert payload['state'] == 'PARTIAL' and 'provider text' not in json.dumps(payload)
+
+
+def test_a_series_with_an_invalid_row_keeps_its_previous_data_and_adds_nothing(tmp_path):
+    caps = _caps(tmp_path)
+    first = el.build(caps, previous=None, previous_state='NO_LIVE', now=AT)
+    sid = 'BEA:NIPA:DPCCRG:M'
+    assert first['series'][sid]['state'] == 'LIVE' and first['series'][sid]['obs']
+    later = copy.deepcopy(caps)
+    later[sid] = {**later[sid], 'rows': {**later[sid]['rows'], '2026-13': 1.0}}  # not a month: the row fails validation
+    for other in later.values():
+        if 'acquired_at' in other:
+            other['acquired_at'] = AT + timedelta(days=1)
+    failures = []
+    payload = el.build(later, previous=first, previous_state='LOADED', now=AT + timedelta(days=1), failures=failures)
+    assert [f['series'] for f in failures] == [sid]
+    row = payload['series'][sid]
+    assert (row['state'], row['reason']) == ('NOT_AVAILABLE', 'SCHEMA_MISMATCH')
+    assert row['obs'] == first['series'][sid]['obs'] and row['history'] == first['series'][sid]['history']
+    assert row['last_success_at'] == first['series'][sid]['last_success_at']
+    assert not any(r['series'] == sid for r in payload['releases'][len(first['releases']):])
+    assert payload['series']['BTS:TSI:FREIGHT']['state'] == 'LIVE'
+
+
+def test_an_unexpected_parser_error_fails_that_source_only(tmp_path, monkeypatch):
+    def broken(body):
+        raise IndexError('parser bug')
+    monkeypatch.setattr(es, 'parse_bts_tsi', broken)
+    monkeypatch.setattr(es, 'parse_ddp_release_date', broken)  # optional release date: the series still publishes
+    diagnostics = []
+    caps = mc.collect_macro_evidence(tmp_path, reused_root(tmp_path), environ={}, year=2026,
+                                     transport=FakeTransport(responses()), clock=lambda: AT, diagnostics=diagnostics)
+    assert caps['BTS:TSI:FREIGHT'] == {'reason': 'SCHEMA_MISMATCH'}
+    assert caps['FED:G17:IP.B50001.S']['rows'] and caps['FED:G17:IP.B50001.S']['release']['date'] is None
+    bts = [d for d in diagnostics if d['stage'] == 'BTS_TSI']
+    assert len(bts) == 1 and (bts[0]['code'], bts[0]['type']) == ('PARSE_UNEXPECTED', 'IndexError')
+    assert 'parser bug' not in json.dumps(diagnostics)
+    assert caps['BEA:NIPA:DPCCRG:M']['rows']
+
+
+def test_a_broken_reused_manifest_entry_fails_that_series_only(tmp_path):
+    manifest = reused_root(tmp_path)
+    for entry in manifest['macro_v0']:
+        if entry.get('format') == 'BLS_API_V1_JSON':
+            entry['acquired_at'] = 'not a time'
+    diagnostics = []
+    caps = mc.collect_macro_evidence(tmp_path, manifest, environ={}, year=2026, transport=FakeTransport(responses()),
+                                     clock=lambda: AT, diagnostics=diagnostics)
+    assert caps['BLS:LNS14000000'] == {'reason': 'SOURCE_NOT_AVAILABLE'}
+    assert [d['type'] for d in diagnostics if d['stage'] == 'REUSED_BLS'] == ['ValueError']
+    assert caps['BEA:NIPA:A191RL:Q']['rows']
+
+
+def test_census_mismatch_keeps_only_header_names_and_row_count(tmp_path, capsys):
+    import macro_evidence as tool
+    # A header that names a column twice (the shape a predicate echoed back as a column would give) does not parse.
+    census = json.dumps([['cell_value', 'data_type_code', 'time_slot_id', 'category_code', 'seasonally_adj', 'time',
+                          'category_code', 'data_type_code', 'us', '<b>x</b>'],
+                         ['74123', 'NO', '0', 'NXA', 'yes', '2026-08', 'NXA', 'NO', '1', 'z'],
+                         ['74456', 'NO', '0', 'NXA', 'yes', '2026-09', 'NXA', 'NO', '1', 'z']]).encode()
+    transport = FakeTransport(responses({(mc.CENSUS_URL + 'm3', None): (census, {}),
+                                         (mc.CENSUS_URL + 'resconst', None): (b'<html>not json</html>', {})}))
+    diagnostics = []
+    caps = mc.collect_macro_evidence(tmp_path, reused_root(tmp_path), environ={'CENSUS_API_KEY': 'k' * 40}, year=2026,
+                                     transport=transport, clock=lambda: AT, diagnostics=diagnostics)
+    assert caps['CENSUS:M3:NXA:NO:SA'] == {'reason': 'SCHEMA_MISMATCH'}
+    m3 = [d for d in diagnostics if d['stage'] == 'CENSUS_M3'][0]
+    assert m3['columns'] == 'cell_value,data_type_code,time_slot_id,category_code,seasonally_adj,time,category_code,data_type_code,us,?'
+    assert m3['rows'] == 2
+    rc = [d for d in diagnostics if d['stage'] == 'CENSUS_RESCONST'][0]
+    assert (rc['columns'], rc['rows']) == ('NOT_JSON', None)
+    text = json.dumps(diagnostics)
+    assert '74123' not in text and '2026-08' not in text and 'k' * 40 not in text
+    assert mc.census_shape(json.dumps([['a'] * 30]).encode()) == {'columns': ','.join(['a'] * 24) + ',+6', 'rows': 0}
+
+    out = tmp_path / 'site'
+    out.mkdir()
+    code = tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={'CENSUS_API_KEY': 'k' * 40}, now=lambda: AT,
+                                 transport=FakeTransport(responses({(mc.CENSUS_URL + 'm3', None): (census, {}),
+                                                                    (mc.CENSUS_URL + 'resconst', None): (census, {})})),
+                                 previous=(None, 'NO_LIVE'))
+    printed = capsys.readouterr().out
+    assert code == 0 and (out / el.FILENAME).is_file()
+    assert ('MACRO_EVIDENCE_FETCH stage=CENSUS_M3 code=PARSE_SCHEMA_MISMATCH http=- size=- redirect=- type=- '
+            'columns=cell_value,data_type_code,time_slot_id,category_code,seasonally_adj,time,category_code,data_type_code,us,? rows=2') in printed
+    assert '74123' not in printed and 'k' * 40 not in printed
+
+
+def test_tool_names_the_failed_series_and_still_writes_the_file(tmp_path, capsys, monkeypatch):
+    import macro_evidence as tool
+    real = el._series_step
+
+    def step(sid, old, capture, now):
+        if sid == 'FED:FOMC:TARGET_RANGE':
+            raise ZeroDivisionError('x')
+        return real(sid, old, capture, now)
+    monkeypatch.setattr(el, '_series_step', step)
+    out = tmp_path / 'site'
+    out.mkdir()
+    code = tool.run_from_capture(out, tmp_path, reused_root(tmp_path), environ={}, now=lambda: AT,
+                                 transport=FakeTransport(responses()), previous=(None, 'NO_LIVE'))
+    printed = capsys.readouterr().out
+    assert code == 0 and 'BUILD_FAILED' not in printed
+    assert 'MACRO_EVIDENCE SERIES_FAILED series=FED:FOMC:TARGET_RANGE type=ZeroDivisionError' in printed
+    payload = el.require_macro_evidence(tool.parse_json((out / el.FILENAME).read_bytes()))
+    assert payload['series']['FED:FOMC:TARGET_RANGE']['reason'] == 'SCHEMA_MISMATCH'
