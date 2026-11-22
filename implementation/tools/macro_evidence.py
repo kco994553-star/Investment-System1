@@ -129,15 +129,15 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
         kwargs = {'transport': transport} if transport is not None else {}
         captures = collect_macro_evidence(root, manifest, environ=environ, diagnostics=diagnostics, **kwargs)
         for d in diagnostics:
-            print('MACRO_EVIDENCE_FETCH stage=%s code=%s http=%s size=%s' % tuple(
-                (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'size')))
+            print('MACRO_EVIDENCE_FETCH stage=%s code=%s http=%s size=%s redirect=%s' % tuple(
+                (d.get(k) if d.get(k) is not None else '-') for k in ('stage', 'code', 'http', 'size', 'redirect')))
         prior, state = previous if previous is not None else load_previous(open_previous)
         payload = el.build(captures, previous=prior, previous_state=state, now=now())
         write_bytes(directory, el.encode(payload))
         _summary(payload)
         return 0
-    except Exception:
-        print('MACRO_EVIDENCE BUILD_FAILED nothing_written')
+    except Exception as error:   # the class name only (never the message, which could carry provider text)
+        print('MACRO_EVIDENCE BUILD_FAILED nothing_written type=%s' % type(error).__name__)
         return 1
 
 

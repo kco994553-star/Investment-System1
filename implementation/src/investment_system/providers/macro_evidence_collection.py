@@ -149,7 +149,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         if diagnostics is not None and stage:
             diagnostics.append({"stage": stage, "code": getattr(error, "code", None) if isinstance(error, MacroV0FetchError) else
                                 ("PARSE_" + reason if reason in es.REASONS else "PARSE_OR_TRANSPORT_ERROR"),
-                                "http": getattr(error, "status", None), "size": getattr(error, "size", None)})
+                                "http": getattr(error, "status", None), "size": getattr(error, "size", None),
+                                "redirect": getattr(error, "redirect", None)})
 
     def capture(sid, rows, acquired, *, modified=None, release_date=None):
         captures[sid] = {"rows": rows, "acquired_at": acquired,

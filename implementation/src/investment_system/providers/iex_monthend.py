@@ -28,15 +28,15 @@ import urllib.parse
 import urllib.request
 
 from .. import public_price_boundary as boundary
-from ..qgv.v2_factors import SHARE_BASIS_REASONS
-from .iex_hist import MONTHEND_BASIS_CUTS, SYMBOL_ALIASES, iex_symbol
+from ..qgv.v2_factors import (MONTHEND_BASIS_CUTS, SHARE_BASIS_FACTOR_NOT_AVAILABLE as FK_MISSING,
+                              fiscal_share_basis_factor as _factor)
+from .iex_hist import SYMBOL_ALIASES, iex_symbol
 
 SCHEMA = 'iex-monthend/1'
 TAG_PREFIX = 'iex-v4-monthend-'
 RAW_REPO = 'kco994553-star/investment-system1-raw'
 API = 'https://api.github.com'
 REQUEST_TIMEOUT_S = 300      # one request's socket timeout; the publisher passes less near its deadline (`call(timeout=...)`)
-FK_MISSING = 'SHARE_BASIS_FACTOR_NOT_AVAILABLE'
 MONTH_PRICE_MISSING = 'MONTH_END_PRICE_NOT_AVAILABLE'
 SYMBOL_MISMATCH = 'MONTH_END_SYMBOL_MISMATCH'
 _MONTH = re.compile(r'\d{4}-\d{2}', re.ASCII)
@@ -158,16 +158,6 @@ def read_store(stamp: str, shards: int, call, repo=RAW_REPO) -> dict:
     if type(shards) is not int or not 1 <= shards <= 64:
         _fail('SHARDS_INVALID')
     return merge_shards(read_shard(tag_for(stamp, i), call, repo) for i in range(shards))
-
-
-def _factor(item):
-    """(F_k, None) or (None, public reason) of one ebit_per_share_history item: the item's own V-PRICE-BASIS reason
-    (v2_factors.SHARE_BASIS_REASONS) when it has one, else SHARE_BASIS_FACTOR_NOT_AVAILABLE."""
-    f = item.get('share_basis_factor') if isinstance(item, dict) else None
-    if type(f) in (int, float) and type(f) is not bool and math.isfinite(f) and f > 0:
-        return float(f), None
-    reason = item.get('share_basis_factor_reason') if isinstance(item, dict) else None
-    return None, reason if reason in SHARE_BASIS_REASONS else FK_MISSING
 
 
 def priceable_months(code: str, history, *, cuts=MONTHEND_BASIS_CUTS) -> list[str]:

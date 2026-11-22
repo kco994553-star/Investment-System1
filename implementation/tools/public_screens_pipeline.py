@@ -133,8 +133,8 @@ def collect(directory, *, environ=None, client_factory=None, macro_v0=None, macr
             # and writes only macro-evidence.json. Any failure prints a fixed code and never stops the SEC collection.
             try:
                 macro_evidence(root, manifest)
-            except Exception:
-                print('MACRO_EVIDENCE BUILD_FAILED nothing_written')
+            except Exception as error:   # the class name only
+                print('MACRO_EVIDENCE BUILD_FAILED nothing_written type=%s' % type(error).__name__)
         class Capture:
             def __init__(self, agent):
                 self.client = client_factory(agent)

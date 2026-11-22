@@ -67,6 +67,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from .. import public_price_boundary as boundary
+from ..qgv.v2_factors import MONTHEND_BASIS_CUTS
 from ..validation.forward_ledger import NYSE_HOLIDAYS
 
 PROVIDER = 'IEX_HIST'
@@ -132,13 +133,6 @@ SYMBOL_ALIASES: dict[str, tuple[tuple[str, str | None, str], ...]] = {
     # Warner Bros. Discovery: no IEX status message or trade from 2026-10-06 (traded through 2026-10-05; probe run 39944426209);
     # Form 15-12G filed 2026-10-16. NO_IEX_TRADE, never filled.
     'NASDAQ:WBD': (('2026-10-06', None, 'CONFIRMED IEX TOPS probe run 39944426209: no status/trade from 2026-10-06; Form 15-12G 2026-10-16'),),
-}
-
-# Month-end basis cuts for V4 (owner decision 2026-10-23): history months whose fiscal-year-end date is before `from_date` are not
-# given a month-end price; when V4 then cannot be computed, its public reason is the cut's reason.
-MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
-    # Paramount Global + Skydance merger closed 2025-08-07: pre-merger fiscal years are on another listed line/share basis.
-    'NASDAQ:PSKY': ('2025-08-07', 'MERGER_PRE_BASIS_UNCONFIRMED', 'merger close 2025-08-07; pre-merger share basis unconfirmed'),
 }
 
 # D-CV11: verified split windows after the diluted-share count (code -> ((low, high], ...): split date inside (low, high]).

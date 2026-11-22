@@ -274,6 +274,14 @@ SHARE_BASIS_HISTORY_KEYS = ('ebit_per_share_history',)
 SHARE_BASIS_UNCONFIRMED = 'SHARE_BASIS_UNCONFIRMED'
 SPLIT_TIMING_UNCONFIRMED = 'SPLIT_TIMING_UNCONFIRMED'
 SHARE_BASIS_REASONS = (SHARE_BASIS_UNCONFIRMED, SPLIT_TIMING_UNCONFIRMED)
+SHARE_BASIS_FACTOR_NOT_AVAILABLE = 'SHARE_BASIS_FACTOR_NOT_AVAILABLE'
+# Month-end basis cuts for V4 (owner decision 2026-10-23): history months whose fiscal-year-end date is before `from_date` are not
+# given a month-end price; when V4 then cannot be computed, its public reason is the cut's reason.
+MONTHEND_BASIS_CUTS: dict[str, tuple[str, str, str]] = {
+    # Paramount Global + Skydance merger closed 2025-08-07: pre-merger fiscal years are on another listed line/share basis.
+    'NASDAQ:PSKY': ('2025-08-07', 'MERGER_PRE_BASIS_UNCONFIRMED', 'merger close 2025-08-07; pre-merger share basis unconfirmed'),
+}
+
 # Cover count drift over one filing window without a split (UNCALIBRATED; calibration in QGV_V2_QG_METHOD.md V-PRICE-BASIS).
 SHARE_BASIS_COVER_BAND = (1.0 / 1.2, 1.2)
 SPLIT_DATE_SPAN_DAYS = 31
@@ -297,6 +305,16 @@ LIST_METRICS = frozenset({'ebit_estimated_fiscal_years'})
 # Metrics that are counts/descriptors, not ranked directly.
 DESCRIPTIVE_METRICS = frozenset({'moat_return_mean_5y', 'moat_return_std_5y', 'moat_return_years', 'revenue_ttm_growth',
                                'revenue_growth_std_5y', 'revenue_volatility_5y_rank_pct'})
+
+
+def fiscal_share_basis_factor(item):
+    """(F_k, None) or (None, public reason) of one ebit_per_share_history item: the item's own V-PRICE-BASIS reason
+    (v2_factors.SHARE_BASIS_REASONS) when it has one, else SHARE_BASIS_FACTOR_NOT_AVAILABLE."""
+    f = item.get('share_basis_factor') if isinstance(item, dict) else None
+    if type(f) in (int, float) and type(f) is not bool and math.isfinite(f) and f > 0:
+        return float(f), None
+    reason = item.get('share_basis_factor_reason') if isinstance(item, dict) else None
+    return None, reason if reason in SHARE_BASIS_REASONS else SHARE_BASIS_FACTOR_NOT_AVAILABLE
 
 
 def _finite(value):

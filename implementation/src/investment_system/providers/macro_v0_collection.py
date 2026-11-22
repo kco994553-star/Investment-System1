@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Callable, Mapping
 import re
 from urllib.error import HTTPError
-from urllib.parse import parse_qsl, urlencode
+from urllib.parse import parse_qsl, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from ..macro.growth_inflation_v0 import BEA_FLAT_Q_URL, INFLATION_SERIES_CODE
@@ -65,12 +65,13 @@ class MacroV0FetchError(OSError):
     Diagnostics are fixed tokens only: the HTTP status number, a content-type class and a body-size class.
     """
 
-    def __init__(self, code, *, status=None, content=None, size=None):
+    def __init__(self, code, *, status=None, content=None, size=None, redirect=None):
         super().__init__(code)
         self.code = code
         self.status = status if type(status) is int else None
         self.content = content
         self.size = size
+        self.redirect = redirect if redirect in REDIRECT_NAMES or redirect == "other" else None
 
 
 def _content_class(value) -> str:
@@ -91,9 +92,24 @@ def _size_class(n) -> str:
     return ">=1MB"
 
 
+# Redirect targets named in a diagnostic (owner 2026-11-22): only the last path segment of the Location, without ".html", and
+# only when it is one of these fixed names (Census sends a request without a usable key to missing_key / invalid_key). Any
+# other target is "other". The redirect is never followed, and no URL, query or key is kept.
+REDIRECT_NAMES = frozenset({"missing_key", "invalid_key"})
+
+
+def redirect_name(location) -> str:
+    try:
+        name = urlsplit(str(location or "")).path.rsplit("/", 1)[-1]
+    except ValueError:
+        return "other"
+    name = name[:-5] if name.endswith(".html") else name
+    return name if name in REDIRECT_NAMES else "other"
+
+
 class _NoRedirect(HTTPRedirectHandler):
-    def redirect_request(self, *_args, **_kwargs):
-        raise MacroV0FetchError("REDIRECT_REJECTED")
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise MacroV0FetchError("REDIRECT_REJECTED", redirect=redirect_name(newurl))
 
 
 def _query_allowed(url: str, query: str | None) -> bool:
