@@ -3336,6 +3336,7 @@
   "previous": "NOT_COLLECTED",
   "releases": [],
   "replay_events": [],
+  "resets": [],
   "schema": "macro-evidence/1",
   "scope": {
    "decision": "MEV-10",

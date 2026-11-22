@@ -1130,6 +1130,13 @@
    "series": "BTS:TSI:FREIGHT"
   }
  ],
+ "resets": [
+  {
+   "at": "2026-10-01T10:00:00Z",
+   "previous_generated_at": null,
+   "reason": "NO_LIVE"
+  }
+ ],
  "schema": "macro-evidence/1",
  "scope": {
   "decision": "MEV-10",

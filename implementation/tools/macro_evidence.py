@@ -58,7 +58,7 @@ def parse_json(body: bytes) -> dict:
     return json.loads(body.decode('utf-8', errors='strict'), object_pairs_hook=unique, parse_constant=constant)
 
 
-def previous_copy(open_response=None):
+def previous_copy(open_response=None, *, adopt=False, raw=None):
     """(validated payload, live bytes); (None, None) on 404. Network errors raise OSError, invalid copies ValueError."""
     request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
@@ -75,19 +75,36 @@ def previous_copy(open_response=None):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     if len(body) > el.MAX_BYTES:
         raise ValueError('MACRO_EVIDENCE_PREVIOUS_TOO_LARGE')
-    return el.require_macro_evidence(parse_json(body)), body
+    value = parse_json(body)
+    if raw is not None:
+        raw.append(value)
+    return el.require_macro_evidence(el.adopt_catalog(value) if adopt else value), body
 
 
 def load_previous(open_response=None):
     """(payload or None, LOADED | NO_LIVE | UNAVAILABLE)."""
+    payload, state, _reason, _resets = load_previous_detail(open_response)
+    return payload, state
+
+
+def load_previous_detail(open_response=None):
+    """(payload or None, state, reset reason or None, reset log of a discarded copy).
+
+    The live copy is carried across catalog text / derived-view changes (el.adopt_catalog). History is started again
+    only when: there is no live copy (NO_LIVE); it cannot be fetched (PREVIOUS_UNAVAILABLE); it is not JSON, not this
+    schema/kind, too large, or a kept series row, record or event fails its checks (PREVIOUS_DISCARDED); or it is the
+    empty build placeholder (PREVIOUS_PLACEHOLDER, no generated_at)."""
+    raw = []
     try:
-        payload, _ = previous_copy(open_response)
+        payload, _ = previous_copy(open_response, adopt=True, raw=raw)
     except ValueError:
         print('MACRO_EVIDENCE PREVIOUS_DISCARDED')
-        return None, 'NO_LIVE'
+        return None, 'NO_LIVE', 'PREVIOUS_DISCARDED', el.valid_resets(raw[0].get('resets')) if raw and isinstance(raw[0], dict) else []
     except Exception:
-        return None, 'UNAVAILABLE'
-    return payload, 'LOADED' if payload is not None else 'NO_LIVE'
+        return None, 'UNAVAILABLE', 'PREVIOUS_UNAVAILABLE', []
+    if payload is None:
+        return None, 'NO_LIVE', 'NO_LIVE', []
+    return payload, 'LOADED', (None if payload.get('generated_at') else 'PREVIOUS_PLACEHOLDER'), []
 
 
 def write_bytes(directory, body: bytes) -> bytes:
@@ -132,16 +149,33 @@ def run_from_capture(directory, root, manifest, *, environ, now=_utc_now, open_p
             print('MACRO_EVIDENCE_FETCH stage=%s code=%s http=%s size=%s redirect=%s type=%s columns=%s rows=%s' % tuple(
                 (d.get(k) if d.get(k) is not None else '-')
                 for k in ('stage', 'code', 'http', 'size', 'redirect', 'type', 'columns', 'rows')))
-        prior, state = previous if previous is not None else load_previous(open_previous)
+        if previous is not None:
+            prior, state, reset_reason, prior_resets = (*previous, None, [])
+        else:
+            prior, state, reset_reason, prior_resets = load_previous_detail(open_previous)
         failures = []
-        payload = el.build(captures, previous=prior, previous_state=state, now=now(), failures=failures)
+        payload = el.build(captures, previous=prior, previous_state=state, now=now(), failures=failures,
+                           reset_reason=reset_reason, prior_resets=prior_resets)
         for f in failures:  # one series left out of this run; the others are written below
             print('MACRO_EVIDENCE SERIES_FAILED series=%s type=%s' % (f['series'], f['type']))
         write_bytes(directory, el.encode(payload))
         _summary(payload)
+        if payload['continuity'] != 'CONTINUOUS':
+            last = payload['resets'][-1] if payload['resets'] else {}
+            print('MACRO_EVIDENCE HISTORY_RESET reason=%s resets=%d previous_generated_at=%s' % (
+                last.get('reason', '-'), len(payload['resets']), last.get('previous_generated_at') or '-'))
+            # A GitHub annotation, so the run summary shows it (owner 2026-11-22: a reset is never published silently).
+            print('::warning title=Macro evidence history reset::reason=%s, resets so far=%d' % (
+                last.get('reason', '-'), len(payload['resets'])))
         return 0
     except Exception as error:   # the class name only (never the message, which could carry provider text)
         print('MACRO_EVIDENCE BUILD_FAILED nothing_written type=%s' % type(error).__name__)
+        # Never leave the empty build placeholder in place of a live history: carry the validated live copy as it is.
+        try:
+            preserve(directory, open_previous=open_previous)
+        except Exception:
+            print('MACRO_EVIDENCE PREVIOUS_CARRY_FAILED')
+        print('::warning title=Macro evidence not rebuilt::the live copy was carried unchanged (type=%s)' % type(error).__name__)
         return 1
 
 
