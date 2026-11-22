@@ -27,9 +27,9 @@ def split_candidates(c,day):
                    observed_close_ratio=str(q),candidate_close_ratio=str(near),policy=JUMP_POLICY['version']))
  return out
 
-def reference_files(files,c,day):
+def reference_files(files,c,day,*,reviewed_market_days=()):
  """Enrich saved payloads. Keep original adopted values/null reasons unchanged."""
- candidates=split_candidates(c,day)
+ candidates=[item for item in split_candidates(c,day) if item['date'] not in reviewed_market_days]
  reasons=list(dict.fromkeys([r['reason'] for r in candidates]+[
   r['reason'] for r in c['held_ranges'] if r['from']<=day and r['to']>=c['raw_bars'][0]['date']]))
  out={}

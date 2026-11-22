@@ -16,7 +16,7 @@ import zlib
 from ._private_artifacts import digest, json_bytes, MAX_BYTES
 from .kis_rebuild import child, load_request, pinned, sha, need, write_bundle
 from .kis_price_bridge import validate_contract, price_rows, _day, _ts
-from .kis_chart_actions import chart_basis, reviewed_actions
+from .kis_chart_actions import chart_basis, merge_reviewed_actions, reviewed_actions
 from .kis_stock_bundle import indicator_series, FIELDS, INDICATORS
 from .private_kis_preprocess import calculate_and_project
 from .private_kis_reference import reference_files, official_reference
@@ -243,11 +243,12 @@ def history_key(raw, chart):
                        display_state=chart['display']['state']))
 
 
-def project_stock(contract, config, code, *, previous=None):
+def project_stock(contract, config, code, *, previous=None, entries=None):
     day = config['evaluation_day']
-    contract, markers = chart_basis(contract, code, day)
+    contract, markers = chart_basis(contract, code, day, entries=entries)
+    reviewed_market_days = {mark['date'] for mark in markers if mark['state'] == 'DOCUMENTED_MARKET_MOVE'}
     items = reference_files(calculate_and_project(contract, evaluation_day=day,
-        series_id=config['series_id_prefix']+code, expected_contract_hash=digest(contract)), contract, day)
+        series_id=config['series_id_prefix']+code, expected_contract_hash=digest(contract)), contract, day, reviewed_market_days=reviewed_market_days)
     payload = {path.split('/')[0]: json.loads(value) for path, value in items.items()
                if not path.startswith('manifests/')}
     chart = payload['chart']
@@ -302,9 +303,10 @@ def project_stock(contract, config, code, *, previous=None):
     return result, start
 
 
-def generation(contracts, config, capture, store_root, *, previous=None, stats=None):
+def generation(contracts, config, capture, store_root, *, previous=None, stats=None, catalog=None):
     """Yield changed stock objects and the complete small-to-read serving manifest."""
     stats = stats if stats is not None else {}
+    catalog = reviewed_actions() if catalog is None else catalog
     old = {}
     previous_root = None
     if previous:
@@ -324,7 +326,8 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
         need(symbol not in references, 'DUPLICATE_STOCK_SYMBOL')
         # Includes the label/clock context used by the existing technical engine.
         contract_hashes[code] = digest(contract)
-        key = digest([PROJECTION_VERSION, code, contract_hashes[code], reviewed_actions().get(code, []),
+        entries = catalog.get(code, [])
+        key = digest([PROJECTION_VERSION, code, contract_hashes[code], entries,
                       config['evaluation_day'], config['series_id_prefix']])
         old_ref = old.get(symbol)
         if old_ref and old_ref['input_sha256'] == key:
@@ -334,7 +337,7 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
             stats['stock_unchanged'] += 1
         else:
             prior_view = json.loads(gzip.decompress(read(previous_root, old_ref))) if old_ref else None
-            view, reused = project_stock(contract, config, code, previous=prior_view)
+            view, reused = project_stock(contract, config, code, previous=prior_view, entries=entries)
             raw = json_bytes(view)
             need(len(raw) <= MAX_BYTES, 'STOCK_RESPONSE_LIMIT')
             compressed = gzip.compress(raw, compresslevel=6, mtime=0)
@@ -388,6 +391,8 @@ def main(argv=None):
     parser.add_argument('--revision-reference')
     parser.add_argument('--previous-view', type=Path)
     parser.add_argument('--previous-view-sha256')
+    parser.add_argument('--reviewed-actions', type=Path, help='supplemental chart action register for restore')
+    parser.add_argument('--reviewed-actions-sha256')
     parser.add_argument('--check-only', action='store_true')
     parser.add_argument('--output-dir', type=Path)
     args = parser.parse_args(argv)
@@ -397,6 +402,13 @@ def main(argv=None):
         need(args.check_only != bool(args.output_dir), 'CHOOSE_OUTPUT_OR_CHECK_ONLY')
         need(bool(args.head) == bool(args.head_sha256), 'STOCK_ARCHIVE_HEAD_PIN')
         need(bool(args.previous_view) == bool(args.previous_view_sha256), 'STOCK_GENERATION_PIN')
+        need(bool(args.reviewed_actions) == bool(args.reviewed_actions_sha256), 'REVIEWED_ACTIONS_PIN')
+        catalog = None
+        if args.reviewed_actions:
+            need(args.mode == 'restore', 'REVIEWED_ACTIONS_RESTORE_ONLY')
+            body = args.reviewed_actions.read_bytes()
+            need(sha(body) == args.reviewed_actions_sha256, 'REVIEWED_ACTIONS_PIN')
+            catalog = merge_reviewed_actions(json.loads(body))
         parent = None
         state = {}
         if args.head:
@@ -439,7 +451,7 @@ def main(argv=None):
                 need(sha(value) == args.previous_view_sha256, 'STOCK_GENERATION_PIN')
                 previous = args.previous_view.parent, ref(args.previous_view.name, value)
             files = generation(Contracts(state, config.get('price_basis','RAW')), config, parent, args.source_root,
-                               previous=previous, stats=stats)
+                               previous=previous, stats=stats, catalog=catalog)
         if args.output_dir:
             dest = args.output_dir.resolve()
             need(not any((p/'.git').exists() for p in (dest,*dest.parents)), 'PRIVATE_OUTPUT_OUTSIDE_GIT_REQUIRED')

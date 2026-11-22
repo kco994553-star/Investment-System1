@@ -430,3 +430,22 @@ QGV calculation continues to read raw evaluation-day closing prices and its own
 pinned financial and share inputs.
 
 For an applied, independently reviewed step, the technical display evidence provides the previous trading day, first trading day on the new basis, and source URL in `adjustment_start/end/reference`. `LATEST_REVIEWED_EVENT_STEP` covers that pair only. Separate events are listed under `chart.reviewed_split_steps`. Existing continuous verified coverage takes precedence. This annotation is attached after per-indicator adoption and leaves its decisions intact.
+
+A restore can also read a reviewed register supplied by the caller via
+`--reviewed-actions PATH --reviewed-actions-sha256 SHA256`. The SHA covers
+the file bytes. Its schema is `reviewed-chart-actions/1`. Its `listings`
+object maps each listing code to dated entries. Supplemental entries require
+a CIK, provider exchange code, document URL, document SHA-256 and locator.
+The combined register rejects duplicate dates for the same listing. The
+stock cache key includes that listing’s entries.
+
+An ETF listing code binds its exact ticker and the registered provider venue
+to the original daily query. A `SPLIT` also requires positive, distinct
+integer share counts and the existing consecutive-session/open-price check.
+A `DOCUMENTED_MARKET_MOVE` records a dated price move without changing share
+units. Its `raw_step_sha256` is the SHA-256 of the canonical JSON array of
+previous session, previous close, event session, event open and event close
+using the retained strings. Only that exact, contiguous pair can resolve its
+stock display screen. Each other potential move and each independent hold
+still participates in the display decision. The separate valuation adapter
+continues to evaluate its original price, share and financial inputs.

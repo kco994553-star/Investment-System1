@@ -3,8 +3,10 @@ from datetime import date
 from decimal import Decimal, localcontext
 from functools import lru_cache
 import json
+import re
 from pathlib import Path
 
+from ._private_artifacts import digest
 from .exp_deciles import schedule
 from .kis_price_bridge import EXCHANGES, price_rows, validate_contract
 
@@ -14,14 +16,51 @@ def reviewed_actions():
     return json.loads(Path(__file__).with_suffix('.json').read_text(encoding='utf-8'))
 
 
-def chart_basis(contract, code, day):
+def merge_reviewed_actions(extra):
+    """Merge date-keyed evidence without overriding the built-in register."""
+    if not isinstance(extra, dict) or extra.get('schema') != 'reviewed-chart-actions/1' or not isinstance(extra.get('listings'), dict):
+        raise ValueError('REVIEWED_ACTIONS_SCHEMA')
+    merged = reviewed_actions().copy()
+    for code, additions in extra['listings'].items():
+        if not isinstance(code, str) or not isinstance(additions, list) or not additions:
+            raise ValueError('REVIEWED_ACTIONS_LISTING')
+        venue, sep, symbol = code.partition(':')
+        if not sep or venue not in {*EXCHANGES.values(), 'ETF'} or not re.fullmatch(r'[A-Z0-9][A-Z0-9./-]*', symbol):
+            raise ValueError('REVIEWED_ACTIONS_LISTING')
+        entries = merged.get(code, [])[:]
+        dates = {entry['date'] for entry in entries}
+        for entry in additions:
+            if not isinstance(entry, dict) or entry.get('kind') not in ('SPLIT', 'DOCUMENTED_MARKET_MOVE'):
+                raise ValueError('REVIEWED_ACTION_KIND')
+            when = entry.get('date')
+            if not isinstance(when, str) or date.fromisoformat(when).isoformat() != when or when in dates:
+                raise ValueError('REVIEWED_ACTION_DATE')
+            if (not re.fullmatch(r'[0-9]{10}', str(entry.get('cik', ''))) or
+                    not isinstance(entry.get('url'), str) or not entry['url'].startswith('https://') or
+                    not re.fullmatch(r'[0-9a-f]{64}', str(entry.get('sha256', ''))) or not entry.get('locator')):
+                raise ValueError('REVIEWED_ACTION_EVIDENCE')
+            expected_exchange = EXCHANGES.get(entry.get('provider_excd'))
+            if not expected_exchange or (venue != 'ETF' and venue != expected_exchange):
+                raise ValueError('REVIEWED_ACTION_VENUE')
+            if entry['kind'] == 'SPLIT':
+                if any(type(entry.get(k)) is not int or entry[k] <= 0 for k in ('new_shares','old_shares')) or entry['new_shares'] == entry['old_shares']:
+                    raise ValueError('REVIEWED_ACTION_RATIO')
+            elif not re.fullmatch(r'[0-9a-f]{64}', str(entry.get('raw_step_sha256', ''))):
+                raise ValueError('REVIEWED_MARKET_STEP_PIN')
+            dates.add(when)
+            entries.append(entry)
+        merged[code] = sorted(entries, key=lambda e: e['date'])
+    return merged
+
+
+def chart_basis(contract, code, day, *, entries=None):
     validate_contract(contract)
     query = contract['source_query']
     if query['MODP'] != '0' or query['GUBN'] != '0' or query['SYMB'] != contract['symbol']:
         raise ValueError('RAW_DAILY_SOURCE_REQUIRED')
     if EXCHANGES.get(query['EXCD']) != contract['exchange']:
         raise ValueError('SERIES_EXCHANGE_CONFLICT')
-    listed = reviewed_actions().get(code, [])
+    listed = reviewed_actions().get(code, []) if entries is None else entries
     actions = {r['date']: r for r in listed}
     if len(actions) != len(listed):
         raise ValueError('DUPLICATE_REVIEWED_ACTION')
@@ -38,10 +77,14 @@ def chart_basis(contract, code, day):
         move = Decimal(new) / Decimal(old) if old and new else None
         jump = move is not None and abs(move - 1) >= Decimal('.30')
         action = actions.get(when)
-        if action and (contract['currency'] != 'USD' or
-                       code != contract['exchange'] + ':' + contract['symbol'] or
-                       contract.get('issuer_id') not in (None, action['cik'])):
-            action = None
+        if action:
+            venue_matches = action.get('provider_excd', query['EXCD']) == query['EXCD']
+            listing_matches = code == contract['exchange'] + ':' + contract['symbol']
+            if code == 'ETF:' + contract['symbol']:
+                listing_matches = action.get('provider_excd') == query['EXCD']
+            if (contract['currency'] != 'USD' or not venue_matches or not listing_matches or
+                    contract.get('issuer_id') not in (None, action['cik'])):
+                action = None
         if not action and (not jump or when in events):
             continue
         if action and action['kind'] == 'SPLIT':
@@ -61,6 +104,10 @@ def chart_basis(contract, code, day):
             raise ValueError('SPLIT_REVIEW_CONFLICT')
         if action and action['kind'] == 'SPINOFF_PARENT_UNCHANGED':
             state = 'NON_SPLIT_DISTRIBUTION'
+        elif (action and action['kind'] == 'DOCUMENTED_MARKET_MOVE' and jump and
+              schedule.previous_session(date.fromisoformat(when)).isoformat() == a['date'] and
+              action['raw_step_sha256'] == digest([a['date'], a['close'], when, b['open'], b['close']])):
+            state = 'DOCUMENTED_MARKET_MOVE'
         else:
             state = 'EVIDENCE_OR_RAW_STEP_UNCONFIRMED'
         marks.append(dict(date=when, state=state, previous_day=a['date'],

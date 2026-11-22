@@ -239,3 +239,84 @@ def test_reverse_split_exact_fraction_and_declared_raw_boundary(tmp_path, monkey
         del c[name][-2]
     base, marks = actions.chart_basis(c,'NASDAQ:SYN',day)
     assert base['basis'] == 'RAW' and marks[0]['state'] == 'EVIDENCE_OR_RAW_STEP_UNCONFIRMED'
+
+
+def test_supplemental_fund_split_requires_its_provider_venue(tmp_path):
+    from investment_system.research.kis_chart_actions import chart_basis, merge_reviewed_actions
+
+    _, contract = inputs(tmp_path / 'input')
+    day = contract['price_basis_date']
+    for bar in contract['raw_bars'][:-1]:
+        bar.update(open='20', high='22', low='18', close='20')
+    contract['bars'] = deepcopy(contract['raw_bars'])
+    code = 'ETF:SYN'
+    event = dict(kind='SPLIT', date=day, new_shares=2, old_shares=1, cik='0000000001',
+                 provider_excd='NAS', url='https://example.invalid/split', sha256='a'*64, locator='Synthetic fund notice')
+    register = dict(schema='reviewed-chart-actions/1', listings={code: [event]})
+    catalog = merge_reviewed_actions(register)
+    chart, _ = chart_basis(contract, code, day, entries=catalog[code])
+    assert chart['basis'] == 'SPLIT_ADJUSTED'
+    for wrong_code, wrong_event in [('ETF:OTHER', event), (code, dict(event, provider_excd='AMS'))]:
+        assert chart_basis(contract, wrong_code, day, entries=[wrong_event])[0]['basis'] == 'RAW'
+    contract['issuer_id'] = '0000000002'
+    assert chart_basis(contract, code, day, entries=[event])[0]['basis'] == 'RAW'
+    with pytest.raises(ValueError, match='REVIEWED_ACTION_DATE'):
+        merge_reviewed_actions(dict(register, listings={code: [event, event]}))
+    with pytest.raises(ValueError, match='REVIEWED_ACTION_RATIO'):
+        merge_reviewed_actions(dict(register, listings={code: [dict(event, old_shares=0)]}))
+
+
+def test_documented_price_move_releases_only_matching_step_in_stock_reference(tmp_path):
+    req, contract = inputs(tmp_path / 'input')
+    config = json.loads(req.read_bytes())
+    day = contract['price_basis_date']
+    bar = contract['raw_bars'][-1]
+    bar.update(open='16', high='25', low='14', close='22')
+    contract['bars'] = deepcopy(contract['raw_bars'])
+    old = contract['raw_bars'][-2]
+    event = dict(kind='DOCUMENTED_MARKET_MOVE', date=day, cik='0000000001', provider_excd='NAS',
+                 raw_step_sha256=journal.digest([old['date'], old['close'], day, bar['open'], bar['close']]),
+                 url='https://example.invalid/report', sha256='b'*64, locator='Synthetic issuer notice')
+    view, _ = journal.project_stock(contract, config, 'NASDAQ:SYN', entries=[event])
+    assert view['chart']['display']['state'] == 'AVAILABLE'
+    assert view['chart']['action_markers'][-1]['state'] == 'DOCUMENTED_MARKET_MOVE'
+    assert view['chart']['basis'] == 'RAW' and view['coverage']['applied_splits'] == []
+    assert all(metric['value'] is None for metric in view['latest']['technical']['metrics'].values())
+    contract['held_ranges'] = [dict(**{'from':day, 'to':day}, reason='INDEPENDENT_HOLD', evidence='SYNTHETIC')]
+    view, _ = journal.project_stock(contract, config, 'NASDAQ:SYN', entries=[event])
+    assert view['chart']['display']['hold_reasons'] == ['INDEPENDENT_HOLD']
+    contract['raw_bars'][-1]['open'] = '17'
+    contract['bars'] = deepcopy(contract['raw_bars'])
+    view, _ = journal.project_stock(contract, config, 'NASDAQ:SYN', entries=[event])
+    assert 'RAW_SPLIT_LIKE_JUMP_REVIEW_REQUIRED' in view['chart']['display']['hold_reasons']
+
+
+def test_supplemental_register_is_pinned_and_changes_cached_generation(tmp_path, capsys):
+    req, contract = inputs(tmp_path / 'input')
+    config = json.loads(req.read_bytes())
+    code = 'ETF:SYN'
+    for bar in contract['raw_bars'][:-1]:
+        bar.update(open='20', high='22', low='18', close='20')
+    contract['bars'] = deepcopy(contract['raw_bars'])
+    source = req.parent
+    _, head = make_capture({code:contract}, {}, config, source)
+    common = ['restore', '--source-root', str(source), '--head', head['path'], '--head-sha256', head['sha256']]
+    old = tmp_path / 'old'
+    baseline = dict(journal.generation({code:contract}, config, head, source))
+    stage(old, baseline.items())
+    event = dict(kind='SPLIT', date=config['evaluation_day'], new_shares=2, old_shares=1,
+                 provider_excd='NAS', cik='0000000001', url='https://example.invalid/notice',
+                 sha256='c'*64, locator='Synthetic issuer notice')
+    path = tmp_path / 'register.json'
+    path.write_bytes(json_bytes(dict(schema='reviewed-chart-actions/1', listings={code:[event]})))
+    failed = common + ['--check-only', '--reviewed-actions', str(path), '--reviewed-actions-sha256', '0'*64]
+    assert journal.main(failed) == 2
+    assert 'REVIEWED_ACTIONS_PIN' in capsys.readouterr().out
+    manifest = old / 'generation.json'
+    assert journal.main(common + ['--check-only', '--reviewed-actions', str(path),
+        '--reviewed-actions-sha256', sha(path.read_bytes()), '--previous-view', str(manifest),
+        '--previous-view-sha256', sha(manifest.read_bytes())]) == 0
+    stats = json.loads(capsys.readouterr().out)
+    assert stats['stock_written'] == 1 and stats['stock_full_history'] == 1 and stats['stock_unchanged'] == 0
+    # Reusing the unchanged QGV emits one stock, one manifest and one query reference.
+    assert stats['files'] == 3
