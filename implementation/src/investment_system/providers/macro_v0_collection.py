@@ -211,12 +211,21 @@ def _diagnostic(axis, stage, error, package=None) -> dict:
             "type": None if package is None else ("package" if package.get("package") else "series")}
 
 
+# Owner 2026-11-23: the three Fed axes are held. Their requests (the H.15 pointer and two Data Download Program packages)
+# never succeeded since the first run on 2026-10-11, and the Fed is retiring that download program, so they are not sent;
+# each axis becomes the reason-only entry SOURCE_HELD (the screens show 「보류 · 공급처 경로 폐지 예정」). Re-opening one
+# needs another official Fed path with its terms checked and the owner's approval.
+HELD_AXES = ("Monetary Policy", "Liquidity", "Credit")
+
+
 def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None = None,
                      transport: Callable[..., bytes] = default_transport,
-                     clock: Callable[[], datetime] = _now, diagnostics: list | None = None) -> list[dict]:
+                     clock: Callable[[], datetime] = _now, diagnostics: list | None = None,
+                     held: tuple = HELD_AXES) -> list[dict]:
     """Return `manifest['macro_v0']` entries; failures become reason-only entries.
 
     `diagnostics`, when given, receives one fixed-token dict per failed Fed fetch (pointer or DDP package).
+    `held` axes are not requested at all; each is one {"axis", "reason": "SOURCE_HELD"} entry.
     """
     root = Path(root)
     year = year if type(year) is int else clock().year
@@ -258,6 +267,9 @@ def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None
                 entries.append({"axis": "Growth", "reason": "SOURCE_NOT_AVAILABLE"})
 
     def fed(axis, package, name):
+        if axis in held:
+            entries.append({"axis": axis, "reason": "SOURCE_HELD"})
+            return
         if package is None or _HASH.fullmatch(str(package.get("series"))) is None:
             entries.append({"axis": axis, "reason": "SERIES_NOT_CONFIGURED"})
             return
@@ -269,14 +281,17 @@ def collect_macro_v0(root: Path, *, environ: Mapping[str, str], year: int | None
             if diagnostics is not None:
                 diagnostics.append(_diagnostic(axis, "DDP_PACKAGE", error, package))
 
-    try:
-        h15 = h15_package(transport(H15_POINTER_URL, data=None, query=None, max_bytes=POINTER_MAX_BYTES))
-    except Exception as error:
-        entries.append({"axis": "Monetary Policy", "reason": "SOURCE_NOT_AVAILABLE"})
-        if diagnostics is not None:
-            diagnostics.append(_diagnostic("Monetary Policy", "H15_POINTER", error))
+    if "Monetary Policy" in held:
+        entries.append({"axis": "Monetary Policy", "reason": "SOURCE_HELD"})     # not even the H.15 pointer is requested
     else:
-        fed("Monetary Policy", h15, "macro-v0-fed-h15.csv")
+        try:
+            h15 = h15_package(transport(H15_POINTER_URL, data=None, query=None, max_bytes=POINTER_MAX_BYTES))
+        except Exception as error:
+            entries.append({"axis": "Monetary Policy", "reason": "SOURCE_NOT_AVAILABLE"})
+            if diagnostics is not None:
+                diagnostics.append(_diagnostic("Monetary Policy", "H15_POINTER", error))
+        else:
+            fed("Monetary Policy", h15, "macro-v0-fed-h15.csv")
     fed("Liquidity", FED_DDP_PACKAGES.get("Liquidity"), "macro-v0-fed-h41.csv")
     fed("Credit", FED_DDP_PACKAGES.get("Credit"), "macro-v0-fed-h8.csv")
     try:

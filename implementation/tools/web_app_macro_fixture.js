@@ -25,6 +25,8 @@ function macroScreen() {
   Object.assign(L.inflation, { state: 'LIVE', lit: false, reason: 'NOT_LIT', as_of: '2025-12', inputs: [{ sha256: A, acquired_at: AT }], values: { period: '2025-12', base_period: '2024-12', yoy: 0.03 } });
   Object.assign(L.curve, { state: 'LIVE', lit: true, reason: 'LIT', as_of: '2025-12-31', inputs: [{ sha256: B, acquired_at: AT }], values: { date: '2025-12-31', ten_year: 4.2, three_month: 4.5, spread: -0.3, run_days: 25 } });
   Object.assign(p.data.raw_axes_v0.axes.Labor, { state: 'LIVE', value: '0.046', period: '2025-12', published_value: '4.6', acquired_at: AT, source_sha256: A, reason_codes: [] });
+  // Owner 2026-11-23: the three Fed axes are held (the collector sends no request for them).
+  for (const axis of ['Monetary Policy', 'Liquidity', 'Credit']) p.data.raw_axes_v0.axes[axis].reason_codes = ['SOURCE_HELD'];
   return p;
 }
 const emptyScreen = () => structuredClone(EMPTY['macro-screen.json']);

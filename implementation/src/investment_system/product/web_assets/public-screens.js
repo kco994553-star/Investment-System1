@@ -22,7 +22,7 @@ const RAW={config:{id:'MACRO_V0_RAW_AXES/1',marker:'v0 · 원자료 표시 · �
  fixed:{Labor:'LNS14000000','Monetary Policy':'RIFSPFF_N.B',Fiscal:'current_month_dfct_sur_amt',FX:'JRXWTFB_N.M'},matched:{Liquidity:/^H41\/H41\/[A-Z0-9_.]{1,40}$/,Credit:/^H8\/H8\/[A-Z0-9_.]{1,40}$/},
  keys:['state','value','value_unit','period','base_period','published_value','base_value','observation_count','agency','source_series_id','source_series_code','frequency','seasonal_adjustment','transform','release_at','release_basis','acquired_at','source_sha256','reason_codes'],
  detail:['value','period','base_period','published_value','base_value','observation_count'],
- reasons:['SOURCE_NOT_COLLECTED','SOURCE_NOT_AVAILABLE','SERIES_NOT_CONFIGURED','SYNTHETIC_INPUT_NOT_PUBLIC','SOURCE_AFTER_AS_OF','PROVIDER_ERROR','SCHEMA_MISMATCH','SERIES_NOT_FOUND','MISSING_SOURCE','INVALID_VALUE','CONFLICTING_DUPLICATE','BASE_PERIOD_MISSING','INCOMPLETE_PERIOD','PUBLIC_FX_EXCLUDED','REGIME_JUDGEMENT_DEFERRED']};
+ reasons:['SOURCE_NOT_COLLECTED','SOURCE_NOT_AVAILABLE','SERIES_NOT_CONFIGURED','SYNTHETIC_INPUT_NOT_PUBLIC','SOURCE_AFTER_AS_OF','PROVIDER_ERROR','SCHEMA_MISMATCH','SERIES_NOT_FOUND','MISSING_SOURCE','INVALID_VALUE','CONFLICTING_DUPLICATE','BASE_PERIOD_MISSING','INCOMPLETE_PERIOD','PUBLIC_FX_EXCLUDED','REGIME_JUDGEMENT_DEFERRED','SOURCE_HELD']};
 const MAX=2*1024*1024,hash=v=>typeof v==='string'&&/^[0-9a-f]{64}$/.test(v),number=v=>typeof v==='number'&&Number.isFinite(v);
 function need(v){if(!v)throw Error('PUBLIC_SCREEN_INVALID');}
 function object(v){return v!==null&&typeof v==='object'&&!Array.isArray(v);}
@@ -221,7 +221,9 @@ function renderMacroRaw(b,el,en){const card=el('article',undefined,{class:'card'
  for(const[axis,r]of Object.entries(b.axes)){const tr=el('tr',undefined,{'data-macro-raw-axis':axis,'data-macro-raw-state':r.state});
   const shown=r.state==='NOT_AVAILABLE'?'—':r.value_unit==='RATIO'?r.value+' ('+(Number(r.value)*100).toFixed(2)+'%)':r.value;
   const period=r.period===null?'—':(r.base_period?r.base_period+' → ':'')+r.period+(r.observation_count?' · n='+r.observation_count:'');
-  const state=r.state==='NOT_AVAILABLE'?'NOT_AVAILABLE · '+r.reason_codes.join(', '):r.state;
+  // Owner 2026-11-23: a held axis (SOURCE_HELD) reads in words, never as a code.
+  const held=r.state==='NOT_AVAILABLE'&&r.reason_codes.includes('SOURCE_HELD');
+  const state=held?(en?'Held · provider path being retired':'보류 · 공급처 경로 폐지 예정'):r.state==='NOT_AVAILABLE'?'NOT_AVAILABLE · '+r.reason_codes.join(', '):r.state;
   for(const c of [axis,r.source_series_id+(r.source_series_code?' ('+r.source_series_code+')':'')+' · '+r.agency+' · '+r.seasonal_adjustment,label[r.transform]||r.transform,period,shown,state,r.acquired_at||'—',r.source_sha256?r.source_sha256.slice(0,12)+'…':'—'])tr.append(el('td',String(c)));
   body.append(tr);}
  card.append(list);

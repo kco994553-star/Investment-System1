@@ -322,7 +322,7 @@ function treeBlock(box,merged){
   h('h4',null,'공개 원값 · macro-screen.json (판정 아님)'),
   !ms?fileFail(MS,'경고등·상태판'):!live.length?empty('NO_PUBLIC_OBSERVATION','macro-screen.json에 공개 관측이 없습니다 · 예시를 지어내지 않음'):null,
   rows.length?h('ul',{class:'news-lines',dataset:{raw:''}},rows.map(({ax,x,v})=>h('li',{dataset:{rawAxis:ax,rawState:x.state}},h('b',null,ax),' · ',x.agency,' · ',x.source_series_code||x.source_series_id,' · ',
-   x.state==='NOT_AVAILABLE'?h('span',{dataset:{na:(x.reason_codes||[]).join(' ')}},'— · ',(x.reason_codes||[]).join(', ')):[x.period,' · ',h('span',{dataset:{rawValue:''}},v),' · 수집 상한 ',utc(x.acquired_at)]))):null,
+   x.state==='NOT_AVAILABLE'?h('span',{dataset:{na:(x.reason_codes||[]).join(' ')}},'— · ',(x.reason_codes||[]).includes('SOURCE_HELD')?'보류 · 공급처 경로 폐지 예정':(x.reason_codes||[]).join(', ')):[x.period,' · ',h('span',{dataset:{rawValue:''}},v),' · 수집 상한 ',utc(x.acquired_at)]))):null,
   h('p',{class:'reason'},'정부 통계 · 가격 아님 · 발표 시각 미확인이라 수집 시각이 상한 · FX는 공개 가격 경계에 따라 제외'));}
 
 /* ---------------------------------------------------------------- screen */

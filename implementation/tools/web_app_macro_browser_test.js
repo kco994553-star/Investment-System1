@@ -303,6 +303,11 @@ let phase = 'START', pass = 0;
         [['Growth', 'NOT_AVAILABLE'], ['Inflation', 'NOT_AVAILABLE'], ['Labor', 'LIVE'], ['Monetary Policy', 'NOT_AVAILABLE'], ['Liquidity', 'NOT_AVAILABLE'], ['Credit', 'NOT_AVAILABLE'], ['Fiscal', 'NOT_AVAILABLE'], ['FX', 'NOT_AVAILABLE']]);
       assert.equal(await text(page, '[data-raw-axis=Labor] [data-raw-value]'), '4.6%');
       assert.equal(await page.locator('[data-raw-axis=FX] [data-na]').getAttribute('data-na'), 'PUBLIC_FX_EXCLUDED');
+      // A held axis reads in words, never as its code (owner 2026-11-23).
+      for (const axis of ['Monetary Policy', 'Liquidity', 'Credit']) {
+        assert.equal(await text(page, '[data-raw-axis="' + axis + '"] [data-na]'), '— · 보류 · 공급처 경로 폐지 예정');
+        assert.equal(await page.locator('[data-raw-axis="' + axis + '"] [data-na]').getAttribute('data-na'), 'SOURCE_HELD');
+      }
       await page.locator('[data-jump]').focus(); await page.keyboard.press('Enter');
       assert.equal(await page.evaluate(() => document.activeElement.id), 's-3-1', phase + ': the jump moves the focus to 3.1');
       // ---- keyboard, phone overflow with every details open, boundaries

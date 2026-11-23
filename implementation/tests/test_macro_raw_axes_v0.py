@@ -337,7 +337,7 @@ def clock():
 
 def test_collector_requests_and_entries(tmp_path):
     t = Transport()
-    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=t, clock=clock)
+    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=t, clock=clock, held=())   # the path kept for a re-open
     assert [e['axis'] for e in entries] == ['Inflation', 'Labor', 'Growth', 'Monetary Policy', 'Liquidity', 'Credit', 'Fiscal']
     assert all('reason' not in e for e in entries) and not any(e['axis'] == 'FX' for e in entries)
     ddp_calls = [dict(parse_qsl(q)) for u, _, q in t.calls if u == collection.FED_DDP_URL]
@@ -352,17 +352,32 @@ def test_collector_requests_and_entries(tmp_path):
 
 
 def test_collector_failures_are_reason_only(tmp_path, monkeypatch):
-    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=Transport(fail=('H15_FF_O', 'rel=H8', 'fiscaldata')), clock=clock)
+    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=Transport(fail=('H15_FF_O', 'rel=H8', 'fiscaldata')), clock=clock,
+                                          held=())
     reasons = {e['axis']: e.get('reason') for e in entries}
     assert reasons['Monetary Policy'] == reasons['Credit'] == reasons['Fiscal'] == 'SOURCE_NOT_AVAILABLE' and reasons['Liquidity'] is None
     monkeypatch.setitem(collection.FED_DDP_PACKAGES, 'Liquidity', None)
-    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=Transport(), clock=clock)
+    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=Transport(), clock=clock, held=())
     assert {'axis': 'Liquidity', 'reason': 'SERIES_NOT_CONFIGURED'} in entries
     with pytest.raises(collection.MacroV0FetchError):
         collection.h15_package(b'no link here')
     two = POINTER + POINTER.replace(b'0123456789abcdef0123456789abcdef', b'f' * 32)
     with pytest.raises(collection.MacroV0FetchError):
         collection.h15_package(two)
+
+
+def test_held_fed_axes_send_no_request_and_read_in_words(tmp_path):
+    # Owner 2026-11-23: by default the three Fed axes are held: no H.15 pointer or DDP request, one SOURCE_HELD entry each.
+    t, diagnostics = Transport(), []
+    entries = collection.collect_macro_v0(tmp_path, environ={}, transport=t, clock=clock, diagnostics=diagnostics)
+    assert collection.HELD_AXES == ('Monetary Policy', 'Liquidity', 'Credit')
+    assert not [u for u, _, _ in t.calls if u in (collection.FED_DDP_URL, collection.H15_POINTER_URL)] and diagnostics == []
+    assert [e for e in entries if e['axis'] in collection.HELD_AXES] == [{'axis': a, 'reason': 'SOURCE_HELD'} for a in collection.HELD_AXES]
+    out = macro(tmp_path, {'schema_version': 1, 'sec': [], 'macro': [], 'thirteen_f': [], 'macro_v0': entries})
+    axes = out['data']['raw_axes_v0']['axes']
+    assert {a: (axes[a]['state'], axes[a]['reason_codes']) for a in collection.HELD_AXES} == {
+        a: ('NOT_AVAILABLE', ['SOURCE_HELD']) for a in collection.HELD_AXES}
+    assert {a: axes[a]['state'] for a in ('Labor', 'Fiscal')} == {'Labor': 'LIVE', 'Fiscal': 'LIVE'}
 
 
 @pytest.mark.parametrize('url,query', [
