@@ -133,6 +133,17 @@ def test_bts_bea_and_synthetic_formats():
                          ['74,000', 'NO', '0', 'NXA', 'yes', '2026-08', '1'], ['70000', 'NO', '0', 'NXA', 'no', '2026-08', '1'],
                          ['(S)', 'NO', '0', 'NXA', 'yes', '2026-09', '1']]).encode()
     assert es.parse_census_eits(census, category='NXA', data_type='NO') == {'2026-08': 74000.0}
+    # The live header (2026-11-23) repeats the two predicate variables also asked for in `get`.
+    live = ['cell_value', 'data_type_code', 'time_slot_id', 'category_code', 'seasonally_adj', 'time', 'category_code',
+            'data_type_code', 'us']
+    repeated = json.dumps([live, ['74,000', 'NO', '0', 'NXA', 'yes', '2026-08', 'NXA', 'NO', '1'],
+                           ['70000', 'NO', '0', 'NXA', 'no', '2026-08', 'NXA', 'NO', '1']]).encode()
+    assert es.parse_census_eits(repeated, category='NXA', data_type='NO') == {'2026-08': 74000.0}
+    for bad in ([live, ['74000', 'NO', '0', 'NXA', 'yes', '2026-08', 'XXX', 'NO', '1']],        # copies differ
+                [[n for n in live if n != 'seasonally_adj'], ['74000', 'NO', '0', 'NXA', '2026-08', 'NXA', 'NO', '1']]):
+        with pytest.raises(es.SourceUnavailable) as caught:
+            es.parse_census_eits(json.dumps(bad).encode(), category='NXA', data_type='NO')
+        assert caught.value.reason == 'SCHEMA_MISMATCH'
     spread = es.treasury_monthly_spread([curve_xml([('2026-08-03', '4.0', '4.5'), ('2026-08-04', '4.2', '4.4'),
                                                     ('2026-09-01', '4.0', '3.0')])], before_month='2026-09')
     assert spread == {'2026-08': 0.35}  # the running month is not a completed month
@@ -591,11 +602,12 @@ def test_a_broken_reused_manifest_entry_fails_that_series_only(tmp_path):
 
 def test_census_mismatch_keeps_only_header_names_and_row_count(tmp_path, capsys):
     import macro_evidence as tool
-    # A header that names a column twice (the shape a predicate echoed back as a column would give) does not parse.
+    # A header that names a column twice (a predicate echoed back as a column) parses only when the copies agree; here
+    # the repeated category_code disagrees with the first one, so the body does not parse and only its shape is kept.
     census = json.dumps([['cell_value', 'data_type_code', 'time_slot_id', 'category_code', 'seasonally_adj', 'time',
                           'category_code', 'data_type_code', 'us', '<b>x</b>'],
-                         ['74123', 'NO', '0', 'NXA', 'yes', '2026-08', 'NXA', 'NO', '1', 'z'],
-                         ['74456', 'NO', '0', 'NXA', 'yes', '2026-09', 'NXA', 'NO', '1', 'z']]).encode()
+                         ['74123', 'NO', '0', 'NXA', 'yes', '2026-08', 'XYZ', 'NO', '1', 'z'],
+                         ['74456', 'NO', '0', 'NXA', 'yes', '2026-09', 'XYZ', 'NO', '1', 'z']]).encode()
     transport = FakeTransport(responses({(mc.CENSUS_URL + 'm3', None): (census, {}),
                                          (mc.CENSUS_URL + 'resconst', None): (b'<html>not json</html>', {})}))
     diagnostics = []

@@ -456,12 +456,18 @@ def parse_census_eits(body: bytes, *, category: str, data_type: str) -> dict:
         raise SourceUnavailable("SCHEMA_MISMATCH")
     header = obj[0]
     need = ("cell_value", "data_type_code", "category_code", "seasonally_adj", "time")
-    if any(header.count(k) != 1 for k in need):
+    # The API repeats a predicate variable that is also asked for in `get` (the live 2026-11-23 header carried
+    # category_code and data_type_code twice): a needed name may appear more than once, and its copies must then hold the
+    # same value in every row; a needed name that is missing, or copies that differ, is still SCHEMA_MISMATCH.
+    places = {k: [i for i, name in enumerate(header) if name == k] for k in need}
+    if any(not places[k] for k in need):
         raise SourceUnavailable("SCHEMA_MISMATCH")
-    at = {k: header.index(k) for k in need}
+    at = {k: places[k][0] for k in need}
     rows = {}
     for row in obj[1:]:
         if type(row) is not list or len(row) != len(header):
+            raise SourceUnavailable("SCHEMA_MISMATCH")
+        if any(row[i] != row[at[k]] for k in need for i in places[k][1:]):
             raise SourceUnavailable("SCHEMA_MISMATCH")
         if row[at["category_code"]] != category or row[at["data_type_code"]] != data_type or row[at["seasonally_adj"]] != "yes":
             continue
