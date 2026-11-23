@@ -304,7 +304,7 @@
    "frequency": "W",
    "id": "E14",
    "name": "신규 실업수당 청구 (SA, 주간)",
-   "reason": "TERMS_UNVERIFIED",
+   "reason": null,
    "rule": {
     "realtime_validation": "UNVALIDATED",
     "source_class": "PROPOSAL",
@@ -319,13 +319,13 @@
     "collection": "NEW_DOL_WEEKLY_XML",
     "license_class": "FREE_OFFICIAL",
     "official_statistic": true,
-    "publication": "HELD_TERMS_UNVERIFIED",
+    "publication": "PUBLIC",
     "source": "DOL ETA 539 · 신규 청구, SA, 주간",
-    "terms_checked_on": "2026-10-20",
-    "terms_note": "DOL 저작권 페이지가 수집 환경에서 HTTP 403. 원문 미확인이라 공개 보류",
+    "terms_checked_on": "2026-11-22",
+    "terms_note": "DOL 저작권 원문 확인(#598): 연방정부 작성 공개저작물, 복제·배포 가능. DOL 추천 암시 금지, 제3자 저작물 제외. 공개 범위(오너 2026-11-22): 전국 SA 신규 청구 수와 그 파생값만. 출처 DOL ETA 539, 기준 주=주 끝(토)",
     "url": "https://oui.doleta.gov/unemploy/claims.asp"
    },
-   "state": "NOT_AVAILABLE",
+   "state": "LIVE",
    "system_validation": "UNVALIDATED",
    "unit": "건",
    "v0": true
@@ -2447,21 +2447,41 @@
   },
   "DOL:ETA539:INITIAL_CLAIMS_SA": {
    "acquired_at": "2026-10-08T10:00:00Z",
-   "baseline_at": null,
+   "baseline_at": "2026-10-01T10:00:00Z",
    "current": {
-    "latest": null,
+    "latest": "2026-09-26",
     "since": null,
     "state": null
    },
-   "delayed": null,
+   "delayed": false,
    "frequency": "W",
    "history": {},
    "indicator": "E14",
-   "last_success_at": null,
-   "obs": [],
-   "reason": "TERMS_UNVERIFIED",
-   "release_evidence": null,
-   "state": "NOT_AVAILABLE"
+   "last_success_at": "2026-10-08T10:00:00Z",
+   "obs": [
+    [
+     "2026-09-05",
+     220000.0
+    ],
+    [
+     "2026-09-12",
+     220000.0
+    ],
+    [
+     "2026-09-19",
+     220000.0
+    ],
+    [
+     "2026-09-26",
+     220000.0
+    ]
+   ],
+   "reason": null,
+   "release_evidence": {
+    "at": null,
+    "date": null
+   },
+   "state": "LIVE"
   },
   "FED:FOMC:TARGET_RANGE": {
    "acquired_at": "2026-10-08T10:00:00Z",

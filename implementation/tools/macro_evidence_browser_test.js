@@ -3,7 +3,7 @@
 // multi-run payload (tests/fixtures/macro_evidence/browser_payload.json, written by tests/macro_evidence_fixture.py):
 // 경기/주식시장/산업 tabs counted separately, recent-5 lines + "더 보기" on mobile (10 on PC), collection-time lines
 // labelled as such, revision markers and release ticks, the reconstruction layer off by default, interpretations
-// labelled "해석 후보 · 미승인", the held DOL series, the "근거 더 보기 (전체)" catalog (collapsed; names and states only) and
+// labelled "해석 후보 · 미승인", the E14 DOL series (public since 2026-11-22), the "근거 더 보기 (전체)" catalog (collapsed; names and states only) and
 // the C1 API. Also checks the served artifact and atomic public
 // refresh (HTTP/invalid/other-file failure keep the old publication), with view choices kept across redraw/navigation.
 // Nothing is stored or sent; no outside host is contacted.
@@ -91,7 +91,7 @@ function catalogContract(rows,payload){
     assert.equal(await page.locator('[data-me-catalog-row]').count(),13);
     await openCatalog(page,width);const emptyRows=await catalogRows(page);catalogContract(emptyRows,JSON.parse(EMPTY));
     assert.ok(emptyRows.every(r=>r.collected==='NO'&&r.text.includes('SOURCE_NOT_COLLECTED')),'nothing collected yet');
-    assert.deepEqual(emptyRows.filter(r=>r.held).map(r=>r.id),['E14'],'DOL held for unverified terms');
+    assert.deepEqual(emptyRows.filter(r=>r.held).map(r=>r.id),[],'no indicator held (E14 public since 2026-11-22)');
     assert.equal(await page.locator('[data-me-catalog] svg').count(),0);
     assert.equal(await text(page,'[data-me-summary-counts]'),'유효 경고 0계열 · 유효 개선 0계열');
     assert.equal(await text(page,'[data-me-scope]'),'탐색 화면 전용 · 공식 판정·확률·매크로 게이트에 쓰지 않음');
@@ -193,12 +193,13 @@ function catalogContract(rows,payload){
     assert.deepEqual(await page.locator('[data-me-indicator] option').evaluateAll(o=>o.map(x=>x.value)),['E01']);
     assert.equal(await page.locator('[data-me-line]').count(),1);
     assert.equal(await page.locator('[data-me-line]').getAttribute('data-me-line-basis'),'SOURCE_LAST_MODIFIED');
-    // Catalog list (13 indicators) is separate from the event list; the held DOL series shows no data.
-    assert.equal(await page.locator('[data-me-catalog-row="E14"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
+    // Catalog list (13 indicators) is separate from the event list; E14 (DOL, public since 2026-11-22) shows its series.
+    assert.equal(await page.locator('[data-me-catalog-row="E14"]').getAttribute('data-me-catalog-state'),'LIVE');
     assert.equal(await page.locator('[data-me-catalog-row="E21"]').getAttribute('data-me-catalog-state'),'NOT_AVAILABLE');
     await openCatalog(page,width);const rows=await catalogRows(page),payload=JSON.parse(PAYLOAD);catalogContract(rows,payload);
     const row=id=>rows.find(r=>r.id===id);
-    assert.equal(row('E14').held,true);assert.ok(row('E14').text.includes('TERMS_UNVERIFIED'));assert.ok(!row('E14').text.includes('DOL:'));
+    assert.equal(row('E14').held,false);assert.equal(row('E14').collected,'YES');assert.ok(!row('E14').text.includes('TERMS_UNVERIFIED'));
+    assert.deepEqual(row('E14').series.map(x=>x[0]),['DOL:ETA539:INITIAL_CLAIMS_SA']);
     for(const id of['E21','E26']){assert.equal(row(id).collected,'NO');const [[sid,c,t]]=row(id).series;
      assert.equal(c,'NO');assert.equal(t,sid+' · NOT_AVAILABLE · SOURCE_KEY_NOT_CONFIGURED (API 키 미설정)','Census key missing is a reason, never 0');}
     assert.equal(row('E09').collected,'YES');assert.ok(row('E09').rule.includes('[문헌]'));assert.ok(row('E09').validation.startsWith('문헌상 사후 검증만'));
@@ -213,7 +214,7 @@ function catalogContract(rows,payload){
     const ring='[data-cycle-ring="economy"]';
     await page.locator(ring+' [data-me-ring-line]').first().waitFor();
     const lines=await page.locator(ring+' [data-me-ring-line]').evaluateAll(n=>n.map(x=>[x.dataset.meRingLine,x.dataset.meRingState]));
-    assert.ok(lines.length>=4&&lines.some(([c,st])=>c==='E25'&&st==='LIVE')&&lines.some(([c,st])=>c==='E14'&&st==='NOT_AVAILABLE'),JSON.stringify(lines));
+    assert.ok(lines.length>=4&&lines.some(([c,st])=>c==='E25'&&st==='LIVE')&&lines.some(([c,st])=>c==='E21'&&st==='NOT_AVAILABLE'),JSON.stringify(lines));
     const slotText=await page.locator(ring+' [data-me-ring-line="E25"]').first().textContent();
     for(const s of['v0 · 미검증','최신 관측','E25.v0'])assert.ok(slotText.includes(s),s);
     assert.equal(await page.locator(ring+' [data-cycle-interval], '+ring+' [data-cycle-point]').count(),0,'evidence gives the ring no position');

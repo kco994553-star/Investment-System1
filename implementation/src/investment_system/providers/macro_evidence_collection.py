@@ -154,6 +154,22 @@ def census_shape(body) -> dict:
     return {"columns": ",".join(names) + (",+%d" % (len(obj[0]) - 24) if len(obj[0]) > 24 else ""), "rows": len(obj) - 1}
 
 
+def dol_shape(body) -> dict:
+    """When the DOL ETA 539 XML does not parse: the root tag and the distinct tag names under <week> (plain identifiers,
+    else ?), plus the number of weeks and of weeks without a dated weekEnded / InitialClaims SA. No value, no body."""
+    try:
+        root = es._safe_xml(body)
+    except Exception:
+        return {"columns": "NOT_XML", "rows": None}
+    weeks = root.findall("week")
+    names = sorted({c.tag for w in weeks for c in w})
+    tag = lambda n: n if type(n) is str and _COLUMN.fullmatch(n) else "?"
+    bad = sum(1 for w in weeks if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", (w.findtext("weekEnded") or "").strip())
+              or w.find("InitialClaims") is None or w.find("InitialClaims").find("SA") is None)
+    listed = ",".join(tag(n) for n in names[:24]) + (",+%d" % (len(names) - 24) if len(names) > 24 else "")
+    return {"columns": "%s:%s;bad=%d" % (tag(root.tag), listed, bad), "rows": len(weeks)}
+
+
 def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[str, str], year: int | None = None,
                            transport: Callable[..., tuple] = default_transport, clock: Callable[[], datetime] = _now,
                            diagnostics: list | None = None) -> dict:
@@ -289,7 +305,8 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         except Exception as error:
             fail((sid,), _reason(error), "FOMC_OPENMARKET", error)
 
-    # ---- DOL weekly claims (collected; publication held until the DOL terms are confirmed)
+    # ---- DOL weekly claims: national SA initial claims only (owner 2026-11-22 E14 scope); the period is the reference
+    # week (week ended). The release date is not in the file, so none is recorded (never guessed).
     sid = "DOL:ETA539:INITIAL_CLAIMS_SA"
     form = urlencode((("level", "us"), ("final_yr", str(year + 1)), ("strtdate", str(year - 5)), ("enddate", str(year)),
                       ("filetype", "xml"))).encode()
@@ -298,7 +315,7 @@ def collect_macro_evidence(root: Path, manifest: Mapping, *, environ: Mapping[st
         try:
             capture(sid, es.parse_dol_weekly(got[0]), got[2])
         except Exception as error:
-            fail((sid,), _reason(error), "DOL_ETA539", error)
+            fail((sid,), _reason(error), "DOL_ETA539", error, **dol_shape(got[0]))
 
     # ---- BTS TSI
     sid = "BTS:TSI:FREIGHT"
