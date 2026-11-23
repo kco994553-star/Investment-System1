@@ -44,10 +44,13 @@ function title(v){return typeof v==='string'&&[...v].length>0&&[...v].length<=TI
 function exhibit(e){const x=e.exhibit_99_1;need(plain(x));
  if(x.state==='AVAILABLE'){need(keys(x,['state','title','url','released_at'])&&x.released_at===e.accepted_at&&title(x.title));const prefix=archivePrefix(e.company_id,e.accession);need(typeof x.url==='string'&&x.url.startsWith(prefix)&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,120}\.(?:htm|html|txt|pdf|xml|jpg|gif)$/i.test(x.url.slice(prefix.length)));}
  else need(keys(x,['state','reason_code'])&&x.state==='NOT_AVAILABLE'&&EXHIBIT_REASONS.includes(x.reason_code));}
+// Optional history-reset log (product/reset_log.py, owner 2026-11-22): absent until the first reset; when present 1..500 entries in time order.
+const RESET_REASONS=['NO_LIVE','PREVIOUS_UNAVAILABLE','PREVIOUS_DISCARDED','PREVIOUS_PLACEHOLDER'],MAX_RESETS=500,RESET_AT=/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+00:00$/;
+function resetLog(v,asOf){need(Array.isArray(v)&&v.length>=1&&v.length<=MAX_RESETS);let last=null;for(const e of v){need(keys(e,['at','reason','previous_as_of'])&&RESET_REASONS.includes(e.reason)&&typeof e.at==='string'&&RESET_AT.test(e.at)&&e.at<=asOf&&(last===null||e.at>=last));if(e.previous_as_of!==null)need(typeof e.previous_as_of==='string'&&RESET_AT.test(e.previous_as_of)&&e.previous_as_of<=e.at);last=e.at;}}
 function validate(p){
  try{
-  need(keys(p,TOP)&&p.schema_version===1&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='DISCLOSURE'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS);
-  const cut=instant(p.as_of),ids=Object.keys(CIKS);need(plain(p.companies)&&Object.keys(p.companies).length===ids.length&&ids.every(id=>Object.hasOwn(p.companies,id)));const acquired={},states=[];
+  need(keys(p,TOP.concat(plain(p)&&Object.hasOwn(p,'resets')?['resets']:[]))&&p.schema_version===1&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='DISCLOSURE'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS);
+  const cut=instant(p.as_of),ids=Object.keys(CIKS);if(Object.hasOwn(p,'resets'))resetLog(p.resets,p.as_of);need(plain(p.companies)&&Object.keys(p.companies).length===ids.length&&ids.every(id=>Object.hasOwn(p.companies,id)));const acquired={},states=[];
   for(const id of ids){const c=p.companies[id];need(keys(c,['state','acquired_at','reason_code']));if(c.acquired_at===null)need(c.state==='NOT_AVAILABLE'&&c.reason_code==='NOT_COLLECTED');else{const at=instant(c.acquired_at);need(at<=cut&&c.reason_code===null&&c.state===fresh(at,cut));acquired[id]=at;}states.push(c.state);}
   const state=states.includes('LIVE')?'LIVE':states.includes('STALE')?'STALE':'NOT_AVAILABLE';need(p.state===state&&JSON.stringify(p.reason_codes)===JSON.stringify(state==='LIVE'?[]:state==='STALE'?['STALE_INPUT']:['NO_ELIGIBLE_INPUT']));
   const events=p.events;need(Array.isArray(events)&&events.length<=MAX_EVENTS);const cutoff=utcDay(cut-WINDOW_DAYS*86400000),today=utcDay(cut),seen=new Set();

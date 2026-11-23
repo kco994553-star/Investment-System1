@@ -75,11 +75,14 @@ function groups(items){const out=new Map(),heads=[],counters=new Map();
   if(head){out.set(it,{group_id:head.id,occurrence:'REPEAT'});continue;}
   const base='news:'+it.company_id+':'+compact(it.published_at),n=counters.has(base)?counters.get(base)+1:0;counters.set(base,n);const id=base+':'+n;heads.push({company:it.company_id,at,words,id});out.set(it,{group_id:id,occurrence:'NEW'});}
  return items.map(i=>i.relation==='RELATED_TO_8K'?{group_id:i.group_id,occurrence:'REPEAT'}:out.get(i));}
+// Optional history-reset log (product/reset_log.py, owner 2026-11-22): absent until the first reset; when present 1..500 entries in time order.
+const RESET_REASONS=['NO_LIVE','PREVIOUS_UNAVAILABLE','PREVIOUS_DISCARDED','PREVIOUS_PLACEHOLDER'],MAX_RESETS=500,RESET_AT=/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\+00:00$/;
+function resetLog(v,asOf){need(Array.isArray(v)&&v.length>=1&&v.length<=MAX_RESETS);let last=null;for(const e of v){need(keys(e,['at','reason','previous_as_of'])&&RESET_REASONS.includes(e.reason)&&typeof e.at==='string'&&RESET_AT.test(e.at)&&e.at<=asOf&&(last===null||e.at>=last));if(e.previous_as_of!==null)need(typeof e.previous_as_of==='string'&&RESET_AT.test(e.previous_as_of)&&e.previous_as_of<=e.at);last=e.at;}}
 function validate(p){
  try{
   need(plain(p)&&Number.isInteger(p.schema_version)&&[1,2].includes(p.schema_version));const v2=p.schema_version===2;
-  need(keys(p,v2?TOP2:TOP)&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='NEWS'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS&&p.matching_rule===MATCHING_RULE&&same(p.attribution,ATTRIBUTION));
-  const cut=instant(p.as_of),acquired={},states=[];need(keys(p.sources,SOURCES));const refresh=v2?p.refresh:null;
+  need(keys(p,(v2?TOP2:TOP).concat(Object.hasOwn(p,'resets')?['resets']:[]))&&p.kind===KIND&&p.freshness_basis==='SOURCE_ACQUISITION'&&p.channel==='NEWS'&&p.score_effect==='NONE'&&p.stale_after_seconds===STALE_AFTER&&p.window_days===WINDOW_DAYS&&p.matching_rule===MATCHING_RULE&&same(p.attribution,ATTRIBUTION));
+  const cut=instant(p.as_of),acquired={},states=[];if(Object.hasOwn(p,'resets'))resetLog(p.resets,p.as_of);need(keys(p.sources,SOURCES));const refresh=v2?p.refresh:null;
   if(refresh!==null)need(keys(refresh,['attempted_at','result','sources'])&&refresh.attempted_at===p.as_of);
   for(const source of SOURCES){const ids=source==='GDELT'?GDELT_COMPANIES:IR_COMPANIES,entries=p.sources[source];need(plain(entries)&&Object.keys(entries).length===ids.length&&ids.every(id=>Object.hasOwn(entries,id)));
    for(const id of ids){const c=entries[id];need(keys(c,[...(source==='IR'?['state','acquired_at','reason_code','feed_status']:['state','acquired_at','reason_code']),...(v2?['last_result','last_result_code']:[])]));const listed=Object.hasOwn(IR_DOMAINS,id);

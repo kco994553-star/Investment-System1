@@ -5,10 +5,16 @@ Queue 2.2 a/d/e. Through the paced SEC client: one submissions JSON per company,
 filing index page of each new 8-K to find Exhibit 99.1 (title, link, release time only).
 The previous Pages copy is carried forward on a rolling window:
 
-- 404 -> start fresh; an invalid previous copy -> discarded (PREVIOUS_DISCARDED);
-- network failure reading the previous copy -> nothing written, exit 1;
+- 404 -> start fresh; an invalid previous copy -> discarded; the empty build placeholder -> not carried; a network
+  failure reading it -> start fresh. Each of these starts the rolling window again and is never silent (owner
+  2026-11-22, the #613 rule): the file's `resets` list (product.reset_log) gets one entry with the reason, and the log
+  prints SEC_8K_DISCLOSURES HISTORY_RESET and a GitHub ::warning;
+- the collection does not run, or the file cannot be built or written -> the validated live copy is carried byte for
+  byte (never the empty placeholder over a good copy), exit 1; with no live copy to carry and a reset, an empty file
+  that records the reset is written instead of leaving the placeholder;
 - --preserve-only (UI-only deploys, cockpit-pages.yml only) -> the validated previous copy re-published byte for byte
-  (its as_of and states as published, never restated at the deploy time), no SEC requests.
+  (its as_of and states as published, never restated at the deploy time), no SEC requests. A network failure there
+  exits 1, so the UI deploy is withheld instead of publishing the empty placeholder over the live copy.
 
 Only the secret slot name SEC_USER_AGENT is read; its value is never printed. Only fixed
 codes and counts are printed: no names, titles, URLs or values. No score is changed.
@@ -25,11 +31,12 @@ import urllib.request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from investment_system.markets.us import US_LISTINGS
-from investment_system.product.sec_disclosures import (FILENAME, MAX_BYTES, WINDOW_DAYS, encode, merge, parse_json,
+from investment_system.product.sec_disclosures import (FILENAME, MAX_BYTES, WINDOW_DAYS, encode, instant, merge, parse_json,
                                                        pending_exhibits, require_sec_disclosures)
 from investment_system.providers.sec_8k_disclosures import (SecDisclosureClient, current_reports, exhibit_99_1,
     foreign_earnings_candidates, quarterly_earnings_exhibit)
 from investment_system.providers.sec_collection import SEC_USER_AGENT_SLOT, SecCollectionError
+from investment_system.product import reset_log
 
 SOURCE = 'https://kco994553-star.github.io/Investment-System1/' + FILENAME
 # Bounded daily filing-index budget; the rest stay NOT_COLLECTED and are retried next run.
@@ -68,8 +75,9 @@ def fetch_previous(*, open_response=None):
     return _previous(open_response)[0]
 
 
-def _previous(open_response=None):
-    """(validated payload, live bytes); (None, None) on 404. Network errors raise OSError, invalid copies ValueError."""
+def _previous(open_response=None, raw=None):
+    """(validated payload, live bytes); (None, None) on 404. Network errors raise OSError, invalid copies ValueError.
+    raw (a list) receives the parsed JSON before it is checked, so a discarded copy's reset log can be kept."""
     request = urllib.request.Request(SOURCE, headers={'Accept': 'application/json', 'Cache-Control': 'no-cache'})
     fetch = open_response or urllib.request.build_opener(NoRedirect()).open
     try:
@@ -83,7 +91,34 @@ def _previous(open_response=None):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
     except (urllib.error.URLError, OSError, ValueError):
         raise OSError('PREVIOUS_FETCH_FAILED') from None
-    return require_sec_disclosures(parse_json(body)), body
+    value = parse_json(body)
+    if raw is not None:
+        raw.append(value)
+    return require_sec_disclosures(value), body
+
+
+def is_placeholder(payload):
+    """The empty build copy (emit_empty): no company ever acquired, no event and no reset record."""
+    return (not payload['events'] and 'resets' not in payload
+            and all(c['acquired_at'] is None for c in payload['companies'].values()))
+
+
+def load_previous(open_response=None):
+    """(payload to carry or None, its live bytes or None, reset reason or None, salvaged resets, as_of not carried).
+
+    Network errors raise OSError (the caller decides); everything else is a value."""
+    raw = []
+    try:
+        previous, body = _previous(open_response, raw)
+    except ValueError:
+        print('SEC_8K_DISCLOSURES PREVIOUS_DISCARDED')
+        first = raw[0] if raw else None
+        return None, None, 'PREVIOUS_DISCARDED', reset_log.salvage(first), reset_log.previous_as_of(first)
+    if previous is None:
+        return None, None, 'NO_LIVE', [], None
+    if is_placeholder(previous):
+        return None, None, 'PREVIOUS_PLACEHOLDER', [], previous['as_of']
+    return previous, body, None, [], None
 
 
 def write(directory, payload):
@@ -175,13 +210,16 @@ def _summary(payload, previous):
 def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kwargs=None, open_previous=None):
     environ = os.environ if environ is None else environ
     try:
-        previous, previous_body = _previous(open_previous)
-    except ValueError:
-        print('SEC_8K_DISCLOSURES PREVIOUS_DISCARDED')
-        previous = previous_body = None
+        previous, previous_body, reason, prior, not_carried = load_previous(open_previous)
     except Exception:
-        print('SEC_8K_DISCLOSURES PREVIOUS_FETCH_FAILED nothing_written')
-        return 1
+        if preserve_only:
+            # Nothing can be carried: withhold the UI deploy rather than publish the empty placeholder over the live copy.
+            print('SEC_8K_DISCLOSURES PREVIOUS_FETCH_FAILED nothing_written deploy_withheld')
+            print('::warning title=SEC 8-K disclosures not carried::the live copy could not be read; this UI deploy is withheld')
+            return 1
+        print('SEC_8K_DISCLOSURES PREVIOUS_FETCH_FAILED')
+        previous = previous_body = None
+        reason, prior, not_carried = 'PREVIOUS_UNAVAILABLE', [], None
     if preserve_only:
         if previous is None:
             print('SEC_8K_DISCLOSURES PREVIOUS_NOT_AVAILABLE')
@@ -198,29 +236,48 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     if not live:
         print('SEC_8K_DISCLOSURES LIVE_OPT_IN_REQUIRED')
         return 1
+    as_of = now()
+
+    def keep_or_record():
+        # Nothing collected this run: carry the live copy as it is; with none to carry, record the reset in an empty file
+        # instead of leaving the placeholder (which would hide why the file is empty).
+        if previous_body is not None:
+            carry(out, previous_body)
+        elif reason is not None:
+            try:
+                resets = reset_log.next_resets(None, at=instant(as_of), reason=reason, prior=prior, not_carried_as_of=not_carried)
+                payload = merge(None, {}, as_of=as_of, resets=resets)
+                write(out, payload)
+                reset_log.report('SEC_8K_DISCLOSURES', 'SEC 8-K disclosures', reason, payload.get('resets', []))
+            except Exception:
+                print('SEC_8K_DISCLOSURES RESET_RECORD_FAILED')
+        return 1
+
     agent = environ.get(SEC_USER_AGENT_SLOT)
     if not agent:
         print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=SEC_USER_AGENT_MISSING')
-        return 1
+        return keep_or_record()
     try:
         client = SecDisclosureClient(agent, **(client_kwargs or {}))
         collected, exhibits, counts = collect(client, previous, now=now)
     except SecCollectionError as error:
         print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=' + _code(error))
-        return 1
+        return keep_or_record()
     except Exception:
         print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=SEC_8K_FAILED')
-        return 1
+        return keep_or_record()
     for company_index, code in counts['failures']:
         print(f'SEC_8K_FAILURE company_index={company_index} code={code}')
     if not collected and previous is None:
         print('SEC_8K_DISCLOSURES ALL_FAILED nothing_written')
-        return 1
+        return keep_or_record()
     try:
-        payload = merge(previous, collected, as_of=now(), exhibits=exhibits)
+        resets = reset_log.next_resets(previous, at=instant(as_of), reason=reason, prior=prior, not_carried_as_of=not_carried)
+        payload = merge(previous, collected, as_of=as_of, exhibits=exhibits, resets=resets)
         write(out, payload)
     except Exception:
         print('SEC_8K_DISCLOSURES OUTPUT_FAILED nothing_written')
+        carry(out, previous_body)
         return 1
     print(f"SEC_8K_DISCLOSURES companies={counts['companies']} collected={counts['collected']} failed={counts['failed']} "
           f"excluded_rows={counts['excluded']} conflicts={counts['conflicts']} unknown_items={counts['unknown_items']} "
@@ -228,7 +285,20 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
           + _summary(payload, previous))
     if not collected:
         print('SEC_8K_DISCLOSURES ALL_FAILED previous_kept')
+    reset_log.report('SEC_8K_DISCLOSURES', 'SEC 8-K disclosures', reason, payload.get('resets', []))
     return 0
+
+
+def carry(out, previous_body):
+    """A run that cannot write its own file carries the validated live copy as it is (never the empty placeholder)."""
+    if previous_body is None:
+        return
+    try:
+        write_bytes(out, previous_body)
+        print('SEC_8K_DISCLOSURES PREVIOUS_CARRIED')
+        print('::warning title=SEC 8-K disclosures not rebuilt::the live copy was carried unchanged')
+    except Exception:
+        print('SEC_8K_DISCLOSURES PREVIOUS_CARRY_FAILED')
 
 
 def main(argv=None):
