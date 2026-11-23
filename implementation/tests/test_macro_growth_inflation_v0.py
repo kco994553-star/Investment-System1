@@ -277,7 +277,8 @@ def test_fed_fetch_failures_are_logged_as_fixed_tokens_only(tmp_path):
                 raise mc.MacroV0FetchError('HTTP_STATUS', status=404, content='HTML')
             return super().__call__(url, data=data, query=query, max_bytes=max_bytes)
     diagnostics = []
-    entries = collect_macro_v0(tmp_path, environ={'BEA_USERID': SECRET}, transport=FedFail(), clock=clock, diagnostics=diagnostics)
+    entries = collect_macro_v0(tmp_path, environ={'BEA_USERID': SECRET}, transport=FedFail(), clock=clock, diagnostics=diagnostics,
+                               held=())   # the diagnostics of the path kept for a re-open
     assert {e['axis']: e.get('reason') for e in entries if e['axis'] in ('Liquidity', 'Credit', 'Monetary Policy')} == {
         'Liquidity': 'SOURCE_NOT_AVAILABLE', 'Credit': 'SOURCE_NOT_AVAILABLE', 'Monetary Policy': 'SOURCE_NOT_AVAILABLE'}
     by = {d['axis']: d for d in diagnostics}
