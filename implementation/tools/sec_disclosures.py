@@ -24,8 +24,10 @@ from datetime import datetime, timedelta, timezone
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import tempfile
+import traceback
 import urllib.error
 import urllib.request
 
@@ -101,6 +103,22 @@ def is_placeholder(payload):
     """The empty build copy (emit_empty): no company ever acquired, no event and no reset record."""
     return (not payload['events'] and 'resets' not in payload
             and all(c['acquired_at'] is None for c in payload['companies'].values()))
+
+
+_CODE = re.compile(r'[A-Z][A-Z0-9_]{2,63}')
+
+
+def why(error):
+    """Fixed diagnosis of a swallowed exception: its type, its fixed code when the message is one, and the code location
+    (function:line) of the innermost frame of the original error. Never the message text, a value, a body or an address."""
+    origin = error.__context__ if error.__suppress_context__ and error.__context__ is not None else error
+    name = type(origin).__name__
+    code = error.args[0] if not isinstance(error, KeyError) and len(error.args) == 1 and isinstance(error.args[0], str) and _CODE.fullmatch(error.args[0]) else '-'
+    frames = traceback.extract_tb(origin.__traceback__) or traceback.extract_tb(error.__traceback__)
+    frames = [f for f in frames if f.name != '_need'] or frames   # the check that called the shared helper
+    where = '%s:%d' % (frames[-1].name, frames[-1].lineno) if frames else '-'
+    name = name if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,63}', name) else '-'
+    return 'error=%s code=%s at=%s' % (name, code, where if re.fullmatch(r'[A-Za-z_<>][A-Za-z0-9_<>]{0,63}:[0-9]{1,6}', where) else '-')
 
 
 def load_previous(open_response=None):
@@ -211,7 +229,8 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     environ = os.environ if environ is None else environ
     try:
         previous, previous_body, reason, prior, not_carried = load_previous(open_previous)
-    except Exception:
+    except Exception as error:
+        print('SEC_8K_DISCLOSURES PREVIOUS_FETCH_ERROR ' + why(error))
         if preserve_only:
             # Nothing can be carried: withhold the UI deploy rather than publish the empty placeholder over the live copy.
             print('SEC_8K_DISCLOSURES PREVIOUS_FETCH_FAILED nothing_written deploy_withheld')
@@ -228,8 +247,8 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
         # state stay as published (never restated at the deploy time). Only cockpit-pages.yml passes --preserve-only.
         try:
             write_bytes(out, previous_body)
-        except Exception:
-            print('SEC_8K_DISCLOSURES OUTPUT_FAILED')
+        except Exception as error:
+            print('SEC_8K_DISCLOSURES OUTPUT_FAILED stage=restore ' + why(error))
             return 1
         print(f"SEC_8K_DISCLOSURES PREVIOUS_RESTORED events={len(previous['events'])} state={previous['state']}")
         return 0
@@ -249,8 +268,8 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
                 payload = merge(None, {}, as_of=as_of, resets=resets)
                 write(out, payload)
                 reset_log.report('SEC_8K_DISCLOSURES', 'SEC 8-K disclosures', reason, payload.get('resets', []))
-            except Exception:
-                print('SEC_8K_DISCLOSURES RESET_RECORD_FAILED')
+            except Exception as error:
+                print('SEC_8K_DISCLOSURES RESET_RECORD_FAILED ' + why(error))
         return 1
 
     agent = environ.get(SEC_USER_AGENT_SLOT)
@@ -263,20 +282,26 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     except SecCollectionError as error:
         print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=' + _code(error))
         return keep_or_record()
-    except Exception:
-        print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=SEC_8K_FAILED')
+    except Exception as error:
+        print('SEC_8K_DISCLOSURES COLLECTION_NOT_RUN code=SEC_8K_FAILED ' + why(error).replace('code=', 'error_code=', 1))
         return keep_or_record()
     for company_index, code in counts['failures']:
         print(f'SEC_8K_FAILURE company_index={company_index} code={code}')
     if not collected and previous is None:
         print('SEC_8K_DISCLOSURES ALL_FAILED nothing_written')
         return keep_or_record()
+    stage = 'resets'
     try:
         resets = reset_log.next_resets(previous, at=instant(as_of), reason=reason, prior=prior, not_carried_as_of=not_carried)
+        stage = 'merge'
         payload = merge(previous, collected, as_of=as_of, exhibits=exhibits, resets=resets)
-        write(out, payload)
-    except Exception:
-        print('SEC_8K_DISCLOSURES OUTPUT_FAILED nothing_written')
+        stage = 'validate'
+        body = encode(require_sec_disclosures(payload))
+        stage = 'write'
+        write_bytes(out, body)
+    except Exception as error:
+        # The stage and the fixed diagnosis only (owner 2026-11-24): enough to find the failing check, never a value.
+        print('SEC_8K_DISCLOSURES OUTPUT_FAILED nothing_written stage=%s %s' % (stage, why(error)))
         carry(out, previous_body)
         return 1
     print(f"SEC_8K_DISCLOSURES companies={counts['companies']} collected={counts['collected']} failed={counts['failed']} "
@@ -297,8 +322,8 @@ def carry(out, previous_body):
         write_bytes(out, previous_body)
         print('SEC_8K_DISCLOSURES PREVIOUS_CARRIED')
         print('::warning title=SEC 8-K disclosures not rebuilt::the live copy was carried unchanged')
-    except Exception:
-        print('SEC_8K_DISCLOSURES PREVIOUS_CARRY_FAILED')
+    except Exception as error:
+        print('SEC_8K_DISCLOSURES PREVIOUS_CARRY_FAILED ' + why(error))
 
 
 def main(argv=None):

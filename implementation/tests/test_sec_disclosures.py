@@ -5,6 +5,7 @@ import importlib
 import io
 import itertools
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -563,3 +564,37 @@ def test_reset_log_is_optional_and_checked_the_same_in_python_and_js():
               "for(const[k,v]of Object.entries(c)){try{api.validate(v);out[k]=true;}catch(_){out[k]=false;}}"
               "process.stdout.write(JSON.stringify(out));});") % json.dumps(str(JS))
     assert node(script, {name: p for name, (p, _) in cases.items()}) == expected
+
+
+def test_output_failure_prints_stage_type_code_and_check_location_only(tmp_path, capsys, monkeypatch):
+    """Owner 2026-11-24: OUTPUT_FAILED names the stage, the exception type, its fixed code and the failing check's code
+    location; never a message, value, body or address. The live copy is carried as before."""
+    t = tool()
+    code, out = run_tool(tmp_path, capsys)
+    assert code == 0
+    previous = (tmp_path / sd.FILENAME).read_bytes()
+    real_merge = t.merge
+
+    def broken_merge(*args, **kwargs):
+        payload = real_merge(*args, **kwargs)
+        payload['events'][0]['classification'] = 'OTHER' if payload['events'][0]['classification'] != 'OTHER' else 'RESULTS'
+        return payload
+
+    monkeypatch.setattr(t, 'merge', broken_merge)
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, previous))
+    line = [l for l in out.splitlines() if 'OUTPUT_FAILED' in l]
+    assert code == 1 and len(line) == 1
+    assert re.fullmatch(r'SEC_8K_DISCLOSURES OUTPUT_FAILED nothing_written stage=validate error=ValueError '
+                        r'code=SEC_DISCLOSURES_INVALID at=_require:[0-9]+', line[0])
+    assert 'PREVIOUS_CARRIED' in out and (tmp_path / sd.FILENAME).read_bytes() == previous
+
+    def raising_merge(*args, **kwargs):
+        raise KeyError('nvda')                      # a key name is a value: never printed
+
+    monkeypatch.setattr(t, 'merge', raising_merge)
+    code, out = run_tool(tmp_path, capsys, previous=opener(200, previous))
+    line = [l for l in out.splitlines() if 'OUTPUT_FAILED' in l][0]
+    assert line == 'SEC_8K_DISCLOSURES OUTPUT_FAILED nothing_written stage=merge error=KeyError code=- at=raising_merge:%d' % (
+        raising_merge.__code__.co_firstlineno + 1)
+    for secret in (UA, 'nvda', 'sec.gov', 'http'):
+        assert secret not in out
