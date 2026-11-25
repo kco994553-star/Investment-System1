@@ -598,3 +598,17 @@ def test_output_failure_prints_stage_type_code_and_check_location_only(tmp_path,
         raising_merge.__code__.co_firstlineno + 1)
     for secret in (UA, 'nvda', 'sec.gov', 'http'):
         assert secret not in out
+
+
+def test_as_of_is_taken_after_the_collection(tmp_path, capsys):
+    """Regression (11/25 run, OUTPUT_FAILED stage=merge at=merge:133): the client stamps acquisitions with its own clock
+    during the collection, later than the run's start. as_of must be taken after the collection, not at the start."""
+    t = tool()
+    later = NOW + timedelta(seconds=5)
+    times = iter([NOW])                              # the run's start; every later call reads the collection's end
+    code = t.run(tmp_path, live=True, environ={'SEC_USER_AGENT': UA}, now=lambda: next(times, later),
+                 client_kwargs=client_kwargs(Transport(full_subs(), full_indexes()), now=later), open_previous=opener())
+    out = capsys.readouterr().out
+    assert code == 0 and 'OUTPUT_FAILED' not in out
+    payload = sd.require_sec_disclosures(json.loads((tmp_path / sd.FILENAME).read_text()))
+    assert payload['as_of'] == sd.instant(later)
