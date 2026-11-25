@@ -5,7 +5,7 @@ Provider MODP1 never substitutes for verified split-only adjustment. Raw diagnos
 are not official QGV, a performance series, or an authenticated UI acceptance test.
 """
 from copy import deepcopy
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal, InvalidOperation, localcontext
 import hashlib
 import json
@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 from investment_system.technical import chart_bars
 from .technical_display import measure_display, describe_readiness
 from .exp_deciles import schedule
-from .pit_filings import session_close
+from .pit_filings import CLOSE_TIME_UNVERIFIED, session_close
 
 SCHEMA = 'kis-bars/1'
 EXCHANGES = {'NAS': 'NASDAQ', 'NYS': 'NYSE', 'AMS': 'NYSE_AMERICAN'}
@@ -72,6 +72,36 @@ def _require_completed_session(day, captured):
     raise ValueError('INCOMPLETE_SESSION_AT_CAPTURE')
 
 
+FINALIZATION_POLICY = 'NYSE_KST_1230_V1'
+
+
+def _final_at(session):
+    """First 12:30 Seoul time strictly after the exchange close."""
+    if session.close_at is None:
+        raise ValueError('SESSION_CLOSE_UNVERIFIED')
+    local = session.close_at.astimezone(ZoneInfo('Asia/Seoul'))
+    cutoff = local.replace(hour=12, minute=30, second=0, microsecond=0)
+    return cutoff if cutoff > local else cutoff + timedelta(days=1)
+
+
+def latest_finalized_session(clock):
+    day = clock.astimezone(ZoneInfo('America/New_York')).date()
+    while True:
+        session = session_close(day)
+        if session.reason == CLOSE_TIME_UNVERIFIED:
+            raise ValueError('SESSION_CLOSE_UNVERIFIED')
+        if session.close_at is not None and _final_at(session) <= clock:
+            return day
+        day -= timedelta(days=1)
+
+
+def daily_provider_rows(source, contract):
+    """Remove only explicitly deferred rows, including during receipt replay."""
+    deferred = {item['date'].replace('-', '') for item in
+                contract.get('daily_finalization', {}).get('deferred', [])}
+    return [row for row in source['output2'] if row['xymd'] not in deferred]
+
+
 def _query_window(request, captured):
     """Admission bounds, never an invented source query or price timestamp."""
     bymd=request.get('BYMD')
@@ -125,7 +155,7 @@ def basis_evidence(evidence, c):
     return evidence
 
 
-def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
+def normalize_page(body, *, receipt, request, evidence, basis='RAW', daily_as_of=None):
     if hashlib.sha256(body).hexdigest()!=receipt.get('sha256') or len(body)!=receipt.get('bytes'):
         raise ValueError('SOURCE_HASH_OR_SIZE_MISMATCH')
     if receipt.get('http_status')!=200: raise ValueError('SOURCE_HTTP_FAILURE')
@@ -143,13 +173,35 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
     if basis not in ('RAW','SPLIT_ADJUSTED'): raise ValueError('UNSUPPORTED_PRICE_BASIS')
     currency=evidence.get('currency')
     if currency!='USD' or not evidence.get('currency_reference'): raise ValueError('CURRENCY_EVIDENCE_REQUIRED')
+    finalization = None
+    if daily_as_of is not None:
+        clock = _ts(daily_as_of)
+        if request['BYMD'] != '' or basis != 'RAW' or clock > capture_time:
+            raise ValueError('INVALID_DAILY_FINALIZATION_CONTEXT')
+        target = latest_finalized_session(clock)
+        finalization = dict(policy=FINALIZATION_POLICY, as_of=daily_as_of,
+                            target=target.isoformat(), deferred=[])
     raw, rejected, seen=[],[],set()
     for record in data['output2']:
+        if finalization is not None and not re.fullmatch(r'[0-9]{8}', str(record.get('xymd', ''))):
+            raise ValueError('INVALID_SESSION_DATE')
         day=datetime.strptime(record['xymd'],'%Y%m%d').date().isoformat()
         if day in seen or day>query: raise ValueError('DUPLICATE_OR_FUTURE_SESSION')
         seen.add(day)
         if not schedule.is_session(date.fromisoformat(day)):
             rejected.append({'date':day,'reason':'REFERENCE_CALENDAR_CLOSED'});continue
+        if finalization is not None:
+            session = session_close(date.fromisoformat(day))
+            cutoff = _final_at(session)
+            if cutoff > clock:
+                if capture_time < session.close_at:
+                    reason = 'SESSION_OPEN_OR_PENDING'
+                elif capture_time < cutoff:
+                    reason = 'AWAITING_FINALIZATION'
+                else:
+                    reason = 'AFTER_RUN_CUTOFF'
+                finalization['deferred'].append(dict(date=day, reason=reason))
+                continue
         _require_completed_session(date.fromisoformat(day),capture_time)
         try:
             values={k:_decimal(record.get(v),zero=k in ('volume','amount')) for k,v in zip(FIELDS,('open','high','low','clos','tvol','tamt'))}
@@ -162,6 +214,8 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
     raw.sort(key=lambda r:r['date']);bars=deepcopy(raw)
     splits=deepcopy(evidence.get('splits',[]))
     if len({s['date'] for s in splits})!=len(splits): raise ValueError('DUPLICATE_SPLIT')
+    if finalization and len(finalization['deferred']) == len(seen) and seen:
+        splits = []  # No basis date. This page is counted and never stored.
     for s in splits:
         _day(s['date']);ratio=_decimal(s['ratio'],nullable=False)
         if not s.get('evidence') or s.get('status')!='CONFIRMED': raise ValueError('SPLIT_EVIDENCE_REQUIRED')
@@ -183,6 +237,8 @@ def normalize_page(body, *, receipt, request, evidence, basis='RAW'):
             'raw_bars':raw,'bars':bars,'rejected_rows':rejected,'suspensions':[],
             'timestamp_basis':'SESSION_DATE_ONLY_NO_PROVIDER_INTRADAY_TIME','publication_scope':'OWNER_PRIVATE_ONLY'}
     if query_context is not None: result['source_query_context']=query_context
+    if finalization is not None:
+        result['daily_finalization'] = finalization
     validate_contract(result)
     # Existing chart validator is the OHLCV reader; timestamp is a documented join key.
     chart_bars.normalize({'schema':chart_bars.SOURCE_SCHEMA,'symbol':symbol,'provider':result['source'],

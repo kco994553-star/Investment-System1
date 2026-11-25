@@ -16,7 +16,7 @@ import re
 import tempfile
 
 from ._private_artifacts import canonical_bytes, digest, json_bytes, MAX_BYTES
-from .kis_price_bridge import normalize_page, validate_contract, _ts
+from .kis_price_bridge import daily_provider_rows, normalize_page, validate_contract, _ts
 
 SCHEMA = 'retained-month-store/1'
 SCOPE = 'OWNER_PRIVATE_ONLY'
@@ -225,12 +225,17 @@ def ingest(root, *, contract_bytes, body, receipt_bytes, expected_contract_sha25
                                     'splits', 'confirmed_ranges', 'held_ranges',
                                     'session_scope', 'price_scope_status')}
     evidence.update(c['identity'], currency=c['currency'])
-    rebuilt = normalize_page(body, receipt=receipt, request=c['source_query'], evidence=evidence)
+    policy = c.get('daily_finalization', {})
+    rebuilt = normalize_page(body, receipt=receipt, request=c['source_query'], evidence=evidence,
+                             daily_as_of=policy.get('as_of'))
+    _need(rebuilt.get('daily_finalization') == c.get('daily_finalization'), 'DAILY_FINALIZATION_MISMATCH')
     _need(rebuilt['raw_bars'] == c['raw_bars'] and
           rebuilt['rejected_rows'] == c['rejected_rows'] and
           rebuilt['source_sha256'] == c['source_sha256'] and
           rebuilt['collected_at'] == c['collected_at'], 'NORMALIZED_SOURCE_MISMATCH')
     source = json.loads(body)
+    if policy:
+        source['output2'] = daily_provider_rows(source, rebuilt)
     series = dict(symbol=c['symbol'], exchange=c['exchange'], currency=c['currency'],
                   calendar=c['calendar'], timezone=c['timezone'],
                   basis=c['basis'], lane='KIS_GUBN0_MODP0')

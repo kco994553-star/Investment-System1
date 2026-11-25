@@ -59,15 +59,28 @@ def page_evidence(payload, code, receipt):
          binding['exchange'] == query['EXCD'], 'PAGE_EVIDENCE_QUERY_MISMATCH')
     return binding['evidence']
 
-def ingest_page(store, body, receipt_bytes, receipt_pin, evidence, review=None):
+def ingest_page(store, body, receipt_bytes, receipt_pin, evidence, review=None, daily_as_of=None):
     need(sha(receipt_bytes) == receipt_pin, 'RECEIPT_PIN')
     receipt = json.loads(receipt_bytes)
-    contract = normalize_page(body, receipt=receipt, request=receipt['request'], evidence=evidence)
+    contract = normalize_page(body, receipt=receipt, request=receipt['request'], evidence=evidence,
+                              daily_as_of=daily_as_of)
+    details = {}
+    if daily_as_of is not None:
+        policy = contract['daily_finalization']
+        reasons = {}
+        for item in policy['deferred']:
+            reason = item['reason']
+            reasons[reason] = reasons.get(reason, 0) + 1
+        details = dict(deferred_reasons=reasons, target_present=contract['price_basis_date'] == policy['target'],
+                       deferred_only=bool(reasons) and not contract['raw_bars'] and not contract['rejected_rows'])
+        if details['deferred_only']:
+            return dict(details, new_rows=0, revised_rows=0, unchanged_rows=0, appended_bytes=0)
     need(bool(contract['raw_bars']), 'NO_ADMISSIBLE_PRICE_ROWS')
     contract_bytes = json_bytes(contract)
-    return ingest(store, contract_bytes=contract_bytes, body=body, receipt_bytes=receipt_bytes,
+    result = ingest(store, contract_bytes=contract_bytes, body=body, receipt_bytes=receipt_bytes,
                   expected_contract_sha256=sha(contract_bytes), expected_receipt_sha256=receipt_pin,
                   revision_reference=review)
+    return dict(result, **details)
 
 
 def freeze(root, *, store_path, evaluation_day, calculated_at, financial, symbols,
@@ -143,6 +156,7 @@ def main(argv=None):
     page.add_argument('--receipt-sha256', required=True)
     page.add_argument('--evidence-sha256', required=True)
     page.add_argument('--revision-reference')
+    page.add_argument('--daily-as-of')
     page.add_argument('--code', help='exact input code for a pinned scope evidence file')
     evidence = modes.add_parser('evidence')
     evidence.add_argument('--baseline-request', type=Path, required=True)
@@ -170,8 +184,10 @@ def main(argv=None):
             receipt = checked(args.receipt, args.receipt_sha256)
             result = ingest_page(scratch(args.store), args.body.read_bytes(), receipt,
                                  args.receipt_sha256, page_evidence(evidence, args.code, receipt),
-                                 args.revision_reference)
+                                 args.revision_reference, args.daily_as_of)
             out = {key: result[key] for key in ('new_rows', 'revised_rows', 'unchanged_rows', 'appended_bytes')}
+            if args.daily_as_of is not None:
+                out.update({key: result[key] for key in ('deferred_reasons', 'deferred_only', 'target_present')})
         elif args.mode == 'evidence':
             out = freeze_evidence(args.baseline_request, args.baseline_request_sha256, scratch(args.output))
         elif args.mode == 'coverage':
