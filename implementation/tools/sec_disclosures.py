@@ -290,6 +290,9 @@ def run(out, *, live, preserve_only=False, environ=None, now=_utc_now, client_kw
     if not collected and previous is None:
         print('SEC_8K_DISCLOSURES ALL_FAILED nothing_written')
         return keep_or_record()
+    # The payload's as_of is taken after the collection (as before #620): every company's acquisition time is at or before
+    # it (merge requires acquired_at <= as_of). The earlier `now()` only dates a run that collected nothing.
+    as_of = now()
     stage = 'resets'
     try:
         resets = reset_log.next_resets(previous, at=instant(as_of), reason=reason, prior=prior, not_carried_as_of=not_carried)
