@@ -10,14 +10,16 @@ from investment_system.research.kis_price_bridge import latest_finalized_session
 
 
 @pytest.mark.parametrize(('clock', 'expected'), [
-    ('2026-11-25T03:29:59Z', '2026-11-23'),
-    ('2026-11-25T03:30:00Z', '2026-11-24'),
+    ('2026-11-25T03:30:00Z', '2026-11-23'),  # former cutoff
+    ('2026-11-25T04:05:00Z', '2026-11-24'),  # ordinary collection
+    ('2026-11-25T03:59:59Z', '2026-11-23'),
+    ('2026-11-25T04:00:00Z', '2026-11-24'),
     ('2026-11-25T10:40:00Z', '2026-11-24'),
-    ('2026-11-27T03:30:00Z', '2026-11-25'),  # holiday
-    ('2026-11-28T03:29:59Z', '2026-11-25'),  # early close
-    ('2026-11-28T03:30:00Z', '2026-11-27'),
+    ('2026-11-27T04:00:00Z', '2026-11-25'),  # holiday
+    ('2026-11-28T03:59:59Z', '2026-11-25'),  # early close
+    ('2026-11-28T04:00:00Z', '2026-11-27'),
     ('2026-03-09T04:05:00Z', '2026-03-06'),  # spring transition weekend
-    ('2026-03-10T03:30:00Z', '2026-03-09'),
+    ('2026-03-10T04:00:00Z', '2026-03-09'),
     ('2026-11-02T04:05:00Z', '2026-10-30'),  # fall transition weekend
 ])
 def test_cutoff(clock, expected):
@@ -40,7 +42,9 @@ def test_mixed_page_replay_and_overlap(tmp_path):
     assert result['new_rows'] == 2 and result['target_present']
     assert result['deferred_reasons'] == {'SESSION_OPEN_OR_PENDING': 1}
     manifest = monthly.load_manifest(tmp_path, result['series_id'])
-    assert [row['date'] for row in monthly.retained_contract(tmp_path, manifest)['bars']] == ['2026-11-23', '2026-11-24']
+    retained = monthly.retained_contract(tmp_path, manifest)
+    assert retained['daily_finalization']['policy'] == 'NYSE_KST_1300_V1'
+    assert [row['date'] for row in retained['bars']] == ['2026-11-23', '2026-11-24']
     second = page(tmp_path, dates)
     assert second['appended_bytes'] == 0 and second['unchanged_rows'] == 2
     with pytest.raises(ValueError, match='ROW_REVISION_REVIEW_REQUIRED'):
@@ -49,9 +53,9 @@ def test_mixed_page_replay_and_overlap(tmp_path):
 
 
 def test_deferred_only_and_crossing_cutoff(tmp_path):
-    for received, reason in [('2026-11-25T03:29:59Z', 'AWAITING_FINALIZATION'),
-                             ('2026-11-25T03:30:01Z', 'AFTER_RUN_CUTOFF')]:
-        result = page(tmp_path, ['20261124'], clock='2026-11-25T03:29:59Z', received=received)
+    for received, reason in [('2026-11-25T03:59:59Z', 'AWAITING_FINALIZATION'),
+                             ('2026-11-25T04:00:01Z', 'AFTER_RUN_CUTOFF')]:
+        result = page(tmp_path, ['20261124'], clock='2026-11-25T03:59:59Z', received=received)
         assert result['deferred_only'] and result['new_rows'] == 0
         assert result['deferred_reasons'] == {reason: 1}
         assert not (tmp_path/'series').exists()

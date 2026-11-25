@@ -72,15 +72,15 @@ def _require_completed_session(day, captured):
     raise ValueError('INCOMPLETE_SESSION_AT_CAPTURE')
 
 
-FINALIZATION_POLICY = 'NYSE_KST_1230_V1'
+FINALIZATION_POLICY = 'NYSE_KST_1300_V1'
 
 
 def _final_at(session):
-    """First 12:30 Seoul time strictly after the exchange close."""
+    """First 13:00 Seoul time strictly after the exchange close."""
     if session.close_at is None:
         raise ValueError('SESSION_CLOSE_UNVERIFIED')
     local = session.close_at.astimezone(ZoneInfo('Asia/Seoul'))
-    cutoff = local.replace(hour=12, minute=30, second=0, microsecond=0)
+    cutoff = local.replace(hour=13, minute=0, second=0, microsecond=0)
     return cutoff if cutoff > local else cutoff + timedelta(days=1)
 
 
