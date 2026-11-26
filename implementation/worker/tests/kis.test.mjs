@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-// Private KIS area routes (/kis/status, /kis/chart) of the private Worker. Synthetic values only: the read token, the Google
+// Private KIS area routes (/kis/status, /kis/stock) of the private Worker; the four older per-file routes are gone. Synthetic values only: the read token, the Google
 // client id and the owner address are made up at run time; no KIS value exists in these tests.
 const OWNER_EMAIL = ['owner', 'example.test'].join('@');
 const FAKE_TOKEN = ['github', 'pat', '11SYNTHETICONLY0000000000'].join('_');
@@ -18,7 +18,6 @@ const statusRecord = (expires = '2027-01-31') => JSON.stringify({
   schema: ['private', 'area-status/1'].join('-'), publication_scope: 'OWNER_PRIVATE_ONLY', run_at: '2026-11-05T03:00:00Z',
   worker_read_token: { ...kisTokenDate({ PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: expires }, NOW), verification: 'NOT_CHECKED' },
 });
-const BARS = JSON.stringify({ schema: K('bars/1'), symbol: 'NVDA', source: 'SYNTHETIC', price_basis_date: '2026-11-04', bars: [] });
 
 class Storage {
   value; queue = Promise.resolve();
@@ -30,7 +29,7 @@ function namespace(clock) {
   const limiter = new HistoryRateLimiter({ storage: new Storage() }, {}, { now: () => clock.now });
   return { idFromName: (n) => n, get: () => ({ fetch: (input, init) => limiter.fetch(input instanceof Request ? input : new Request(input, init)) }) };
 }
-function setup({ env = {}, github = () => new Response(BARS, { status: 200 }), token = {}, authStatus = 200 } = {}) {
+function setup({ env = {}, github = () => new Response(statusRecord(), { status: 200 }), token = {}, authStatus = 200 } = {}) {
   const clock = { now: NOW }, calls = [];
   const e = { ALLOWED_EMAIL: OWNER_EMAIL, GOOGLE_CLIENT_ID: 'mock-client-id', HISTORY_RATE_LIMITER: namespace(clock),
     PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2027-01-31', ...env };
@@ -51,6 +50,9 @@ function setup({ env = {}, github = () => new Response(BARS, { status: 200 }), t
 }
 const noStore = (r) => { assert.equal(r.headers.get('Cache-Control'), 'private, no-store, max-age=0'); assert.equal(r.headers.get('Vary'), 'Origin'); assert.equal(r.headers.get('X-Content-Type-Options'), 'nosniff'); };
 const githubCalls = (s) => s.calls.filter((c) => c.url.startsWith('https://api.github.com'));
+const STOCK = '/kis/stock?symbol=NVDA';
+const ROOT_URL = 'https://api.github.com' + REPO + '/contents/views/kis-stock-packs.json?ref=data';
+const OLD_ROUTES = ['/kis/chart', '/kis/analysis', '/kis/technical', '/kis/qgv'];
 async function body(r) { const t = await r.text(); assert.doesNotMatch(t, /github_pat_|SYNTHETICONLY|mock-client-id|owner@|example\.test/, 'no secret or address in a body'); return t; }
 
 test('seoulToday counts the Asia/Seoul date', () => {
@@ -86,69 +88,64 @@ test('upstream rows 3–7 map to fixed states (§4.4)', () => {
 
 test('no Google proof: 403 before any private read; Google down: 503 (closed)', async () => {
   for (const [opts, status, code] of [[{ token: { email: ['someone', 'else.test'].join('@') } }, 403, 'AUTH_FORBIDDEN'], [{ token: { aud: 'other-app' } }, 403, 'AUTH_FORBIDDEN'],
-    [{ token: { email_verified: false } }, 403, 'AUTH_FORBIDDEN'], [{ authStatus: 401 }, 403, 'AUTH_FORBIDDEN'], [{ authStatus: 500 }, 503, 'AUTH_UNAVAILABLE']]) {
-    for (const path of ['/kis/status', '/kis/chart?symbol=NVDA']) {
+    [{ token: { email_verified: false } }, 403, 'AUTH_FORBIDDEN'], [{ authStatus: 401 }, 403, 'AUTH_FORBIDDEN'], [{ authStatus: 400 }, 403, 'AUTH_FORBIDDEN'], [{ authStatus: 500 }, 503, 'AUTH_UNAVAILABLE']]) {
+    for (const path of ['/kis/status', STOCK, '/kis/stock?part=qgv']) {
       const s = setup(opts), r = await s.run(path);
       assert.equal(r.status, status, path + ' ' + JSON.stringify(opts)); noStore(r);
       assert.equal(JSON.parse(await body(r)).error.code, code);
       assert.equal(githubCalls(s).length, 0, 'no private read without the owner');
     }
   }
-  const s = setup(), r = await s.run('/kis/chart?symbol=NVDA', { Authorization: '' });
-  assert.equal(r.status, 403); assert.equal(githubCalls(s).length, 0);
+  for (const path of ['/kis/status', STOCK]) {
+    const s = setup(), r = await s.run(path, { Authorization: '' });
+    assert.equal(r.status, 403, path); assert.equal(githubCalls(s).length, 0);
+  }
 });
 
-test('chart: the owner gets the private file bytes unchanged, no-store, only for the app origin', async () => {
-  const s = setup(), r = await s.run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 200); noStore(r);
-  assert.equal(r.headers.get('Access-Control-Allow-Origin'), ORIGIN);
-  assert.equal(await body(r), BARS, 'bytes passed through');
-  const [call] = githubCalls(s);
-  assert.equal(call.url, 'https://api.github.com' + REPO + '/contents/chart/N/NVDA.json?ref=data');
-  assert.equal(call.init.headers.Accept, 'application/vnd.github.raw+json');
-  assert.equal(call.init.headers.Authorization, 'Bearer ' + FAKE_TOKEN, 'the read token goes only to GitHub');
-  assert.equal(call.init.redirect, 'manual'); assert.equal(call.init.cache, 'no-store');
-  const other = await setup().run('/kis/chart?symbol=NVDA', { Origin: 'https://evil.example' });
-  assert.equal(other.status, 403); assert.equal(other.headers.get('Access-Control-Allow-Origin'), null);
+test('the read token goes only to GitHub (raw Contents, redirect manual, no-store); only the app origin gets an answer', async () => {
+  for (const [path, url] of [['/kis/status', 'https://api.github.com' + REPO + '/contents/status/private-area.json?ref=data'], [STOCK, ROOT_URL]]) {
+    const s = setup({ github: (u) => u === ROOT_URL ? new Response('{}', { status: 401 }) : new Response(statusRecord(), { status: 200 }) });
+    const r = await s.run(path);
+    assert.equal(r.headers.get('Access-Control-Allow-Origin'), ORIGIN, path); noStore(r);
+    const [call] = githubCalls(s);
+    assert.equal(call.url, url);
+    assert.equal(call.init.headers.Accept, 'application/vnd.github.raw+json');
+    assert.equal(call.init.headers.Authorization, 'Bearer ' + FAKE_TOKEN, 'the read token goes only to GitHub');
+    assert.equal(call.init.redirect, 'manual'); assert.equal(call.init.cache, 'no-store');
+    const other = setup(), refused = await other.run(path, { Origin: 'https://evil.example' });
+    assert.equal(refused.status, 403); assert.equal(refused.headers.get('Access-Control-Allow-Origin'), null);
+    assert.equal(JSON.parse(await body(refused)).error.code, 'ORIGIN_FORBIDDEN'); assert.equal(other.calls.length, 0, path + ': nothing read');
+  }
 });
 
-test('chart: symbol checks stop path tricks before any read', async () => {
-  for (const path of ['/kis/chart?symbol=../x', '/kis/chart?symbol=nvda', '/kis/chart?symbol=NVDA&x=1', '/kis/chart?symbol=ZZZZ', '/kis/chart', '/kis/chart?symbol=NVDA%2F..', '/kis/status?x=1', '/kis/other']) {
+test('the four old per-file routes are gone: ROUTE_NOT_FOUND 404 before Google or GitHub, with or without a query', async () => {
+  for (const route of OLD_ROUTES) {
+    for (const path of [route, route + '?symbol=NVDA', route + '?symbol=BRK-B', route + '?part=qgv']) {
+      for (const method of ['GET', 'OPTIONS']) {
+        const headers = method === 'OPTIONS' ? { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization' } : {};
+        const s = setup(), r = await s.run(path, headers, method);
+        assert.equal(r.status, 404, method + ' ' + path); noStore(r);
+        assert.equal(r.headers.get('Access-Control-Allow-Origin'), ORIGIN);
+        assert.equal(JSON.parse(await body(r)).error.code, 'ROUTE_NOT_FOUND', path);
+        assert.equal(s.calls.length, 0, path + ': no Google and no GitHub call');
+        assert.equal(githubCalls(s).length, 0);
+      }
+    }
+  }
+  // Another origin is still refused first, exactly like any other path.
+  const s = setup(), r = await s.run('/kis/chart?symbol=NVDA', { Origin: 'https://evil.example' });
+  assert.equal(r.status, 403); assert.equal(JSON.parse(await body(r)).error.code, 'ORIGIN_FORBIDDEN'); assert.equal(s.calls.length, 0);
+});
+
+test('stock and status: query checks stop path tricks before any read', async () => {
+  for (const path of ['/kis/stock?symbol=../x', '/kis/stock?symbol=nvda', '/kis/stock?symbol=NVDA&x=1', '/kis/stock', '/kis/stock?symbol=NVDA%2F..',
+    '/kis/stock?symbol=BRK_B', '/kis/stock?symbol=BRK%2FB', '/kis/stock?symbol=BRK.B', '/kis/status?x=1', '/kis/status#x', '/kis/other']) {
     const s = setup(), r = await s.run(path);
     assert.ok([400, 404].includes(r.status), path); assert.equal(githubCalls(s).length, 0, path);
   }
-  assert.equal((await setup().run('/kis/chart?symbol=BRK-B')).status, 200, 'share-class symbol from the Universe list');
 });
 
-test('class shares read their stored folder key; the 15 approved ETFs pass; other ETFs and spellings stay refused', async () => {
-  for (const [sym, file] of [['BRK-B', 'chart/B/BRK_B.json'], ['BF-B', 'chart/B/BF_B.json'], ['NVDA', 'chart/N/NVDA.json']]) {
-    const s = setup(), r = await s.run('/kis/chart?symbol=' + sym);
-    assert.equal(r.status, 200, sym); assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/' + file + '?ref=data');
-  }
-  let s = setup(); await s.run('/kis/technical?symbol=BRK-B');
-  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/measures/B/BRK_B.json?ref=data');
-  const etfs = ['SPY', 'HYG', 'IEF', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI'];
-  for (const sym of etfs) {
-    s = setup(); const r = await s.run('/kis/analysis?symbol=' + sym);
-    assert.equal(r.status, 502, sym + ' passes the symbol check (the stand-in answers a chart file to the analysis route)');
-    assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/technical/' + sym[0] + '/' + sym + '.json?ref=data');
-  }
-  for (const path of ['/kis/chart?symbol=VUG', '/kis/chart?symbol=QUAL', '/kis/chart?symbol=BRK_B', '/kis/chart?symbol=BRK%2FB', '/kis/chart?symbol=BRK.B', '/kis/chart?symbol=BF_B']) {
-    s = setup(); const r = await s.run(path);
-    assert.equal(r.status, 400, path); assert.equal(githubCalls(s).length, 0, path);
-  }
-});
-
-test('chart: missing file is EMPTY (404), a non kis-bars/1 file and an oversized file are refused', async () => {
-  let r = await setup({ github: () => new Response('{"message":"Not Found"}', { status: 404 }) }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 404); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_NOT_FOUND');
-  r = await setup({ github: () => new Response(JSON.stringify({ schema: K('ohlcv/1') }), { status: 200 }) }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 502); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_INVALID');
-  r = await setup({ github: () => new Response('x', { status: 200, headers: { 'Content-Length': String(3 * 1024 * 1024) } }) }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 502); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_TOO_LARGE');
-});
-
-test('chart: token and upstream states become fixed codes; the upstream body never reaches the app', async () => {
+test('stock: token and upstream states become fixed codes; the upstream body never reaches the app', async () => {
   const cases = [
     [{ env: { PRIVATE_REPO_READ_TOKEN: undefined } }, 503, 'TOKEN_UNSET', 0],
     [{ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-05' } }, 503, 'TOKEN_EXPIRED', 0],
@@ -158,18 +155,15 @@ test('chart: token and upstream states become fixed codes; the upstream body nev
     [{ github: () => new Response('down', { status: 503 }) }, 503, 'UPSTREAM_UNAVAILABLE', 1],
     [{ github: () => { throw new TypeError('network'); } }, 503, 'UPSTREAM_UNAVAILABLE', 1],
   ];
-  for (const [opts, status, code, reads] of cases) {
-    const s = setup(opts), r = await s.run('/kis/chart?symbol=NVDA');
-    assert.equal(r.status, status, code); noStore(r);
-    assert.equal(JSON.parse(await body(r)).error.code, code);
-    assert.equal(githubCalls(s).length, reads, code + ' reads');
+  for (const path of [STOCK, '/kis/stock?part=qgv']) {
+    for (const [opts, status, code, reads] of cases) {
+      const s = setup(opts), r = await s.run(path);
+      assert.equal(r.status, status, path + ' ' + code); noStore(r);
+      assert.equal(JSON.parse(await body(r)).error.code, code);
+      assert.equal(githubCalls(s).length, reads, code + ' reads');
+      if (reads) assert.equal(githubCalls(s)[0].url, ROOT_URL, 'the root read comes first');
+    }
   }
-});
-
-test('chart: EXPIRING still serves and names the date in one exposed header', async () => {
-  const r = await setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-12' } }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 200); assert.equal(r.headers.get('X-Private-Token-Expires-On'), '2026-11-12');
-  assert.equal(r.headers.get('Access-Control-Expose-Headers'), 'X-Private-Token-Expires-On');
 });
 
 test('status: one Contents permission check; state, code, rebuilt date and days only', async () => {
@@ -223,16 +217,16 @@ test('NEVER status refuses stale dated metadata, missing status and malformed me
   }
 });
 
-test('NEVER file reads retain upstream rejection and no-store; dated expiry still blocks before GitHub', async () => {
-  let s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' } }), r = await s.run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 200); noStore(r); assert.equal(await body(r), BARS);
-  assert.equal(r.headers.get('X-Private-Token-Expires-On'), null);
+test('NEVER stock reads retain upstream rejection and no-store; dated expiry still blocks before GitHub', async () => {
+  // A NEVER token's successful stock read (no expiry header) is in kis-stock.test.mjs, which carries the release fixture.
+  let s, r;
   for (const status of [401, 403]) {
     s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, github: () => new Response(FAKE_TOKEN, { status }) });
-    r = await s.run('/kis/chart?symbol=NVDA'); assert.equal(r.status, 503); assert.equal(JSON.parse(await body(r)).error.code, 'TOKEN_REJECTED');
+    r = await s.run(STOCK); assert.equal(r.status, 503); noStore(r); assert.equal(JSON.parse(await body(r)).error.code, 'TOKEN_REJECTED');
+    assert.equal(r.headers.get('X-Private-Token-Expires-On'), null);
   }
   s = setup({ env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-05' } });
-  r = await s.run('/kis/chart?symbol=NVDA'); assert.equal(r.status, 503); assert.equal(githubCalls(s).length, 0);
+  r = await s.run(STOCK); assert.equal(r.status, 503); assert.equal(githubCalls(s).length, 0);
 });
 
 test('dated status validates the stored countdown at capture time, not the current day', async () => {
@@ -255,54 +249,6 @@ test('dated 401 near expiry retains the existing expiry diagnosis; NEVER outages
   }
 });
 
-test('a key-sorted body (the writer uses sort_keys) passes; each route only accepts its own schema and path', async () => {
-  const sorted = JSON.stringify({ bars: [], schema: K('bars/1'), symbol: 'NVDA' });
-  let s = setup({ github: () => new Response(sorted, { status: 200 }) }), r = await s.run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 200); assert.equal(await r.text(), sorted);
-  const analysis = JSON.stringify({ adopted_count: 0, metrics: {}, schema: K('bars/1/analysis') });
-  s = setup({ github: () => new Response(analysis, { status: 200 }) }); r = await s.run('/kis/analysis?symbol=NVDA');
-  assert.equal(r.status, 200); assert.equal(await r.text(), analysis);
-  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/technical/N/NVDA.json?ref=data');
-  const qgv = JSON.stringify({ coverage: {}, rank: null, schema: K('qgv/1') });
-  s = setup({ github: () => new Response(qgv, { status: 200 }) }); r = await s.run('/kis/qgv');
-  assert.equal(r.status, 200); assert.equal(await r.text(), qgv);
-  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/qgv/latest.json?ref=data');
-  // A chart file on the analysis route (or any other schema) is refused; so are query strings on /kis/qgv.
-  r = await setup({ github: () => new Response(sorted, { status: 200 }) }).run('/kis/analysis?symbol=NVDA');
-  assert.equal(r.status, 502); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_INVALID');
-  r = await setup({ github: () => new Response(analysis, { status: 200 }) }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 502);
-  r = await setup({ github: () => new Response(Uint8Array.from([0x7b, 0xff, 0xfe]), { status: 200 }) }).run('/kis/qgv');
-  assert.equal(r.status, 502, 'not UTF-8');
-  s = setup(); r = await s.run('/kis/qgv?symbol=NVDA'); assert.equal(r.status, 400); assert.equal(githubCalls(s).length, 0);
-});
-
-test('the real writers space their keys ("schema": "…"): both spellings pass, and a body that is not one JSON object is refused', async () => {
-  // Found on the retained private archive 2026-11-05: staged chart / analysis files are written with ": " separators.
-  const spaced = '{"bars": [], "schema": "' + K('bars/1') + '", "symbol": "NVDA"}';
-  let r = await setup({ github: () => new Response(spaced, { status: 200 }) }).run('/kis/chart?symbol=NVDA');
-  assert.equal(r.status, 200); assert.equal(await r.text(), spaced, 'bytes unchanged');
-  for (const bad of ['[]', '{"schema": "' + K('bars/1') + '"', 'null', '{"note": "\\"schema\\":\\"' + K('bars/1') + '\\""}']) {
-    r = await setup({ github: () => new Response(bad, { status: 200 }) }).run('/kis/chart?symbol=NVDA');
-    assert.equal(r.status, 502, bad); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_INVALID');
-  }
-});
-
-test('technical route: own path and schema only; the symbol is checked before any read', async () => {
-  const text = JSON.stringify({ schema: K('technical-measures/1'), metrics: {} });
-  let s = setup({ github: () => new Response(text, { status: 200 }) }), r = await s.run('/kis/technical?symbol=NVDA');
-  assert.equal(r.status, 200); assert.equal(await r.text(), text); noStore(r);
-  assert.equal(githubCalls(s)[0].url, 'https://api.github.com' + REPO + '/contents/measures/N/NVDA.json?ref=data');
-  r = await setup({ github: () => new Response(JSON.stringify({ schema: K('bars/1') }), { status: 200 }) }).run('/kis/technical?symbol=NVDA');
-  assert.equal(r.status, 502); assert.equal(JSON.parse(await body(r)).error.code, 'KIS_SERIES_INVALID');
-  s = setup(); r = await s.run('/kis/technical?symbol=../x'); assert.equal(r.status, 400); assert.equal(githubCalls(s).length, 0);
-  // No owner proof: refused before any read on every data route.
-  for (const route of ['/kis/analysis?symbol=NVDA', '/kis/technical?symbol=NVDA', '/kis/qgv']) {
-    s = setup({ authStatus: 400 }); r = await s.run(route);
-    assert.equal(r.status, 403, route); assert.equal(githubCalls(s).length, 0);
-  }
-});
-
 test('routes outside the private area scope (classification, macro, news) do not exist: 404 before Google or GitHub', async () => {
   for (const route of ['/kis/classification?part=view', '/kis/macro', '/kis/news']) {
     const s = setup(), r = await s.run(route);
@@ -313,14 +259,32 @@ test('routes outside the private area scope (classification, macro, news) do not
 });
 
 test('an expired Google session (exp in the past) is refused before any private read', async () => {
-  const s = setup({ token: { exp: String(Math.floor(NOW / 1000) - 1) } }), r = await s.run('/kis/qgv');
-  assert.equal(r.status, 403); assert.equal(JSON.parse(await body(r)).error.code, 'AUTH_FORBIDDEN');
-  assert.equal(githubCalls(s).length, 0);
+  for (const path of ['/kis/status', STOCK, '/kis/stock?part=qgv']) {
+    const s = setup({ token: { exp: String(Math.floor(NOW / 1000) - 1) } }), r = await s.run(path);
+    assert.equal(r.status, 403, path); assert.equal(JSON.parse(await body(r)).error.code, 'AUTH_FORBIDDEN');
+    assert.equal(githubCalls(s).length, 0);
+  }
 });
 
 test('preflight: GET with the authorization header only, no read and no Google call', async () => {
-  const s = setup();
-  const r = await s.run('/kis/chart?symbol=NVDA', { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization', Authorization: '' }, 'OPTIONS');
-  assert.equal(r.status, 204); assert.equal(r.headers.get('Access-Control-Allow-Headers'), 'Authorization');
-  assert.equal(s.calls.length, 0);
+  for (const path of ['/kis/status', STOCK, '/kis/stock?part=qgv']) {
+    const s = setup();
+    const r = await s.run(path, { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization', Authorization: '' }, 'OPTIONS');
+    assert.equal(r.status, 204, path); assert.equal(r.headers.get('Access-Control-Allow-Headers'), 'Authorization');
+    assert.equal(r.headers.get('Access-Control-Allow-Methods'), 'GET');
+    assert.equal(s.calls.length, 0);
+    const bad = setup(), refused = await bad.run(path, { 'Access-Control-Request-Method': 'GET', 'Access-Control-Request-Headers': 'authorization, cookie', Authorization: '' }, 'OPTIONS');
+    assert.equal(refused.status, 400, path); assert.equal(bad.calls.length, 0);
+  }
+});
+
+test('limiter: one admission per request on both routes; a request inside the spacing is refused before GitHub', async () => {
+  for (const path of ['/kis/status', STOCK]) {
+    const s = setup({ github: () => new Response('{}', { status: 401 }) });
+    assert.notEqual((await s.run(path)).status, 429, path);
+    const before = githubCalls(s).length, r = await s.run(path);
+    assert.equal(r.status, 429, path); noStore(r); assert.equal(JSON.parse(await body(r)).error.code, 'RATE_LIMITED');
+    assert.ok(Number(r.headers.get('Retry-After')) >= 1);
+    assert.equal(githubCalls(s).length, before, path + ': no GitHub call when refused');
+  }
 });
