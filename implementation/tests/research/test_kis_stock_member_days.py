@@ -188,6 +188,41 @@ def test_invalid_cached_object_cannot_enter_new_generation(tmp_path, damage, rea
         list(journal.generation(contracts, config, head, req.parent, previous=previous))
 
 
+def test_cached_empty_member_requires_explicit_retained_end(tmp_path, capsys):
+    req, contract = inputs(tmp_path / 'inputs')
+    config = json.loads(req.read_bytes())
+    code = universe_codes()[0]
+    config['stock_evaluation_days'] = {code: config['evaluation_day']}
+    contract.update(bars=[], raw_bars=[], price_basis_date=None)
+    _, head = make_capture({code: contract}, {}, config, req.parent)
+    restore = ['restore', '--source-root', str(req.parent), '--head', head['path'], '--head-sha256', head['sha256']]
+    cache = tmp_path / 'cache'
+    assert journal.main(restore + ['--output-dir', str(cache)]) == 0
+    capsys.readouterr()
+    path = cache / 'generation.json'
+    manifest = json.loads(path.read_bytes())
+    entry = manifest['stocks']['SYN']
+    view = json.loads(gzip.decompress((cache / entry['path']).read_bytes()))
+    assert view['coverage']['retained_end'] is entry['retained_end'] is None
+    previous = ['--previous-view', str(path), '--previous-view-sha256']
+    assert journal.main(restore + previous + [sha(path.read_bytes()), '--check-only']) == 0
+    assert json.loads(capsys.readouterr().out)['stock_unchanged'] == 1
+
+    del view['coverage']
+    for fields in [{}, {'coverage': {}}, {'coverage': None}, {'coverage': []}]:
+        # Re-pin the changed bytes to reach the member binding check during restore.
+        raw = json_bytes({**view, **fields})
+        compressed = gzip.compress(raw, mtime=0)
+        member_path = f'stock/{sha(compressed)}.json.gz'
+        (cache / member_path).write_bytes(compressed)
+        entry.update(journal.ref(member_path, compressed), json_bytes=len(raw), json_sha256=sha(raw))
+        path.write_bytes(json_bytes(manifest))
+        dest = tmp_path / 'rejected'
+        assert journal.main(restore + previous + [sha(path.read_bytes()), '--output-dir', str(dest)]) == 2
+        assert json.loads(capsys.readouterr().out)['reason'] == 'STOCK_MEMBER_BINDING'
+        assert not dest.exists()
+
+
 def test_complete_manifest_is_the_only_larger_staged_file(tmp_path, monkeypatch, capsys):
     req, contract = inputs(tmp_path / 'inputs')
     config = json.loads(req.read_bytes())

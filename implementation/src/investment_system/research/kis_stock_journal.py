@@ -351,6 +351,7 @@ def verified_member(root, entry, *, key, code, symbol, day, retained_end):
     need(view['schema'] == 'kis-stock-view/1' and view['publication_scope'] == SCOPE and
          view['input_sha256'] == key and view['symbol'] == symbol and view['code'] == entry['code'] == code and
          view['evaluation_day'] == entry['evaluation_day'] == day and
+         isinstance(view.get('coverage'), dict) and 'retained_end' in view['coverage'] and
          view['coverage']['retained_end'] == entry['retained_end'] == retained_end, 'STOCK_MEMBER_BINDING')
     return compressed
 
