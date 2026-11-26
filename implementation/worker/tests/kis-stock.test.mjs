@@ -118,7 +118,8 @@ test('index reader: the top level and the requested entry are checked; unknown k
   ];
   for (const [i, v] of bad.entries()) assert.equal(nvda(v), 'INVALID', 'case ' + i);
   for (const v of [[good], null, { ...good, qgv: { ...good.qgv, bytes: 0 } }]) assert.equal(kisStockIndexEntry(v, null), 'INVALID', 'qgv part');
-  assert.equal(kisStockIndexEntry(good, 'ZZZZ'), 'INVALID', 'a symbol outside the Worker list');
+  assert.equal(kisStockIndexEntry(good, 'ZZZZ'), 'MISSING', 'the Worker keeps no list: a key not in the index is missing, not invalid');
+  assert.deepEqual(kisStockIndexEntry({ ...good, stocks: { ZZZZ: { ...e, symbol: 'ZZZZ' } } }, 'ZZZZ'), { ...e, symbol: 'ZZZZ' }, 'any key the index holds');
   assert.equal(nvda({ ...good, stocks: {} }), 'MISSING', 'an empty stock map: every request is 404');
   assert.equal(nvda({ ...good, stocks: { AAPL: { ...e, symbol: 'AAPL' } } }), 'MISSING');
   assert.equal(nvda(JSON.parse(JSON.stringify(good).replace('"stocks":{', '"stocks":{"__proto__":{},'))).asset_id, e.asset_id, 'own keys only');
@@ -196,13 +197,15 @@ test('?part=qgv: the index QGV object through the same pins and hop; nothing els
   assert.deepEqual(s.limiterCalls, ['/admit', '/release'], 'one admission like a stock read');
   s = setup({ asset: stock, index, target: () => new Response(stock.gz, { status: 200 }) }); r = await s.run('/kis/stock?part=qgv');
   assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_PIN', 'another asset under the QGV id is refused by its pins');
-  for (const path of ['/kis/stock?part=QGV', '/kis/stock?part=qgv&symbol=NVDA', '/kis/stock?part=stock', '/kis/stock?part=qgv#x', '/kis/qgv?part=qgv']) {
+  for (const path of ['/kis/stock?part=QGV', '/kis/stock?part=qgv&symbol=NVDA', '/kis/stock?part=stock', '/kis/stock?part=qgv#x', '/kis/stock?part%3Dqgv']) {
     s = setup(); r = await s.run(path);
     assert.equal(r.status, 400, path); assert.equal(await code(r), 'REQUEST_INVALID', path); assert.equal(s.calls.length, 0, path);
   }
+  s = setup(); r = await s.run('/kis/qgv?part=qgv');
+  assert.equal(r.status, 404); assert.equal(await code(r), 'ROUTE_NOT_FOUND', 'the old QGV route is gone'); assert.equal(s.calls.length, 0);
 });
 
-test('unauthenticated or wrong symbol: refused before any GitHub call or admission', async () => {
+test('unauthenticated or malformed key: refused before any GitHub call or admission', async () => {
   for (const authStatus of [401, 403]) {
     const s = setup({ authStatus }), r = await s.run();
     assert.equal(r.status, 403); assert.equal(await code(r), 'AUTH_FORBIDDEN');
@@ -210,7 +213,7 @@ test('unauthenticated or wrong symbol: refused before any GitHub call or admissi
   }
   let s = setup(), r = await s.run('/kis/stock?symbol=NVDA', { Authorization: '' });
   assert.equal(r.status, 403); assert.equal(s.calls.length, 0);
-  for (const path of ['/kis/stock', '/kis/stock?symbol=nvda', '/kis/stock?symbol=ZZZZ', '/kis/stock?symbol=NVDA&x=1', '/kis/stock?symbol=../x', '/kis/stock?symbol=BRK_B']) {
+  for (const path of ['/kis/stock', '/kis/stock?symbol=nvda', '/kis/stock?symbol=NVDA&x=1', '/kis/stock?symbol=../x', '/kis/stock?symbol=BRK_B']) {
     s = setup(); r = await s.run(path);
     assert.equal(r.status, 400, path); assert.equal(await code(r), 'REQUEST_INVALID'); assert.equal(s.calls.length, 0, path);
   }
@@ -316,21 +319,29 @@ test('content is not read here: a pinned view of any shape passes as published (
   assert.equal(r.status, 200); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
 });
 
-test('the other routes keep their own reads: /kis/chart still reads its Contents file and refuses any redirect', async () => {
-  const s = setup({ indexResponse: () => new Response('{}') });
+test('the other reads keep their redirect refusal: /kis/status and the root read never follow a 302; /kis/chart is gone', async () => {
+  const calls = [];
   const handler = createHandler({ fetch: async (input, init) => {
     const url = String(input);
-    s.calls.push({ url, init });
+    calls.push({ url, init });
     if (url === 'https://oauth2.googleapis.com/tokeninfo') return new Response(JSON.stringify({ aud: 'mock-client-id', email: OWNER_EMAIL, email_verified: true, expires_in: '3600' }));
     return new Response(null, { status: 302, headers: { Location: SIGNED } });
   }, now: () => NOW });
-  const limiter = new HistoryRateLimiter({ storage: new Storage() }, {}, { now: () => NOW });
-  const env = { ALLOWED_EMAIL: OWNER_EMAIL, GOOGLE_CLIENT_ID: 'mock-client-id', PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2027-01-31',
-    HISTORY_RATE_LIMITER: { idFromName: (n) => n, get: () => ({ fetch: (i, init) => limiter.fetch(i instanceof Request ? i : new Request(i, init)) }) } };
-  const r = await handler(new Request('https://w.example/kis/chart?symbol=NVDA', { headers: { Origin: ORIGIN, Authorization: 'Bearer x' } }), env);
-  assert.equal(r.status, 502); assert.equal(await code(r), 'REPO_MOVED');
-  const reads = s.calls.filter((c) => c.url !== 'https://oauth2.googleapis.com/tokeninfo');
-  assert.deepEqual(reads.map((c) => c.url), [API + '/contents/chart/N/NVDA.json?ref=data'], 'the 302 to the asset host is not followed elsewhere');
+  const run = async (path) => {
+    calls.length = 0;
+    const limiter = new HistoryRateLimiter({ storage: new Storage() }, {}, { now: () => NOW });
+    const env = { ALLOWED_EMAIL: OWNER_EMAIL, GOOGLE_CLIENT_ID: 'mock-client-id', PRIVATE_REPO_READ_TOKEN: FAKE_TOKEN, PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2027-01-31',
+      HISTORY_RATE_LIMITER: { idFromName: (n) => n, get: () => ({ fetch: (i, init) => limiter.fetch(i instanceof Request ? i : new Request(i, init)) }) } };
+    const r = await handler(new Request('https://w.example' + path, { headers: { Origin: ORIGIN, Authorization: 'Bearer x' } }), env);
+    return { r, reads: calls.filter((c) => c.url !== 'https://oauth2.googleapis.com/tokeninfo').map((c) => c.url) };
+  };
+  let { r, reads } = await run('/kis/status');
+  assert.equal(r.status, 200); assert.equal(JSON.parse(await r.text()).code, 'REPO_MOVED');
+  assert.deepEqual(reads, [API + '/contents/status/private-area.json?ref=data'], 'the 302 to the asset host is not followed elsewhere');
+  ({ r, reads } = await run('/kis/stock?symbol=NVDA'));
+  assert.equal(r.status, 502); assert.equal(await code(r), 'REPO_MOVED'); assert.deepEqual(reads, [ROOT_URL]);
+  ({ r, reads } = await run('/kis/chart?symbol=NVDA'));
+  assert.equal(r.status, 404); assert.equal(await code(r), 'ROUTE_NOT_FOUND'); assert.deepEqual(calls, [], 'no Google, no GitHub');
 });
 
 // ---- bundle path (owner 2026-11-22: GitHub private release bundles + 64 index shards) ------------------------------------
@@ -340,11 +351,12 @@ const GEN = { publication_scope: 'OWNER_PRIVATE_ONLY', evaluation_day: '2026-11-
 // One bundle holding the members in order; the root pins every shard. qgv is a separate whole asset (id 9).
 function makePacks(members, { shardOverrides = {}, rootOverrides = {}, qgv } = {}) {
   const pack = Buffer.concat(members.map((m) => m.asset.gz)), packSha = sha(pack);
+  // Every one of the 64 buckets has a pinned shard (the producer writes them all; a bucket without codes has an empty map).
   const shards = {}, files = {};
+  for (let b = 0; b < 64; b += 1) shards[shardName(b)] = { schema: K('stock-pack-shard/1'), ...GEN, bucket: b, stocks: {} };
   let offset = 0;
   for (const m of members) {
     const b = bucketOf(m.symbol), name = shardName(b);
-    shards[name] ??= { schema: K('stock-pack-shard/1'), ...GEN, bucket: b, stocks: {} };
     shards[name].stocks[m.symbol] = { pack: packSha, offset, bytes: m.asset.gz.length, sha256: sha(m.asset.gz), json_bytes: m.asset.json.length, json_sha256: sha(m.asset.json) };
     offset += m.asset.gz.length;
   }
@@ -393,9 +405,11 @@ test('bundle path: shard pin, generation and membership are checked before any a
   s = setup({ packs }); r = await s.run();
   assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', 'a shard of another generation'); assert.equal(s.upstream().length, 2);
   packs = makePacks([AA()]); s = setup({ packs }); r = await s.run();
-  assert.ok([404, 502].includes(r.status), 'a symbol with no member is not served');
-  assert.ok(['KIS_SERIES_NOT_FOUND', 'KIS_STOCK_INDEX_INVALID'].includes(await code(r)));
+  assert.equal(r.status, 404, 'a symbol with no member is not served'); assert.equal(await code(r), 'KIS_SERIES_NOT_FOUND');
   assert.equal(s.upstream().filter((c) => c.url.startsWith(API + '/releases/')).length, 0, 'no asset call');
+  packs = makePacks([nv]); delete packs.root.shards[name];
+  s = setup({ packs: { ...packs, rootBytes: Buffer.from(JSON.stringify(packs.root), 'utf8') } }); r = await s.run();
+  assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', 'a bucket the root does not pin'); assert.equal(s.upstream().length, 1);
   for (const over of [{ buckets: 32 }, { bucket_rule: 'x' }, { schema: 'x' }, { packs: [] }]) {
     s = setup({ packs: makePacks([nv], { rootOverrides: over }) }); r = await s.run();
     assert.equal(r.status, 502); assert.equal(await code(r), 'KIS_STOCK_INDEX_INVALID', JSON.stringify(over)); assert.equal(s.upstream().length, 1);
@@ -428,7 +442,7 @@ test('bundle path: ?part=qgv reads the root\'s qgv asset whole; no root (404) ke
   assert.deepEqual(s.calls.filter((c) => c.url.startsWith(API)).map((c) => c.url), [ROOT_URL, INDEX_URL, API + '/releases/assets/7'], 'root probe, then the single index as before');
 });
 
-test('bundle path: an approved ETF (SPY) reads its member exactly like a stock; an unapproved one is refused first', async () => {
+test('bundle path: an approved ETF (SPY) reads its member exactly like a stock', async () => {
   // Owner 2026-11-22: ETFs have no way to be opened on the phone screens (search covers Universe504 only), so the ETF read
   // through the bundle path is checked here instead of on the phone.
   const spy = { symbol: 'SPY', asset: makeAsset(makeView({ symbol: 'SPY' })) }, nv = NV(), packs = makePacks([nv, spy]);
@@ -440,7 +454,73 @@ test('bundle path: an approved ETF (SPY) reads its member exactly like a stock; 
   assert.equal(root.url, ROOT_URL); assert.equal(shard.url, SHARD_URL(shardName(bucketOf('SPY'))));
   assert.equal(api.url, API + '/releases/assets/11'); assert.equal(hop.init.headers.Authorization, undefined);
   assert.equal(hop.init.headers.Range, 'bytes=' + nv.asset.gz.length + '-' + (nv.asset.gz.length + spy.asset.gz.length - 1));
-  const other = setup({ packs }), refused = await other.run('/kis/stock?symbol=QQQ');
-  assert.equal(refused.status, 400, 'an ETF outside the 15 approved is refused');
-  assert.equal(other.upstream().length, 0, 'before any GitHub read');
+});
+
+// ---- membership by the pinned shard only (the Worker keeps no symbol list) ----------------------------------------------
+const EXPECTED_HEADERS = (extra = []) => [['access-control-allow-origin', ORIGIN], ['cache-control', 'private, no-store, max-age=0'],
+  ['content-encoding', 'gzip'], ['content-type', 'application/json; charset=utf-8'], ['vary', 'Origin'], ['x-content-type-options', 'nosniff'], ...extra]
+  .sort((a, b) => a[0].localeCompare(b[0]));
+
+test('a key of the former fixed list reads exactly as before: the same four URLs in order, the same bytes and headers', async () => {
+  const nv = NV(), aa = AA(), packs = makePacks([aa, nv]), s = setup({ packs }), r = await s.run('/kis/stock?symbol=NVDA');
+  assert.equal(r.status, 200);
+  assert.deepEqual([...r.headers], EXPECTED_HEADERS(), 'exactly the headers of before');
+  assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(nv.asset.gz));
+  assert.deepEqual(s.calls.map((c) => c.url), ['https://oauth2.googleapis.com/tokeninfo', ROOT_URL, SHARD_URL(shardName(bucketOf('NVDA'))),
+    API + '/releases/assets/11', SIGNED], 'tokeninfo, root, shard, asset API, one Range read: no extra request');
+  assert.deepEqual(s.limiterCalls, ['/admit', '/release']);
+  // The single-index fallback (root 404) also keeps its sequence: root probe, index, asset API, whole asset.
+  const asset = makeAsset(), f = setup({ asset }), fr = await f.run('/kis/stock?symbol=NVDA');
+  assert.equal(fr.status, 200); assert.deepEqual([...fr.headers], EXPECTED_HEADERS());
+  assert.deepEqual(new Uint8Array(await fr.arrayBuffer()), new Uint8Array(asset.gz));
+  assert.deepEqual(f.calls.map((c) => c.url), ['https://oauth2.googleapis.com/tokeninfo', ROOT_URL, INDEX_URL, API + '/releases/assets/7', SIGNED]);
+  // EXPIRING adds only the one exposed date header.
+  const e = setup({ packs, env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2026-11-27' } }), er = await e.run('/kis/stock?symbol=NVDA');
+  assert.deepEqual([...er.headers], EXPECTED_HEADERS([['access-control-expose-headers', 'X-Private-Token-Expires-On'], ['x-private-token-expires-on', '2026-11-27']]));
+  // NEVER serves with no expiry header at all.
+  const n = setup({ packs, env: { PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' } }), nr = await n.run('/kis/stock?symbol=NVDA');
+  assert.equal(nr.status, 200); assert.deepEqual([...nr.headers], EXPECTED_HEADERS());
+  assert.deepEqual(new Uint8Array(await nr.arrayBuffer()), new Uint8Array(nv.asset.gz));
+});
+
+test('a key outside the former fixed list is served when the pinned shard holds it (and the single index in the fallback)', async () => {
+  // QQQ (an ETF outside the 15) and ZZZZ were refused with REQUEST_INVALID before; neither is in the Universe list.
+  for (const key of ['QQQ', 'ZZZZ', 'ABCDEFGHIJ', 'A-B']) {
+    const m = { symbol: key, asset: makeAsset(makeView({ symbol: key })) }, packs = makePacks([NV(), m]);
+    const s = setup({ packs }), r = await s.run('/kis/stock?symbol=' + key);
+    assert.equal(r.status, 200, key); assert.equal(r.headers.get('Content-Encoding'), 'gzip');
+    assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(m.asset.gz), key);
+    assert.deepEqual(s.upstream().map((c) => c.url), [ROOT_URL, SHARD_URL(shardName(bucketOf(key))), API + '/releases/assets/11', SIGNED], key);
+  }
+  const asset = makeAsset(makeView({ symbol: 'ZZZZ' })), s = setup({ asset, index: makeIndex(asset, { stocks: { ZZZZ: entryOf(asset, 7, 'ZZZZ') } }) });
+  const r = await s.run('/kis/stock?symbol=ZZZZ');
+  assert.equal(r.status, 200, 'single index'); assert.deepEqual(new Uint8Array(await r.arrayBuffer()), new Uint8Array(asset.gz));
+});
+
+test('a key the pinned shard does not hold is KIS_SERIES_NOT_FOUND after the root and that shard, with no asset call', async () => {
+  for (const key of ['ZZZZ', 'QQQ', 'AAPL']) {
+    const packs = makePacks([NV()]), s = setup({ packs }), r = await s.run('/kis/stock?symbol=' + key);
+    assert.equal(r.status, 404, key); noStore(r); assert.equal(await code(r), 'KIS_SERIES_NOT_FOUND');
+    assert.deepEqual(s.upstream().map((c) => c.url), [ROOT_URL, SHARD_URL(shardName(bucketOf(key)))], key + ': root and its shard only');
+    assert.deepEqual(s.limiterCalls, ['/admit', '/release']);
+  }
+  const s = setup(), r = await s.run('/kis/stock?symbol=ZZZZ');
+  assert.equal(r.status, 404, 'single index'); assert.equal(await code(r), 'KIS_SERIES_NOT_FOUND');
+  assert.deepEqual(s.calls.filter((c) => c.url.startsWith(API)).map((c) => c.url), [ROOT_URL, INDEX_URL]);
+});
+
+test('key syntax: only ?symbol=<KEY> with KEY ^[A-Z][A-Z0-9-]{0,9}$, raw; everything else is REQUEST_INVALID with no upstream call', async () => {
+  const packs = makePacks([NV()]);
+  for (const query of ['?symbol=nvda', '?symbol=Nvda', '?symbol=ABCDEFGHIJK', '?symbol=1NVDA', '?symbol=-NVDA', '?symbol=', '?symbol=NVDA&x=1',
+    '?x=1&symbol=NVDA', '?symbol=NVDA&symbol=AAPL', '?symbol=NVDA&part=qgv', '?symbol=NAS%3ANVDA', '?symbol=NVDA%3A', '?symbol=NAS:NVDA',
+    '?symbol=%4EVDA', '?symbol=NVDA%20', '?symbol=NVDA+', '?symbol=NV.DA', '?symbol=NV/DA', '?symbol=NV_DA', '?Symbol=NVDA', '?symbol=NVDA#x', '?symbol=NVDA&']) {
+    const s = setup({ packs }), r = await s.run('/kis/stock' + query);
+    assert.equal(r.status, 400, query); assert.equal(await code(r), 'REQUEST_INVALID', query);
+    assert.equal(s.calls.length, 0, query + ': no Google and no GitHub call'); assert.deepEqual(s.limiterCalls, [], query);
+  }
+  // The edges of the syntax are accepted and then decided by the shard alone.
+  for (const key of ['A', 'ABCDEFGHIJ', 'BRK-B', 'A1']) {
+    const s = setup({ packs }), r = await s.run('/kis/stock?symbol=' + key);
+    assert.equal(r.status, 404, key); assert.equal(await code(r), 'KIS_SERIES_NOT_FOUND', key);
+  }
 });

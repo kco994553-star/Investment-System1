@@ -260,40 +260,23 @@ function krxNumber(value) {
 }
 
 // ---------- Private KIS area (design PRIVATE_AREA_KIS_DESIGN_20261031.md §5.5 / §17.2, PRIVATE_AREA_NO_ZT_ACCESS_20261031.md §4) ----------
-// Routes, all behind the same Google owner check and rate limiter as /history: GET /kis/status, GET /kis/chart?symbol=<SYM>
-// (kis-bars/1), GET /kis/analysis?symbol=<SYM> (kis-bars/1/analysis), GET /kis/technical?symbol=<SYM> (kis-technical-measures/1)
-// and GET /kis/qgv (kis-qgv/1).
-// Each data route reads one file from the data branch of the private repository with a read-only token (chart/<first>/<SYM>.json,
-// technical/<first>/<SYM>.json — Codex #480's staged analysis name —, measures/<first>/<SYM>.json, qgv/latest.json) and passes its
-// bytes through. The body is parsed only to check that it is one JSON object of this route's schema (the writers' spacing differs:
-// "schema": "…" and "schema":"…" both occur); the app validates the rest.
-// /kis/status reads status/private-area.json (private-area-status/1, WORKER_READ_TOKEN_EXPIRY_20261115.md, DC-53) the same way and
-// answers only the rebuilt expiry fields and a fixed state code.
-// Nothing is cached, logged or followed; the token, its expiry variable and every upstream body stay out of every response.
-// GET /kis/stock?symbol=<SYM> (kis-stock-view/1, KIS_STOCK_VIEW_RELEASES_20261120.md §1, §5) reads views/kis-stock-index.json the
-// same way, then one release asset of the private repository. It is the one redirect exception (owner 2026-11-20): only the asset
-// API's 302 to release-assets.githubusercontent.com is followed, exactly once and with no credentials. Every other upstream call
-// keeps upstreamFetch / github() and their redirect refusal unchanged.
+// Two routes, both behind the same Google owner check and rate limiter as /history: GET /kis/status and GET /kis/stock.
+// The four older per-file routes (/kis/chart, /kis/analysis, /kis/technical, /kis/qgv), which no panel has read since the
+// 2026-11-20 screen switch, are gone (owner 2026-11-26): they are unknown paths now, ROUTE_NOT_FOUND 404 before any check.
+// /kis/status reads status/private-area.json (private-area-status/1, WORKER_READ_TOKEN_EXPIRY_20261115.md, DC-53) of the data
+// branch of the private repository with a read-only token and answers only the rebuilt expiry fields and a fixed state code.
+// GET /kis/stock?symbol=<KEY> (kis-stock-view/1, KIS_STOCK_VIEW_RELEASES_20261120.md §1, §5) or ?part=qgv. The query is exactly
+// one of those two strings: KEY matches ^[A-Z][A-Z0-9-]{0,9}$, with no other parameter, no fragment and no alternate encoding.
+// The Worker keeps no list of symbols: the key is checked for its syntax only, and whether it is served is decided only by the
+// pinned shard of the published generation (or, while that root is absent, by the single index's entry). A key that is not
+// there is KIS_SERIES_NOT_FOUND (404).
+// The stock route is the one redirect exception (owner 2026-11-20): only the asset API's 302 to release-assets.githubusercontent.com
+// is followed, exactly once and with no credentials. Every other upstream call keeps upstreamFetch / github() and their
+// redirect refusal unchanged. Nothing is cached, logged or followed otherwise; the token, its expiry variable and every
+// upstream body stay out of every response.
 const KIS_REPO = 'kco994553-star/investment-system1-kis-private';
 const KIS_BRANCH = 'data';
 const GITHUB_API = 'https://api.github.com';
-const MAX_CHART_BYTES = 2 * 1024 * 1024;
-// The approved ETFs of the KIS collection (DC-52 stage 1, owner 2026-11-15): exactly these 15 besides the Universe list.
-export const KIS_ETFS = Object.freeze(['SPY', 'HYG', 'IEF', 'SMH', 'XLK', 'XLV', 'XLE', 'XLB', 'XLP', 'XLY', 'XLC', 'XLU', 'XLRE', 'XLF', 'XLI']);
-const KIS_SYMBOLS = new Set([...US_SYMBOLS, ...KIS_ETFS]);
-// The two class shares (owner 2026-11-15): asked as the Universe list's BRK-B / BF-B, stored by the collector under the folder keys
-// BRK_B / BF_B (KIS names them BRK/B and BF/B). Every other symbol is its own key.
-const KIS_STORED_KEY = Object.freeze({ 'BRK-B': 'BRK_B', 'BF-B': 'BF_B' });
-const bySymbol = (dir) => (s) => { const k = Object.hasOwn(KIS_STORED_KEY, s) ? KIS_STORED_KEY[s] : s; return dir + '/' + k[0] + '/' + k + '.json'; };
-// Route → [file path for a symbol (or none), does the parsed object carry this route's schema].
-const KIS_FILES = Object.freeze({
-  '/kis/chart': [bySymbol('chart'), (o) => o.schema === 'kis-bars/1'],
-  '/kis/analysis': [bySymbol('technical'), (o) => o.schema === 'kis-bars/1/analysis'],
-  '/kis/technical': [bySymbol('measures'), (o) => o.schema === 'kis-technical-measures/1'],
-  '/kis/qgv': [() => 'qgv/latest.json', (o) => o.schema === 'kis-qgv/1'],
-});
-// Routes that take no query string at all.
-const KIS_PLAIN = new Set(['/kis/status', '/kis/qgv']);
 const DAY_MS = 86_400_000;
 
 // ---------- /kis/stock: one stock's complete view from a private release asset ----------
@@ -322,9 +305,9 @@ function kisAssetEntryValid(v, withSymbol) {
 
 // kis-stock-asset-index/1, the top level and the one entry this request needs (owner 2026-11-21 proposal A, CPU on the free
 // plan): exact top-level keys, schema, scope, day, tag, generation and the qgv entry; then, for a stock request, the requested
-// symbol from the Worker's list, its entry's exact keys and ranges, and an asset id other than the qgv one. The other entries
-// are not read here: the publish workflow checks every entry's shape and that every asset id is distinct before it writes the
-// index, and each answer is still held to its own size and sha256 pins below. Returns the entry, 'MISSING' or 'INVALID'.
+// key's own entry (its presence is the only membership rule), its exact keys and ranges, and an asset id other than the qgv
+// one. The other entries are not read here: the publish workflow checks every entry's shape and that every asset id is
+// distinct before it writes the index, and each answer is still held to its own size and sha256 pins below. Returns the entry, 'MISSING' or 'INVALID'.
 export function kisStockIndexEntry(value, symbol) {
   if (!exactKeys(value, ['schema', 'publication_scope', 'evaluation_day', 'release_tag', 'generation_sha256', 'stocks', 'qgv'])
     || value.schema !== 'kis-stock-asset-index/1' || value.publication_scope !== 'OWNER_PRIVATE_ONLY'
@@ -332,7 +315,6 @@ export function kisStockIndexEntry(value, symbol) {
     || typeof value.release_tag !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(value.release_tag)
     || !hex64(value.generation_sha256) || !plainObject(value.stocks) || !kisAssetEntryValid(value.qgv, false)) return 'INVALID';
   if (symbol === null) return value.qgv;
-  if (!KIS_SYMBOLS.has(symbol)) return 'INVALID';
   if (!Object.hasOwn(value.stocks, symbol)) return 'MISSING';
   const entry = value.stocks[symbol];
   return kisAssetEntryValid(entry, true) && entry.asset_id !== value.qgv.asset_id ? entry : 'INVALID';
@@ -373,11 +355,11 @@ export function kisPackShardPin(root, bucket) {
     && pin.bytes <= KIS_PACK_SHARD_MAX_BYTES && hex64(pin.sha256) ? pin : null;
 }
 
-// The requested member of a pinned shard: the entry with its bundle's asset id and size, 'MISSING' or 'INVALID'.
+// The requested member of a pinned shard: the entry with its bundle's asset id and size, 'MISSING' or 'INVALID'. The shard's
+// own stock map is the only membership rule: a syntactically valid key that is not there is 'MISSING'.
 export function kisPackMember(shard, root, bucket, symbol) {
   if (!exactKeys(shard, ['schema', ...GENERATION_KEYS, 'bucket', 'stocks']) || shard.schema !== 'kis-stock-pack-shard/1'
     || GENERATION_KEYS.some((k) => shard[k] !== root[k]) || shard.bucket !== bucket || !plainObject(shard.stocks)) return 'INVALID';
-  if (!KIS_SYMBOLS.has(symbol)) return 'INVALID';
   if (!Object.hasOwn(shard.stocks, symbol)) return 'MISSING';
   const e = shard.stocks[symbol];
   if (!exactKeys(e, ['pack', 'offset', 'bytes', 'sha256', 'json_bytes', 'json_sha256']) || !hex64(e.pack) || !Object.hasOwn(root.packs, e.pack)
@@ -471,13 +453,11 @@ export function kisUpstreamState(response, tokenDate) {
   return { state: 'ERROR', code: 'UPSTREAM_UNAVAILABLE', http: 503 };
 }
 
-// /kis/chart?symbol=<SYM> only (no other parameter, no alternate encoding); the symbol is one of the Worker's Universe list or
-// one of the 15 approved ETFs.
-export function kisChartSymbol(url) {
+// /kis/stock?symbol=<KEY> only (no other parameter, no fragment, no alternate encoding: the raw query string itself must match).
+// Syntax only; membership is decided by the pinned shard or the single index entry.
+export function kisStockSymbol(url) {
   if (url.hash || !/^\?symbol=[A-Z][A-Z0-9-]{0,9}$/.test(url.search)) throw new Failure('REQUEST_INVALID', 400);
-  const symbol = url.searchParams.get('symbol');
-  if (!KIS_SYMBOLS.has(symbol)) throw new Failure('REQUEST_INVALID', 400);
-  return symbol;
+  return url.search.slice('?symbol='.length);
 }
 
 export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.now, setTimeout: schedule = globalThis.setTimeout, clearTimeout: cancel = globalThis.clearTimeout } = {}) {
@@ -665,43 +645,6 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     return json200({ schema: 'kis-status/1', ...date }, origin);
   }
 
-  async function kisFile(route, symbol, env, origin) {
-    const date = kisTokenDate(env, now());
-    if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
-    const [pathOf, isSchema] = KIS_FILES[route];
-    const path = '/repos/' + KIS_REPO + '/contents/' + pathOf(symbol) + '?ref=' + KIS_BRANCH;
-    const response = await github(path, env, 'application/vnd.github.raw+json');
-    if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
-    if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
-    const bad = kisUpstreamState(response, date);
-    if (bad) return closeAndFail(response, bad.code, bad.http);
-    const advertised = response.headers.get('Content-Length');
-    if (advertised && /^\d+$/.test(advertised) && Number(advertised) > MAX_CHART_BYTES) return closeAndFail(response, 'KIS_SERIES_TOO_LARGE', 502);
-    if (!response.body) throw new Failure('KIS_SERIES_INVALID', 502);
-    const reader = response.body.getReader(), chunks = [];
-    let length = 0;
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        length += value.byteLength;
-        if (length > MAX_CHART_BYTES) { await reader.cancel(); throw new Failure('KIS_SERIES_TOO_LARGE', 502); }
-        chunks.push(value);
-      }
-    } finally { reader.releaseLock(); }
-    const bytes = new Uint8Array(length);
-    let offset = 0;
-    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
-    // Passed through as received. The bytes must be UTF-8 text of one JSON object that carries this route's schema, so a wrong
-    // file is never served; the app validates the rest.
-    let parsed;
-    try { parsed = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_SERIES_INVALID', 502); }
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !isSchema(parsed, symbol)) throw new Failure('KIS_SERIES_INVALID', 502);
-    const responseHeaders = headers(origin);
-    if (date.state === 'EXPIRING') { responseHeaders.set('X-Private-Token-Expires-On', date.expires_on); responseHeaders.set('Access-Control-Expose-Headers', 'X-Private-Token-Expires-On'); }
-    return new Response(bytes, { status: 200, headers: responseHeaders });
-  }
-
   // /kis/stock?symbol=… (a stock's view) or ?part=qgv (the QGV object): index (1 GitHub read) → asset API (1, read token,
   // redirect 'manual') → the one accepted 302 target (1, no credentials, redirect 'manual', no second hop) → size and sha256
   // pins of the gzip → the gzip bytes as published, Content-Encoding gzip (no inflate, no parse here; the app checks the content).
@@ -776,7 +719,6 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       if (root === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
       if (part === 'qgv') gzipped = await kisAssetBytes(root.qgv, env, date, false);
       else {
-        if (!KIS_SYMBOLS.has(symbol)) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
         const bucket = await kisPackBucket(symbol), pin = kisPackShardPin(root, bucket);
         if (pin === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
         const shard = await kisDataFile(KIS_PACK_SHARD_DIR + kisPackShardName(bucket), env, date, KIS_PACK_SHARD_MAX_BYTES, pin);
@@ -812,13 +754,13 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     if (origin !== ORIGIN) return failureResponse(new Failure('ORIGIN_FORBIDDEN', 403));
     try {
       const url = new URL(request.url);
-      const kis = url.pathname === '/kis/status' || url.pathname === KIS_STOCK_ROUTE || Object.hasOwn(KIS_FILES, url.pathname);
+      const kis = url.pathname === '/kis/status' || url.pathname === KIS_STOCK_ROUTE;
       if (url.pathname !== '/history' && !kis) throw new Failure('ROUTE_NOT_FOUND', 404);
       if (!['GET', 'OPTIONS'].includes(request.method)) throw new Failure('METHOD_NOT_ALLOWED', 405);
       let symbol = null, range = null, part = null;
-      if (KIS_PLAIN.has(url.pathname)) { if (url.search || url.hash) throw new Failure('REQUEST_INVALID', 400); }
+      if (url.pathname === '/kis/status') { if (url.search || url.hash) throw new Failure('REQUEST_INVALID', 400); }
       else if (url.pathname === KIS_STOCK_ROUTE && url.search === KIS_STOCK_QGV_QUERY && !url.hash) part = 'qgv';
-      else if (kis) symbol = kisChartSymbol(url);
+      else if (kis) symbol = kisStockSymbol(url);
       else ({ symbol, range } = validateQuery(url));
       if (request.method === 'OPTIONS') {
         if (request.headers.get('Access-Control-Request-Method') !== 'GET'
@@ -837,7 +779,6 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       try {
         if (url.pathname === '/kis/status') response = await kisStatus(env, origin);
         else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, part, env, origin);
-        else if (kis) response = await kisFile(url.pathname, symbol, env, origin);
         else {
           let result;
           try { result = await history(symbol, range); }
