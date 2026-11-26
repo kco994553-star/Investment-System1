@@ -5,6 +5,7 @@ complete private view generation separately from the immutable source commit.
 """
 import argparse
 from collections.abc import Mapping
+from datetime import date
 import gzip
 import io
 import json
@@ -19,12 +20,18 @@ from .kis_price_bridge import validate_contract, price_rows, _day, _ts
 from .kis_chart_actions import chart_basis, merge_reviewed_actions, reviewed_actions
 from .kis_stock_bundle import indicator_series, FIELDS, INDICATORS
 from .private_kis_preprocess import calculate_and_project
-from .private_kis_reference import reference_files, official_reference
+from .private_kis_reference import JUMP_POLICY, reference_files, official_reference
+from .exp_deciles import schedule
 
 SCOPE = 'OWNER_PRIVATE_ONLY'
 JOURNAL = 'kis-stock-journal/1'
 INDEXED_JOURNAL = 'kis-stock-journal/2'
+MEMBER_JOURNAL = 'kis-stock-journal/3'
 VIEW = 'kis-stock-generation/1'
+# Bump for any change to the stock projector, its dependencies or serialization.
+MEMBER_PROJECTION_VERSION = 'KIS_STOCK_MEMBER_CLOCK_1'
+# Only the internal, all-code manifest may exceed the single response limit.
+GENERATION_LIMIT = 8 * 1024 * 1024
 PROJECTION_VERSION = 'KIS_STOCK_SPLIT_VIEW_3'
 SMALL_LIMIT = 3072
 ROW_FIELDS = ('raw_bars', 'bars', 'basis', 'price_basis_date')
@@ -69,6 +76,9 @@ def economic_row(row):
 def changes(contracts, prior, config, revision):
     """A repeated provider window neither drops history nor rewrites row provenance."""
     need(not (set(prior)-set(contracts)), 'JOURNAL_SCOPE_REMOVAL')
+    member_days = config.get('stock_evaluation_days')
+    if 'stock_evaluation_days' in config:
+        need(isinstance(member_days, dict) and member_days.keys() == set(contracts), 'STOCK_DAY_ROSTER')
     patches = {}
     for code in contracts:
         contract = contracts[code]
@@ -108,10 +118,13 @@ def changes(contracts, prior, config, revision):
             need(revision, 'JOURNAL_REVISION_REFERENCE_REQUIRED')
         if rows or changes or removed:
             patches[code] = dict(header=changes, remove=removed, rows=rows)
+        if member_days is not None and ('evaluation_day' not in before or member_days[code] != before['evaluation_day']):
+            patch = patches.setdefault(code, dict(header={}, remove=[], rows=[]))
+            patch['evaluation_day'] = member_days[code]
     return patches
 
 
-def apply_frame(state, patches, day, *, revision):
+def apply_frame(state, patches, day, *, revision, member_clocks=False):
     for code, patch in patches.items():
         part = state.setdefault(code, {'header': {}, 'rows': {}})
         newest = max(part['rows'], default='')
@@ -132,6 +145,15 @@ def apply_frame(state, patches, day, *, revision):
         for key in patch['remove']:
             del part['header'][key]
         part['header'].update(patch['header'])
+        if member_clocks:
+            previous_day = part.get('evaluation_day', '')
+            member_day = _day(patch.get('evaluation_day', previous_day))
+            need(previous_day <= member_day <= day and max(part['rows'], default='') <= member_day,
+                 'STOCK_MEMBER_DAY_BOUNDS')
+            need(schedule.is_session(date.fromisoformat(member_day)), 'STOCK_MEMBER_DAY_SESSION')
+            part['evaluation_day'] = member_day
+        else:
+            need('evaluation_day' not in patch and 'evaluation_day' not in part, 'JOURNAL_MEMBER_CLOCK_REQUIRED')
 
 
 def patch_files(patches, *, bootstrap=False):
@@ -160,7 +182,8 @@ def archive_files(config, patches, parent, revision=None):
         path = f'rows/{sha(value)}.json.gz'
         files[path] = value
         parts.append(ref(path, value))
-    frame = dict(schema=JOURNAL, publication_scope=SCOPE, previous=parent,
+    member_clocks = 'stock_evaluation_days' in config
+    frame = dict(schema=MEMBER_JOURNAL if member_clocks else JOURNAL, publication_scope=SCOPE, previous=parent,
                  context=clock_context(config), parts=parts, revision=revision)
     value = json_bytes(frame)
     limit = MAX_BYTES if parent is None else SMALL_LIMIT
@@ -174,7 +197,7 @@ def archive_files(config, patches, parent, revision=None):
         path = f'rows/{sha(part_index)}.json.gz'
         files[path] = part_index
         del frame['parts']
-        frame.update(schema=INDEXED_JOURNAL, parts_index=ref(path, part_index))
+        frame.update(schema=MEMBER_JOURNAL if member_clocks else INDEXED_JOURNAL, parts_index=ref(path, part_index))
         value = json_bytes(frame)
     need(len(value) <= limit, 'STOCK_ARCHIVE_SUMMARY_LIMIT')
     index = ref(f'captures/{sha(value)}.json', value)
@@ -190,13 +213,14 @@ def replay(root, head):
         need(head['sha256'] not in seen, 'JOURNAL_CAPTURE_CYCLE')
         seen.add(head['sha256'])
         frame = parse(root, head)
-        need(frame['schema'] in (JOURNAL, INDEXED_JOURNAL) and frame['publication_scope'] == SCOPE, 'JOURNAL_CONTRACT')
+        need(frame['schema'] in (JOURNAL, INDEXED_JOURNAL, MEMBER_JOURNAL) and frame['publication_scope'] == SCOPE, 'JOURNAL_CONTRACT')
         chain.append(frame)
         head = frame['previous']
     need(chain, 'STOCK_ARCHIVE_HEAD_REQUIRED')
     state = {}
     previous_day = ''
     previous_time = None
+    member_clocks = False
     for frame in reversed(chain):
         day = _day(frame['context']['evaluation_day'])
         need(day >= previous_day, 'JOURNAL_DATE_REGRESSION')
@@ -204,7 +228,10 @@ def replay(root, head):
         need(previous_time is None or moment >= previous_time, 'JOURNAL_CLOCK_REGRESSION')
         previous_day, previous_time = day, moment
         codes = set()
-        if frame['schema'] == INDEXED_JOURNAL:
+        was_member_clocks = member_clocks
+        member_clocks = frame['schema'] == MEMBER_JOURNAL
+        need(member_clocks or not was_member_clocks, 'JOURNAL_MEMBER_CLOCK_REQUIRED')
+        if frame['schema'] == INDEXED_JOURNAL or (member_clocks and 'parts_index' in frame):
             need('parts' not in frame, 'JOURNAL_CONTRACT')
             with gzip.GzipFile(fileobj=io.BytesIO(read(root, frame['parts_index']))) as stream:
                 part_list = stream.read(MAX_BYTES + 1)
@@ -218,8 +245,13 @@ def replay(root, head):
             patches = json.loads(gzip.decompress(read(root, part)))
             need(not codes.intersection(patches), 'JOURNAL_DUPLICATE_CODE')
             codes.update(patches)
-            apply_frame(state, patches, day, revision=frame['revision'])
-    return chain[0]['context'], state
+            apply_frame(state, patches, day, revision=frame['revision'], member_clocks=member_clocks)
+        if member_clocks and not was_member_clocks:
+            need(codes == state.keys(), 'STOCK_DAY_ROSTER')
+    context = dict(chain[0]['context'])
+    if member_clocks:
+        context['stock_evaluation_days'] = {code: part['evaluation_day'] for code, part in state.items()}
+    return context, state
 
 
 class Contracts(Mapping):
@@ -303,18 +335,43 @@ def project_stock(contract, config, code, *, previous=None, entries=None):
     return result, start
 
 
+def verified_member(root, entry, *, key, code, symbol, day, retained_end):
+    """A pinned manifest alone cannot substitute a different or stale member."""
+    need(entry['path'] == f"stock/{entry['sha256']}.json.gz" and
+         type(entry['bytes']) is int and 0 < entry['bytes'] <= MAX_BYTES and
+         type(entry['json_bytes']) is int and 0 < entry['json_bytes'] <= MAX_BYTES,
+         'STOCK_MEMBER_REFERENCE')
+    with child(root, entry['path']).open('rb') as source:
+        compressed = source.read(entry['bytes'] + 1)
+    need(len(compressed) == entry['bytes'] and sha(compressed) == entry['sha256'], 'STOCK_ARCHIVE_PIN')
+    with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as stream:
+        raw = stream.read(entry['json_bytes'] + 1)
+    need(len(raw) == entry['json_bytes'] and sha(raw) == entry['json_sha256'], 'STOCK_MEMBER_JSON_PIN')
+    view = json.loads(raw)
+    need(view['schema'] == 'kis-stock-view/1' and view['publication_scope'] == SCOPE and
+         view['input_sha256'] == key and view['symbol'] == symbol and view['code'] == entry['code'] == code and
+         view['evaluation_day'] == entry['evaluation_day'] == day and
+         view['coverage']['retained_end'] == entry['retained_end'] == retained_end, 'STOCK_MEMBER_BINDING')
+    return compressed
+
+
 def generation(contracts, config, capture, store_root, *, previous=None, stats=None, catalog=None):
-    """Yield changed stock objects and the complete small-to-read serving manifest."""
+    """Stage a complete member-clock generation or a legacy delta for older captures."""
     stats = stats if stats is not None else {}
     catalog = reviewed_actions() if catalog is None else catalog
+    member_days = config.get('stock_evaluation_days')
+    complete = member_days is not None
+    if complete:
+        need(member_days.keys() == set(contracts), 'STOCK_DAY_ROSTER')
+    version = MEMBER_PROJECTION_VERSION if complete else PROJECTION_VERSION
     old = {}
     previous_root = None
     if previous:
         previous_root, previous_ref = previous
         manifest = parse(previous_root, previous_ref)
         need(manifest['schema'] == VIEW and manifest['publication_scope'] == SCOPE, 'STOCK_GENERATION_CONTRACT')
-        need(manifest.get('projection_version') in ('KIS_STOCK_GSQ015_1', 'KIS_STOCK_SPLIT_VIEW_2', PROJECTION_VERSION), 'STOCK_PROJECTION_VERSION')
-        old = manifest['stocks'] if manifest['projection_version'] == PROJECTION_VERSION else {}
+        need(manifest.get('projection_version') in ('KIS_STOCK_GSQ015_1', 'KIS_STOCK_SPLIT_VIEW_2', PROJECTION_VERSION, MEMBER_PROJECTION_VERSION), 'STOCK_PROJECTION_VERSION')
+        old = manifest['stocks'] if manifest['projection_version'] == version else {}
         need(manifest['evaluation_day'] <= config['evaluation_day'], 'STOCK_GENERATION_DATE')
     references = {}
     contract_hashes = {}
@@ -327,28 +384,48 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
         # Includes the label/clock context used by the existing technical engine.
         contract_hashes[code] = digest(contract)
         entries = catalog.get(code, [])
-        key = digest([PROJECTION_VERSION, code, contract_hashes[code], entries,
-                      config['evaluation_day'], config['series_id_prefix']])
+        day = member_days[code] if complete else config['evaluation_day']
+        retained_end = contract['price_basis_date']
+        inputs = [version, code, contract_hashes[code], entries, day, config['series_id_prefix']]
+        if complete:
+            need((retained_end or '') <= _day(day) <= config['evaluation_day'], 'STOCK_MEMBER_DAY_BOUNDS')
+            inputs.extend([PROJECTION_VERSION, JUMP_POLICY])
+        key = digest(inputs)
         old_ref = old.get(symbol)
         if old_ref and old_ref['input_sha256'] == key:
             # Confirm the previous object is still available before reusing it.
-            read(previous_root, old_ref)
+            if complete:
+                compressed = verified_member(previous_root, old_ref, key=key, code=code,
+                                             symbol=symbol, day=day, retained_end=retained_end)
+                yield old_ref['path'], compressed
+            else:
+                read(previous_root, old_ref)
             entry = old_ref
             stats['stock_unchanged'] += 1
         else:
-            prior_view = json.loads(gzip.decompress(read(previous_root, old_ref))) if old_ref else None
-            view, reused = project_stock(contract, config, code, previous=prior_view, entries=entries)
+            prior_view = json.loads(gzip.decompress(read(previous_root, old_ref))) if old_ref and not complete else None
+            view, reused = project_stock(contract, dict(config, evaluation_day=day), code,
+                                         previous=prior_view, entries=entries)
+            if complete:
+                view.update(code=code, input_sha256=key)
             raw = json_bytes(view)
             need(len(raw) <= MAX_BYTES, 'STOCK_RESPONSE_LIMIT')
             compressed = gzip.compress(raw, compresslevel=6, mtime=0)
             object_path = f'stock/{sha(compressed)}.json.gz'
             entry = dict(ref(object_path, compressed), input_sha256=key, json_bytes=len(raw), json_sha256=sha(raw))
+            if complete:
+                entry.update(code=code, evaluation_day=day, retained_end=retained_end)
             stats['stock_written'] += 1
             stats['stock_prefix_reused' if reused else 'stock_full_history'] += 1
             yield object_path, compressed
         references[symbol] = entry
         max_raw = max(max_raw, entry['json_bytes'])
         max_compressed = max(max_compressed, entry['bytes'])
+    if complete and previous:
+        need(manifest['stocks'].keys() <= references.keys(), 'STOCK_GENERATION_SCOPE_REMOVAL')
+        if manifest['projection_version'] == version:
+            need(all(entry['code'] == references[symbol]['code'] for symbol, entry in old.items()),
+                 'STOCK_GENERATION_CODE_CHANGE')
     stats.update(max_stock_json_bytes=max_raw, max_stock_gzip_bytes=max_compressed)
     # Independent, pinned QGV inputs are read from the checked-out private sources.
     financial = pinned(store_root, config['financial'])
@@ -365,19 +442,26 @@ def generation(contracts, config, capture, store_root, *, previous=None, stats=N
     compressed = gzip.compress(qgv_json, compresslevel=6, mtime=0)
     q_path = f'qgv/{sha(compressed)}.json.gz'
     q_ref = ref(q_path, compressed)
-    if previous and manifest['qgv'] == q_ref:
+    if not complete and previous and manifest['qgv'] == q_ref:
         read(previous_root, q_ref)
     else:
         yield q_path, compressed
     manifest = json_bytes(dict(schema=VIEW, publication_scope=SCOPE, capture=capture,
-                          projection_version=PROJECTION_VERSION,
+                          projection_version=version,
                           evaluation_day=config['evaluation_day'], stocks=references,
                           qgv=q_ref, content_encoding='gzip'))
+    need(len(manifest) <= (GENERATION_LIMIT if complete else MAX_BYTES), 'STOCK_GENERATION_LIMIT')
     yield 'generation.json', manifest
     pointer = json_bytes(dict(schema='kis-stock-query-ref/1', publication_scope=SCOPE,
                               capture=capture, generation=ref('generation.json', manifest)))
     need(len(pointer) <= SMALL_LIMIT, 'STOCK_ARCHIVE_SUMMARY_LIMIT')
     yield f'query-refs/{sha(pointer)}.json', pointer
+
+
+def unique_day_map(pairs):
+    days = dict(pairs)
+    need(len(days) == len(pairs), 'STOCK_DAY_ROSTER')
+    return days
 
 
 def main(argv=None):
@@ -389,6 +473,8 @@ def main(argv=None):
     parser.add_argument('--request', type=Path)
     parser.add_argument('--request-sha256')
     parser.add_argument('--revision-reference')
+    parser.add_argument('--per-code-days', type=Path, help='append: complete journal-code to calculation-session JSON object')
+    parser.add_argument('--per-code-days-sha256')
     parser.add_argument('--previous-view', type=Path)
     parser.add_argument('--previous-view-sha256')
     parser.add_argument('--reviewed-actions', type=Path, help='supplemental chart action register for restore')
@@ -401,6 +487,8 @@ def main(argv=None):
     try:
         need(args.check_only != bool(args.output_dir), 'CHOOSE_OUTPUT_OR_CHECK_ONLY')
         need(bool(args.head) == bool(args.head_sha256), 'STOCK_ARCHIVE_HEAD_PIN')
+        need(bool(args.per_code_days) == bool(args.per_code_days_sha256), 'STOCK_DAY_MAP_PIN')
+        need(not args.per_code_days or args.mode == 'append', 'STOCK_DAY_MAP_APPEND_ONLY')
         need(bool(args.previous_view) == bool(args.previous_view_sha256), 'STOCK_GENERATION_PIN')
         need(bool(args.reviewed_actions) == bool(args.reviewed_actions_sha256), 'REVIEWED_ACTIONS_PIN')
         catalog = None
@@ -420,7 +508,13 @@ def main(argv=None):
             need(args.request and args.request_sha256, 'JOURNAL_REQUEST_REQUIRED')
             need(not args.previous_view, 'JOURNAL_APPEND_VIEW_OPTION')
             root, incoming, contracts = load_request(args.request, args.request_sha256)
+            need('stock_evaluation_days' not in incoming, 'USE_PINNED_STOCK_DAY_MAP')
+            if args.per_code_days:
+                body = args.per_code_days.read_bytes()
+                need(sha(body) == args.per_code_days_sha256, 'STOCK_DAY_MAP_PIN')
+                incoming['stock_evaluation_days'] = json.loads(body, object_pairs_hook=unique_day_map)
             if parent:
+                need('stock_evaluation_days' not in config or args.per_code_days, 'JOURNAL_MEMBER_CLOCK_REQUIRED')
                 need(config['evaluation_day'] <= incoming['evaluation_day'], 'JOURNAL_DATE_REGRESSION')
                 need(_ts(config['calculated_at']) <= _ts(incoming['calculated_at']), 'JOURNAL_CLOCK_REGRESSION')
                 need(config.get('price_basis','RAW') == incoming.get('price_basis','RAW') or args.revision_reference,
@@ -433,10 +527,11 @@ def main(argv=None):
                     pinned(args.source_root, incoming[key])
             patches = changes(contracts, state, incoming, args.revision_reference)
             # Replay is validated before emitting any object or capture pointer.
-            apply_frame(state, patches, incoming['evaluation_day'], revision=args.revision_reference)
+            apply_frame(state, patches, incoming['evaluation_day'], revision=args.revision_reference,
+                        member_clocks=args.per_code_days is not None)
             for code in state:
                 contract_from_state(state[code], incoming.get('price_basis','RAW'))
-            if parent and not patches and clock_context(incoming) == config:
+            if parent and not patches and clock_context(incoming) == clock_context(config):
                 files, head = {}, parent
             else:
                 files, head = archive_files(incoming, patches, parent, args.revision_reference)
@@ -452,14 +547,15 @@ def main(argv=None):
                 previous = args.previous_view.parent, ref(args.previous_view.name, value)
             files = generation(Contracts(state, config.get('price_basis','RAW')), config, parent, args.source_root,
                                previous=previous, stats=stats, catalog=catalog)
+        limits = {'generation.json': GENERATION_LIMIT} if args.mode == 'restore' and 'stock_evaluation_days' in config else {}
         if args.output_dir:
             dest = args.output_dir.resolve()
             need(not any((p/'.git').exists() for p in (dest,*dest.parents)), 'PRIVATE_OUTPUT_OUTSIDE_GIT_REQUIRED')
-            stats.update(write_bundle(files,dest))
+            stats.update(write_bundle(files, dest, file_limits=limits))
         else:
             size = count = 0
-            for _, value in files:
-                need(len(value) <= MAX_BYTES, 'OUTPUT_FILE_LIMIT')
+            for path, value in files:
+                need(len(value) <= limits.get(path, MAX_BYTES), 'OUTPUT_FILE_LIMIT')
                 size += len(value)
                 count += 1
             stats.update(files=count,bytes=size)

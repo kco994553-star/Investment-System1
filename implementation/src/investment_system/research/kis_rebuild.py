@@ -175,7 +175,7 @@ def compare_files(files, expected):
                 missing=len(set(wanted)-seen),extra=extra,index=index)
 
 
-def write_bundle(files, output):
+def write_bundle(files, output, *, file_limits=None):
     """Stage a complete new directory; never overwrite a good/previous output."""
     output=Path(output).resolve()
     if output.exists():raise FileExistsError('OUTPUT_ALREADY_EXISTS')
@@ -185,7 +185,7 @@ def write_bundle(files, output):
     try:
         for path,b in files:
             need(path not in seen,'DUPLICATE_OUTPUT_PATH');seen.add(path)
-            need(len(b)<=MAX_BYTES,'OUTPUT_FILE_LIMIT')
+            need(len(b) <= (file_limits or {}).get(path, MAX_BYTES), 'OUTPUT_FILE_LIMIT')
             p=child(stage,path);p.parent.mkdir(parents=True,exist_ok=True)
             with p.open('xb') as f:f.write(b)
             need(p.read_bytes()==b,'OUTPUT_READBACK_MISMATCH')
