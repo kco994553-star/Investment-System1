@@ -1,3 +1,5 @@
+> **SUPERSEDED · 대체됨:** 현재 전체 구조 안내는 [ARCHITECTURE.md](ARCHITECTURE.md)에서 관리한다(2026-11-15). 아래 원문은 당시 설계의 기록이며 현행 상태 판단에 쓰지 않는다.
+
 Investment System · Architecture v1.0
 
 1\. System Boundary  
