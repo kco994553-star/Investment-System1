@@ -63,6 +63,54 @@ def read_snapshot(folder, expected_manifest_sha256):
     return rows
 
 
+def _security_type(evidence):
+    if not evidence or evidence == {"UNVERIFIED"}:
+        return "UNVERIFIED"
+    if len(evidence) != 1:
+        return "CONFLICT"
+    kind, = evidence
+    if kind == "COMMON" or kind in NONCOMMON:
+        return kind
+    raise ValueError("INVALID_SECURITY_KIND")
+
+
+def _outcome(reason=None, *, sector=None, industry=None, excluded=False):
+    status = "NOT_APPLICABLE" if excluded else ("ASSIGNED" if industry else "UNKNOWN")
+    return dict(sector_id=sector, industry_id=industry, status=status, reason=reason)
+
+
+def _issuer_assignment(sic, exact, guarded):
+    if not sic:
+        return _outcome("SIC_MISSING")
+    direct = exact.get(sic, [])
+    review = guarded.get(sic, [])
+    if len(direct) == 1 and not review:
+        return _outcome(sector=direct[0]["parent_sector"], industry=direct[0]["id"])
+    parents = {g["parent_sector"] for g in direct + review}
+    sector = next(iter(parents)) if len(parents) == 1 else None
+    return _outcome("ACTIVITY_REVIEW_REQUIRED" if parents else "SIC_UNMAPPED", sector=sector)
+
+
+def _multiple_listings(issuer_counts):
+    multiples = [n for n in issuer_counts.values() if n > 1]
+    return {"issuers_with_multiple_securities": len(multiples),
+            "securities_of_these_issuers": sum(multiples)}
+
+
+def _coverage(rows, groups):
+    assigned = Counter(r["issuer_id"] for r in rows if r["industry_id"])
+    return {
+        "sector_rows": sum(bool(r["sector_id"]) for r in rows),
+        "sector_issuers": len({r["issuer_id"] for r in rows if r["sector_id"]}),
+        "sector_only_rows": sum(bool(r["sector_id"]) and not r["industry_id"] for r in rows),
+        "industry_rows": sum(assigned.values()), "industry_issuers": len(assigned),
+        "remaining_rows": len(rows) - sum(assigned.values()),
+        "by_status": dict(Counter(r["status"] for r in rows)),
+        "remaining_reasons": dict(Counter(r["reason"] for r in rows if r["reason"])),
+        "assigned_multiple_listings": _multiple_listings(assigned),
+        **distribution(rows, groups)}
+
+
 def classify_market(master, issuers, security_evidence):
     """Master tuples are (venue, symbol, kind, currency, DR flag) from read_master.
     Class evidence keys are (venue, normalized symbol, exact SEC CIK), with a set
@@ -87,6 +135,7 @@ def classify_market(master, issuers, security_evidence):
         for code in g["sic_requires_activity"]:
             needs_activity[code].append(g)
     master_keys = Counter((market, symbol.strip().upper()) for market, symbol, *_ in master)
+    activity_counts = dict.fromkeys(sorted(needs_activity), 0)
     rows = []
     for market, raw_symbol, kind, currency, _ in master:
         if kind != "2":
@@ -95,49 +144,44 @@ def classify_market(master, issuers, security_evidence):
         key = market, symbol
         candidates = listings[key]
         cik = None
-        sector = group = None
-        status = "UNKNOWN"
+        security_type = "UNVERIFIED"
         if master_keys[key] != 1:
-            reason = "DUPLICATE_MASTER_KEY"
+            candidate = _outcome("DUPLICATE_MASTER_KEY")
         elif len(candidates) > 1 or (candidates and unresolved_venue[symbol] - candidates):
-            reason = "AMBIGUOUS_ISSUER"
+            candidate = _outcome("AMBIGUOUS_ISSUER")
         elif not candidates:
-            reason = "VENUE_UNKNOWN" if unresolved_venue[symbol] else "NO_EXACT_ISSUER"
+            candidate = _outcome("VENUE_UNKNOWN" if unresolved_venue[symbol] else "NO_EXACT_ISSUER")
         else:
             cik, = candidates
-            evidence = security_evidence.get((market, symbol, cik), set())
+            security_type = _security_type(security_evidence.get((market, symbol, cik), set()))
             sic = by_cik[cik]["sic"]
+            if sic in activity_counts:
+                activity_counts[sic] += 1
             if sic == "6770":
-                status, reason = "NOT_APPLICABLE", "BLANK_CHECK"
-            elif len(evidence) == 1 and evidence <= NONCOMMON:
-                status, reason = "NOT_APPLICABLE", next(iter(evidence))
+                candidate = _outcome("BLANK_CHECK", excluded=True)
+            elif security_type in NONCOMMON:
+                candidate = _outcome(security_type, excluded=True)
             elif currency != "USD":
-                reason = "CURRENCY_UNVERIFIED"
-            elif evidence != {"COMMON"}:
-                reason = "SECURITY_TYPE_CONFLICT" if len(evidence) > 1 else "COMMON_NOT_VERIFIED"
-            elif not sic:
-                reason = "SIC_MISSING"
+                candidate = _outcome("CURRENCY_UNVERIFIED")
+            elif security_type == "CONFLICT":
+                candidate = _outcome("SECURITY_TYPE_CONFLICT")
             else:
-                options = exact[sic] + needs_activity[sic]
-                parents = {g["parent_sector"] for g in options}
-                if len(exact[sic]) == 1 and not needs_activity[sic]:
-                    group = exact[sic][0]["id"]
-                    sector = exact[sic][0]["parent_sector"]
-                    status, reason = "ASSIGNED", None
-                else:
-                    # Codes guarded for boundary/activity review cannot establish a parent alone.
-                    if len(parents) == 1 and exact[sic]:
-                        sector, = parents
-                    reason = "ACTIVITY_REVIEW_REQUIRED" if options else "SIC_UNMAPPED"
-        rows.append(dict(market=market, symbol=symbol, issuer_id=cik, sector_id=sector,
-                         industry_id=group, status=status, reason=reason, grade="CANDIDATE",
-                         accounting_model="UNKNOWN"))
+                candidate = _issuer_assignment(sic, exact, needs_activity)
+
+        strict = candidate
+        if cik and currency == "USD" and security_type == "UNVERIFIED" and candidate["status"] != "NOT_APPLICABLE":
+            strict = _outcome("COMMON_NOT_VERIFIED")
+        rows.append(dict(market=market, symbol=symbol, issuer_id=cik, **strict,
+                         security_type=security_type, issuer_candidate=candidate,
+                         grade="CANDIDATE", accounting_model="UNKNOWN"))
+
+    strict_counts = _coverage(rows, groups)
+    candidate_counts = _coverage([dict(issuer_id=r["issuer_id"], **r["issuer_candidate"]) for r in rows], groups)
+    linked = Counter(r["issuer_id"] for r in rows if r["issuer_id"])
+    # Preserve the original strict row and count fields for existing private readers.
     return rows, {
-        "stock_rows": len(rows), "linked_rows": sum(bool(r["issuer_id"]) for r in rows),
-        "linked_issuers": len({r["issuer_id"] for r in rows if r["issuer_id"]}),
-        "sector_rows": sum(bool(r["sector_id"]) for r in rows),
-        "industry_rows": sum(bool(r["industry_id"]) for r in rows),
-        "remaining_rows": sum(r["status"] != "ASSIGNED" for r in rows),
-        "by_status": dict(Counter(r["status"] for r in rows)),
-        "remaining_reasons": dict(Counter(r["reason"] for r in rows if r["reason"])),
-        **distribution(rows, groups)}
+        "stock_rows": len(rows), "linked_rows": sum(linked.values()), "linked_issuers": len(linked),
+        "linked_multiple_listings": _multiple_listings(linked),
+        "linked_security_types": dict(Counter(r["security_type"] for r in rows if r["issuer_id"])),
+        "activity_rows_by_sic": activity_counts,
+        "strict": strict_counts, "issuer_candidate": candidate_counts, **strict_counts}

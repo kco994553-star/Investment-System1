@@ -16,8 +16,9 @@ def test_taxonomy_preserves_all_old_parents_and_requires_scope():
     assert set(groups) == set(STUDY_LABELS)
     assert {g["parent_sector"] for g in groups.values()} == set(SECTORS)
     assert {key: groups[group]["parent_sector"] for key, group in d["legacy_to_broader"].items()} == PARENTS
+    assert len({g["short_name_ko"] for g in groups.values()}) == 25
     for g in groups.values():
-        assert all(g[k] for k in ("name_ko", "definition", "includes", "excludes", "sic_codes"))
+        assert all(g[k] for k in ("name_ko", "short_name_ko", "definition", "includes", "excludes", "sic_codes"))
         assert g["version"] == VERSION
         assert all(re.fullmatch(r"[0-9]{4}", s) for s in g["sic_codes"] + g["sic_requires_activity"])
         assert not set(g["sic_codes"]) & set(g["sic_requires_activity"])
@@ -57,7 +58,7 @@ def test_candidate_boundary_codes():
     proof = {("NAS", str(i), r["cik"]): {"COMMON"} for i, r in enumerate(data, 1)}
     rows, _ = classify_market(master, data, proof)
     assert [r["sector_id"] for r in rows] == ["FINANCIALS", "TELECOMMUNICATIONS",
-        "CONSUMER_DISCRETIONARY", None, None, None, None]
+        "CONSUMER_DISCRETIONARY", "HEALTH_CARE", "FINANCIALS", None, None]
     assert [r["reason"] for r in rows][-4:] == ["ACTIVITY_REVIEW_REQUIRED", "ACTIVITY_REVIEW_REQUIRED",
                                                 "SIC_MISSING", "SIC_UNMAPPED"]
 
@@ -82,3 +83,42 @@ def test_main_delivery_integrity(tmp_path):
     m["complete"] = False
     with pytest.raises(ValueError, match="PARTIAL"):
         read_snapshot(tmp_path, write_manifest())
+
+def test_two_scopes_keep_unit_conflicts_and_unique_issuer_counts():
+    first = issuer(1, "A", "7372")
+    symbols = ["A", "A.B", "A.C", "A.U", "A.P", "A.X", "A.W"]
+    first["listings"].extend({"ticker": s, "exchange": "Nasdaq"} for s in symbols[1:])
+    master = [("NAS", s, "2", "EUR" if s == "A.X" else "USD", "") for s in symbols]
+    proof = {("NAS", "A", first["cik"]): {"COMMON"}, ("NAS", "A.U", first["cik"]): {"UNIT"},
+             ("NAS", "A.C", first["cik"]): {"UNVERIFIED"}, ("NAS", "A.P", first["cik"]): {"PREFERRED"},
+             ("NAS", "A.W", first["cik"]): {"WARRANT", "COMMON"}}
+    rows, counts = classify_market(master, [first], proof)
+    strict, candidate = counts["strict"], counts["issuer_candidate"]
+    assert strict["industry_rows"] == 1 and candidate["industry_rows"] == 3
+    assert strict["industry_issuers"] == candidate["industry_issuers"] == 1
+    assert candidate["issuers_per_industry"]["software_information"] == 1
+    assert counts["linked_multiple_listings"]["securities_of_these_issuers"] == 7
+    assert strict["assigned_multiple_listings"]["issuers_with_multiple_securities"] == 0
+    assert candidate["assigned_multiple_listings"] == {"issuers_with_multiple_securities": 1,
+                                                       "securities_of_these_issuers": 3}
+    assert [r["issuer_candidate"]["reason"] for r in rows] == [
+        None, None, None, "UNIT", "PREFERRED", "CURRENCY_UNVERIFIED", "SECURITY_TYPE_CONFLICT"]
+    assert [r["security_type"] for r in rows[:3]] == ["COMMON", "UNVERIFIED", "UNVERIFIED"]
+    for mode in (strict, candidate):
+        assert sum(mode["remaining_reasons"].values()) + mode["industry_rows"] == len(rows)
+
+
+def test_guarded_sic_counts_before_scope_filters_one_observation_per_linked_row():
+    data = [issuer(i, str(i), code) for i, code in enumerate(["7990", "6321", "6199", "6199", "6770"], 1)]
+    master = [("NAS", str(i), "2", "USD", "") for i in range(1, 6)]
+    proof = {("NAS", "3", data[2]["cik"]): {"COMMON"}, ("NAS", "4", data[3]["cik"]): {"WARRANT"}}
+    rows, counts = classify_market(master, data, proof)
+    histogram = counts["activity_rows_by_sic"]
+    assert len(histogram) == 33 and sum(histogram.values()) == 4
+    assert [histogram[k] for k in ("7990", "6321", "6199", "0100")] == [1, 1, 2, 0]
+    assert [r["issuer_candidate"]["sector_id"] for r in rows] == [
+        "CONSUMER_DISCRETIONARY", None, "FINANCIALS", None, None]
+    assert all(r["issuer_candidate"]["industry_id"] is None for r in rows)
+    assert counts["issuer_candidate"]["sector_only_rows"] == 2
+    assert counts["strict"]["sector_only_rows"] == 1
+    assert rows[-1]["issuer_candidate"]["reason"] == "BLANK_CHECK"

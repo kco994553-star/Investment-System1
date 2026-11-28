@@ -41,7 +41,8 @@
         "3949"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "내구재·의류·주택"
     },
     {
       "id": "consumer_distribution",
@@ -72,7 +73,8 @@
         "7200",
         "7389"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "선택소비 유통"
     },
     {
       "id": "dining_leisure",
@@ -92,7 +94,8 @@
       "sic_requires_activity": [
         "7900"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "외식·숙박·여가"
     },
     {
       "id": "media_content",
@@ -117,7 +120,8 @@
         "7900",
         "7990"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "미디어·콘텐츠"
     },
     {
       "id": "staple_manufacturing",
@@ -149,7 +153,8 @@
         "2844"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "식품·생활용품 제조"
     },
     {
       "id": "staple_supply",
@@ -166,7 +171,8 @@
       "sic_requires_activity": [
         "5331"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "필수품 유통"
     },
     {
       "id": "fuel_chain",
@@ -188,7 +194,8 @@
         "6792"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "석유·가스"
     },
     {
       "id": "bank_credit",
@@ -209,7 +216,8 @@
       "sic_requires_activity": [
         "6199"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "은행·대출"
     },
     {
       "id": "risk_insurance",
@@ -229,7 +237,8 @@
         "6321",
         "6331"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "보험"
     },
     {
       "id": "financial_transactions",
@@ -248,7 +257,8 @@
         "7320",
         "7389"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "결제·투자서비스"
     },
     {
       "id": "property_income",
@@ -263,7 +273,8 @@
       "sic_requires_activity": [
         "6510"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "부동산 투자·임대"
     },
     {
       "id": "therapeutics",
@@ -281,7 +292,8 @@
       "sic_requires_activity": [
         "8731"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "의약품·바이오"
     },
     {
       "id": "clinical_equipment",
@@ -303,7 +315,8 @@
         "3826",
         "3829"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "의료·진단장비"
     },
     {
       "id": "care_delivery",
@@ -330,7 +343,8 @@
         "6321",
         "6324"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "의료서비스·유통"
     },
     {
       "id": "production_equipment",
@@ -374,7 +388,8 @@
         "3829",
         "3990"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "산업기계·부품"
     },
     {
       "id": "transport_equipment",
@@ -395,7 +410,8 @@
         "3812"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "항공·방산·운송장비"
     },
     {
       "id": "freight_mobility",
@@ -417,7 +433,8 @@
       "sic_requires_activity": [
         "7389"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "운송·물류"
     },
     {
       "id": "business_operations",
@@ -451,7 +468,8 @@
         "8700",
         "8741"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "건설·사업지원"
     },
     {
       "id": "it_hardware",
@@ -480,7 +498,8 @@
         "3829",
         "5961"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "컴퓨팅·통신장비"
     },
     {
       "id": "chips_components",
@@ -504,7 +523,8 @@
         "3827",
         "3829"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "반도체·전자부품"
     },
     {
       "id": "software_information",
@@ -524,7 +544,8 @@
         "7374",
         "7389"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "소프트웨어·정보서비스"
     },
     {
       "id": "chemical_inputs",
@@ -546,7 +567,8 @@
       "sic_requires_activity": [
         "0100"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "화학·농업 원료"
     },
     {
       "id": "physical_materials",
@@ -575,7 +597,8 @@
         "5051"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "금속·건설·포장재"
     },
     {
       "id": "network_access",
@@ -593,7 +616,8 @@
         "4841",
         "4899"
       ],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "통신망"
     },
     {
       "id": "utility_supply",
@@ -613,7 +637,8 @@
         "4991"
       ],
       "sic_requires_activity": [],
-      "version": "common-subindustry/3"
+      "version": "common-subindustry/3",
+      "short_name_ko": "전력·가스·수도"
     }
   ]
 }
