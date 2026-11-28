@@ -20,6 +20,9 @@ LABELS = ('경기소비재','필수소비재','에너지','금융','헬스케어
 
 
 def dictionary(version=VERSION):
+    if version == "common-subindustry/3":
+        from .subindustry import load_dictionary
+        return load_dictionary()
     if version not in (VERSION,POLICY_DICTIONARY_VERSION):raise ValueError('CLASSIFICATION_DICTIONARY_VERSION_INVALID')
     source = load_sic_config()
     by_id = {row['id']: row for row in source['subgroups']}
