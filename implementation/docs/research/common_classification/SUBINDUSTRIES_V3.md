@@ -19,7 +19,7 @@
 
 ## 카드 이름과 다음 사전 검토
 
-short_name_ko는 오너가 선택할 카드 이름 후보이며 name_ko는 사업 정의에 쓰는 이름이다. 화면 연결은 Main이 오너 인증 Worker 경로로 담당한다. 비공개 운영 배정의 각 행은 11/22 연구 묶음을 study_label로 보존하며, 당시 묶음이 없던 행은 null이다. 전체 시장의 후보 대응으로 이 필드를 소급해 채우지 않는다. 이번 판은 25개를 유지한다. 에너지·통신·유틸리티 및 대규모 묶음의 세분화는 전체 시장의 고유 발행사 분포를 확인한 후 검토한다.
+short_name_ko는 11/28 오너가 확정한 카드 이름이며 name_ko는 사업 정의에 쓰는 이름이다. 화면 연결은 Main이 오너 인증 Worker 경로로 담당한다. 비공개 운영 배정의 각 행은 11/22 연구 묶음을 study_label로 보존하며, 당시 묶음이 없던 행은 null이다. 전체 시장의 후보 대응으로 이 필드를 소급해 채우지 않는다. 이번 판은 25개를 유지한다. 에너지·통신·유틸리티 및 대규모 묶음의 세분화는 전체 시장의 고유 발행사 분포를 확인한 후 검토한다.
 
 ## 전체 시장의 두 배정 기준
 
@@ -38,4 +38,10 @@ short_name_ko는 오너가 선택할 카드 이름 후보이며 name_ko는 사�
 
 현재는 비공개 보존 자료의 SEC 표지 증권명·티커·거래소와 CIK를 대조한다. 운영 밖에도 기존 증권명과 SEC 디렉터리에서 동일 시장·티커·CIK를 확인한 행이 있다. 입력 계약 #631에는 주식 종류 필드가 없으며 전체 시장의 증빙 보유율은 수령 후 측정한다.
 
-추가 검증이 필요하면 Main이 평가 시각까지 접수된 기존 10-K·10-Q·20-F 등 표지의 DEI 태그 Security12bTitle, TradingSymbol, SecurityExchangeName을 같은 증권 종류의 XBRL 문맥에서 짝짓고 제출 CIK를 확인하는 방안을 제안한다. 주식 종류가 여러 개면 각 종류의 문맥별로 분리한다. 이미 보존한 보고서 검사에는 외부 요청이 0회다. 제출 목록·primaryDocument 경로가 준비되어 있다면, 보존본이 없는 고유 accession을 F개 고른 뒤 SEC Archives 원문에 최대 F회(문서당 1회, 재시도 제외) 요청한다. 표지를 확인할 수 없는 발행사는 미검증으로 둔다. 실제 F와 회차별 예산은 후보 대사 뒤 산정한다. [SEC EDGAR API 및 자료 안내](https://www.sec.gov/search-filings/edgar-application-programming-interfaces)
+전체 시장의 엄격·후보 건수가 나온 뒤 오너가 추가 검증 여부를 결정한다. 승인 시 Main이 평가 시각까지 접수된 기존 10-K·10-Q·20-F 등 표지의 DEI 태그 Security12bTitle, TradingSymbol, SecurityExchangeName을 같은 증권 종류의 XBRL 문맥에서 짝짓고 제출 CIK를 확인하는 방안을 제안한다. 주식 종류가 여러 개면 각 종류의 문맥별로 분리한다. 이미 보존한 보고서 검사에는 외부 요청이 0회다. 제출 목록·primaryDocument 경로가 준비되어 있다면, 보존본이 없는 고유 accession을 F개 고른 뒤 SEC Archives 원문에 최대 F회(문서당 1회, 재시도 제외) 요청한다. 표지를 확인할 수 없는 발행사는 미검증으로 둔다. 실제 F와 회차별 예산은 후보 대사 뒤 산정한다. [SEC EDGAR API 및 자료 안내](https://www.sec.gov/search-filings/edgar-application-programming-interfaces)
+
+## 전체 시장의 나라 필터
+
+`sec-issuer-sic/2`의 설립지와 사업장 주소에는 각각 [EDGAR 코드 사전 v2](../../../src/investment_system/research/common_classification/edgar_countries_v2.csv)을 적용한다. 50개 주와 DC는 미국으로, 캐나다 주·준주는 캐나다로 집계한다. 사전에 독립 ISO 코드가 있는 속령은 해당 지역으로 표시하며 구 네덜란드령 안틸레스는 원래 지역으로 보존한다. XX는 SEC의 미상, null은 원천 누락, 미등재 코드는 미대응이다. 같은 국가 내 주 차이는 설립지 불일치에 포함하지 않는다. 사업장 주소를 본사 필터의 근거로 사용한다. 보고 유형은 최근 제출 서식 계열이고, DR은 증권별 마스터 원문 표시다. 두 항목 모두 국가 판정과 독립이다.
+
+SEC의 EDGAR State and Country Codes 공식 HTML을 2026-11-28 02:42:48 UTC에 확인했다. 원문 91,004바이트의 SHA-256은 `298f4fb792e9b1a4a98bbf6cac01351175ae8e6d97000c3551b38ea422dbbbba`다. 공식 표 310행에서 캐나다 연방 Z4가 같은 뜻으로 두 번 등장해, 사전에는 고유 EDGAR 코드 309개를 담았다. SEC의 주·국가 이름을 기준으로 프로젝트가 국가·지역 코드 대응과 한국어 표시명을 직접 작성했다. 원천의 미상 코드 XX도 한 행으로 보존한다. [SEC 공식 코드 목록](https://www.sec.gov/submit-filings/filer-support-resources/edgar-state-country-codes)

@@ -6,6 +6,7 @@ import json
 import re
 from urllib.parse import urlparse
 
+from .issuer_tags import validate_tags
 from .subindustry import distribution, load_dictionary
 
 VENUES = {"NASDAQ": "NAS", "NYSE": "NYS", "NYSE AMERICAN": "AMS", "NYSE MKT": "AMS"}
@@ -26,13 +27,16 @@ def source(record):
         raise ValueError("INVALID_SEC_PROVENANCE")
 
 
-def read_snapshot(folder, expected_manifest_sha256):
+def read_snapshot(folder, expected_manifest_sha256, *, require_issuer_tags=False):
     manifest_bytes = (folder / "manifest.json").read_bytes()
     if sha256(manifest_bytes).hexdigest() != expected_manifest_sha256:
         raise ValueError("SEC_MANIFEST_HASH")
     manifest = json.loads(manifest_bytes)
     body = (folder / "issuers.ndjson").read_bytes()
-    if (manifest["schema_version"] != "sec-issuer-sic/1" or manifest["complete"] is not True
+    schema = manifest["schema_version"]
+    if require_issuer_tags and schema != "sec-issuer-sic/2":
+        raise ValueError("SEC_ISSUER_TAGS_REQUIRE_V2")
+    if (schema not in {"sec-issuer-sic/1", "sec-issuer-sic/2"} or manifest["complete"] is not True
             or not isinstance(manifest["snapshot_id"], str) or not manifest["snapshot_id"].strip()
             or sha256(body).hexdigest() != manifest["issuers_sha256"] or not body.endswith(b"\n")
             or b"\r" in body):
@@ -50,6 +54,8 @@ def read_snapshot(folder, expected_manifest_sha256):
                 or not isinstance(r["source_member"], (str, type(None)))
                 or not isinstance(r["listings"], list) or utc(r["observed_at"]) > collected):
             raise ValueError("INVALID_SEC_ROW")
+        if schema == "sec-issuer-sic/2":
+            validate_tags(r)
         source(r)
         for listing in r["listings"]:
             if (not isinstance(listing["ticker"], str) or not listing["ticker"].strip()
@@ -137,7 +143,7 @@ def classify_market(master, issuers, security_evidence):
     master_keys = Counter((market, symbol.strip().upper()) for market, symbol, *_ in master)
     activity_counts = dict.fromkeys(sorted(needs_activity), 0)
     rows = []
-    for market, raw_symbol, kind, currency, _ in master:
+    for market, raw_symbol, kind, currency, dr_flag in master:
         if kind != "2":
             continue
         symbol = raw_symbol.strip().upper()
@@ -172,7 +178,7 @@ def classify_market(master, issuers, security_evidence):
         if cik and currency == "USD" and security_type == "UNVERIFIED" and candidate["status"] != "NOT_APPLICABLE":
             strict = _outcome("COMMON_NOT_VERIFIED")
         rows.append(dict(market=market, symbol=symbol, issuer_id=cik, **strict,
-                         security_type=security_type, issuer_candidate=candidate,
+                         security_type=security_type, issuer_candidate=candidate, master_dr_flag=dr_flag,
                          grade="CANDIDATE", accounting_model="UNKNOWN"))
 
     strict_counts = _coverage(rows, groups)

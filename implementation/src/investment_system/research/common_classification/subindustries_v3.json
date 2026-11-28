@@ -42,7 +42,7 @@
       ],
       "sic_requires_activity": [],
       "version": "common-subindustry/3",
-      "short_name_ko": "내구재·의류·주택"
+      "short_name_ko": "자동차·내구재·의류"
     },
     {
       "id": "consumer_distribution",
@@ -617,7 +617,7 @@
         "4899"
       ],
       "version": "common-subindustry/3",
-      "short_name_ko": "통신망"
+      "short_name_ko": "유무선 통신"
     },
     {
       "id": "utility_supply",
