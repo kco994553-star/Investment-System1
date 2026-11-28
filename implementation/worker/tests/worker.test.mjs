@@ -569,7 +569,9 @@ test('abandoned leases recover only after a bounded lease expiry', async () => {
   const clock = { now: NOW }, ns = rateNamespace(clock);
   const admit = () => ns.limiter.fetch(new Request('https://history-rate.internal/admit', { method: 'POST' }));
   assert.equal((await admit()).status, 200);
-  clock.now += 29_999; assert.equal((await admit()).status, 429);
+  // LEASE_MS (15 s since owner 2026-11-28; it was 30 s) after the admission, never earlier.
+  assert.equal(module.LIMITER_TIMING.LEASE_MS, 15_000);
+  clock.now += module.LIMITER_TIMING.LEASE_MS - 1; assert.equal((await admit()).status, 429);
   clock.now += 1; assert.equal((await admit()).status, 200);
 });
 test('binding and storage failures fail closed before Yahoo', async () => {

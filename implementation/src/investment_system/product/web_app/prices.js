@@ -272,12 +272,15 @@ function create({win,action,data}){
  function kisDisconnect(event){return action.run(event,'LOGIN',()=>{kisC().disconnect();});}
  // One click = one action: the reads of one panel ([[route, symbol, part], …], 1 to 3) together. A part marked 'OPTIONAL' whose
  // file is missing (KIS_SERIES_NOT_FOUND) answers null, so that part alone is 자료 없음; every other failure fails the click.
- function kisRead(event,list){return action.run(event,'PRIVATE_READ',signal=>{if(!Array.isArray(list)||!list.length||list.length>3)throw Error('REQUEST_INVALID');
+ // opts (optional): notice(seconds) while a lost read waits for its one retry (kisOne), then notice(0) as it starts; signal,
+ // the caller's cancel (the panel closed or left): a waiting retry is then dropped and never sent.
+ function kisRead(event,list,opts){const say=opts&&typeof opts.notice==='function'?opts.notice:null,cancel=opts&&opts.signal&&typeof opts.signal.addEventListener==='function'?opts.signal:null;
+  return action.run(event,'PRIVATE_READ',signal=>{if(!Array.isArray(list)||!list.length||list.length>3)throw Error('REQUEST_INVALID');
   // Every private read of this window waits its turn (kisQueue): a second click, the read-token check or another panel never
   // overlaps reads already running (owner check 2026-11-17: overlapping clicks were refused RATE_LIMITED by the Worker).
   const run=kisQueue.then(async()=>{const out=[];
    for(let i=0;i<list.length;i++){const[route,symbol,part]=list[i];
-    let r;try{r=await kisOne(route,symbol,signal);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}
+    let r;try{r=await kisOne(route,symbol,signal,say,cancel);}catch(e){if(part==='OPTIONAL'&&e&&e.message==='KIS_SERIES_NOT_FOUND')r=null;else throw e;}out.push(r);}
    return out;});
   kisQueue=run.catch(()=>{});return run;});}
  // The private Worker admits one owner request at a time, at least 5 s apart (MIN_SPACING_MS; found on the retained-archive replay
@@ -292,9 +295,39 @@ function create({win,action,data}){
   if(wait<=0){resolve();return;}
   const t=win.setTimeout(()=>{if(signal)signal.removeEventListener('abort',stop);resolve();},wait);
   const stop=()=>{win.clearTimeout(t);reject(Error('CANCELED'));};if(signal)signal.addEventListener('abort',stop,{once:true});});}
- async function kisSend(route,symbol,signal){await kisPause(signal);kisLastAt=kisNow();try{return await kisC().get(route,symbol,signal);}finally{kisLastAt=kisNow();}}
- async function kisOne(route,symbol,signal){try{return await kisSend(route,symbol,signal);}
-  catch(e){if(!e||e.message!=='RATE_LIMITED')throw e;return kisSend(route,symbol,signal);}}
+ async function kisSend(route,symbol,signal,sent,again){await kisPause(signal);
+  if(again&&((again.cancel&&again.cancel.aborted)||kisC().session()!==again.session))throw Error('CANCELED');
+  kisLastAt=kisNow();if(sent)sent.at=kisLastAt;
+  try{return await kisC().get(route,symbol,signal,again?{session:again.session}:undefined);}finally{kisLastAt=kisNow();}}
+ // At most two sends per read (owner 2026-11-28). A read refused RATE_LIMITED is sent once more after the gap (unchanged).
+ // A read whose answer never came (kis-private.js marks it unreachable: the request failed, as when the runtime stops the
+ // Worker at its CPU limit (error 1102) before it releases its lease, or a 5xx without the Worker's error code) is sent once
+ // more after the Worker's worst case for that lost request has passed, counted from its send: the token check (5 s) and the
+ // admission (2 s) before its lease, the lease (15 s), plus 1 s, so 23 s; and at least the gap. The seconds count down
+ // through notice. The wait and the retry are dropped (CANCELED, nothing sent) when the caller cancels (panel closed or left),
+ // on a sign-out, a new sign-in or an expiry (another session), or when the action is aborted. The retry is an ordinary read
+ // (a valid token, the Worker's checks and its limiter) and its result, whatever it is, is final.
+ const KIS_WORKER_AUTH_MS=5000,KIS_WORKER_ADMIT_MS=2000,KIS_LEASE_MS=15000;
+ const KIS_RECOVERY_MS=KIS_WORKER_AUTH_MS+KIS_WORKER_ADMIT_MS+KIS_LEASE_MS+1000;
+ function kisWait(until,signal,cancel,session,notice){
+  return new Promise((resolve,reject)=>{let t=0,un=()=>{};
+   const finish=(f)=>{win.clearTimeout(t);un();if(signal)signal.removeEventListener('abort',stop);if(cancel)cancel.removeEventListener('abort',stop);f();};
+   const stop=()=>finish(()=>reject(Error('CANCELED')));
+   const gone=()=>(signal&&signal.aborted)||(cancel&&cancel.aborted)||kisC().session()!==session;
+   if(gone()){reject(Error('CANCELED'));return;}
+   if(signal)signal.addEventListener('abort',stop,{once:true});if(cancel)cancel.addEventListener('abort',stop,{once:true});
+   try{un=kisC().subscribe(()=>{if(gone())stop();});}catch(_){un=()=>{};}
+   const tick=()=>{if(gone()){stop();return;}const left=until-kisNow();if(left<=0){finish(resolve);return;}
+    if(notice){try{notice(Math.ceil(left/1000));}catch(_){}}
+    t=win.setTimeout(tick,Math.min(1000,left));};
+   tick();});}
+ async function kisOne(route,symbol,signal,notice,cancel){const sent={at:null},session=kisC().session();
+  try{return await kisSend(route,symbol,signal,sent);}
+  catch(e){if(e&&e.message==='RATE_LIMITED')return kisSend(route,symbol,signal);
+   if(!e||e.unreachable!==true||sent.at===null)throw e;
+   await kisWait(Math.max(kisLastAt+KIS_SPACING_MS,sent.at+KIS_RECOVERY_MS),signal,cancel,session,notice);
+   if(notice){try{notice(0);}catch(_){}}
+   return kisSend(route,symbol,signal,null,{session,cancel});}}
  return Object.freeze({UNIVERSE_SOURCE_KEY,WORKER_ORIGIN_KEY,status,subscribe,deviceSettings,prepare,login,logout,readUniverse,universeView,universeRanks:()=>ranks,rankFor,
   useTabs,loadTabs,syncSymbols,syncUniverse,history,held,quote,periodReturns,priceView,storeFacade,kisState,kisSubscribe,kisConnect,kisDisconnect,kisRead});
 }

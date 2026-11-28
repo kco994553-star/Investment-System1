@@ -61,7 +61,18 @@ const MAX_BODY_BYTES = 512 * 1024;
 const MAX_BARS = 1500;
 const MIN_SPACING_MS = 5000;
 const WINDOW_MS = 60_000;
-const LEASE_MS = 30_000;
+// After admission, every upstream read of the request (GitHub contents, the release asset API and the asset bytes, Yahoo and its
+// fallbacks) runs inside one deadline (owner 2026-11-28): each call keeps its own timeout, cut to the time left, and at the
+// deadline plus a short grace the request's upstream reads and bodies are aborted. The lease starts when the limiter admits;
+// the Worker's deadline starts when the admit answer arrives, at most LIMITER_TIMEOUT_MS later. So the lease outlives every
+// live request: admit answer (2 s) + deadline (10 s) + grace (0.25 s) + the release call (2 s) = 14.25 s < 15 s. A request
+// the runtime kills (CPU limit, error 1102; no finally, no release) frees the slot LEASE_MS after its admission. Spacing and
+// the per-minute cap are unchanged.
+const LEASE_MS = 15_000;
+const UPSTREAM_DEADLINE_MS = 10_000;
+const UPSTREAM_ABORT_GRACE_MS = 250;
+const LIMITER_TIMEOUT_MS = 2000;
+export const LIMITER_TIMING = Object.freeze({ LEASE_MS, UPSTREAM_DEADLINE_MS, UPSTREAM_ABORT_GRACE_MS, LIMITER_TIMEOUT_MS, MIN_SPACING_MS, WINDOW_MS });
 // Workers fetch throws a TypeError for redirect 'error' and for cache 'no-store' with any cf.cacheTtl other than -1.
 // 'no-store' already bypasses the edge cache. Redirect answers are rejected in upstreamFetch and are never followed.
 const NO_CACHE = { cache: 'no-store', cf: { cacheEverything: false }, redirect: 'manual' };
@@ -414,6 +425,20 @@ async function readCapped(stream, limit, overCode, brokenCode, brokenStatus) {
   return bytes;
 }
 
+// A pinned body (shard, member): with no Content-Encoding and Content-Length exactly the pin, one native whole-body read (CPU: no
+// per-chunk loop in the isolate); otherwise the capped loop above, so a missing or other Content-Length, or an encoded body
+// (the runtime decodes it, and its Content-Length then counts the encoded bytes, not the bytes read), still reads at most the
+// pin. The caller then checks the size and the sha256 pin as before. A read failure is brokenCode either way.
+async function readPinned(response, pinned, overCode, brokenCode, brokenStatus) {
+  const encoding = response.headers.get('Content-Encoding');
+  if ((encoding === null || encoding === '') && response.headers.get('Content-Length') === String(pinned)) {
+    let buffer;
+    try { buffer = await response.arrayBuffer(); } catch { throw new Failure(brokenCode, brokenStatus); }
+    return new Uint8Array(buffer);
+  }
+  return readCapped(response.body, pinned, overCode, brokenCode, brokenStatus);
+}
+
 async function sha256Hex(bytes) {
   const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
   return Array.from(digest, (b) => b.toString(16).padStart(2, '0')).join('');
@@ -471,6 +496,21 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     finally { cancel(timer); }
   }
 
+  // The post-admission upstream phase of one request: until = its deadline; signal aborts at the deadline plus the grace (a
+  // backstop for a body still streaming); end() at the request's end, before the release.
+  function startPhase() {
+    const controller = new AbortController();
+    const timer = schedule(() => controller.abort(), UPSTREAM_DEADLINE_MS + UPSTREAM_ABORT_GRACE_MS);
+    return { until: now() + UPSTREAM_DEADLINE_MS, signal: controller.signal, end() { cancel(timer); } };
+  }
+  // One upstream call inside the phase: its own timeout cut to the time left (none left: the call's own timeout failure, not
+  // started), and its signal also aborted by the phase.
+  function bounded(phase, milliseconds, code, status, operation) {
+    const left = Math.min(milliseconds, phase.until - now());
+    if (!(left > 0)) return Promise.reject(new Failure(code, status));
+    return timed(left, code, status, (signal) => operation(AbortSignal.any([signal, phase.signal])));
+  }
+
   // Every upstream request. A 3xx, an opaque redirect (status 0) or a followed redirect gets the same fixed error
   // as a failed upstream answer. The Location is never read or fetched and the body is never passed through.
   async function upstreamFetch(url, init, code, status) {
@@ -509,7 +549,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     try {
       const namespace = env.HISTORY_RATE_LIMITER;
       const stub = namespace.get(namespace.idFromName('history-owner-v1'));
-      const { status, result } = await timed(2000, 'RATE_LIMIT_UNAVAILABLE', 503, async (signal) => {
+      const { status, result } = await timed(LIMITER_TIMEOUT_MS, 'RATE_LIMIT_UNAVAILABLE', 503, async (signal) => {
         const response = await stub.fetch('https://history-rate.internal/admit', { method: 'POST', signal });
         return { status: response.status, result: await response.json() };
       });
@@ -521,9 +561,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     } catch { throw new Failure('RATE_LIMIT_UNAVAILABLE', 503); }
   }
 
-  async function history(symbol, range) {
+  async function history(symbol, range, phase) {
     try {
-      return await timed(10_000, 'YAHOO_TIMEOUT', 504, async (signal) => {
+      return await bounded(phase, 10_000, 'YAHOO_TIMEOUT', 504, async (signal) => {
         const response = await upstreamFetch(`${YAHOO_ROOT}${symbol}?interval=1d&range=${range}`, {
           method: 'GET', signal, headers: { Accept: 'application/json' },
         }, 'YAHOO_UNAVAILABLE', 503);
@@ -539,15 +579,17 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     }
   }
 
-  async function fallbackHistory(symbol, range, env, yahooError) {
+  async function fallbackHistory(symbol, range, env, yahooError, phase) {
     const provider = US_SYMBOLS.includes(symbol) || BENCHMARK_SYMBOLS.includes(symbol) ? 'TIINGO' : symbol === '042700.KS' ? 'KRX' : null;
     const secret = provider && providerSecret(env, provider + '_API_KEY');
     // Existing installs remain Yahoo-only until the corresponding Secret is set.
     if (!secret || !yahooError || !(yahooError.code.startsWith('YAHOO_') || yahooError.code === 'HISTORY_UNAVAILABLE')) throw yahooError;
+    // No upstream time left after Yahoo (the post-admission deadline): Yahoo's own answer, before any fallback check or request.
+    if (!(phase.until - now() > 0)) throw yahooError;
     if (provider === 'KRX' && range !== '1mo') throw new Failure('KRX_RANGE_UNSUPPORTED', 422);
     const readAt = now(), window = dateWindow(range, readAt, MARKETS.get(symbol).timezone);
     try {
-      return await timed(15_000, provider + '_TIMEOUT', 504, async (signal) => {
+      return await bounded(phase, 15_000, provider + '_TIMEOUT', 504, async (signal) => {
         const request = async (url, limit = MAX_BODY_BYTES) => {
           if (signal.aborted) throw new Failure(provider + '_TIMEOUT', 504);
           const response = await upstreamFetch(url, { method: 'GET', signal,
@@ -601,9 +643,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
 
   // One GET to the private repository with the read token. Redirects are never followed (upstreamFetch keeps redirect
   // 'manual' and turns a 3xx into REPO_MOVED below); network failures and time-outs are UPSTREAM_UNAVAILABLE.
-  async function github(path, env, accept) {
+  async function github(path, env, accept, phase) {
     try {
-      return await timed(8000, 'UPSTREAM_UNAVAILABLE', 503, (signal) => fetchImpl(GITHUB_API + path, {
+      return await bounded(phase, 8000, 'UPSTREAM_UNAVAILABLE', 503, (signal) => fetchImpl(GITHUB_API + path, {
         method: 'GET', signal, ...NO_CACHE,
         headers: { Accept: accept, Authorization: 'Bearer ' + env.PRIVATE_REPO_READ_TOKEN, 'User-Agent': 'investment-system1-private-worker', 'X-GitHub-Api-Version': '2022-11-28' },
       }));
@@ -612,11 +654,11 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   const kisFailure = (state) => new Failure(state.code, state.http);
   const json200 = (value, origin) => new Response(JSON.stringify(value), { status: 200, headers: headers(origin) });
 
-  async function kisStatus(env, origin) {
+  async function kisStatus(env, origin, phase) {
     const date = kisTokenDate(env, now());
     if (date.state === 'UNSET' || date.state === 'EXPIRED') return json200({ schema: 'kis-status/1', ...date }, origin);
     // Contents access is required: Metadata permission alone must not report a usable read token.
-    const response = await github('/repos/' + KIS_REPO + '/contents/status/private-area.json?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+    const response = await github('/repos/' + KIS_REPO + '/contents/status/private-area.json?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json', phase);
     if (!response) return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'UPSTREAM_UNAVAILABLE' }, origin);
     const bad = response.status === 404 ? { state: 'REJECTED', code: 'TOKEN_NO_ACCESS' } : kisUpstreamState(response, date);
     if (bad) {
@@ -625,7 +667,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     }
     let record;
     try { record = await readJson(response, 16384, 'TOKEN_STATUS_INVALID', 'TOKEN_STATUS_INVALID', 502); }
-    catch { return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: 'TOKEN_STATUS_INVALID' }, origin); }
+    catch { return json200({ schema: 'kis-status/1', ...date, state: 'ERROR', code: phase.signal.aborted ? 'UPSTREAM_UNAVAILABLE' : 'TOKEN_STATUS_INVALID' }, origin); }
     const recorded = record?.worker_read_token;
     const captured = typeof record?.run_at === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(record.run_at) ? Date.parse(record.run_at) : NaN;
     if (record?.schema !== 'private-area-status/1' || record.publication_scope !== 'OWNER_PRIVATE_ONLY'
@@ -651,8 +693,8 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   // No Location, token or body ever reaches an error.
   // One release asset (or, with range, one member of a bundle): asset API (read token, redirect 'manual') → the one accepted
   // 302 target (no credentials, redirect 'manual', no second hop) → size and sha256 pins of the bytes.
-  async function kisAssetBytes(entry, env, date, range) {
-    const gzipped = await timed(15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
+  async function kisAssetBytes(entry, env, date, range, phase) {
+    const gzipped = await bounded(phase, 15_000, 'UPSTREAM_UNAVAILABLE', 503, async (signal) => {
       let api;
       try {
         api = await fetchImpl(GITHUB_API + '/repos/' + KIS_REPO + '/releases/assets/' + entry.asset_id, {
@@ -684,22 +726,22 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       const advertised = asset.headers.get('Content-Length');
       if (advertised && /^\d+$/.test(advertised) && Number(advertised) > entry.bytes) return closeAndFail(asset, 'KIS_STOCK_PIN', 502);
       if (!asset.body) throw new Failure('KIS_STOCK_PIN', 502);
-      return readCapped(asset.body, entry.bytes, 'KIS_STOCK_PIN', 'UPSTREAM_UNAVAILABLE', 503);
+      return readPinned(asset, entry.bytes, 'KIS_STOCK_PIN', 'UPSTREAM_UNAVAILABLE', 503);
     });
     if (gzipped.byteLength !== entry.bytes || await sha256Hex(gzipped) !== entry.sha256) throw new Failure('KIS_STOCK_PIN', 502);
     return gzipped;
   }
 
   // A pinned JSON file of the data branch: the raw bytes up to limit, then (when pin) their size and sha256, then the parse.
-  async function kisDataFile(path, env, date, limit, pin) {
-    const response = await github('/repos/' + KIS_REPO + '/contents/' + path + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+  async function kisDataFile(path, env, date, limit, pin, phase) {
+    const response = await github('/repos/' + KIS_REPO + '/contents/' + path + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json', phase);
     if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
     if (response.status === 404) { try { await response.body?.cancel(); } catch { /* Not read. */ } return null; }
     const bad = kisUpstreamState(response, date);
     if (bad) return closeAndFail(response, bad.code, bad.http);
     if (!pin) return readJson(response, limit, 'KIS_STOCK_INDEX_INVALID', 'KIS_STOCK_INDEX_INVALID', 502);
     if (!response.body) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-    const bytes = await readCapped(response.body, pin.bytes, 'KIS_STOCK_INDEX_INVALID', 'UPSTREAM_UNAVAILABLE', 503);
+    const bytes = await readPinned(response, pin.bytes, 'KIS_STOCK_INDEX_INVALID', 'UPSTREAM_UNAVAILABLE', 503);
     if (bytes.byteLength !== pin.bytes || await sha256Hex(bytes) !== pin.sha256) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
     try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Failure('KIS_STOCK_INDEX_INVALID', 502); }
   }
@@ -709,27 +751,27 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
   // the accepted 302 target (1). Without it: the single index (1) → asset API (1) → the whole asset (1), as before.
   // The gzip bytes go out as published, Content-Encoding gzip (no inflate, no parse here; the app checks the content).
   // No Location, token or body ever reaches an error.
-  async function kisStock(symbol, part, env, origin) {
+  async function kisStock(symbol, part, env, origin, phase) {
     const date = kisTokenDate(env, now());
     if (date.state === 'UNSET' || date.state === 'EXPIRED') throw new Failure(date.code, 503);
     let gzipped;
-    const rootValue = await kisDataFile(KIS_PACK_ROOT_PATH, env, date, KIS_STOCK_INDEX_MAX_BYTES, null);
+    const rootValue = await kisDataFile(KIS_PACK_ROOT_PATH, env, date, KIS_STOCK_INDEX_MAX_BYTES, null, phase);
     if (rootValue !== null) {
       const root = kisPackRoot(rootValue);
       if (root === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-      if (part === 'qgv') gzipped = await kisAssetBytes(root.qgv, env, date, false);
+      if (part === 'qgv') gzipped = await kisAssetBytes(root.qgv, env, date, false, phase);
       else {
         const bucket = await kisPackBucket(symbol), pin = kisPackShardPin(root, bucket);
         if (pin === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
-        const shard = await kisDataFile(KIS_PACK_SHARD_DIR + kisPackShardName(bucket), env, date, KIS_PACK_SHARD_MAX_BYTES, pin);
+        const shard = await kisDataFile(KIS_PACK_SHARD_DIR + kisPackShardName(bucket), env, date, KIS_PACK_SHARD_MAX_BYTES, pin, phase);
         if (shard === null) throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
         const member = kisPackMember(shard, root, bucket, symbol);
         if (member === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
         if (member === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
-        gzipped = await kisAssetBytes(member, env, date, true);
+        gzipped = await kisAssetBytes(member, env, date, true, phase);
       }
     } else {
-      const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json');
+      const response = await github('/repos/' + KIS_REPO + '/contents/' + KIS_STOCK_INDEX_PATH + '?ref=' + KIS_BRANCH, env, 'application/vnd.github.raw+json', phase);
       if (!response) throw new Failure('UPSTREAM_UNAVAILABLE', 503);
       if (response.status === 404) return closeAndFail(response, 'KIS_SERIES_NOT_FOUND', 404);
       const bad = kisUpstreamState(response, date);
@@ -738,7 +780,7 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       const entry = kisStockIndexEntry(index, part === 'qgv' ? null : symbol);
       if (entry === 'INVALID') throw new Failure('KIS_STOCK_INDEX_INVALID', 502);
       if (entry === 'MISSING') throw new Failure('KIS_SERIES_NOT_FOUND', 404);
-      gzipped = await kisAssetBytes(entry, env, date, false);
+      gzipped = await kisAssetBytes(entry, env, date, false, phase);
     }
     // Light read (owner 2026-11-21, CPU headroom on the free plan): the pinned gzip bytes go out as they are, with
     // Content-Encoding: gzip; the browser inflates them and the app's reader checks the view (kis-private.js stockParts and
@@ -776,19 +818,21 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
       const admission = await admit(env);
       if (admission.denied) return failureResponse(new Failure('RATE_LIMITED', 429), origin, { 'Retry-After': String(admission.retryAfter) });
       let response;
+      const phase = startPhase();
       try {
-        if (url.pathname === '/kis/status') response = await kisStatus(env, origin);
-        else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, part, env, origin);
+        if (url.pathname === '/kis/status') response = await kisStatus(env, origin, phase);
+        else if (url.pathname === KIS_STOCK_ROUTE) response = await kisStock(symbol, part, env, origin, phase);
         else {
           let result;
-          try { result = await history(symbol, range); }
-          catch (error) { result = await fallbackHistory(symbol, range, env, error); }
+          try { result = await history(symbol, range, phase); }
+          catch (error) { result = await fallbackHistory(symbol, range, env, error, phase); }
           response = new Response(JSON.stringify(result), { status: 200, headers: headers(origin) });
         }
       } catch (error) { response = failureResponse(error instanceof Failure ? error : new Failure(kis ? 'UPSTREAM_UNAVAILABLE' : 'YAHOO_UNAVAILABLE', 503), origin); }
       finally {
+        phase.end();
         try {
-          await timed(2000, 'RATE_LIMIT_UNAVAILABLE', 503, async (signal) => {
+          await timed(LIMITER_TIMEOUT_MS, 'RATE_LIMIT_UNAVAILABLE', 503, async (signal) => {
             const released = await admission.stub.fetch('https://history-rate.internal/release', {
               method: 'POST', signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lease: admission.lease }),
             });
@@ -863,5 +907,22 @@ export class HistoryRateLimiter {
   }
 }
 
+// Isolate start-up (owner 2026-11-28, CPU on the free plan): the pure checks run once on synthetic constants, so their first-run
+// compile and regexes are paid when the isolate starts instead of inside the first stock read. No I/O, no timers, no crypto;
+// nothing is kept, and a failure here is ignored (a warm-up must never stop the Worker from starting).
+(() => {
+  try {
+    const h = '0'.repeat(64), g = { publication_scope: 'OWNER_PRIVATE_ONLY', evaluation_day: '2000-01-01', release_tag: 'x', generation_sha256: h };
+    const asset = { asset_id: 1, name: 'x', bytes: 1, sha256: h, json_bytes: 1, json_sha256: h };
+    const root = kisPackRoot({ schema: 'kis-stock-pack-root/1', ...g, buckets: KIS_PACK_BUCKETS, bucket_rule: 'sha256(symbol)[0]>>2', qgv: asset,
+      packs: { [h]: { asset_id: 2, bytes: 10 } }, shards: { '00.json': { bytes: 1, sha256: h } } });
+    kisPackShardPin(root, 0);
+    kisPackMember({ schema: 'kis-stock-pack-shard/1', ...g, bucket: 0, stocks: { A: { pack: h, offset: 0, bytes: 1, sha256: h, json_bytes: 1, json_sha256: h } } }, root, 0, 'A');
+    kisTokenDate({ PRIVATE_REPO_READ_TOKEN: 'x', PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER' }, 0);
+    kisTokenDate({ PRIVATE_REPO_READ_TOKEN: 'x', PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: '2000-01-02' }, 0);
+    kisStockSymbol(new URL('https://pre-run.invalid/kis/stock?symbol=A'));
+    positiveInteger('1');
+  } catch { /* A warm-up only. */ }
+})();
 const handle = createHandler();
 export default { fetch(request, env) { return handle(request, env); } };
