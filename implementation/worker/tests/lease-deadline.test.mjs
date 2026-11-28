@@ -18,7 +18,10 @@ const { createHandler, HistoryRateLimiter, LIMITER_TIMING: T } = await import('.
 
 test('lease outlives the deadline, its abort grace and the release call; spacing and cap unchanged', async () => {
   assert.deepEqual(T, { LEASE_MS: 15_000, UPSTREAM_DEADLINE_MS: 10_000, UPSTREAM_ABORT_GRACE_MS: 250, LIMITER_TIMEOUT_MS: 2000, MIN_SPACING_MS: 5000, WINDOW_MS: 60_000 });
-  assert.ok(T.LEASE_MS > T.UPSTREAM_DEADLINE_MS + T.UPSTREAM_ABORT_GRACE_MS + T.LIMITER_TIMEOUT_MS, 'lease > deadline + grace + release timeout');
+  // The lease starts at the limiter's admission; the Worker's deadline starts when the admit answer arrives (at most the limiter
+  // timeout later); then the deadline, its grace and the release call (at most the limiter timeout).
+  assert.ok(T.LEASE_MS > T.LIMITER_TIMEOUT_MS + T.UPSTREAM_DEADLINE_MS + T.UPSTREAM_ABORT_GRACE_MS + T.LIMITER_TIMEOUT_MS,
+    'lease > admit answer + deadline + grace + release call');
   assert.ok(T.UPSTREAM_ABORT_GRACE_MS > 0 && T.UPSTREAM_ABORT_GRACE_MS < 1000);
   const config = await readFile(new URL('../wrangler.toml', import.meta.url), 'utf8');
   assert.match(config, /REQUESTS_PER_MINUTE\s*=\s*"12"/, 'the per-minute cap stays 12');
@@ -47,9 +50,11 @@ const HANG = Infinity, DRIP = 'drip';
 
 // Virtual time: timers, upstream delays and the limiter clock all read clock.now; run() fires the earliest timer, then lets
 // the promise chains settle, until the request answers.
-function world() {
+// admitDelay: virtual ms between the limiter's admission and its answer reaching the Worker; releaseDelay: before the release
+// reaches the limiter (both below the 2 s limiter timeout).
+function world({ admitDelay = 0, releaseDelay = 0 } = {}) {
   const clock = { now: NOW }, timers = new Map();
-  let seq = 0, live = 0, lastSettled = null, admittedAt = null;
+  let seq = 0, live = 0, lastSettled = null, admittedAt = null, releasedAt = null, leaseAtRelease = null;
   const setTimeout = (fn, ms = 0) => { const id = ++seq; timers.set(id, { at: clock.now + ms, fn, id }); return id; };
   const clearTimeout = (id) => { timers.delete(id); };
   const settle = async () => { for (let i = 0; i < 30; i++) await new Promise((r) => setImmediate(r)); };
@@ -94,13 +99,20 @@ function world() {
     async transaction(cb) { const r = this.queue.then(() => cb(this)); this.queue = r.catch(() => {}); return r; }
   }
   const storage = new Storage(), limiter = new HistoryRateLimiter({ storage }, {}, { now: () => clock.now });
+  const wait = (ms, signal) => new Promise((resolve, reject) => {
+    if (!(ms > 0)) { resolve(); return; }
+    const id = setTimeout(resolve, ms);
+    signal?.addEventListener('abort', () => { clearTimeout(id); reject(aborted()); }, { once: true });
+  });
   const namespace = { idFromName: (n) => n, get: () => ({ fetch: async (input, init) => {
+    const admit = String(input).endsWith('/admit');
+    if (!admit) { await wait(releaseDelay, init?.signal); releasedAt = clock.now; leaseAtRelease = storage.value?.activeLease ?? null; }
     const r = await limiter.fetch(new Request(input, init));
-    if (String(input).endsWith('/admit') && r.status === 200) admittedAt = clock.now;
+    if (admit && r.status === 200) { admittedAt = clock.now; await wait(admitDelay, init?.signal); }
     return r;
   } }) };
   const env = { ALLOWED_EMAIL: OWNER, GOOGLE_CLIENT_ID: CLIENT, PRIVATE_REPO_READ_TOKEN: ['github', 'pat', 'SYNTHETICONLY'].join('_'), PRIVATE_REPO_READ_TOKEN_EXPIRES_ON: 'NEVER',
-    TIINGO_API_KEY: 'synthetic-tiingo-key', HISTORY_RATE_LIMITER: namespace };
+    TIINGO_API_KEY: 'synthetic-tiingo-key', KRX_API_KEY: 'synthetic-krx-key', HISTORY_RATE_LIMITER: namespace };
   // delays: { root, shard, api, range, status, yahoo, tiingo } in virtual ms (HANG never answers); drip: names whose body never ends.
   function handler(delays = {}, drip = []) {
     const d = (k) => delays[k] ?? 0, b = (k) => (drip.includes(k) ? DRIP : null);
@@ -115,12 +127,13 @@ function world() {
         headers: { 'Content-Range': 'bytes ' + offset + '-' + (offset + member.length - 1) + '/' + packBytes, 'Content-Length': String(member.length) } }), b('range'));
       if (url.startsWith('https://query1.finance.yahoo.com/')) return upstream(s, d('yahoo'), () => new Response('{}', { status: 500 }));
       if (url.startsWith('https://api.tiingo.com/')) return upstream(s, d('tiingo'), () => new Response('{}', { status: 500 }));
+      if (url.startsWith('https://data-dbg.krx.co.kr/')) return upstream(s, d('krx'), () => new Response('{}', { status: 500 }));
       throw new Error('unexpected upstream in test');
     };
     return createHandler({ fetch, now: () => clock.now, setTimeout, clearTimeout });
   }
   const request = (path) => new Request('https://private-worker.example' + path, { headers: { Origin: ORIGIN, Authorization: 'Bearer synthetic-access-token' } });
-  return { clock, timers, storage, env, handler, request, run, state: () => ({ live, lastSettled, admittedAt }) };
+  return { clock, timers, storage, env, handler, request, run, state: () => ({ live, lastSettled, admittedAt, releasedAt, leaseAtRelease }) };
 }
 const code = async (r) => JSON.parse(await r.text()).error?.code;
 
@@ -136,6 +149,10 @@ test('no live request outlives its lease: every upstream read ends within the de
     ['the qgv part: asset API never answers', '/kis/stock?part=qgv', { root: 4000, api: HANG }, [], 503, 'UPSTREAM_UNAVAILABLE'],
     ['/history: Yahoo never answers', '/history?symbol=AAPL&range=1mo', { yahoo: HANG }, [], 504, 'YAHOO_TIMEOUT'],
     ['/history: Yahoo fails at 9.5 s, the fallback gets only the time left', '/history?symbol=AAPL&range=1mo', { yahoo: 9500, tiingo: HANG }, [], 504, 'TIINGO_TIMEOUT'],
+    // Yahoo used the whole 10 s: Yahoo's timeout, before the fallback's own checks (a KRX range other than 1mo is 422 otherwise).
+    ['/history: Yahoo used the whole deadline, KRX fallback with a 3mo range', '/history?symbol=042700.KS&range=3mo', { yahoo: HANG }, [], 504, 'YAHOO_TIMEOUT'],
+    ['/history: Yahoo used the whole deadline, KRX fallback with a 1mo range', '/history?symbol=042700.KS&range=1mo', { yahoo: HANG }, [], 504, 'YAHOO_TIMEOUT'],
+    ['/history: Yahoo used the whole deadline, Tiingo fallback', '/history?symbol=AAPL&range=1mo', { yahoo: HANG }, [], 504, 'YAHOO_TIMEOUT'],
   ];
   for (const [label, path, delays, drip, status, c] of named) {
     const w = world(), r = await w.run(w.handler(delays, drip)(w.request(path), w.env)), s = w.state();
@@ -186,4 +203,25 @@ test('a request killed mid-way (no finally, no release) frees the slot LEASE_MS 
   assert.equal(r.status, 200, 'the slot is free LEASE_MS after the admission');
   assert.deepEqual(Buffer.from(await r.arrayBuffer()), member);
   assert.equal(w.storage.value.activeLease, 0, 'and the new request released its own lease');
+});
+
+test('a live request keeps its slot for every admit-answer and release delay up to the limiter timeout', async () => {
+  const times = [0, 9000, HANG];
+  let n = 0;
+  for (const admitDelay of [0, 1000, T.LIMITER_TIMEOUT_MS - 1]) for (const releaseDelay of [0, T.LIMITER_TIMEOUT_MS - 1]) {
+    for (const rt of times) for (const st of times) for (const at of times) for (const gt of times) {
+      const w = world({ admitDelay, releaseDelay });
+      const r = await w.run(w.handler({ root: rt, shard: st, api: at, range: gt })(w.request('/kis/stock?symbol=' + SYM), w.env)), s = w.state();
+      const label = JSON.stringify({ admitDelay, releaseDelay, delays: [rt, st, at, gt] });
+      assert.ok([200, 503].includes(r.status), label + ' ' + r.status);
+      assert.equal(s.live, 0, label);
+      assert.ok(s.lastSettled - s.admittedAt <= admitDelay + T.UPSTREAM_DEADLINE_MS + T.UPSTREAM_ABORT_GRACE_MS, label + ': upstream inside the deadline after the admit answer');
+      assert.ok(s.lastSettled - s.admittedAt < T.LEASE_MS, label + ': no upstream read after the lease');
+      assert.ok(s.releasedAt - s.admittedAt < T.LEASE_MS, label + ': the release reaches the limiter inside the lease');
+      assert.notEqual(s.leaseAtRelease, 0, label + ': the request still held its own slot when it released it');
+      assert.equal(w.storage.value.activeLease, 0, label + ': released');
+      n++;
+    }
+  }
+  assert.equal(n, 486);
 });

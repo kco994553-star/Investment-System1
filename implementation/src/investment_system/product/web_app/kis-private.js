@@ -393,11 +393,15 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
    token=r.access_token;expiresAt=now()+Math.min(secs,3600)*1000-30000;epoch++;notify();resolve(state());},error_callback:()=>reject(Error('LOGIN_CANCELED'))});
   client.requestAccessToken();});}
  function disconnect(){drop();}
- async function get(route,symbol,signal){
+ // opts.session (the layer's retry): the session() the first try ran in; another session (a sign-out, a new sign-in, an
+ // expiry) cancels the read before anything is sent, so a request of an earlier click never goes out in a new session.
+ async function get(route,symbol,signal,opts){
   const part=own(PARTS,route)?PARTS[route]:null;
   if(!part&&!own(ROUTE,route))throw Error('ROUTE_UNKNOWN');const bySym=!part&&BY_SYMBOL.includes(route);if(bySym&&(typeof symbol!=='string'||!SYMBOL.test(symbol)))throw Error('REQUEST_INVALID');
   if(part&&symbol!==null&&symbol!==undefined)throw Error('REQUEST_INVALID');
-  if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
+  const live=connected();
+  if(opts&&opts.session!==undefined&&opts.session!==epoch)throw Error('CANCELED');
+  if(!live)throw Error('AUTH_REQUIRED');const mine=epoch;
   const url=part?origin+ROUTE[part.route]+part.query:origin+ROUTE[route]+(bySym?'?symbol='+symbol:'');
   // An answer that never came (the request failed: a network or CORS failure, as when the runtime ends the Worker at its CPU
   // limit, error 1102) or a 5xx without the Worker's fixed error code is marked unreachable: the layer may try it once more
@@ -412,7 +416,9 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(!res.ok){const coded=!!(body&&body.error&&typeof body.error.code==='string'&&/^[A-Z][A-Z0-9_]{1,63}$/.test(body.error.code));
    if(!coded&&res.status>=500)throw unreachable();throw Error(coded?body.error.code:'UPSTREAM_UNAVAILABLE');}
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
- return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
+ // The current sign-in session: a number that changes on every sign-in, sign-out, server 403 and expiry.
+ const session=()=>{connected();return epoch;};
+ return Object.freeze({state,connect,disconnect,get,session,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 
 return Object.freeze({SCHEMA,ROUTE,PARTS,ADJUSTED_NOTE,BASIS_TEXT,SETTINGS_BY_BASIS,CLASS_SHARES,ETFS,QGV_FIELDS,QGV_OPTIONAL,TOTAL_POLICY,VERIFICATION,TIER,requestSymbol,universeCode,displayOf,analysisTiers,measuresTiers,validateTokenStatus,tokenStatusView,validateBars,validateAnalysis,validateMeasures,validateQgv,stockParts,basisCompare,basisAgreement,barsMeta,analysisView,measuresView,qgvView,reasonText,createClient});
 });

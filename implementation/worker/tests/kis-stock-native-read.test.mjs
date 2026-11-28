@@ -41,22 +41,27 @@ const tokeninfo = Buffer.from(JSON.stringify({ aud: CLIENT, email: OWNER, email_
 const URLS = { tokeninfo: 'https://oauth2.googleapis.com/tokeninfo', root: API + '/contents/views/kis-stock-packs.json?ref=data',
   shard: API + '/contents/views/kis-stock-packs/' + shardName + '?ref=data' };
 
+// pulled.bytes: how much of every body the reader asked for (a capped read stops a few chunks past the pin).
+const pulled = { bytes: 0 };
 function stream(bytes, { chunk = 16384, breakAt = -1 } = {}) {
   let off = 0;
   return new ReadableStream({ pull(c) {
     if (breakAt >= 0 && off >= breakAt) { c.error(new TypeError('broken')); return; }
     if (off >= bytes.length) { c.close(); return; }
-    const n = Math.min(chunk, bytes.length - off); c.enqueue(new Uint8Array(bytes.subarray(off, off + n))); off += n;
+    const n = Math.min(chunk, bytes.length - off); c.enqueue(new Uint8Array(bytes.subarray(off, off + n))); off += n; pulled.bytes += n;
   } });
 }
-// m: { target, status, cl: none|exact|+1|-1|big|lead0, body: exact|+1|-1|flip|empty, chunk, breakAt, nobody }
+// m: { target, status, cl: none|exact|+1|-1|big|lead0, body: exact|+1|-1|flip|empty|x10, encoding, chunk, breakAt, nobody }
+// (x10: a body ten times the pin, as a decoded encoded body can be; encoding: a Content-Encoding header on the answer)
 function answer(bytes, m, extra = {}, okStatus = 200) {
   let b = bytes;
   if (m.body === '+1') b = Buffer.concat([bytes, Buffer.from(' ')]);
   if (m.body === '-1') b = bytes.subarray(0, bytes.length - 1);
   if (m.body === 'flip') { b = Buffer.from(bytes); b[b.length >> 1] ^= 1; }
   if (m.body === 'empty') b = Buffer.alloc(0);
+  if (m.body === 'x10') b = Buffer.concat(Array(10).fill(bytes));
   const headers = { ...extra };
+  if (m.encoding !== undefined) headers['Content-Encoding'] = m.encoding;
   const cl = { none: null, exact: String(bytes.length), '+1': String(bytes.length + 1), '-1': String(bytes.length - 1), big: '999999999', lead0: '0' + bytes.length }[m.cl ?? 'none'];
   if (cl !== null) headers['Content-Length'] = cl;
   return new Response(m.nobody ? null : stream(b, m), { status: m.status ?? okStatus, headers });
@@ -94,6 +99,7 @@ for (const target of ['shard', 'signed']) {
   for (const status of [200, 206, 301, 401, 403, 404, 429, 500, 503]) cases.push({ target, status }, { target, status, cl: 'exact' });
   cases.push({ target, nobody: true }, { target, nobody: true, cl: 'exact' });
 }
+for (const target of ['shard', 'signed']) for (const encoding of ['gzip', 'br', 'identity', '']) for (const body of ['exact', '+1', 'x10']) cases.push({ target, cl: 'exact', encoding, body });
 cases.push({ target: 'signed', range: 'bytes 0-1/2', cl: 'exact' }, { target: 'root', cl: 'exact' }, { target: 'root', chunk: 1 });
 
 test('native pinned read: the shard and member answers equal the capped chunk loop for every mutated upstream answer', async () => {
@@ -101,7 +107,7 @@ test('native pinned read: the shard and member answers equal the capped chunk lo
   const ok = await run(NATIVE, {});
   assert.equal(ok.status, 200);
   assert.deepEqual(Buffer.from(await ok.arrayBuffer()), member, 'exactly the pinned member bytes');
-  assert.equal(cases.length, 140, "every mutated case ran");
+  assert.equal(cases.length, 164, 'every mutated case ran');
 });
 
 test('native pinned read: the whole-body read is used only when Content-Length is exactly the pin', async () => {
@@ -109,11 +115,39 @@ test('native pinned read: the whole-body read is used only when Content-Length i
   const original = Response.prototype.arrayBuffer;
   Response.prototype.arrayBuffer = function arrayBuffer() { wholeBody += 1; return original.call(this); };
   try {
-    for (const [m, expected] of [[{}, 1], [{ target: 'shard', cl: 'exact' }, 2], [{ target: 'signed', cl: 'none' }, 0], [{ target: 'signed', cl: 'lead0' }, 0], [{ target: 'signed', cl: '-1' }, 0]]) {
+    for (const [m, expected] of [[{}, 1], [{ target: 'shard', cl: 'exact' }, 2], [{ target: 'signed', cl: 'none' }, 0], [{ target: 'signed', cl: 'lead0' }, 0], [{ target: 'signed', cl: '-1' }, 0],
+      [{ target: 'signed', cl: 'exact', encoding: 'gzip' }, 0], [{ target: 'shard', cl: 'exact', encoding: 'gzip' }, 1], [{ target: 'signed', cl: 'exact', encoding: '' }, 1]]) {
       wholeBody = 0;
       const r = await run(NATIVE, m), status = r.status, seen = wholeBody; // the handler's own reads, before the answer is read here
       await r.arrayBuffer();
       assert.equal(seen, expected, JSON.stringify(m) + ' status ' + status);
+    }
+  } finally { Response.prototype.arrayBuffer = original; }
+});
+
+test('native pinned read: an encoded answer goes the capped path even with Content-Length equal to the pin, and its oversize decoded body is refused by the cap', async () => {
+  let wholeBody = 0;
+  const original = Response.prototype.arrayBuffer;
+  Response.prototype.arrayBuffer = function arrayBuffer() { wholeBody += 1; return original.call(this); };
+  try {
+    for (const [target, pin, status, c] of [['signed', member.length, 502, 'KIS_STOCK_PIN'], ['shard', shard.length, 502, 'KIS_STOCK_INDEX_INVALID']]) {
+      for (const encoding of ['gzip', 'br', 'deflate']) {
+        wholeBody = 0; pulled.bytes = 0;
+        const m = { target, cl: 'exact', encoding, body: 'x10', chunk: 4096 };
+        const r = await run(NATIVE, m), seenWhole = wholeBody, seenPulled = pulled.bytes;
+        assert.equal(r.status, status, JSON.stringify(m));
+        assert.equal(JSON.parse(await r.text()).error.code, c, JSON.stringify(m));
+        assert.equal(seenWhole, 0, JSON.stringify(m) + ': no whole-body read of an encoded answer');
+        // The other answers of the request (root, tokeninfo, and the shard or member as published) add their own bytes;
+        // the mutated body stops a few chunks past its pin (the read-ahead of the stream) instead of its ten-fold length.
+        const others = target === 'signed' ? root.length + shard.length + tokeninfo.length : root.length + tokeninfo.length;
+        assert.ok(seenPulled - others <= pin + 3 * 4096, JSON.stringify(m) + ': read ' + (seenPulled - others) + ' bytes of ' + 10 * pin);
+      }
+      // Without Content-Encoding the same Content-Length takes the native read; the size pin refuses the ten-fold body after it.
+      wholeBody = 0;
+      const r = await run(NATIVE, { target, cl: 'exact', body: 'x10' }), seenWhole = wholeBody;
+      assert.equal(r.status, status); assert.equal(seenWhole, 1, target + ': the native read when nothing is encoded');
+      await r.arrayBuffer();
     }
   } finally { Response.prototype.arrayBuffer = original; }
 });

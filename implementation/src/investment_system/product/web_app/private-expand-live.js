@@ -163,12 +163,17 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  const bar=h('div',{class:'load-row',dataset:{privateControls:kind}},btn,off,note,box);
  panel.node.insertBefore(bar,panel.node.querySelector('.private-body'));
  let open=false,seq=0,tokenSeq=0;
+ // One cancel per read and per token check: closing the panel, 연결 끊기 or leaving the screen drops a read still waiting for
+ // its one retry (the layer then never sends it).
+ let readStop=null,tokenStop=null;
+ const fresh=old=>{if(old)old.abort();return new AbortController();};
+ const stopAll=()=>{if(readStop)readStop.abort();if(tokenStop)tokenStop.abort();};
  const st=()=>{try{return P().kisState();}catch(_){return{ready:false,connected:false,gis:false};}};
  function resetToken(){tokenSeq++;tokenCheck.disabled=false;tokenNote.textContent='';delete tokenNote.dataset.privateTokenState;}
  // While a read runs the button stays pressed-off (owner check 2026-11-17: a second tap during the ~15 s of three spaced reads
  // started a second, overlapping read that the Worker refused RATE_LIMITED); the layer also queues reads, this only shows it.
  function busy(on){btn.disabled=on;if(on){btn.setAttribute('aria-busy','true');btn.textContent='불러오는 중…';}else{btn.removeAttribute('aria-busy');btn.textContent='비공개 펼치기';}}
- function closed(msg){const s=st();open=false;seq++;busy(false);btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
+ function closed(msg){const s=st();open=false;seq++;stopAll();busy(false);btn.textContent='비공개 펼치기';btn.setAttribute('aria-expanded','false');off.hidden=!s.connected;
   box.hidden=!s.connected;resetToken();factBox.replaceChildren();
   if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
   else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘')])});
@@ -181,7 +186,8 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
   // ([data-private-retry] = seconds left, 0 while the retry runs) and is cleared when the read settles.
   const retrying=n=>{if(my!==seq||signal.aborted)return;note.dataset.privateRetry=String(n);note.textContent=n>0?word('RETRYING')+' · '+n+'초':word('RETRYING');};
   const settled=()=>{if(note.dataset.privateRetry===undefined)return;delete note.dataset.privateRetry;note.textContent='';};
-  let p;try{p=P().kisRead(e,req,retrying);}catch(err){p=Promise.reject(err);}
+  readStop=fresh(readStop);
+  let p;try{p=P().kisRead(e,req,{notice:retrying,signal:readStop.signal});}catch(err){p=Promise.reject(err);}
   Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;busy(false);settled();const status=[];
    try{panel.set('READY',{render:b=>RENDER[kind](b,res,{symbol:t.symbol,code:t.code,publicBasis:publicBasis()},status)});}
    catch(err){const c=codeOf(err);panel.set('ERROR',{code:c});note.textContent='형식 오류 · '+c;return;}
@@ -201,7 +207,8 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  tokenCheck.addEventListener('click',e=>{
   if(!st().connected){closed(word('AUTH_REQUIRED'));return;}
   const mine=++tokenSeq;tokenCheck.disabled=true;tokenNote.dataset.privateTokenState='LOADING';tokenNote.textContent='확인 중';
-  let p;try{p=P().kisRead(e,[['status',null]]);}catch(err){p=Promise.reject(err);}
+  tokenStop=fresh(tokenStop);
+  let p;try{p=P().kisRead(e,[['status',null]],{signal:tokenStop.signal});}catch(err){p=Promise.reject(err);}
   Promise.resolve(p).then(rows=>{
    if(signal.aborted||mine!==tokenSeq)return;
    const v=I.kisPrivate.tokenStatusView(rows[0]);tokenNote.dataset.privateTokenState=v.state;tokenNote.textContent=v.text;
@@ -216,7 +223,7 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
  // A dropped token (expiry, 403, 연결 끊기 elsewhere) closes the panel and clears what it showed.
  const un=(()=>{try{return P().kisSubscribe(()=>{if(signal.aborted)return;if(!st().connected){const checking=tokenCheck.disabled;resetToken();
   if(open||checking)closed(word('AUTH_REQUIRED'));else{box.hidden=true;off.hidden=true;}}});}catch(_){return()=>{};}})();
- signal.addEventListener('abort',()=>{seq++;tokenSeq++;un();},{once:true});
+ signal.addEventListener('abort',()=>{seq++;tokenSeq++;stopAll();un();},{once:true});
  closed();
  return Object.freeze({reset:()=>closed()});}
 I.privateExpand=Object.freeze({attach});

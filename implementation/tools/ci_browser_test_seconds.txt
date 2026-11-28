@@ -106,4 +106,4 @@ web_app_preview_browser_test.js 8
 web_app_kis_private_browser_test.js 330
 web_app_private_isolation_browser_test.js 31
 web_app_kis_private_limiter_browser_test.js 60
-web_app_kis_private_retry_browser_test.js 75
+web_app_kis_private_retry_browser_test.js 240

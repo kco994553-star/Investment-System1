@@ -63,9 +63,11 @@ const MIN_SPACING_MS = 5000;
 const WINDOW_MS = 60_000;
 // After admission, every upstream read of the request (GitHub contents, the release asset API and the asset bytes, Yahoo and its
 // fallbacks) runs inside one deadline (owner 2026-11-28): each call keeps its own timeout, cut to the time left, and at the
-// deadline plus a short grace the request's upstream reads and bodies are aborted. The lease therefore outlives every live
-// request (deadline + grace + the release call), and a request the runtime kills (CPU limit, error 1102; no finally, no
-// release) frees the slot LEASE_MS after its admission. Spacing and the per-minute cap are unchanged.
+// deadline plus a short grace the request's upstream reads and bodies are aborted. The lease starts when the limiter admits;
+// the Worker's deadline starts when the admit answer arrives, at most LIMITER_TIMEOUT_MS later. So the lease outlives every
+// live request: admit answer (2 s) + deadline (10 s) + grace (0.25 s) + the release call (2 s) = 14.25 s < 15 s. A request
+// the runtime kills (CPU limit, error 1102; no finally, no release) frees the slot LEASE_MS after its admission. Spacing and
+// the per-minute cap are unchanged.
 const LEASE_MS = 15_000;
 const UPSTREAM_DEADLINE_MS = 10_000;
 const UPSTREAM_ABORT_GRACE_MS = 250;
@@ -423,11 +425,13 @@ async function readCapped(stream, limit, overCode, brokenCode, brokenStatus) {
   return bytes;
 }
 
-// A pinned body (shard, member): with Content-Length exactly the pin, one native whole-body read (CPU: no per-chunk loop in the
-// isolate); otherwise the capped loop above, so a missing or other Content-Length still reads at most the pin. The caller then
-// checks the size and the sha256 pin as before. A read failure is brokenCode either way.
+// A pinned body (shard, member): with no Content-Encoding and Content-Length exactly the pin, one native whole-body read (CPU: no
+// per-chunk loop in the isolate); otherwise the capped loop above, so a missing or other Content-Length, or an encoded body
+// (the runtime decodes it, and its Content-Length then counts the encoded bytes, not the bytes read), still reads at most the
+// pin. The caller then checks the size and the sha256 pin as before. A read failure is brokenCode either way.
 async function readPinned(response, pinned, overCode, brokenCode, brokenStatus) {
-  if (response.headers.get('Content-Length') === String(pinned)) {
+  const encoding = response.headers.get('Content-Encoding');
+  if ((encoding === null || encoding === '') && response.headers.get('Content-Length') === String(pinned)) {
     let buffer;
     try { buffer = await response.arrayBuffer(); } catch { throw new Failure(brokenCode, brokenStatus); }
     return new Uint8Array(buffer);
@@ -580,9 +584,9 @@ export function createHandler({ fetch: fetchImpl = globalThis.fetch, now = Date.
     const secret = provider && providerSecret(env, provider + '_API_KEY');
     // Existing installs remain Yahoo-only until the corresponding Secret is set.
     if (!secret || !yahooError || !(yahooError.code.startsWith('YAHOO_') || yahooError.code === 'HISTORY_UNAVAILABLE')) throw yahooError;
-    if (provider === 'KRX' && range !== '1mo') throw new Failure('KRX_RANGE_UNSUPPORTED', 422);
-    // No upstream time left after Yahoo (the post-admission deadline): Yahoo's own answer, no fallback request.
+    // No upstream time left after Yahoo (the post-admission deadline): Yahoo's own answer, before any fallback check or request.
     if (!(phase.until - now() > 0)) throw yahooError;
+    if (provider === 'KRX' && range !== '1mo') throw new Failure('KRX_RANGE_UNSUPPORTED', 422);
     const readAt = now(), window = dateWindow(range, readAt, MARKETS.get(symbol).timezone);
     try {
       return await bounded(phase, 15_000, provider + '_TIMEOUT', 504, async (signal) => {

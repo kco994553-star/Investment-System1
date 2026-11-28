@@ -460,5 +460,21 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
       assert.deepEqual(mark(await coded(status, body)), [message, false], status + ' ' + JSON.stringify(body));
     }
   });
+  await ok('client: a retry carries the session of its first try; after a sign-out, a new sign-in or an expiry it is cancelled before anything is sent', async () => {
+    const h = harness({ expires: 60, answers: [{ status: 200, body: { synthetic: 1 } }, { status: 200, body: { synthetic: 2 } }] });
+    await h.c.connect();
+    const s0 = h.c.session();
+    assert.equal((await h.c.get('stock', 'NVDA', undefined, { session: s0 })).synthetic, 1, 'the same session reads');
+    h.c.disconnect(); await h.c.connect();
+    assert.notEqual(h.c.session(), s0, 'a new sign-in is a new session');
+    await assert.rejects(h.c.get('stock', 'NVDA', undefined, { session: s0 }), /CANCELED/);
+    assert.equal(h.sent.length, 1, 'the earlier session\'s request never goes out');
+    h.c.disconnect();
+    await assert.rejects(h.c.get('stock', 'NVDA', undefined, { session: s0 }), /CANCELED/, 'signed out: cancelled, not a sign-in prompt');
+    await h.c.connect(); const s1 = h.c.session(); h.clock.now += 61_000;
+    await assert.rejects(h.c.get('stock', 'NVDA', undefined, { session: s1 }), /CANCELED/, 'expired: cancelled');
+    assert.equal(h.sent.length, 1);
+    await assert.rejects(h.c.get('stock', 'NVDA'), /AUTH_REQUIRED/, 'a first try without a token still asks for a sign-in');
+  });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error(e); process.exitCode = 1; });
