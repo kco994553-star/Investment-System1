@@ -1,0 +1,591 @@
+{
+  "spec_id": "qgv-backtest-standard/2026-10-26.4",
+  "status": "RESEARCH_SPEC_NOT_PERFORMANCE_VALIDATED",
+  "source": {
+    "repository": "kco994553-star/Investment-System1",
+    "default_branch": "claude/investment-system-top500-validation-alrugm",
+    "scoring_source_sha": "bb57398c9c22a2dfa2443c5f3a23db3848cbe5ce",
+    "calc_version": "qgv2-calc/2026-10-17.1",
+    "type_scope": "qgv2-type-scope/2026-10-17.1",
+    "score_version": "qgv-v2"
+  },
+  "period": {
+    "first_fill": "1980-02-19",
+    "last_mark": "2025-12-31",
+    "warmup": "TARGET_AS_FILED_PIT_DATA_BACK_TO_1975_IF_AVAILABLE; NEVER_INFER_AVAILABILITY_OR_SUBSTITUTE_PROXIES",
+    "development_years": [
+      1980,
+      2009
+    ],
+    "temporal_review_years": [
+      2010,
+      2019
+    ],
+    "final_candidate_years": [
+      2020,
+      2025
+    ],
+    "holdout_status": "UNCONFIRMED_DO_NOT_ACCESS",
+    "no_silent_period_shortening": true,
+    "regime_windows": [
+      {
+        "start": "1980-02-19",
+        "end": "1989-12-31",
+        "label": "1980S_INFLATION_AND_CRASH_1987"
+      },
+      {
+        "start": "1990-01-01",
+        "end": "1999-12-31",
+        "label": "1990S_EXPANSION_AND_TECH_BUBBLE"
+      },
+      {
+        "start": "2000-02-22",
+        "end": "2002-12-31",
+        "label": "DOT_COM_BUST"
+      },
+      {
+        "start": "2003-01-01",
+        "end": "2007-12-31",
+        "label": "PRE_GFC"
+      },
+      {
+        "start": "2008-01-01",
+        "end": "2009-12-31",
+        "label": "GLOBAL_FINANCIAL_CRISIS"
+      },
+      {
+        "start": "2010-01-01",
+        "end": "2019-12-31",
+        "label": "POST_GFC_EXPANSION"
+      },
+      {
+        "start": "2020-01-01",
+        "end": "2021-12-31",
+        "label": "COVID"
+      },
+      {
+        "start": "2022-01-01",
+        "end": "2025-12-31",
+        "label": "INFLATION_TIGHTENING_AND_AFTER"
+      }
+    ],
+    "long_horizon_optional": {
+      "target_start": "1926-01-01",
+      "target_end": "1979-12-31",
+      "status": "SEPARATE_HISTORICAL_FACTOR_PROXY_RESEARCH_ONLY_NOT_QGV_V2",
+      "same_15_factors_unless_full_pit_proven": true
+    },
+    "data_feasibility_ladder": [
+      {
+        "start": "1980-02-19",
+        "end": "2025-12-31",
+        "label": "TARGET_QGV_V2",
+        "requires": "ALL_15_FACTOR_PIT_NO_LOOKAHEAD"
+      },
+      {
+        "start": "2000-02-22",
+        "end": "2025-12-31",
+        "label": "SECONDARY_DIAGNOSTIC_NOT_TARGET"
+      },
+      {
+        "start": "2016-02-16",
+        "end": "2025-12-31",
+        "label": "DATA_LIMITED_DIAGNOSTIC_NOT_TARGET"
+      }
+    ]
+  },
+  "universe": {
+    "basis": "HISTORICAL_SP500_MEMBERSHIP",
+    "issuer_key": "CIK",
+    "security_key": "VERIFIED_PERMANENT_ID",
+    "operational_universe_unchanged": true,
+    "share_class_selection": "MAX_MEDIAN_DAILY_DOLLAR_VOLUME_PRIOR_60_COMPLETE_SESSIONS",
+    "share_class_missing_rule": "PERMANENT_ID_ASC_WITH_UNCONFIRMED_FLAG",
+    "score_ties": [
+      "CIK_ASC",
+      "PERMANENT_ID_ASC"
+    ],
+    "as_filed_sic_required": true
+  },
+  "portfolio": {
+    "initial_capital": 100000,
+    "currency": "USD",
+    "fractional_shares": true,
+    "external_flows": false,
+    "long_only": true,
+    "leverage": false,
+    "slot_target": "ONE_OVER_N_AT_SIGNAL_CLOSE",
+    "empty_slots": "CASH",
+    "sector_cap": null,
+    "ta_timing": false,
+    "macro_timing": false,
+    "thirteenf_timing": false,
+    "stop_loss": false
+  },
+  "calendar": {
+    "quarterly_months": [
+      2,
+      5,
+      8,
+      11
+    ],
+    "annual_month": 2,
+    "weekday": "MONDAY",
+    "occurrence": 3,
+    "holiday_rule": "NEXT_VERIFIED_EXCHANGE_SESSION",
+    "signal_day": "PREVIOUS_COMPLETE_SESSION",
+    "filing_rule": "FILED_DATE_STRICTLY_BEFORE_SIGNAL_DATE"
+  },
+  "execution": {
+    "quantity_basis": "SIGNAL_CLOSE_NAV_DIVIDED_BY_N_AND_SIGNAL_CLOSE_PRICE",
+    "fill": "NEXT_ELIGIBLE_SESSION_OPEN",
+    "same_close_fill": false,
+    "cash_priority": "SELLS_THEN_PROPORTIONAL_BUYS_AFTER_COSTS",
+    "unfilled": "KEEP_REMAINING_QUANTITY_UNTIL_NEXT_REGULAR_REBALANCE_THEN_CANCEL",
+    "split_pending_orders": "ECONOMICALLY_EQUIVALENT_QUANTITY",
+    "negative_cash": false,
+    "terminal": "MARK_TO_CLOSE_NO_FORCED_LIQUIDATION",
+    "unresolved_delisting": "INCOMPLETE_NAV_NOT_ZERO_OR_DROPPED"
+  },
+  "costs": {
+    "primary_one_way_bps": 10,
+    "sensitivity_one_way_bps": [
+      0,
+      10,
+      20,
+      25,
+      30
+    ],
+    "basis": "ASSUMED_ALL_IN_NOT_EMPIRICALLY_CALIBRATED",
+    "locked_trade_cost_attribution_multipliers": [
+      1,
+      2,
+      3
+    ],
+    "separate_self_financing_rerun": true
+  },
+  "cash": {
+    "source": "VERIFIED_PUBLIC_3M_TBILL_INVESTMENT_YIELD",
+    "lag": "NEXT_TRADING_SESSION_AFTER_PUBLICATION",
+    "accrual": "ANNUAL_YIELD_TIMES_CALENDAR_DAYS_OVER_365",
+    "max_stale_trading_sessions": 5,
+    "no_yield_data": "RF_DEPENDENT_OUTPUT_UNVERIFIED",
+    "zero_cash_interest": "EXPLICIT_DIAGNOSTIC_ONLY"
+  },
+  "tax_mode": "EXCLUDED_INVESTOR_TAXES_ONLY_CORPORATE_NOPAT_TAX_UNCHANGED",
+  "dividends": {
+    "ex_date": "RECEIVABLE",
+    "pay_date": "CASH",
+    "reinvestment": "NEXT_REGULAR_REBALANCE",
+    "double_count_with_adjusted_total_return": false
+  },
+  "benchmark": {
+    "primary": "SPY_DIVIDEND_REINVESTED_TOTAL_RETURN",
+    "initial_entry_cost": "SAME_ONE_WAY_ASSUMPTION",
+    "same_period_and_currency": true,
+    "secondary": [
+      "ELIGIBLE_UNIVERSE_EQUAL_WEIGHT",
+      "COMMON_CANDIDATES_EQUAL_WEIGHT"
+    ],
+    "sp500_index_total_return": "OPTIONAL_IF_LICENSED_NOT_SILENT_SUBSTITUTE"
+  },
+  "panels": {
+    "COMMON": "ASOF_ALL_THREE_AXES_AVAILABLE_FOR_ALL_FOUR_VARIANTS_BEFORE_GATE",
+    "PRACTICAL": "VARIANT_OWN_OFFICIAL_SCORE_ELIGIBILITY",
+    "percentile_pool": "FULL_HISTORICAL_UNIVERSE_BEFORE_SELECTION_FILTER"
+  },
+  "variants": {
+    "W0": {
+      "axis_policy": "OFFICIAL_TYPE_ADJUSTED",
+      "axis_input": {
+        "Q": 34,
+        "G": 33,
+        "V": 33
+      },
+      "type_weights": true,
+      "inner": {
+        "Q": {
+          "q_profitability": 25,
+          "q_moat_proxy": 20,
+          "q_earnings_quality": 20,
+          "q_financial_safety": 20,
+          "q_capital_allocation": 15
+        },
+        "G": {
+          "g_revenue_growth": 25,
+          "g_per_share_growth": 25,
+          "g_growth_efficiency": 20,
+          "g_consistency": 15,
+          "g_recent_acceleration": 15
+        },
+        "V": {
+          "v_earnings_yield": 25,
+          "v_fcf_yield": 25,
+          "v_vs_industry": 20,
+          "v_vs_own_history": 15,
+          "v_expectation_check": 15
+        }
+      },
+      "gate": true,
+      "cyclical_normalization": "UNCHANGED_OFFICIAL",
+      "official_equivalence_required": true
+    },
+    "W1": {
+      "axis_policy": "FIXED_EQUAL_BEFORE_GATE",
+      "axis_input": {
+        "Q": 1,
+        "G": 1,
+        "V": 1
+      },
+      "type_weights": false,
+      "inner": {
+        "Q": {
+          "q_profitability": 25,
+          "q_moat_proxy": 20,
+          "q_earnings_quality": 20,
+          "q_financial_safety": 20,
+          "q_capital_allocation": 15
+        },
+        "G": {
+          "g_revenue_growth": 25,
+          "g_per_share_growth": 25,
+          "g_growth_efficiency": 20,
+          "g_consistency": 15,
+          "g_recent_acceleration": 15
+        },
+        "V": {
+          "v_earnings_yield": 25,
+          "v_fcf_yield": 25,
+          "v_vs_industry": 20,
+          "v_vs_own_history": 15,
+          "v_expectation_check": 15
+        }
+      },
+      "gate": true,
+      "cyclical_normalization": "UNCHANGED_OFFICIAL",
+      "official_equivalence_required": false
+    },
+    "W2": {
+      "axis_policy": "OFFICIAL_TYPE_ADJUSTED",
+      "axis_input": {
+        "Q": 34,
+        "G": 33,
+        "V": 33
+      },
+      "type_weights": true,
+      "inner": {
+        "Q": {
+          "q_profitability": 20,
+          "q_moat_proxy": 20,
+          "q_earnings_quality": 20,
+          "q_financial_safety": 20,
+          "q_capital_allocation": 20
+        },
+        "G": {
+          "g_revenue_growth": 20,
+          "g_per_share_growth": 20,
+          "g_growth_efficiency": 20,
+          "g_consistency": 20,
+          "g_recent_acceleration": 20
+        },
+        "V": {
+          "v_earnings_yield": 20,
+          "v_fcf_yield": 20,
+          "v_vs_industry": 20,
+          "v_vs_own_history": 20,
+          "v_expectation_check": 20
+        }
+      },
+      "gate": true,
+      "cyclical_normalization": "UNCHANGED_OFFICIAL",
+      "official_equivalence_required": false
+    },
+    "W3": {
+      "axis_policy": "FIXED_EQUAL_BEFORE_GATE",
+      "axis_input": {
+        "Q": 1,
+        "G": 1,
+        "V": 1
+      },
+      "type_weights": false,
+      "inner": {
+        "Q": {
+          "q_profitability": 20,
+          "q_moat_proxy": 20,
+          "q_earnings_quality": 20,
+          "q_financial_safety": 20,
+          "q_capital_allocation": 20
+        },
+        "G": {
+          "g_revenue_growth": 20,
+          "g_per_share_growth": 20,
+          "g_growth_efficiency": 20,
+          "g_consistency": 20,
+          "g_recent_acceleration": 20
+        },
+        "V": {
+          "v_earnings_yield": 20,
+          "v_fcf_yield": 20,
+          "v_vs_industry": 20,
+          "v_vs_own_history": 20,
+          "v_expectation_check": 20
+        }
+      },
+      "gate": true,
+      "cyclical_normalization": "UNCHANGED_OFFICIAL",
+      "official_equivalence_required": false
+    }
+  },
+  "strategies": [
+    {
+      "id": "W0-N15-Q",
+      "variant": "W0",
+      "n": 15,
+      "rebalance": "QUARTERLY",
+      "stage": "primary"
+    },
+    {
+      "id": "W1-N15-Q",
+      "variant": "W1",
+      "n": 15,
+      "rebalance": "QUARTERLY",
+      "stage": "primary"
+    },
+    {
+      "id": "W2-N15-Q",
+      "variant": "W2",
+      "n": 15,
+      "rebalance": "QUARTERLY",
+      "stage": "primary"
+    },
+    {
+      "id": "W3-N15-Q",
+      "variant": "W3",
+      "n": 15,
+      "rebalance": "QUARTERLY",
+      "stage": "primary"
+    },
+    {
+      "id": "W0-N10-Q",
+      "variant": "W0",
+      "n": 10,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N10-Q",
+      "variant": "W1",
+      "n": 10,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N10-Q",
+      "variant": "W2",
+      "n": 10,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N10-Q",
+      "variant": "W3",
+      "n": 10,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N20-Q",
+      "variant": "W0",
+      "n": 20,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N20-Q",
+      "variant": "W1",
+      "n": 20,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N20-Q",
+      "variant": "W2",
+      "n": 20,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N20-Q",
+      "variant": "W3",
+      "n": 20,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N15-Y",
+      "variant": "W0",
+      "n": 15,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N15-Y",
+      "variant": "W3",
+      "n": 15,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N25-Y",
+      "variant": "W0",
+      "n": 25,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N25-Y",
+      "variant": "W3",
+      "n": 25,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N50-Y",
+      "variant": "W0",
+      "n": 50,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N50-Y",
+      "variant": "W3",
+      "n": 50,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N25-Q",
+      "variant": "W0",
+      "n": 25,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N25-Q",
+      "variant": "W1",
+      "n": 25,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N25-Q",
+      "variant": "W2",
+      "n": 25,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N25-Q",
+      "variant": "W3",
+      "n": 25,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N25-Y",
+      "variant": "W1",
+      "n": 25,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N25-Y",
+      "variant": "W2",
+      "n": 25,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W0-N50-Q",
+      "variant": "W0",
+      "n": 50,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N50-Q",
+      "variant": "W1",
+      "n": 50,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N50-Q",
+      "variant": "W2",
+      "n": 50,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W3-N50-Q",
+      "variant": "W3",
+      "n": 50,
+      "rebalance": "QUARTERLY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W1-N50-Y",
+      "variant": "W1",
+      "n": 50,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    },
+    {
+      "id": "W2-N50-Y",
+      "variant": "W2",
+      "n": 50,
+      "rebalance": "ANNUAL_FEBRUARY",
+      "stage": "sensitivity"
+    }
+  ],
+  "execution_delay_sensitivity": {
+    "strategy_ids": [
+      "W0-N15-Q",
+      "W3-N15-Q"
+    ],
+    "extra_eligible_opportunities": 1,
+    "keep_signal_and_quantity": true
+  },
+  "statistics": {
+    "bootstrap": "PAIRED_CIRCULAR_MOVING_BLOCK",
+    "monthly_block_length": 12,
+    "replications": 10000,
+    "seed": 20261026,
+    "minimum_months_for_inference": 60,
+    "primary_comparisons": [
+      "W1-W0",
+      "W2-W0",
+      "W3-W0"
+    ],
+    "family_alpha": 0.05,
+    "lower_tail_alpha_per_comparison": 0.016666666666666666,
+    "superiority_min_cagr_difference_pp": 1,
+    "noninferiority_cagr_margin_pp": -1,
+    "max_observed_mdd_loss_worsening_pp": 3,
+    "max_observed_sharpe_deterioration": 0.1,
+    "threshold_provenance": "RESEARCH_ASSUMPTIONS_NOT_BOOK_RULES"
+  },
+  "safety": {
+    "live_scoring_changes": false,
+    "auto_merge": false,
+    "deployment": false,
+    "paid_data_purchase": false,
+    "new_public_market_data_workflow": false,
+    "protected_holdout_access_without_evidence": false,
+    "real_data_and_results": "APPROVED_PRIVATE_DESTINATION_ONLY"
+  },
+  "documents": {
+    "standard": "QGV_BACKTEST_STANDARD_V1_20261026.md",
+    "prompt": "CODEX_QGV_BACKTEST_PROMPT_20261026.md"
+  }
+}
