@@ -1,0 +1,401 @@
+[
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "1964",
+      "endyear": "1973"
+    },
+    "bytes": 41720,
+    "sha256": "452f7711fe68a50ff024d24960acc0bd1df103fb98897e9c1997cd05fbec0d0f",
+    "fetched": "2026-11-21T23:45:00.074139+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "1974",
+      "endyear": "1983"
+    },
+    "bytes": 41735,
+    "sha256": "cee1ed2caa1339128638ebf3aa104cb40f126b01df4e3f2966d94f8daa0378f6",
+    "fetched": "2026-11-21T23:45:00.767237+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "1984",
+      "endyear": "1993"
+    },
+    "bytes": 45886,
+    "sha256": "cd37ac456e15b068a1af88140e74e4f7d6aef9af5470f4c46ab6640bf33ceb3b",
+    "fetched": "2026-11-21T23:45:01.302735+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "1994",
+      "endyear": "2003"
+    },
+    "bytes": 51860,
+    "sha256": "6845dc4f86b6b83570a595e683df6c28ac84a7dc91520649692d09c1e3e74d67",
+    "fetched": "2026-11-21T23:45:02.087549+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "2004",
+      "endyear": "2013"
+    },
+    "bytes": 52030,
+    "sha256": "d049179307f4496b232138aaee0585b150cd7ca94bb98eadf9b0c2783f2dd1f0",
+    "fetched": "2026-11-21T23:45:02.707547+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "2014",
+      "endyear": "2023"
+    },
+    "bytes": 52104,
+    "sha256": "811d9d632bca6e09686205bfc930710555806034271d63572d5db3bad808906a",
+    "fetched": "2026-11-21T23:45:03.272984+00:00"
+  },
+  {
+    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/",
+    "body": {
+      "seriesid": [
+        "LNS14000000",
+        "CES0000000001",
+        "CES3000000007",
+        "CES6056132001",
+        "CUSR0000SA0L1E"
+      ],
+      "startyear": "2024",
+      "endyear": "2024"
+    },
+    "bytes": 5462,
+    "sha256": "b65fb3669e3dd53a944c02830eaff5a5ae6c8e55e1f0ecc61198fe4c9f38700b",
+    "fetched": "2026-11-21T23:45:03.809706+00:00"
+  },
+  {
+    "url": "https://apps.bea.gov/national/Release/TXT/NipaDataQ.txt",
+    "body": null,
+    "bytes": 35561160,
+    "sha256": "b473d0288f845e3636bc9851e0758aaa84e884623c7008fbfcf6f8b4ddaed092",
+    "fetched": "2026-11-21T23:45:01.709582+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1990",
+    "body": null,
+    "bytes": 321673,
+    "sha256": "483e36894b7d3fedbc44b1b117edd5e1a019db48adc7851b5cd80a4f850e8b4c",
+    "fetched": "2026-11-21T23:44:59.970505+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1991",
+    "body": null,
+    "bytes": 321673,
+    "sha256": "3961af2cfe468bfc22ed05f271f453959549ec936d5c094670411a1d4e49df0f",
+    "fetched": "2026-11-21T23:45:00.006413+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1992",
+    "body": null,
+    "bytes": 322957,
+    "sha256": "692327edd72631f0b751c2534ad7957a989a4a4e1accb061eb86df9c9a143d80",
+    "fetched": "2026-11-21T23:45:00.236456+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1993",
+    "body": null,
+    "bytes": 324897,
+    "sha256": "f88e12f7fee02284f60f9d5c5fcf7870276be625f1304ce99b65f04c63552cca",
+    "fetched": "2026-11-21T23:45:00.512258+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1994",
+    "body": null,
+    "bytes": 333337,
+    "sha256": "128f35505f4af78fc792203b6380832a805963ba8a5cfbaa69ece0a58172d4b1",
+    "fetched": "2026-11-21T23:45:00.725851+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1995",
+    "body": null,
+    "bytes": 334115,
+    "sha256": "2c37b4dc4b6474ace52db320da7b241c8274d3afe9a8c4bb18f09b88914cca25",
+    "fetched": "2026-11-21T23:45:00.944139+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1996",
+    "body": null,
+    "bytes": 336442,
+    "sha256": "0bb03fb740d6768f9afcad73465e66b703e7d0a5237f6ef442c5d1f2263b17b3",
+    "fetched": "2026-11-21T23:45:00.978557+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1997",
+    "body": null,
+    "bytes": 333839,
+    "sha256": "3b719fe304bdd1c1ac0ae4b2ef408591e4f881c475ca7d6e2f5aacd384552bb9",
+    "fetched": "2026-11-21T23:45:01.132284+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1998",
+    "body": null,
+    "bytes": 334634,
+    "sha256": "426e749f51ff7cff543ea37a487b6ab3b5e0360588a9631c05ec48754773bdf3",
+    "fetched": "2026-11-21T23:45:01.362992+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=1999",
+    "body": null,
+    "bytes": 335397,
+    "sha256": "82caa3d6280db907a04f508a37b7dfdec9aa7a830e944dbc3d7baa90f0534ff3",
+    "fetched": "2026-11-21T23:45:01.459843+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2000",
+    "body": null,
+    "bytes": 335634,
+    "sha256": "9f3126140252b528b0e5bd29941a271129923cd462a2545facaf87ffd911615b",
+    "fetched": "2026-11-21T23:45:02.163628+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2001",
+    "body": null,
+    "bytes": 337357,
+    "sha256": "361585944ad9d7a5d64750d6e8b8dc2f569a471ce40fa9e81143454d6280397c",
+    "fetched": "2026-11-21T23:45:02.245416+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2002",
+    "body": null,
+    "bytes": 336337,
+    "sha256": "145bdb5e630be1cba056df54f759c393e917eda537be18018d391998171e773b",
+    "fetched": "2026-11-21T23:45:02.284805+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2003",
+    "body": null,
+    "bytes": 334673,
+    "sha256": "4bce601c8c12e9472074493ae56e5c04f22b55bff9d18495f9e5055269c643f1",
+    "fetched": "2026-11-21T23:45:02.702736+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2004",
+    "body": null,
+    "bytes": 334673,
+    "sha256": "07d399e5f46f9a699f90ea4ffe59d64ce0aed183730e5f413921d47c9ff64275",
+    "fetched": "2026-11-21T23:45:02.669452+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2005",
+    "body": null,
+    "bytes": 334673,
+    "sha256": "88cb2a71ec9b92a753d0283dbf45ca6e56dd5881c7d1aaffdbaa0da7d420b471",
+    "fetched": "2026-11-21T23:45:03.257025+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2006",
+    "body": null,
+    "bytes": 346321,
+    "sha256": "7eb38d5c9e0f4de62668ca686a9ca9667de170a42ced026d0c187453d2136fdf",
+    "fetched": "2026-11-21T23:45:03.471253+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2007",
+    "body": null,
+    "bytes": 349061,
+    "sha256": "423a3966e0ae87ecae7fdfe7af2f59312c9bc8dc26504556a0b1457ac5c908a1",
+    "fetched": "2026-11-21T23:45:03.217379+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2008",
+    "body": null,
+    "bytes": 348905,
+    "sha256": "0835c842be6d3a906b50d315cb1edf39b3c06b8a66c69e5517f5f941596b3575",
+    "fetched": "2026-11-21T23:45:03.884099+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2009",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "34a416b32fa48bd1214351f9c23e6a6e6a05f49ebdef9405b7ee791dd2a9d9a3",
+    "fetched": "2026-11-21T23:45:03.697447+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2010",
+    "body": null,
+    "bytes": 349887,
+    "sha256": "80ccecc96736361e4c7fa2046e8c153e223a1765b3a5126e629eb7bcc693a9b8",
+    "fetched": "2026-11-21T23:45:03.785236+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2011",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "0e422852d04641358f1fce78b04a009e38ba2c5206ff8d367ee380a7e5822352",
+    "fetched": "2026-11-21T23:45:04.476054+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2012",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "60e32b99b125de2ca4af07f1059f1925f2807c8954fa484d736e0f036694c4cd",
+    "fetched": "2026-11-21T23:45:04.106182+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2013",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "1e63c8220fe6663ee6f01d895e05e27ad00bc472c99542ae8c685cb028a61d67",
+    "fetched": "2026-11-21T23:45:04.248810+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2014",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "649158d9d127a1e7eabca8e0227dbc99a627f1e6052aeaf645c67a533badb6f2",
+    "fetched": "2026-11-21T23:45:04.779605+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2015",
+    "body": null,
+    "bytes": 349061,
+    "sha256": "86e8f5bddb12204394653abd7602060e25b2993adc1408facfa9d6863fb66ae4",
+    "fetched": "2026-11-21T23:45:04.712086+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2016",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "835e974de914957b04f49898b6dbdd04766af6123f4b634dcb11dd29a50005ef",
+    "fetched": "2026-11-21T23:45:05.180954+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2017",
+    "body": null,
+    "bytes": 347673,
+    "sha256": "fdba88276b5f7a95ae3d33fa6ead175433ade015a606e03a531c78f3a67e6fb8",
+    "fetched": "2026-11-21T23:45:05.275885+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2018",
+    "body": null,
+    "bytes": 348937,
+    "sha256": "c5caa0622ae71a7f666818659a0efa1de5d67f86de2c1d018ce6081d0bccac5f",
+    "fetched": "2026-11-21T23:45:05.305401+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2019",
+    "body": null,
+    "bytes": 360673,
+    "sha256": "413899e612299476384fc842fb5f1e991f841f93c730d6fa21a3f1a26c344c7d",
+    "fetched": "2026-11-21T23:45:05.537753+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2020",
+    "body": null,
+    "bytes": 362113,
+    "sha256": "28c07fdddc1fe2c8e0daae1408c565e81cac182959729d05ae551ee9b038c216",
+    "fetched": "2026-11-21T23:45:05.643557+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2021",
+    "body": null,
+    "bytes": 362113,
+    "sha256": "14943dab09a5e254e2fad91a5e591be41d00370595b86ec5e564075df2fa8272",
+    "fetched": "2026-11-21T23:45:05.881334+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2022",
+    "body": null,
+    "bytes": 343983,
+    "sha256": "e2dae9677a3a21828a5a0cd39c0994b846da03d0f0d84660c9c0a59e2516f2c6",
+    "fetched": "2026-11-21T23:45:06.280065+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2023",
+    "body": null,
+    "bytes": 284423,
+    "sha256": "d599e80bca6b0260dfcb85b046379f1f43d09e30f2c06e461f3f176790e4956c",
+    "fetched": "2026-11-21T23:45:05.924607+00:00"
+  },
+  {
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2024",
+    "body": null,
+    "bytes": 284423,
+    "sha256": "06d89dea30821939c574e2632df28825eb643eb1a9fad205f994cbed782d24e2",
+    "fetched": "2026-11-21T23:45:06.126836+00:00"
+  },
+  {
+    "url": "https://www.census.gov/construction/nrc/xls/permits_cust.xlsx",
+    "body": null,
+    "bytes": 179696,
+    "sha256": "f2c26487e2354e2b2fbdd63d4bc9d7ed15ca73c8b52b34e13813c76034872451",
+    "fetched": "2026-11-21T23:45:00.034731+00:00"
+  },
+  {
+    "url": "https://www.federalreserve.gov/releases/g17/ipdisk/ip_sa.txt",
+    "body": null,
+    "bytes": 2755976,
+    "sha256": "7ec8643d1b28e05e1ab6d30fed282d025952a3ef911059feec3cfc7c280b84b8",
+    "fetched": "2026-11-21T23:45:00.257249+00:00"
+  },
+  {
+    "url": "https://www.nber.org/research/business-cycle-dating/business-cycle-dating-committee-announcements",
+    "body": null,
+    "bytes": 82701,
+    "sha256": "4594499b5ba5296cef2eaeb88da3af9c51e916feae32193e514614d8c7738b19",
+    "fetched": "2026-11-21T23:45:00.793086+00:00"
+  },
+  {
+    "url": "https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions",
+    "body": null,
+    "bytes": 91037,
+    "sha256": "00052d5eeaf9436f5ed0062028375a0e03bae3e7152cb5503b126ec74a886a75",
+    "fetched": "2026-11-21T23:45:00.524774+00:00"
+  }
+]
