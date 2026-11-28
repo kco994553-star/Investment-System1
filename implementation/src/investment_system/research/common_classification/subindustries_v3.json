@@ -1,0 +1,619 @@
+{
+  "version": "common-subindustry/3",
+  "status": "DRAFT",
+  "policy": "common-sector-boundaries/2026-11-08.1",
+  "legacy_to_broader": {
+    "beverages": "staple_manufacturing",
+    "food_retail": "staple_supply",
+    "computers": "it_hardware",
+    "semiconductors": "chips_components",
+    "software": "software_information",
+    "medical_devices": "clinical_equipment",
+    "health_services": "care_delivery"
+  },
+  "industries": [
+    {
+      "id": "consumer_products",
+      "parent_sector": "CONSUMER_DISCRETIONARY",
+      "name_ko": "개인용 내구재·의류와 주택",
+      "definition": "가계에 판매할 주거 공간이나 선택소비 완제품을 생산한다.",
+      "includes": "주택 분양·자동차·의류·가전·가구·완구·전용 부품",
+      "excludes": "산업 운송장비, 건자재 유통",
+      "sic_codes": [
+        "1520",
+        "1531",
+        "2273",
+        "2300",
+        "2320",
+        "2510",
+        "3021",
+        "3100",
+        "3140",
+        "3524",
+        "3630",
+        "3651",
+        "3711",
+        "3714",
+        "3716",
+        "3751",
+        "3942",
+        "3944",
+        "3949"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "consumer_distribution",
+      "parent_sector": "CONSUMER_DISCRETIONARY",
+      "name_ko": "선택소비 유통·개인 서비스",
+      "definition": "가계의 선택구매 상품을 유통하거나 관련 개인 서비스를 제공한다.",
+      "includes": "차량·건자재·의류·가전 소매와 정비",
+      "excludes": "식료품 중심 소매, 전자상거래 플랫폼 일괄 배정",
+      "sic_codes": [
+        "5013",
+        "5200",
+        "5211",
+        "5500",
+        "5531",
+        "5621",
+        "5651",
+        "5700",
+        "5712",
+        "5731",
+        "5734",
+        "5940",
+        "7500"
+      ],
+      "sic_requires_activity": [
+        "5010",
+        "5961",
+        "5990",
+        "7200",
+        "7389"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "dining_leisure",
+      "parent_sector": "CONSUMER_DISCRETIONARY",
+      "name_ko": "외식·숙박·여가",
+      "definition": "소비자가 식사·숙박·여가 활동을 직접 구매한다.",
+      "includes": "음식점·호텔·휴양·레저시설",
+      "excludes": "식품 제조, 방송 콘텐츠 배급",
+      "sic_codes": [
+        "5810",
+        "5812",
+        "7011",
+        "7948",
+        "7990",
+        "7997"
+      ],
+      "sic_requires_activity": [
+        "7900"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "media_content",
+      "parent_sector": "CONSUMER_DISCRETIONARY",
+      "name_ko": "콘텐츠·미디어",
+      "definition": "콘텐츠 제작·편성·배급 또는 미디어 광고 판매가 주 사업이다.",
+      "includes": "출판·방송·영상 배급과 근거 있는 미디어 사업",
+      "excludes": "통신망 접속, 플랫폼 사용료와 광고를 구분할 수 없는 경우",
+      "sic_codes": [
+        "2711",
+        "4832",
+        "4833",
+        "7812",
+        "7822",
+        "7841"
+      ],
+      "sic_requires_activity": [
+        "4899",
+        "7311",
+        "7374",
+        "7389",
+        "7900",
+        "7990"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "staple_manufacturing",
+      "parent_sector": "CONSUMER_STAPLES",
+      "name_ko": "식음료·생활필수품 제조",
+      "definition": "가계가 반복 구매하는 식음료와 생활 소모품을 생산한다.",
+      "includes": "가공식품·음료·담배·위생·세정·개인관리 제품",
+      "excludes": "기초 화학원료, 유통 전업",
+      "sic_codes": [
+        "2000",
+        "2011",
+        "2013",
+        "2015",
+        "2020",
+        "2024",
+        "2030",
+        "2033",
+        "2040",
+        "2050",
+        "2060",
+        "2070",
+        "2080",
+        "2082",
+        "2086",
+        "2090",
+        "2111",
+        "2840",
+        "2842",
+        "2844"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "staple_supply",
+      "parent_sector": "CONSUMER_STAPLES",
+      "name_ko": "식료·생활필수품 유통",
+      "definition": "필수품의 도소매 판매가 주 사업이다.",
+      "includes": "식품 도매·슈퍼마켓·필수품 중심 종합점",
+      "excludes": "선택상품 전문점, 자체 식품 생산",
+      "sic_codes": [
+        "5140",
+        "5141",
+        "5411"
+      ],
+      "sic_requires_activity": [
+        "5331"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "fuel_chain",
+      "parent_sector": "ENERGY",
+      "name_ko": "연료 자원·생산·수송",
+      "definition": "석유·가스 자원의 채취부터 가공 및 운반까지 연료 공급을 담당한다.",
+      "includes": "광구·자원권·유전 용역·정제·장거리 관로",
+      "excludes": "도시가스 소매 배급, 범용 기계 제조",
+      "sic_codes": [
+        "1311",
+        "1321",
+        "1381",
+        "1382",
+        "1389",
+        "2911",
+        "2990",
+        "4610",
+        "4922",
+        "6792"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "bank_credit",
+      "parent_sector": "FINANCIALS",
+      "name_ko": "예금·여신",
+      "definition": "예금 수취 또는 자체 신용공여에서 수익을 얻는다.",
+      "includes": "상업은행·저축기관·카드 대출·주택 대출",
+      "excludes": "결제망 사용료·증권 위탁·부동산 신탁",
+      "sic_codes": [
+        "6021",
+        "6022",
+        "6029",
+        "6035",
+        "6036",
+        "6141",
+        "6162"
+      ],
+      "sic_requires_activity": [
+        "6199"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "risk_insurance",
+      "parent_sector": "FINANCIALS",
+      "name_ko": "보험 인수·중개",
+      "definition": "보험 위험을 인수하거나 보험계약 체결을 중개한다.",
+      "includes": "손해·생명보험과 보험 모집",
+      "excludes": "관리의료, 주 사업을 확정할 수 없는 복합 지주",
+      "sic_codes": [
+        "6311",
+        "6351",
+        "6361",
+        "6399",
+        "6411"
+      ],
+      "sic_requires_activity": [
+        "6321",
+        "6331"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "financial_transactions",
+      "parent_sector": "FINANCIALS",
+      "name_ko": "금융 거래·투자 서비스",
+      "definition": "투자나 지급 거래를 실행·청산하거나 투자 의사결정에 필요한 서비스를 제공한다.",
+      "includes": "증권·자산운용·지수·결제 처리 및 송금",
+      "excludes": "예금 대출, 범용 전산 외주, 데이터·광고 복합사업",
+      "sic_codes": [
+        "6200",
+        "6211",
+        "6282"
+      ],
+      "sic_requires_activity": [
+        "6199",
+        "7320",
+        "7389"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "property_income",
+      "parent_sector": "FINANCIALS",
+      "name_ko": "부동산 투자·임대 운영",
+      "definition": "보유한 부동산·관련 자산에서 투자·운영 수익을 얻는다.",
+      "includes": "REIT, 근거가 확인된 임대 운영",
+      "excludes": "중개·위탁 시설관리·부동산 광고와 데이터",
+      "sic_codes": [
+        "6798"
+      ],
+      "sic_requires_activity": [
+        "6510"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "therapeutics",
+      "parent_sector": "HEALTH_CARE",
+      "name_ko": "의약 연구·개발·생산",
+      "definition": "치료제·진단제의 개발, 임상·비임상 시험 또는 생산이 주 사업이다.",
+      "includes": "의약품·바이오 제제·의약 연구 수탁",
+      "excludes": "범용 연구용역, 장비·약국",
+      "sic_codes": [
+        "2833",
+        "2834",
+        "2835",
+        "2836"
+      ],
+      "sic_requires_activity": [
+        "8731"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "clinical_equipment",
+      "parent_sector": "HEALTH_CARE",
+      "name_ko": "의료·생명과학 장비",
+      "definition": "진단·치료·생명과학용 장비 및 전용 소모품을 공급한다.",
+      "includes": "의료기기·안과용품·의료장비 유통·확인된 실험실 장비",
+      "excludes": "범용 산업 계측, 치료제",
+      "sic_codes": [
+        "3841",
+        "3842",
+        "3843",
+        "3844",
+        "3845",
+        "3851",
+        "5047"
+      ],
+      "sic_requires_activity": [
+        "3826",
+        "3829"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "care_delivery",
+      "parent_sector": "HEALTH_CARE",
+      "name_ko": "진료·관리의료·의약 유통",
+      "definition": "환자에게 진료·검사·의약품 또는 의료보장을 제공한다.",
+      "includes": "병원·검사실·약국·관리의료",
+      "excludes": "의약품 제조, 일반 손해보험 및 복합기업 자동 포함",
+      "sic_codes": [
+        "5122",
+        "5912",
+        "8000",
+        "8011",
+        "8050",
+        "8051",
+        "8060",
+        "8062",
+        "8071",
+        "8082",
+        "8090",
+        "8093"
+      ],
+      "sic_requires_activity": [
+        "6321",
+        "6324"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "production_equipment",
+      "parent_sector": "INDUSTRIALS",
+      "name_ko": "산업 설비·계측·부품",
+      "definition": "생산 현장에 사용하는 장비·제어기와 전용 부품을 제조한다.",
+      "includes": "기계·전기설비·공구·공장 자동화",
+      "excludes": "의료기기·반도체 전용 장비·운송 완제품",
+      "sic_codes": [
+        "3420",
+        "3430",
+        "3440",
+        "3490",
+        "3510",
+        "3523",
+        "3530",
+        "3531",
+        "3533",
+        "3540",
+        "3550",
+        "3560",
+        "3561",
+        "3562",
+        "3564",
+        "3569",
+        "3580",
+        "3585",
+        "3590",
+        "3613",
+        "3620",
+        "3621",
+        "3640",
+        "3822",
+        "3823",
+        "3824"
+      ],
+      "sic_requires_activity": [
+        "3559",
+        "3600",
+        "3825",
+        "3829",
+        "3990"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "transport_equipment",
+      "parent_sector": "INDUSTRIALS",
+      "name_ko": "항공·방산·운송장비",
+      "definition": "항공기·선박·철도 및 방위 체계나 전용 부품을 생산한다.",
+      "includes": "항공 엔진·항법 장비·조선·철도차량",
+      "excludes": "운송 용역, 승용차",
+      "sic_codes": [
+        "3480",
+        "3720",
+        "3721",
+        "3724",
+        "3728",
+        "3730",
+        "3743",
+        "3760",
+        "3812"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "freight_mobility",
+      "parent_sector": "INDUSTRIALS",
+      "name_ko": "운송·물류",
+      "definition": "화물·여객을 운송하거나 해당 운송을 주선한다.",
+      "includes": "철도·육상·해운·항공·화물 주선",
+      "excludes": "연료 수송 전용 관로, 운송장비 제조",
+      "sic_codes": [
+        "4011",
+        "4210",
+        "4213",
+        "4400",
+        "4512",
+        "4513",
+        "4700",
+        "4731"
+      ],
+      "sic_requires_activity": [
+        "7389"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "business_operations",
+      "parent_sector": "INDUSTRIALS",
+      "name_ko": "시설·기업 운영 지원",
+      "definition": "기업의 건설·시설·현장 또는 경영 운영을 서비스로 수행한다.",
+      "includes": "산업 건설·시설·환경·인력·산업용품 공급",
+      "excludes": "주택 분양, 금융 거래 처리, IT 제품 구현",
+      "sic_codes": [
+        "1600",
+        "1623",
+        "1700",
+        "1731",
+        "4953",
+        "4955",
+        "5063",
+        "5070",
+        "5084",
+        "7340",
+        "7359",
+        "7363",
+        "7381",
+        "8711"
+      ],
+      "sic_requires_activity": [
+        "5000",
+        "6500",
+        "7320",
+        "7374",
+        "7389",
+        "8700",
+        "8741"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "it_hardware",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "name_ko": "컴퓨팅·연결 시스템",
+      "definition": "데이터 처리 단말·저장·통신망 장비나 통합 하드웨어 시스템을 공급한다.",
+      "includes": "컴퓨터·저장장치·연결 장비·공간정보 시스템",
+      "excludes": "통신망 운영, 개별 소자와 범용 계측기",
+      "sic_codes": [
+        "3570",
+        "3571",
+        "3572",
+        "3575",
+        "3576",
+        "3577",
+        "3578",
+        "3579",
+        "3661",
+        "3663",
+        "3669",
+        "5045"
+      ],
+      "sic_requires_activity": [
+        "3357",
+        "3827",
+        "3829",
+        "5961"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "chips_components",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "name_ko": "반도체·전자부품 및 전용 장비",
+      "definition": "전자 시스템을 구성하는 소자·회로 또는 전용 생산장비를 공급한다.",
+      "includes": "반도체·기판·전자 연결부품·검증된 반도체 제조장비",
+      "excludes": "범용 공작기계와 컴퓨터 완제품",
+      "sic_codes": [
+        "3670",
+        "3672",
+        "3674",
+        "3678",
+        "3679",
+        "5065"
+      ],
+      "sic_requires_activity": [
+        "3357",
+        "3559",
+        "3825",
+        "3827",
+        "3829"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "software_information",
+      "parent_sector": "INFORMATION_TECHNOLOGY",
+      "name_ko": "소프트웨어·정보처리",
+      "definition": "소프트웨어·정보처리 플랫폼을 제공하거나 업무 시스템을 구현·운영한다.",
+      "includes": "프로그램·시스템 통합·정보처리 서비스",
+      "excludes": "미디어 광고 판매, 금융 거래 중개",
+      "sic_codes": [
+        "7370",
+        "7371",
+        "7372",
+        "7373",
+        "7377"
+      ],
+      "sic_requires_activity": [
+        "7374",
+        "7389"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "chemical_inputs",
+      "parent_sector": "MATERIALS",
+      "name_ko": "화학·작물 생산 원료",
+      "definition": "다른 생산 공정에 쓰이는 화학 물질 및 농업 투입재를 공급한다.",
+      "includes": "화학·합성수지·도료·비료·작물보호제",
+      "excludes": "완성 생활용품·치료제",
+      "sic_codes": [
+        "2810",
+        "2820",
+        "2821",
+        "2851",
+        "2860",
+        "2870",
+        "2890",
+        "5160"
+      ],
+      "sic_requires_activity": [
+        "0100"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "physical_materials",
+      "parent_sector": "MATERIALS",
+      "name_ko": "광물·금속·건설 및 포장 소재",
+      "definition": "물리적 가공으로 건설·제조·포장에 쓰이는 기초 소재를 공급한다.",
+      "includes": "금속·석재·시멘트·목재·제지·용기",
+      "excludes": "완성 산업기계, 연료 자원",
+      "sic_codes": [
+        "1000",
+        "1040",
+        "1400",
+        "2400",
+        "2430",
+        "2621",
+        "2650",
+        "2670",
+        "2673",
+        "3241",
+        "3290",
+        "3312",
+        "3317",
+        "3334",
+        "3350",
+        "3411",
+        "5051"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "network_access",
+      "parent_sector": "TELECOMMUNICATIONS",
+      "name_ko": "유무선 통신망 서비스",
+      "definition": "통신망 접속과 회선·전송 용량을 제공한다.",
+      "includes": "전화·이동통신·확인된 케이블 광대역 및 전송",
+      "excludes": "콘텐츠 편성·장비 제조·타워 임대",
+      "sic_codes": [
+        "4812",
+        "4813"
+      ],
+      "sic_requires_activity": [
+        "4822",
+        "4841",
+        "4899"
+      ],
+      "version": "common-subindustry/3"
+    },
+    {
+      "id": "utility_supply",
+      "parent_sector": "UTILITIES",
+      "name_ko": "전력·가스·수도 공급",
+      "definition": "공급망을 운영해 전력·도시가스·수도 등 필수 공공서비스를 제공한다.",
+      "includes": "발전·송배전·도시가스·수도·하수",
+      "excludes": "원유 채취·장거리 관로·산업 폐기물 용역",
+      "sic_codes": [
+        "4911",
+        "4923",
+        "4924",
+        "4931",
+        "4932",
+        "4941",
+        "4952",
+        "4991"
+      ],
+      "sic_requires_activity": [],
+      "version": "common-subindustry/3"
+    }
+  ]
+}

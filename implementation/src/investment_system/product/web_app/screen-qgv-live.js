@@ -355,6 +355,46 @@ function leaderboard(route,refs){
 
  /* ---- 2.1.3 분류와 필터 */
  function clearFilters(){V.f={industry:'',sic2:'',sic4:'',type:'',state:''};V.fav=false;}
+ function subindustryCards(){
+  if(!signedIn())return null;
+  const output=h('div',{'aria-live':'polite'});
+  const reasonText={MIXED_PRIMARY_ACTIVITY:'주 사업 구분 근거 부족',
+   SUBINDUSTRY_EVIDENCE_INSUFFICIENT:'세부 업종 근거 부족',DELISTED_AT_EVALUATION:'평가일 상장 종료'};
+  const picker=h('input',{type:'file',accept:'.json,application/json',onchange:async e=>{
+   const input=e.target,file=input.files[0];
+   output.replaceChildren();
+   if(!file)return;
+   try{
+    if(file.size>2*1024*1024)throw Error();
+    const data=JSON.parse(await file.text());
+    if(!signedIn()||!output.isConnected||input.files[0]!==file)return;
+    if(data.version!=='common-subindustry/3'||data.grade!=='EVALUATED'||
+      !/^\d{4}-\d{2}-\d{2}$/.test(data.valuation_date)||!Array.isArray(data.rows)||
+      data.rows.length!==504||!data.groups||typeof data.groups!=='object')throw Error();
+    const groups=new Map(Object.entries(data.groups).map(([id,name])=>[id,{name,rows:[]}]));
+    if([...groups.values()].some(g=>typeof g.name!=='string'||!g.name))throw Error();
+    groups.set('UNKNOWN',{name:'그 밖 (분류 전)',rows:[]});
+    groups.set('NOT_APPLICABLE',{name:'분류 대상 아님',rows:[]});
+    const seen=new Set();
+    for(const row of data.rows){
+     if(typeof row.company_id!=='string'||!row.company_id||seen.has(row.company_id))throw Error();
+     seen.add(row.company_id);
+     const assigned=row.status==='ASSIGNED',bucket=assigned?row.industry_id:row.status;
+     if(!groups.has(bucket)||!['ASSIGNED','UNKNOWN','NOT_APPLICABLE'].includes(row.status)||
+       (assigned?(bucket==='UNKNOWN'||bucket==='NOT_APPLICABLE'):row.industry_id!==null))throw Error();
+     groups.get(bucket).rows.push(h('li',null,row.company_id,assigned?'':' · '+(reasonText[row.reason]||'근거 확인 필요')));
+    }
+    const cards=[...groups.values()].filter(g=>g.rows.length).map(g=>h('details',{class:'sk fcard'},
+     h('summary',null,g.name,' · ',String(g.rows.length),'종목'),h('ul',null,...g.rows)));
+    output.replaceChildren(h('p',null,'평가일 ',data.valuation_date,' · ',data.version),...cards);
+   }catch{
+    if(signedIn()&&output.isConnected&&input.files[0]===file)
+     output.replaceChildren(h('p',{role:'alert'},'운영 504의 평가일 배정 파일을 확인해 주세요.'));
+   }
+  }});
+  return h('details',{class:'sk fcard'},h('summary',null,'평가일별 하위 산업'),
+   h('label',null,'비공개 배정 파일 열기 ',picker),output);
+ }
  function block3(v){
   const cls=v.cls,cfg=get(cls[CLS],'data','industry_config','groups'),groups=Array.isArray(cfg)?cfg:null,ids=v.pg.rows.map(r=>({company_id:r.id}));
   const sics=digits=>[...new Set(ids.map(c=>sicOf(c,cls)).filter(Boolean).map(s=>s.slice(0,digits)))].sort();
@@ -376,7 +416,7 @@ function leaderboard(route,refs){
   const panelOpen=V.panel;
   return[h('div',{class:'filter-head'},h('button',{type:'button',class:'chip m-only','aria-expanded':String(panelOpen),'aria-controls':'lb-filters',dataset:{k:'panel'},onclick:set(()=>{V.panel=!V.panel;})},'필터 ▾'),
     wait('산업 단위 · 결정 대기 (IA-5)')),
-   h('div',{id:'lb-filters',class:'lb-filters'+(panelOpen?' open':'')},...cards),...lines,
+   h('div',{id:'lb-filters',class:'lb-filters'+(panelOpen?' open':'')},...cards),...lines,subindustryCards(),
    h('div',{class:'checks'},check('fav','관심만',V.fav,favOff,e=>{V.fav=e.target.checked;draw();}),favOff?h('span',{class:'reason',dataset:{favorites:fav.state}},favWhy):null),
    h('p',{class:'sk status-line',role:'status',dataset:{filterCount:''}},'표시 ',String(v.drawn.length),'개 · 순위 기준 ',Number.isInteger(v.of)?String(v.of):'NA','개 중'),
    hand('필터는 줄만 숨김 · 순위·점수·후보 그대로'),hand('분류 자료 없음은 0이나 다른 분류로 채우지 않음'),
