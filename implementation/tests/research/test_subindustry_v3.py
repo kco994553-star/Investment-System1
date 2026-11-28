@@ -108,6 +108,17 @@ def test_two_scopes_keep_unit_conflicts_and_unique_issuer_counts():
         assert sum(mode["remaining_reasons"].values()) + mode["industry_rows"] == len(rows)
 
 
+@pytest.mark.parametrize("kind", ["WARRANT", "UNIT", "PREFERRED", "DEBT", "RIGHT", "FUND", "DEPOSITARY_RECEIPT"])
+def test_verified_noncommon_is_excluded_from_both_counts(kind):
+    data = [issuer(1, "A", "7372")]
+    rows, counts = classify_market([("NAS", "A", "2", "USD", "")], data,
+                                   {("NAS", "A", data[0]["cik"]): {kind}})
+    assert rows[0]["security_type"] == kind
+    for scope in ("strict", "issuer_candidate"):
+        assert counts[scope]["by_status"] == {"NOT_APPLICABLE": 1}
+        assert counts[scope]["remaining_reasons"] == {kind: 1}
+
+
 def test_guarded_sic_counts_before_scope_filters_one_observation_per_linked_row():
     data = [issuer(i, str(i), code) for i, code in enumerate(["7990", "6321", "6199", "6199", "6770"], 1)]
     master = [("NAS", str(i), "2", "USD", "") for i in range(1, 6)]

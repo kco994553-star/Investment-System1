@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from .subindustry import distribution, load_dictionary
 
 VENUES = {"NASDAQ": "NAS", "NYSE": "NYS", "NYSE AMERICAN": "AMS", "NYSE MKT": "AMS"}
-NONCOMMON = {"UNIT", "PREFERRED", "WARRANT", "RIGHT", "DEBT", "FUND"}
+NONCOMMON = {"UNIT", "PREFERRED", "WARRANT", "RIGHT", "DEBT", "FUND", "DEPOSITARY_RECEIPT"}
 
 
 def utc(value):
