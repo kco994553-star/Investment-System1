@@ -8,7 +8,8 @@
 //    a file whose own basis fields disagree and an unknown enum are refused; a result of another basis than the chart's is
 //    BASIS_MISMATCH; counts read 채택값 N개 (이 기업·이 평가일), never companies or coverage; the fixed adjusted line.
 //  - Client: token scope exactly openid email (include_granted_scopes false), memory only, dropped on expiry and on a server
-//    403; requests carry only the Bearer header, credentials omit, no-store, no referrer; nothing without a token.
+//    403; requests carry only the Bearer header, credentials omit, no-store, no referrer; nothing without a token. An answer that
+//    never came or a 5xx without the Worker's code is marked unreachable (the layer's one retry, owner 2026-11-28); nothing else.
 const assert = require('node:assert/strict');
 const KP = require('../src/investment_system/product/web_app/kis-private.js');
 const X = require('./web_app_kis_private_fixture.js');
@@ -435,6 +436,29 @@ const ok = async (name, fn) => { await fn(); n++; console.log('PASS ' + name); }
     h = harness(); await h.c.connect(); h.c.disconnect(); assert.equal(h.c.state().connected, false);
     h = harness({ answers: [{ status: 404, body: { error: { code: 'KIS_SERIES_NOT_FOUND' } } }] }); await h.c.connect();
     await assert.rejects(h.c.get('stock', 'NVDA'), /KIS_SERIES_NOT_FOUND/); assert.equal(h.c.state().connected, true, 'a missing file keeps the session');
+  });
+  await ok('client: only an answer that never came or a 5xx without the Worker\'s code is marked unreachable (one retry in the layer); coded errors and 401 / 403 / 404 / 429 never are', async () => {
+    // A client whose send fails (reject), is aborted, or answers raw text.
+    const one = async ({ status = 503, raw = '', reject = false, abort = false } = {}) => {
+      const controller = new AbortController(), scope = 'openid https://www.googleapis.com/auth/userinfo.email';
+      const google = { accounts: { oauth2: { initTokenClient: (cfg) => ({ requestAccessToken: () => cfg.callback({ access_token: 'synthetic-token', expires_in: '3600', scope }) }) } } };
+      const send = async () => { if (abort) { controller.abort(); throw new TypeError('aborted'); } if (reject) throw new TypeError('Failed to fetch');
+        return { status, ok: false, json: async () => JSON.parse(raw) }; };
+      const c = KP.createClient({ win: { google }, clientId: 'synthetic-client', origin: ORIGIN, send, now: () => 1_000_000 });
+      await c.connect();
+      return c.get('stock', 'NVDA', controller.signal).then(() => null, (e) => e);
+    };
+    const mark = (e) => [e.message, e.unreachable === true];
+    assert.deepEqual(mark(await one({ reject: true })), ['UPSTREAM_UNAVAILABLE', true], 'a failed request (network, CORS, the runtime stop)');
+    assert.deepEqual(mark(await one({ status: 503, raw: '<html>error 1102</html>' })), ['UPSTREAM_UNAVAILABLE', true], 'a non-JSON 5xx');
+    assert.deepEqual(mark(await one({ status: 502, raw: '{"error":{"code":"x"}}' })), ['UPSTREAM_UNAVAILABLE', true], 'a 5xx whose code is not a fixed code');
+    assert.deepEqual(mark(await one({ abort: true })), ['CANCELED', false], 'an abort is a cancel');
+    const coded = async (status, body) => { const h = harness({ answers: [{ status, body }] }); await h.c.connect(); return h.c.get('stock', 'NVDA').then(() => null, (e) => e); };
+    for (const [status, body, message] of [[503, { error: { code: 'UPSTREAM_UNAVAILABLE' } }, 'UPSTREAM_UNAVAILABLE'], [502, { error: { code: 'KIS_STOCK_PIN' } }, 'KIS_STOCK_PIN'],
+      [401, null, 'AUTH_FORBIDDEN'], [403, { error: { code: 'AUTH_FORBIDDEN' } }, 'AUTH_FORBIDDEN'], [404, { error: { code: 'KIS_SERIES_NOT_FOUND' } }, 'KIS_SERIES_NOT_FOUND'],
+      [404, null, 'UPSTREAM_UNAVAILABLE'], [429, { error: { code: 'RATE_LIMITED' } }, 'RATE_LIMITED'], [429, null, 'UPSTREAM_UNAVAILABLE']]) {
+      assert.deepEqual(mark(await coded(status, body)), [message, false], status + ' ' + JSON.stringify(body));
+    }
   });
   console.log(JSON.stringify({ passed: true, checks: n }));
 })().catch((e) => { console.error(e); process.exitCode = 1; });

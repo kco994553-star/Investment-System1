@@ -399,13 +399,18 @@ function createClient({win,clientId,origin,send,now=()=>Date.now()}={}){
   if(part&&symbol!==null&&symbol!==undefined)throw Error('REQUEST_INVALID');
   if(!connected())throw Error('AUTH_REQUIRED');const mine=epoch;
   const url=part?origin+ROUTE[part.route]+part.query:origin+ROUTE[route]+(bySym?'?symbol='+symbol:'');
+  // An answer that never came (the request failed: a network or CORS failure, as when the runtime ends the Worker at its CPU
+  // limit, error 1102) or a 5xx without the Worker's fixed error code is marked unreachable: the layer may try it once more
+  // (prices.js kisOne). The Worker's own coded answers and 401 / 403 / 404 / 429 are never marked.
+  const unreachable=()=>{const e=Error('UPSTREAM_UNAVAILABLE');e.unreachable=true;return e;};
   let res;try{res=await send(url,{method:'GET',headers:{Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer',redirect:'error',signal});}
-  catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw Error('UPSTREAM_UNAVAILABLE');}
+  catch(e){if(signal&&signal.aborted)throw Error('CANCELED');throw unreachable();}
   if(mine!==epoch)throw Error('CANCELED');
   let body=null;try{body=await res.json();}catch(_){body=null;}
   if(mine!==epoch)throw Error('CANCELED');
   if(res.status===401||res.status===403){const code=body&&body.error&&typeof body.error.code==='string'?body.error.code:'AUTH_FORBIDDEN';if(code==='AUTH_FORBIDDEN'||code==='ORIGIN_FORBIDDEN')drop();throw Error(code==='ORIGIN_FORBIDDEN'?'AUTH_FORBIDDEN':code);}
-  if(!res.ok){const code=body&&body.error&&typeof body.error.code==='string'&&/^[A-Z][A-Z0-9_]{1,63}$/.test(body.error.code)?body.error.code:'UPSTREAM_UNAVAILABLE';throw Error(code);}
+  if(!res.ok){const coded=!!(body&&body.error&&typeof body.error.code==='string'&&/^[A-Z][A-Z0-9_]{1,63}$/.test(body.error.code));
+   if(!coded&&res.status>=500)throw unreachable();throw Error(coded?body.error.code:'UPSTREAM_UNAVAILABLE');}
   if(!isObj(body))throw Error('KIS_SERIES_INVALID');return body;}
  return Object.freeze({state,connect,disconnect,get,subscribe:f=>{listeners.add(f);return()=>listeners.delete(f);}});}
 

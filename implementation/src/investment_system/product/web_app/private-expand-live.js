@@ -32,7 +32,8 @@ const WORDS=Object.freeze({AUTH_FORBIDDEN:'서버가 오너 확인을 거부했�
  AUTH_UNAVAILABLE:'로그인 확인 서버 응답 없음',LOGIN_CANCELED:'로그인을 취소했습니다',LOGIN_REFUSED:'로그인 범위가 맞지 않아 쓰지 않았습니다',LOGIN_UNAVAILABLE:'비공개 연결 설정이 없습니다',
  KIS_SERIES_NOT_FOUND:'자료 없음',TOKEN_UNSET:'비공개 저장소 읽기 설정 없음',TOKEN_EXPIRED:'비공개 저장소 읽기 토큰 만료',TOKEN_REJECTED:'비공개 저장소 읽기 토큰 거부',
  TOKEN_DATE_INVALID:'읽기 토큰 만료 설정 오류',TOKEN_DATE_IS_TOKEN:'읽기 토큰 만료 설정 오류',TOKEN_STATUS_INVALID:'비공개 토큰 상태 파일 확인 필요',
- RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다'});
+ RATE_LIMITED:'요청이 많아 잠시 뒤 다시',UPSTREAM_UNAVAILABLE:'비공개 자료 서버 응답 없음',ROUTE_NOT_FOUND:'비공개 서버에 이 경로가 아직 없습니다',
+ RETRYING:'다시 시도하는 중'});
 const word=c=>Object.prototype.hasOwnProperty.call(WORDS,c)?WORDS[c]:'오류 · '+c;
 const CODE=/^[A-Z][A-Z0-9_]{1,63}$/;
 const codeOf=e=>{const m=e&&typeof e.message==='string'?e.message:'';return CODE.test(m)?m:'PRIVATE_READ_FAILED';};
@@ -171,18 +172,22 @@ function attach(panel,{signal,kind,target=()=>({}),publicBasis=()=>null}){
   box.hidden=!s.connected;resetToken();factBox.replaceChildren();
   if(!s.ready)panel.set('NOT_READY');else if(!s.connected)panel.set('LOGIN_REQUIRED');
   else panel.set('READY',{render:b=>I.append(b,[h('p',{class:'reason',dataset:{privateClosed:''}},'비공개 접힘')])});
-  note.textContent=msg||'';}
+  delete note.dataset.privateRetry;note.textContent=msg||'';}
  function read(e){const t=target()||{},my=++seq;
   const req=READS[kind](t);
   if(!req){note.textContent='기업을 먼저 고르세요';return;}
   panel.set('LOADING');factBox.replaceChildren();note.textContent='';busy(true);
-  let p;try{p=P().kisRead(e,req);}catch(err){p=Promise.reject(err);}
-  Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;busy(false);const status=[];
+  // A lost read waits for its one automatic retry (the layer's kisOne): the status line counts the seconds down
+  // ([data-private-retry] = seconds left, 0 while the retry runs) and is cleared when the read settles.
+  const retrying=n=>{if(my!==seq||signal.aborted)return;note.dataset.privateRetry=String(n);note.textContent=n>0?word('RETRYING')+' · '+n+'초':word('RETRYING');};
+  const settled=()=>{if(note.dataset.privateRetry===undefined)return;delete note.dataset.privateRetry;note.textContent='';};
+  let p;try{p=P().kisRead(e,req,retrying);}catch(err){p=Promise.reject(err);}
+  Promise.resolve(p).then(res=>{if(my!==seq||signal.aborted)return;busy(false);settled();const status=[];
    try{panel.set('READY',{render:b=>RENDER[kind](b,res,{symbol:t.symbol,code:t.code,publicBasis:publicBasis()},status)});}
    catch(err){const c=codeOf(err);panel.set('ERROR',{code:c});note.textContent='형식 오류 · '+c;return;}
    factBox.replaceChildren(facts(status,kind));
    open=true;btn.textContent='비공개 접기';btn.setAttribute('aria-expanded','true');off.hidden=false;box.hidden=false;},
-  err=>{if(my!==seq||signal.aborted)return;busy(false);const c=codeOf(err);if(c==='CANCELED')return;
+  err=>{if(my!==seq||signal.aborted)return;busy(false);settled();const c=codeOf(err);if(c==='CANCELED')return;
    if(c==='AUTH_FORBIDDEN'||c==='AUTH_REQUIRED'){closed(word(c));return;}
    if(c==='KIS_SERIES_NOT_FOUND'){panel.set('EMPTY');note.textContent=word(c);return;}
    panel.set('ERROR',{code:c});note.textContent=word(c);});}

@@ -197,12 +197,12 @@ APPROVED_SHA256 = {
     "data.js": "5a06bf6ceb49997b7f2aed31411e9c4a5eebafb0122f1d87eee9c926c6ac51ff",
     "engines.js": "6e3604dfe4c347d29b8e66fce01c8330f7a6f7823481a7132184767112ab27a2",
     "lab.js": "91e1b57ab4face44e07cb3db3ef9f3b243084202160f25082146d6ffe5f3168c",
-    "kis-private.js": "2ecf02cd7e438d695666eda0d0d7ab29a6982519bcae6532f59de54d19bb13de",
+    "kis-private.js": "9fe1c86a31fde379a2700b92f9e46d17436935fbc6304921e91350e7d6f32ebc",
     "loader.js": "ecd20ba2cc660d3f7300c6d0df943bfe2a7d6a6b1b6e4b128a9e958ca7f4419a",
     "parts.js": "a694af6901b87c7688ed2ecaff3987a1c1fa3d3ec63d44e5200de7260b241254",
     "preview-banner.css": "c56a62e02c54b684efd456d8b7bf7f1f0d250127705d2d8b7e3954ece5e36e17",
-    "prices.js": "7016abc44f8dfdb7570548e70a7884ea39c74e915dabb47885898d8fe468efe6",
-    "private-expand-live.js": "093f71d8d3eeeefb9a388d76252ad6146278cd2cce990c74a9c3cc8219e99b4f",
+    "prices.js": "89d5fed583644aa68ce4ae82fa7142002958038a97ec6b2a956fe654b08940b5",
+    "private-expand-live.js": "a26530f959c28cfd33f7ee20c8877a543bc1eae0d6ad093fa4019c2f2e5150e0",
     "private.js": "e37ffe513a4e90db9e5688c8ddcaab2cf4794d2aa0bb81f804142cdf6bbd9c92",
     "qgv.js": "527fee2b8395b721f9d2d8d348fea98a6976ee6f0d66274d6d1a5900c7dec091",
     "screen-lab-live.js": "eeb5d00c6b93108f656dc0ba7da55f0a0d236805d2a0ed06250edf9f070d7d21",
@@ -365,7 +365,7 @@ _PATH_HINTS = ("/kis", "/lab", "/private")
 # private-expand-live.js (the panel component) needs no exception: it names no private path or schema.
 PAGES_PRIVATE_EXCEPTIONS = {
     "kis-private.js": {
-        "sha256": "2ecf02cd7e438d695666eda0d0d7ab29a6982519bcae6532f59de54d19bb13de",
+        "sha256": "9fe1c86a31fde379a2700b92f9e46d17436935fbc6304921e91350e7d6f32ebc",
         "paths": ("/kis/status", "/kis/stock"),
         "schemas": ("kis-bars/1", "kis-bars/1/analysis", "kis-technical-measures/1", "kis-qgv/1", "kis-status/1", "kis-stock-view/1"),
     },
